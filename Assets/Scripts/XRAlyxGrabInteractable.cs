@@ -59,13 +59,23 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
     {
         if(args.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor)
         {
-            trackPosition = false;
-            trackRotation = false;
-            throwOnDetach = false;
-
             rayInteractor = (UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor)args.interactorObject;
-            previousPos = rayInteractor.transform.position;
-            canJump = true;
+            float distance = Vector3.Distance(rayInteractor.transform.position, transform.position);
+
+            if(distance >= 0.3)
+            {
+                trackPosition = false;
+                trackRotation = false;
+                throwOnDetach = false;
+
+                
+                previousPos = rayInteractor.transform.position;
+                canJump = true;
+            }else{
+                trackPosition = true;
+                trackRotation = true;
+                throwOnDetach = true;
+            }
         }
         else
         {
@@ -74,5 +84,42 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
             throwOnDetach = true;
         }
         base.OnSelectEntered(args);
+    }
+
+    protected override void SetupRigidbodyGrab(Rigidbody rigidbody)
+    {
+        // base.SetupRigidbodyGrab(rigidbody);
+        // base.SetupRigidbodyDrop(rigidbody);
+
+        if (base.m_RigidbodySetupActive)
+            return;
+
+        base.m_RigidbodySetupActive = true;
+
+        // Remember Rigidbody settings and setup to move
+        base.m_WasKinematic = rigidbody.isKinematic;
+        base.m_UsedGravity = rigidbody.useGravity;
+        base.m_InterpolationOnGrab = rigidbody.interpolation;
+#if UNITY_2023_3_OR_NEWER
+        base.m_LinearDampingOnGrab = rigidbody.linearDamping;
+        base.m_AngularDampingOnGrab = rigidbody.angularDamping;
+#else
+        base.m_LinearDampingOnGrab = rigidbody.drag;
+        base.m_AngularDampingOnGrab = rigidbody.angularDrag;
+#endif
+        // rigidbody.isKinematic = m_CurrentMovementType == MovementType.Kinematic || m_CurrentMovementType == MovementType.Instantaneous;
+        // rigidbody.useGravity = false;
+        // Initialize the Rigidbody to not interpolate when we drive predicted visuals.
+        // See explanation in PerformVelocityVisualsUpdate().
+        // if (isRigidbodyMovement && m_PredictedVisualsTransform != null)
+            // rigidbody.interpolation = RigidbodyInterpolation.None;
+
+// #if UNITY_2023_3_OR_NEWER
+//         rigidbody.linearDamping = 0f;
+//         rigidbody.angularDamping = 0f;
+// #else
+//         rigidbody.drag = 0f;
+//         rigidbody.angularDrag = 0f;
+// #endif
     }
 }
