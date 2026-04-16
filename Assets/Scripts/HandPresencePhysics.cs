@@ -1,9 +1,13 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
-public class HandPresencePhysics : UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor
+public class HandPresencePhysics : MonoBehaviour
 {
     public Transform target;
     private Rigidbody rb;
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor near;
+
+    private Transform currentTarget;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,10 +17,15 @@ public class HandPresencePhysics : UnityEngine.XR.Interaction.Toolkit.Interactor
     // Update is called once per frame
     void FixedUpdate()
     {
-        // Debug.Log("firstInteractableSelected.GetAttachTransform(this): " + firstInteractableSelected.GetAttachTransform(this))
-        rb.linearVelocity = (target.position - transform.position) / Time.fixedDeltaTime;
+        if (near.firstGrabTransform != null && near.hasAttachment && near.hasGrabbedFar == false)
+        {
+            currentTarget = near.firstGrabTransform;
+        }else{
+            currentTarget = target;
+        }
+        rb.linearVelocity = (currentTarget.position - transform.position) / Time.fixedDeltaTime;
 
-        Quaternion rotationDifference = target.rotation * Quaternion.Inverse(transform.rotation);
+        Quaternion rotationDifference = currentTarget.rotation * Quaternion.Inverse(transform.rotation);
         rotationDifference.ToAngleAxis(out float angleInDegree, out Vector3 rotationAxis);
 
         Vector3 rotationDifferenceInDegree = angleInDegree * rotationAxis;
