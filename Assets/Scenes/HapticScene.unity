@@ -387,7 +387,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &127836936
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1639,7 +1639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1013118841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5999,6 +5999,7 @@ GameObject:
   - component: {fileID: 6520291404496095133}
   - component: {fileID: 5826056641646607651}
   - component: {fileID: 5033801203484386419}
+  - component: {fileID: 6520291404496095134}
   m_Layer: 2
   m_Name: XR Origin (XR Rig)
   m_TagString: Untagged
@@ -9782,6 +9783,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ActionAssets:
   - {fileID: -944628639613478452, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!114 &6520291404496095134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1717954562066946111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e435576a3d9799419cb4b642305410d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  root: {fileID: 1717954562066946108}
+  head: {fileID: 1931428192}
+  leftHand: {fileID: 8366379412468190335}
+  rightHand: {fileID: 6528530117108436276}
 --- !u!4 &6528530117108436276
 Transform:
   m_ObjectHideFlags: 0

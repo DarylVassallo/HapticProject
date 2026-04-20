@@ -168,8 +168,8 @@ Material:
     - _LightPos: {r: 0, g: 0, b: 0, a: 0}
     - _LightPosition: {r: 0, g: 0, b: 0, a: 0}
     - _MyColor: {r: 0.5188679, g: 0, b: 0, a: 1}
-    - _MyLightDirection: {r: 0.87198156, g: -0.000000010168457, b: -0.4895386, a: 0}
-    - _MyLightPosition: {r: 3.0428028, g: 0.024999997, b: -8.458009, a: 0}
+    - _MyLightDirection: {r: 0.00000020932418, g: -0.0000000030446752, b: -1, a: 0}
+    - _MyLightPosition: {r: 0.5019999, g: 0.025000002, b: -1.7844, a: 0}
     - _NormalOffset: {r: 0, g: 0, b: 0, a: 0}
     - _NormalTiling: {r: 1, g: 1, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 0.5803922}
