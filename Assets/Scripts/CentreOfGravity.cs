@@ -1,22 +1,21 @@
 using UnityEngine;
-
+//This script shows the centre of gravity of an object (good for imbalanced items such as a large hammer).
+//Source: https://www.youtube.com/watch?v=pu50eTSlvdk
 public class CentreOfGravity : MonoBehaviour
 {
-    public Vector3 centreOfMass;
+    [SerializeField] private Vector3 _centreOfMass;
     private Rigidbody _rb;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _rb.centerOfMass = centreOfMass;    
+        _rb.centerOfMass = _centreOfMass;    
     }
 
-    // Update is called once per frame
     void Update()
     {
         #if UNITY_EDITOR
-        _rb.centerOfMass = centreOfMass;
+        _rb.centerOfMass = _centreOfMass;
         _rb.WakeUp();
         #endif
     }
@@ -24,6 +23,6 @@ public class CentreOfGravity : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position + transform.rotation * centreOfMass, 0.05f);
+        Gizmos.DrawSphere(transform.position + transform.rotation * _centreOfMass, 0.05f);
     }
 }

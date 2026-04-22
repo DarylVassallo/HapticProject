@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-
+//This script pulls interactable objects towards the VR similar to Half Life Alyx
+//Source: https://www.youtube.com/watch?v=WU23Uj1oeh8
 public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
 {
     public float velocityThreshold = 2;

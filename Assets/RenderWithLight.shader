@@ -8,6 +8,8 @@ Shader "Custom/RevealingUnderLight_URP"
         _MyGlossiness("Smoothness", Range(0,1)) = 0.5
         _MyMetallic("Metallic", Range(0,1)) = 0.0
 
+	   _MyLightRange("Light Range", Float) = 5
+
         _MyLightDirection("Light Direction", Vector) = (0,0,1,0)
         _MyLightPosition("Light Position", Vector) = (0,0,0,0)
 
@@ -42,6 +44,7 @@ Shader "Custom/RevealingUnderLight_URP"
             #pragma target 3.0
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             TEXTURE2D(_MyMainTex);
             SAMPLER(sampler_MyMainTex);
@@ -53,6 +56,7 @@ Shader "Custom/RevealingUnderLight_URP"
                 float _MyGlossiness;
                 float _MyMetallic;
 
+			float _MyLightRange;
                 float4 _MyLightDirection;
                 float4 _MyLightPosition;
 
@@ -66,6 +70,7 @@ Shader "Custom/RevealingUnderLight_URP"
             struct Attributes
             {
                 float4 positionOS : POSITION;
+                float3 normalOS   : NORMAL;
                 float2 uv         : TEXCOORD0;
             };
 
@@ -74,6 +79,7 @@ Shader "Custom/RevealingUnderLight_URP"
                 float4 positionHCS : SV_POSITION;
                 float2 uv          : TEXCOORD0;
                 float3 positionWS  : TEXCOORD1;
+                float3 normalWS    : TEXCOORD2;
             };
 
             Varyings vert (Attributes v)
@@ -82,11 +88,19 @@ Shader "Custom/RevealingUnderLight_URP"
                 o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
                 o.positionHCS = TransformWorldToHClip(o.positionWS);
                 o.uv = TRANSFORM_TEX(v.uv, _MyMainTex);
+                o.normalWS = TransformObjectToWorldNormal(v.normalOS);
                 return o;
             }
 
             half4 frag (Varyings i) : SV_Target
             {
+            	Light mainLight = GetMainLight();
+            	float3 normal = normalize(i.normalWS);
+            	
+            	float NdotL = saturate(dot(normal, mainLight.direction));
+            	float3 lighting = mainLight.color * NdotL;
+            	
+            	float dist = distance(_MyLightPosition.xyz, i.positionWS);
                 float3 dir = normalize(_MyLightPosition.xyz - i.positionWS);
 
                 float3 lightDir = normalize(_MyLightDirection.xyz);
@@ -96,8 +110,9 @@ Shader "Custom/RevealingUnderLight_URP"
                 float angleRad = radians(_MyLightAngle * 0.5);
 			float threshold = cos(angleRad);
 			
+			float range = saturate(1.0 - (dist * dist) / (_MyLightRange * _MyLightRange));
                 float strength = scale - threshold;
-                strength = saturate(strength * _MyStrengthScalor);
+                strength = saturate(strength * _MyStrengthScalor) * range;
 
                 half4 tex = SAMPLE_TEXTURE2D(_MyMainTex, sampler_MyMainTex, i.uv) * _MyColor;
 
@@ -107,8 +122,9 @@ Shader "Custom/RevealingUnderLight_URP"
 
                 float3 emission = albedo * tex.a * strength;
 
+			float3 litColor = albedo * lighting;
                 half4 col;
-                col.rgb = albedo + emission;
+                col.rgb = litColor + emission;
                 col.a = alpha;
 
                 return col;

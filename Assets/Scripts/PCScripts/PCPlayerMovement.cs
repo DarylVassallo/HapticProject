@@ -1,7 +1,8 @@
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
-
+//This script is a basic version to control the PC player movement, implemented to test the PC multiplayer.
+//Source: https://www.youtube.com/watch?v=_NLsWFgVX6E&t=352s
 public class PCPlayerMovement : NetworkBehaviour
 {
     public float speed = 5f;

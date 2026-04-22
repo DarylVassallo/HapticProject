@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Netcode;
-
+//This script keeps the head and hands of the vr player to match the real player in a multiplayer network (STILL IN DEVELOPMENT).
+//Source: https://www.youtube.com/watch?v=6fZ7LT5AeTw
 public class NetworkPlayer : NetworkBehaviour
 {
     public Transform root;

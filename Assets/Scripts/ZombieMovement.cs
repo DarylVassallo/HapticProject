@@ -1,35 +1,34 @@
 using UnityEngine;
 using UnityEngine.AI;
-
+//This is a single script that allows the zombie nav agent to constantly move towards the player
 public class ZombieMovement : MonoBehaviour
 {
-    public NavMeshAgent agent;
-    public Transform player;
-    public float chaseRange = 2f;
+    private NavMeshAgent _agent;
+    private Transform _playerTransform;
+    [SerializeField] private float _chaseRange = 2f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        _agent = this.gameObject.GetComponent<NavMeshAgent>();
+        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float distToPlayer = Vector3.Distance(transform.position, player.position);
-
-        if(distToPlayer > chaseRange)
+        if(Vector3.Distance(transform.position, _playerTransform.position) > _chaseRange)
         {
-            agent.SetDestination(player.position);
+            _agent.SetDestination(_playerTransform.position);
         }
         else
         {
-            agent.SetDestination(transform.position);
+            _agent.SetDestination(transform.position);
         }
     }
 
     void OnDrawGizmoSelected()
     {
-        Gizmos.DrawWireSphere(transform.position, chaseRange);
+        Gizmos.DrawWireSphere(transform.position, _chaseRange);
     }
 }

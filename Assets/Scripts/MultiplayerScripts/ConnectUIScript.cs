@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.UI;
 
+//This script uses UI buttons to create the host, client, and server for the multiplayer network.
 public class ConnectUIScript : MonoBehaviour
 {
     [SerializeField] private Button hostButton;
@@ -11,7 +12,6 @@ public class ConnectUIScript : MonoBehaviour
     [SerializeField] private GameObject pcPlayer;
     [SerializeField] private GameObject vrPlayer;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         hostButton.onClick.AddListener(HostButtonClick);

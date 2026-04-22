@@ -130,7 +130,8 @@ Material:
     - _LightAngle: 45
     - _Metallic: 0
     - _MyGlossiness: 0.5
-    - _MyLightAngle: 70
+    - _MyLightAngle: 90
+    - _MyLightRange: 5
     - _MyMetallic: 0
     - _MyStrengthScalor: 50
     - _NormalStrength: 0.2
@@ -168,8 +169,8 @@ Material:
     - _LightPos: {r: 0, g: 0, b: 0, a: 0}
     - _LightPosition: {r: 0, g: 0, b: 0, a: 0}
     - _MyColor: {r: 0.5188679, g: 0, b: 0, a: 1}
-    - _MyLightDirection: {r: 0.00000020932418, g: -0.0000000030446752, b: -1, a: 0}
-    - _MyLightPosition: {r: 0.5019999, g: 0.025000002, b: -1.7844, a: 0}
+    - _MyLightDirection: {r: -0.7931849, g: -0.57192445, b: 0.20919012, a: 0}
+    - _MyLightPosition: {r: -9.057404, g: 1.7484021, b: 20.893347, a: 0}
     - _NormalOffset: {r: 0, g: 0, b: 0, a: 0}
     - _NormalTiling: {r: 1, g: 1, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 0.5803922}
