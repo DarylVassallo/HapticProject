@@ -3,19 +3,19 @@ using UnityEngine;
 //Source: https://www.youtube.com/watch?v=pu50eTSlvdk
 public class CentreOfGravity : MonoBehaviour
 {
-    [SerializeField] private Vector3 _centreOfMass;
+    [SerializeField] private Vector3 centreOfMass;
     private Rigidbody _rb;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
-        _rb.centerOfMass = _centreOfMass;    
+        _rb.centerOfMass = centreOfMass;    
     }
 
     void Update()
     {
         #if UNITY_EDITOR
-        _rb.centerOfMass = _centreOfMass;
+        _rb.centerOfMass = centreOfMass;
         _rb.WakeUp();
         #endif
     }
@@ -23,6 +23,6 @@ public class CentreOfGravity : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position + transform.rotation * _centreOfMass, 0.05f);
+        Gizmos.DrawSphere(transform.position + transform.rotation * centreOfMass, 0.05f);
     }
 }

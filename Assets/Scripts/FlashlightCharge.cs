@@ -1,0 +1,73 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+using System;
+//This script controls the flashlight's charge, as it runs out, the strength and range is also reduced. It can be charged, but the flash light is off during it.
+public class FlashlightCharge : MonoBehaviour
+{
+    private Light _spotLight;
+
+    private float _charge;
+    private bool _isCharging;
+
+    [SerializeField] private float decay;
+    [SerializeField] private float flashLightRotationSpeed;
+
+    private float _maxSpotLightIntensity;
+    private float _maxSpotLightRange;
+
+    [SerializeField] private Rigidbody flashlightLeverRb;
+
+    private void Awake()
+    {
+        _spotLight = this.GetComponentInChildren<Light>();
+        _charge = 100f;
+
+        _maxSpotLightIntensity = _spotLight.intensity;
+        _maxSpotLightRange = _spotLight.range;
+    }
+
+    private void OnEnable()
+    {
+        PCPlayerInputManager.OnFire += ChargeFlashlight;
+        PCPlayerInputManager.OnFire2 += ToggleFlashlight;
+    }
+
+    private void OnDisable()
+    {
+        PCPlayerInputManager.OnFire -= ChargeFlashlight;
+        PCPlayerInputManager.OnFire2 -= ToggleFlashlight;
+    }
+
+    private void ChargeFlashlight(InputAction.CallbackContext context)
+    {
+        _isCharging = context.performed;
+
+        ChangeSpotLightStrength(0, _isCharging ? 0.5f : 1f);
+    }
+
+    private void ToggleFlashlight()
+    {
+        _spotLight.enabled = !_spotLight.enabled;
+    }
+
+    private void FixedUpdate()
+    {        
+        if ((_charge >= 100 && _isCharging) || (_charge <= 0 && !_isCharging && _spotLight.enabled)) return;
+
+        if (_isCharging && _charge < 100)
+        {
+            _spotLight.enabled = true;
+            ChangeSpotLightStrength(decay, _isCharging ? 0.5f : 1f);
+            flashlightLeverRb.MoveRotation(flashlightLeverRb.rotation * Quaternion.Euler(0f, 0f, flashLightRotationSpeed * Time.fixedDeltaTime));
+        }else{
+            ChangeSpotLightStrength(-decay, _isCharging ? 0.5f : 1f);
+        }
+    }
+
+    private void ChangeSpotLightStrength(float _change, float _brightness)
+    {
+        _charge += _change;
+        _spotLight.intensity = _maxSpotLightIntensity * (_charge / 100f) * _brightness;
+        _spotLight.range = _maxSpotLightRange * (_charge / 100f) * _brightness;
+    }
+}

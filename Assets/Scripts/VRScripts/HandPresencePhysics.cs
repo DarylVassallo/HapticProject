@@ -4,7 +4,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 //Source: https://www.youtube.com/watch?v=VG8hLKyTiJQ
 public class HandPresencePhysics : MonoBehaviour
 {
-    [SerializeField] private Transform _handTargetTransform;
+    [SerializeField] private Transform handTargetTransform;
     private Rigidbody _rb;
     [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor _nearFarInteractor;
 
@@ -22,7 +22,7 @@ public class HandPresencePhysics : MonoBehaviour
         {
             _currentTargetTransform = _nearFarInteractor.firstGrabTransform;
         }else{
-            _currentTargetTransform = _handTargetTransform;
+            _currentTargetTransform = handTargetTransform;
         }
         _rb.linearVelocity = (_currentTargetTransform.position - transform.position) / Time.fixedDeltaTime;
 

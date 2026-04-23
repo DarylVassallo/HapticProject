@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-//This script allows the PC Player to move, sprint, jump, and crouch.
+//This script allows the PC Player to move, sprint, jump, and crouch (modified to using input actions from an input manager script).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
 public class PlayerMovement : MonoBehaviour
 {
@@ -23,11 +23,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
-    [SerializeField] private InputActionReference moveAction;
-    [SerializeField] private InputActionReference jumpAction;
-    [SerializeField] private InputActionReference crouchAction;
-    [SerializeField] private InputActionReference sprintAction;
-
 
     private CharacterController _characterController;
     private Vector2 _moveInput;
@@ -45,39 +40,25 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
-        moveAction.action.Enable();
-        moveAction.action.performed += StoreMovementInput;
-        moveAction.action.canceled += StoreMovementInput;
-
-        jumpAction.action.Enable();
-        jumpAction.action.performed += Jump;
-
-        sprintAction.action.Enable();
-        sprintAction.action.performed += Sprint;
-        sprintAction.action.canceled += Sprint;
-
-        crouchAction.action.Enable();
-        crouchAction.action.performed += Crouch;
+        PCPlayerInputManager.OnMove += ChangeMotion;
+        PCPlayerInputManager.OnJump += Jump;
+        PCPlayerInputManager.OnCrouch += Crouch;
+        PCPlayerInputManager.OnSprint += Sprint;
     }
 
     private void OnDisable()
     {
-        moveAction.action.performed -= StoreMovementInput;
-        moveAction.action.canceled -= StoreMovementInput;
-        moveAction.action.Disable();
-
-        jumpAction.action.performed -= Jump;
-        jumpAction.action.Disable();
-
-        sprintAction.action.performed -= Sprint;
-        sprintAction.action.canceled -= Sprint;
-        sprintAction.action.Disable();
-
-        crouchAction.action.performed -= Crouch;
-        crouchAction.action.Disable();
+        PCPlayerInputManager.OnMove -= ChangeMotion;
+        PCPlayerInputManager.OnJump -= Jump;
+        PCPlayerInputManager.OnCrouch -= Crouch;
+        PCPlayerInputManager.OnSprint -= Sprint;
     }
 
-    private void Update()
+    private void ChangeMotion(Vector2 input)
+    {
+        _moveInput = input;
+    }
+    private void FixedUpdate()
     {
         _isGrounded = _characterController.isGrounded;
         HandleGravity();
@@ -85,12 +66,7 @@ public class PlayerMovement : MonoBehaviour
         HandleCrouchTransition();
     }
 
-    private void StoreMovementInput(InputAction.CallbackContext context)
-    {
-        _moveInput = context.ReadValue<Vector2>();
-    }
-
-    private void Jump(InputAction.CallbackContext context)
+    private void Jump()
     {
         if(_isGrounded)
         {
@@ -98,7 +74,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Crouch(InputAction.CallbackContext context)
+    private void Crouch()
     {
         if (_isCrouching)
         {
@@ -152,28 +128,6 @@ public class PlayerMovement : MonoBehaviour
             _verticalVelocity = initialFallVelocity;
         }
     }
-
-    // private void HandleCrouchTransition()
-    // {
-    //     var currentHeight = _characterController.height;
-    //     if (Mathf.Abs(currentHeight - _targetHeight) < 0.01f)
-    //     {
-    //         _characterController.height = _targetHeight;
-    //         return;
-    //     }
-        
-    //     var newHeight = Mathf.Lerp(currentHeight, _targetHeight, crouchTransitionSpeed * Time.deltaTime);
-
-    //     _characterController.height = newHeight;
-    //     _characterController.center = Vector3.up * (newHeight * 0.5f);
-
-    //     var cameraTargetPosition = cameraTransform.localPosition;
-    //     cameraTargetPosition.y = _targetHeight - cameraOffset;
-    //     cameraTransform.localPosition = Vector3.Lerp(
-    //         cameraTransform.localPosition,
-    //         cameraTargetPosition,
-    //         crouchTransitionSpeed * Time.deltaTime);
-    // }
 
     private void HandleCrouchTransition()
     {

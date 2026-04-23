@@ -4,39 +4,39 @@ using UnityEngine.XR.Interaction.Toolkit;
 //Source: https://www.youtube.com/watch?v=WU23Uj1oeh8
 public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable
 {
-    public float velocityThreshold = 2;
-    public float jumpAngleInDegree = 60;
+    [SerializeField] private float velocityThreshold = 2;
+    [SerializeField] private float jumpAngleInDegree = 60;
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor rayInteractor;
-    private Vector3 previousPos;
-    private Rigidbody interactableRigidbody;
-    private bool canJump = true;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor _nearFarInteractor;
+    private Vector3 _previousPosition;
+    private Rigidbody _interactableRb;
+    private bool _canJump = true;
 
     protected override void Awake()
     {
         base.Awake();
-        interactableRigidbody = GetComponent<Rigidbody>();
+        _interactableRb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        if(isSelected && firstInteractorSelecting is UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor && canJump)
+        if(isSelected && firstInteractorSelecting is UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor && _canJump)
         {
-            Vector3 velocity = (rayInteractor.transform.position - previousPos) / Time.deltaTime;
-            previousPos = rayInteractor.transform.position;
+            Vector3 velocity = (_nearFarInteractor.transform.position - _previousPosition) / Time.deltaTime;
+            _previousPosition = _nearFarInteractor.transform.position;
 
             if(velocity.magnitude > velocityThreshold)
             {
                 Drop();
-                interactableRigidbody.linearVelocity = ComputeVelocity();
-                canJump = false;
+                _interactableRb.linearVelocity = ComputeVelocity();
+                _canJump = false;
             }
         }
     }
 
     public Vector3 ComputeVelocity()
     {
-        Vector3 diff = rayInteractor.transform.position - transform.position;
+        Vector3 diff = _nearFarInteractor.transform.position - transform.position;
         Vector3 diffXZ = new Vector3(diff.x, 0, diff.z);
         float diffXZLength = diffXZ.magnitude;
         float diffYLength = diff.y;
@@ -60,8 +60,8 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
     {
         if(args.interactorObject is UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor)
         {
-            rayInteractor = (UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor)args.interactorObject;
-            float distance = Vector3.Distance(rayInteractor.transform.position, transform.position);
+            _nearFarInteractor = (UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor)args.interactorObject;
+            float distance = Vector3.Distance(_nearFarInteractor.transform.position, transform.position);
 
             if(distance >= 0.3)
             {
@@ -70,8 +70,8 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
                 throwOnDetach = false;
 
                 
-                previousPos = rayInteractor.transform.position;
-                canJump = true;
+                _previousPosition = _nearFarInteractor.transform.position;
+                _canJump = true;
             }else{
                 trackPosition = true;
                 trackRotation = true;

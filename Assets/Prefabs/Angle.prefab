@@ -13,7 +13,9 @@ GameObject:
   - component: {fileID: 8760176280868224786}
   - component: {fileID: 4558516291808930690}
   - component: {fileID: 4489439866968851057}
-  - component: {fileID: 8651418964361179406}
+  - component: {fileID: 91216272316676775}
+  - component: {fileID: 3201566917236771553}
+  - component: {fileID: 3128351026506914791}
   m_Layer: 0
   m_Name: Angle
   m_TagString: Untagged
@@ -69,7 +71,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,7 +140,7 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &8651418964361179406
+--- !u!114 &91216272316676775
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -147,10 +149,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 4488053546621565365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8efc6163f0d45484d80067cc383d49b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+--- !u!114 &3201566917236771553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4488053546621565365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c6cfac063dc52d4c8ae32f337838ecc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatueWithSpotlight
+  agentSpeed: 5
+  speed: 64
+  amount: 0.016
+--- !u!114 &3128351026506914791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4488053546621565365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1509e31440c6454a8327ce99d0c38a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  ai: {fileID: 4489439866968851057}
-  player: {fileID: 0}
-  playerCam: {fileID: 0}
-  aiSpeed: 5
+  health: 100

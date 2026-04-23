@@ -10,7 +10,7 @@ public class WeepingAngle : MonoBehaviour
     private Transform _playerTransform;
     private Vector3 _destination;
     private Camera _playerCamera;
-    [SerializeField] private float _agentSpeed;
+    [SerializeField] private float agentSpeed;
 
     private Plane[] _planes;
 
@@ -32,7 +32,7 @@ public class WeepingAngle : MonoBehaviour
         }
         if(!GeometryUtility.TestPlanesAABB(_planes, this.gameObject.GetComponent<Renderer>().bounds))
         {
-            _agent.speed = _agentSpeed;
+            _agent.speed = agentSpeed;
             _destination = _playerTransform.position;
             _agent.destination = _destination;
         }

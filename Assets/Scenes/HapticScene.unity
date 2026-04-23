@@ -3670,8 +3670,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  mat: {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
-  spotLight: {fileID: 1074896762}
 --- !u!114 &1898469501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9136,8 +9134,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3791cdacb8a5a6340a6325d256234042, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  target: {fileID: 2042913251}
-  near: {fileID: 1851272486}
+  _handTargetTransform: {fileID: 2042913251}
+  _nearFarInteractor: {fileID: 1851272486}
 --- !u!54 &6528530117108436278
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11243,8 +11241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3791cdacb8a5a6340a6325d256234042, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  target: {fileID: 373661954}
-  near: {fileID: 8877177980513020102}
+  _handTargetTransform: {fileID: 373661954}
+  _nearFarInteractor: {fileID: 8877177980513020102}
 --- !u!54 &9173983156506629831
 Rigidbody:
   m_ObjectHideFlags: 0

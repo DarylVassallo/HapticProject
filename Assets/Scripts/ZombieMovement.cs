@@ -5,7 +5,7 @@ public class ZombieMovement : MonoBehaviour
 {
     private NavMeshAgent _agent;
     private Transform _playerTransform;
-    [SerializeField] private float _chaseRange = 2f;
+    [SerializeField] private float chaseRange = 2f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,7 +17,7 @@ public class ZombieMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Vector3.Distance(transform.position, _playerTransform.position) > _chaseRange)
+        if(Vector3.Distance(transform.position, _playerTransform.position) > chaseRange)
         {
             _agent.SetDestination(_playerTransform.position);
         }
@@ -29,6 +29,6 @@ public class ZombieMovement : MonoBehaviour
 
     void OnDrawGizmoSelected()
     {
-        Gizmos.DrawWireSphere(transform.position, _chaseRange);
+        Gizmos.DrawWireSphere(transform.position, chaseRange);
     }
 }
