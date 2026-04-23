@@ -1,5 +1,5 @@
 using UnityEngine;
-
+//This script has the health of the entity, and destroys it upon death.
 public class Health : MonoBehaviour
 {
     public float health = 0;

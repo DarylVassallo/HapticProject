@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-//This script detects if the statue is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera).
+//This script detects if the statue is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
 //Source: https://www.youtube.com/watch?v=_e57zSZSOS8
 public class StatueWithSpotlight : MonoBehaviour
 {
