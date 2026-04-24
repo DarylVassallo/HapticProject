@@ -14,14 +14,19 @@ public class RevealUnderLight : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if(_hiddenMaterial && _spotLight)
         {
-            _hiddenMaterial.SetVector("_MyLightPosition", _spotLight.transform.position);
-            _hiddenMaterial.SetVector("_MyLightDirection", -_spotLight.transform.forward);
-            _hiddenMaterial.SetFloat("_MyLightAngle", _spotLight.spotAngle);
-            _hiddenMaterial.SetFloat("_MyLightRange", _spotLight.range * 0.5f);
+            if (!_spotLight.enabled)
+            {
+                _hiddenMaterial.SetFloat("_MyLightRange", 0);
+            }else{
+                _hiddenMaterial.SetVector("_MyLightPosition", _spotLight.transform.position);
+                _hiddenMaterial.SetVector("_MyLightDirection", -_spotLight.transform.forward);
+                _hiddenMaterial.SetFloat("_MyLightAngle", _spotLight.spotAngle);
+                _hiddenMaterial.SetFloat("_MyLightRange", _spotLight.range * 0.5f);
+            }
         }
     }
 }

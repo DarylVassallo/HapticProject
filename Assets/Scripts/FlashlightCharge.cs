@@ -9,13 +9,16 @@ public class FlashlightCharge : MonoBehaviour
     private float _charge;
     private bool _isCharging;
 
-    [SerializeField] private float decay;
+    [SerializeField] private float decayRate;
+    [SerializeField] private float chargeRate;
     [SerializeField] private float flashLightRotationSpeed;
 
     private float _maxSpotLightIntensity;
     private float _maxSpotLightRange;
 
-    [SerializeField] private Rigidbody flashlightLeverRb;
+    [SerializeField] private float chargeIntensity;
+
+    [SerializeField] private Transform flashlightLever;
 
     private void Awake()
     {
@@ -42,7 +45,7 @@ public class FlashlightCharge : MonoBehaviour
     {
         _isCharging = context.performed;
 
-        ChangeSpotLightStrength(0, _isCharging ? 0.5f : 1f);
+        ChangeSpotLightStrength(0, _isCharging ? chargeIntensity : 1f);
     }
 
     private void ToggleFlashlight()
@@ -57,10 +60,11 @@ public class FlashlightCharge : MonoBehaviour
         if (_isCharging && _charge < 100)
         {
             _spotLight.enabled = true;
-            ChangeSpotLightStrength(decay, _isCharging ? 0.5f : 1f);
-            flashlightLeverRb.MoveRotation(flashlightLeverRb.rotation * Quaternion.Euler(0f, 0f, flashLightRotationSpeed * Time.fixedDeltaTime));
+            ChangeSpotLightStrength(chargeRate, _isCharging ? chargeIntensity : 1f);
+            flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+            // flashlightLeverRb.MoveRotation(flashlightLeverRb.rotation * Quaternion.Euler(0f, 0f, flashLightRotationSpeed * Time.fixedDeltaTime));
         }else{
-            ChangeSpotLightStrength(-decay, _isCharging ? 0.5f : 1f);
+            ChangeSpotLightStrength(-decayRate, _isCharging ? chargeIntensity : 1f);
         }
     }
 

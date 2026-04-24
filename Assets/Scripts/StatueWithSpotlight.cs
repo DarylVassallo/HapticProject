@@ -5,7 +5,10 @@ using UnityEngine.AI;
 public class StatueWithSpotlight : MonoBehaviour
 {
     private NavMeshAgent _agent;
+
     private Transform _playerTransform;
+    private Health _playerHealth;
+    
     private Vector3 _destination;
     private Light _spotLight;
     [SerializeField] private float agentSpeed;
@@ -18,10 +21,18 @@ public class StatueWithSpotlight : MonoBehaviour
     public float amount;
 
     private Health health;
+    [SerializeField] private float damageToAngel;
+    [SerializeField] private float damageToPlayer;
+    [SerializeField] private float _tooCloseDistance;
+
+    private bool _isTooClose;
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
+        
         _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        _playerHealth = _playerTransform.GetComponent<Health>();
+
         _spotLight = _playerTransform.GetComponentInChildren<Light>();
 
         health = this.gameObject.GetComponent<Health>();
@@ -30,19 +41,35 @@ public class StatueWithSpotlight : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        // health.ChangeHealth(-0.2f);
+        // transform.position = new Vector3(   transform.position.x + 
+        //                                     Mathf.Sin(speed * Time.time * (1 - (health.health / 100))) * amount * (1 - (health.health / 100)),
+        //                                     transform.position.y, 
+        //                                     transform.position.z);
+
+        _isTooClose = IsCloseToPlayer();
+        if (_isTooClose)
+        {
+            _agent.speed = 0;
+            _agent.SetDestination(transform.position);
+
+            _playerHealth.ChangeHealth(-damageToPlayer);
+        }
+
         if (IsInsideSpotLight())
         {
             _agent.speed = 0;
             _agent.SetDestination(transform.position);
 
-            health.ChangeHealth(-0.1f);
-            transform.position = new Vector3(   transform.position.x + 
-                                                    Mathf.Sin   (   Time.time * speed * (health.health / 100)) * 
-                                                                    amount * (health.health / 100), 
-                                                transform.position.y, 
-                                                transform.position.z);
+            health.ChangeHealth(-damageToAngel);
+            transform.position = new Vector3(   
+                                            transform.position.x + 
+                                            Mathf.Sin(speed * Time.time * (1 - (health.health / 100))) * amount * (1 - (health.health / 100)),
+                                            transform.position.y, 
+                                            transform.position.z
+                                        );
         }
-        else
+        else if(!_isTooClose)
         {
             _agent.speed = agentSpeed;
             _destination = _playerTransform.position;
@@ -53,6 +80,8 @@ public class StatueWithSpotlight : MonoBehaviour
     //Used ChatGPT here
     bool IsInsideSpotLight()
     {
+        if (!_spotLight.enabled) return false;
+
         _positionDifference = (transform.position - _spotLight.transform.position);
         _spotLightDistance = _positionDifference.magnitude;
         if (_spotLightDistance > (_spotLight.range * 0.5f))
@@ -67,5 +96,11 @@ public class StatueWithSpotlight : MonoBehaviour
         }
 
         return true;
+    }
+
+    bool IsCloseToPlayer()
+    {
+        if((transform.position - _playerTransform.position).magnitude <= _tooCloseDistance)  return true;
+        return false;
     }
 }

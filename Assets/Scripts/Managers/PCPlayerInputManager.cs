@@ -31,6 +31,10 @@ public class PCPlayerInputManager : MonoBehaviour
     [SerializeField] private static bool canFire2 = true;
     private InputAction fire2Action;
 
+    public static event Action OnCancel;
+    [SerializeField] private static bool canCancel = true;
+    private InputAction cancelAction;
+
     private void Awake()
     {
         if (playerInput == null)
@@ -49,6 +53,7 @@ public class PCPlayerInputManager : MonoBehaviour
         sprintAction = playerInput.actions["Sprint"];
         fireAction = playerInput.actions["Fire"];
         fire2Action = playerInput.actions["Fire2"];
+        cancelAction = playerInput.actions["Cancel"];
     }
 
     private void OnEnable()
@@ -73,6 +78,11 @@ public class PCPlayerInputManager : MonoBehaviour
 
         fire2Action.Enable();
         fire2Action.performed += HandleFire2;
+
+        cancelAction.Enable();
+        cancelAction.performed += HandleCancel;
+
+        MenuManager.OnToggleAll += ToggleAll;
     }
 
     private void OnDisable()
@@ -97,11 +107,21 @@ public class PCPlayerInputManager : MonoBehaviour
 
         fire2Action.performed -= HandleFire2;
         fire2Action.Disable();
+
+        cancelAction.performed -= HandleCancel;
+        cancelAction.Disable();
+
+        MenuManager.OnToggleAll -= ToggleAll;
+    }
+
+    private void ToggleAll(bool toggle)
+    {
+        ToggleRestriction("All", toggle);
     }
 
     public static void ToggleRestriction(string restriction, bool toggle)
     {
-        if(restriction == "Move")
+        if(restriction == "Move" || restriction == "All")
         {
             canMove = toggle;
             if (toggle == false)
@@ -109,21 +129,36 @@ public class PCPlayerInputManager : MonoBehaviour
                 Vector2 move = Vector2.zero;
                 OnMove?.Invoke(move);
             }
-        }else if(restriction == "Jump")
+        }
+        
+        if(restriction == "Jump" || restriction == "All")
         {
             canJump = toggle;
-        }else if(restriction == "Crouch")
+        }
+        
+        if(restriction == "Crouch" || restriction == "All")
         {
             canCrouch = toggle;
-        }else if(restriction == "Sprint")
+        }
+        
+        if(restriction == "Sprint" || restriction == "All")
         {
             canSprint = toggle;
-        }else if(restriction == "Fire")
+        }
+        
+        if(restriction == "Fire" || restriction == "All")
         {
             canFire = toggle;
-        }else if(restriction == "Fire2")
+        }
+        
+        if(restriction == "Fire2" || restriction == "All")
         {
             canFire2 = toggle;
+        }
+        
+        if(restriction == "Cancel" || restriction == "All")
+        {
+            canCancel = toggle;
         }
     }
 
@@ -173,6 +208,14 @@ public class PCPlayerInputManager : MonoBehaviour
         if (canFire2)
         {
             OnFire2?.Invoke();
+        }
+    }
+
+    private void HandleCancel(InputAction.CallbackContext ctx)
+    {
+        if (canCancel)
+        {
+            OnCancel?.Invoke();
         }
     }
 }
