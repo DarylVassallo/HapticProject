@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Anchor
   - Enemy
+  - PCPlayer
+  - VRPlayer
   layers:
   - Default
   - TransparentFX

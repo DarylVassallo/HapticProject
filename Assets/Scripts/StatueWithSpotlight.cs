@@ -6,15 +6,25 @@ public class StatueWithSpotlight : MonoBehaviour
 {
     private NavMeshAgent _agent;
 
-    private Transform _playerTransform;
-    private Health _playerHealth;
-    
-    private Vector3 _destination;
-    private Light _spotLight;
-    [SerializeField] private float agentSpeed;
+    private Transform _pcPlayerTransform;
+    private Health _pcPlayerHealth;
+    private Light _pcPlayerSpotLight;
+    private bool _isPCTooClose;
+    private bool _isInsidePCSpotLight;
+
+    private Transform _vrPlayerTransform;
+    private Health _vrPlayerHealth;
+    private Light _vrPlayerSpotLight;
+    private bool _isVRTooClose;
+    private bool _isInsideVRSpotLight;
 
     private float _spotLightDistance;
     private float _spotLightAngle;
+    
+    private Vector3 _destination;
+    
+    [SerializeField] private float agentSpeed;
+
     private Vector3 _positionDifference;
 
     public float speed;
@@ -25,15 +35,17 @@ public class StatueWithSpotlight : MonoBehaviour
     [SerializeField] private float damageToPlayer;
     [SerializeField] private float _tooCloseDistance;
 
-    private bool _isTooClose;
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         
-        _playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        _playerHealth = _playerTransform.GetComponent<Health>();
+        _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+        _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
+        _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
 
-        _spotLight = _playerTransform.GetComponentInChildren<Light>();
+        _vrPlayerTransform = GameObject.FindGameObjectWithTag("VRPlayer").transform;
+        _vrPlayerHealth = _vrPlayerTransform.GetComponent<Health>();
+        _vrPlayerSpotLight = _vrPlayerTransform.GetComponentInChildren<Light>();
 
         health = this.gameObject.GetComponent<Health>();
     }
@@ -47,50 +59,72 @@ public class StatueWithSpotlight : MonoBehaviour
         //                                     transform.position.y, 
         //                                     transform.position.z);
 
-        _isTooClose = IsCloseToPlayer();
-        if (_isTooClose)
+        _isPCTooClose = IsCloseToPlayer(_pcPlayerTransform);
+        _isVRTooClose = IsCloseToPlayer(_vrPlayerTransform);
+        if (_isPCTooClose)
         {
             _agent.speed = 0;
             _agent.SetDestination(transform.position);
 
-            _playerHealth.ChangeHealth(-damageToPlayer);
+            _pcPlayerHealth.ChangeHealth(-damageToPlayer, -1);
         }
-
-        if (IsInsideSpotLight())
+        
+        if (_isVRTooClose)
         {
             _agent.speed = 0;
             _agent.SetDestination(transform.position);
 
-            health.ChangeHealth(-damageToAngel);
-            transform.position = new Vector3(   
-                                            transform.position.x + 
-                                            Mathf.Sin(speed * Time.time * (1 - (health.health / 100))) * amount * (1 - (health.health / 100)),
-                                            transform.position.y, 
-                                            transform.position.z
-                                        );
+            _pcPlayerHealth.ChangeHealth(-damageToPlayer, -1);
         }
-        else if(!_isTooClose)
+
+        _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight);
+        _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
+        if (_isInsidePCSpotLight && _isInsideVRSpotLight)
+        {
+            DamageAndFreeze(2);
+        }else if (_isInsidePCSpotLight)
+        {
+            DamageAndFreeze(0);
+        }else if (_isInsideVRSpotLight)
+        {
+            DamageAndFreeze(1);
+        }
+        else if(!_isPCTooClose && !_isVRTooClose)
         {
             _agent.speed = agentSpeed;
-            _destination = _playerTransform.position;
+            _destination = _pcPlayerTransform.position;
             _agent.destination = _destination;
         }
     }
 
-    //Used ChatGPT here
-    bool IsInsideSpotLight()
+    private void DamageAndFreeze(int _playerType)
     {
-        if (!_spotLight.enabled) return false;
+        _agent.speed = 0;
+        _agent.SetDestination(transform.position);
 
-        _positionDifference = (transform.position - _spotLight.transform.position);
+        health.ChangeHealth(-damageToAngel, _playerType);
+        transform.position = new Vector3(   
+                                        transform.position.x + 
+                                        Mathf.Sin(speed * Time.time * (1 - (health.health / 100))) * amount * (1 - (health.health / 100)),
+                                        transform.position.y, 
+                                        transform.position.z
+                                    );
+    }
+
+    //Used ChatGPT here
+    bool IsInsideSpotLight(Light _playerSpotLight)
+    {
+        if (!_playerSpotLight.enabled) return false;
+
+        _positionDifference = transform.position - _playerSpotLight.transform.position;
         _spotLightDistance = _positionDifference.magnitude;
-        if (_spotLightDistance > (_spotLight.range * 0.5f))
+        if (_spotLightDistance > (_playerSpotLight.range * 0.5f))
         {
             return false;
         }
 
-        _spotLightAngle = Vector3.Angle(_spotLight.transform.forward, _positionDifference);
-        if (_spotLightAngle > _spotLight.spotAngle * 0.5f)
+        _spotLightAngle = Vector3.Angle(_playerSpotLight.transform.forward, _positionDifference);
+        if (_spotLightAngle > _playerSpotLight.spotAngle * 0.5f)
         {
             return false;
         }
@@ -98,7 +132,7 @@ public class StatueWithSpotlight : MonoBehaviour
         return true;
     }
 
-    bool IsCloseToPlayer()
+    bool IsCloseToPlayer(Transform _playerTransform)
     {
         if((transform.position - _playerTransform.position).magnitude <= _tooCloseDistance)  return true;
         return false;

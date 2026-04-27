@@ -17,8 +17,6 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject pcPlayerUI;
     private TMP_Text _scoreUI;
 
-    private int _currentScore;
-
     public static event Action<bool> OnToggleAll;
 
     private void Awake()
@@ -43,7 +41,7 @@ public class MenuManager : MonoBehaviour
         PCPlayerInputManager.OnCancel += TogglePauseMenu;
         Health.OnGameOver += ToggleGameOverMenu;
         WinPlatform.OnWinGame += ToggleWinGameMenu;
-        ScoreManager.OnChangedScore += ChangeUIScore;
+        PlayerProfileManager.OnUpdateScore += UpdateUIScore;
     }
 
     private void OnDisable()
@@ -51,7 +49,7 @@ public class MenuManager : MonoBehaviour
         PCPlayerInputManager.OnCancel -= TogglePauseMenu;
         Health.OnGameOver -= ToggleGameOverMenu;
         WinPlatform.OnWinGame -= ToggleWinGameMenu;
-        ScoreManager.OnChangedScore -= ChangeUIScore;
+        PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
     }
 
     public void TogglePauseMenu()
@@ -121,7 +119,7 @@ public class MenuManager : MonoBehaviour
             {
                 if (winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>() != null && winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>().text == $"You Win")
                 {
-                    winGameMenu.transform.GetChild(i).GetChild(0).GetComponentInChildren<TMP_Text>().text = $"Final Score: { _currentScore }";
+                    winGameMenu.transform.GetChild(i).GetChild(0).GetComponentInChildren<TMP_Text>().text = $"Final Score: { PlayerProfileManager.GetScore(0) }";
                 }
                 winGameMenu.transform.GetChild(i).gameObject.SetActive(_showWinGameMenu);
             }  
@@ -136,10 +134,9 @@ public class MenuManager : MonoBehaviour
         // Time.timeScale = _showWinGameMenu ? 0 : 1;
     }
 
-    public void ChangeUIScore(int _newScore)
+    public void UpdateUIScore()
     {
-        _currentScore = _newScore;
-        _scoreUI.text = $"{_newScore}";
+        _scoreUI.text = $"{PlayerProfileManager.GetScore(0)}";
     }
     
     public void PlayLevel(string _sceneName)

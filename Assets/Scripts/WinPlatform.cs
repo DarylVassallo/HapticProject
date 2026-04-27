@@ -6,7 +6,7 @@ public class WinPlatform : MonoBehaviour
     public static event Action OnWinGame;
     void OnTriggerEnter (Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if(other.gameObject.CompareTag("PCPlayer") || other.gameObject.CompareTag("VRPlayer"))
         {
             OnWinGame?.Invoke();
         }

@@ -6,21 +6,21 @@ public class Health : MonoBehaviour
     public float health = 0;
 
     public static event Action OnGameOver;
-    public static event Action<int> OnKilledEnemy;
+    public static event Action<int, int> OnKilledEnemy;
 
-    public void ChangeHealth(float _healthChange)
+    public void ChangeHealth(float _healthChange, int _attackerType)
     {
         health += _healthChange;
 
         if(health <= 0)
         {
-            if (this.CompareTag("Player"))
+            if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
                 OnGameOver?.Invoke();
             }
             else if (this.CompareTag("Enemy"))
             {
-                OnKilledEnemy?.Invoke(1);
+                OnKilledEnemy?.Invoke(1, _attackerType);
                 Destroy(this.gameObject);
             }
         } 
