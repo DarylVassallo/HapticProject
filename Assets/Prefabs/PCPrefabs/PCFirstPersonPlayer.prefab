@@ -8548,7 +8548,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 18
+  m_VersionIndex: 33
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -8684,8 +8684,8 @@ Transform:
   m_GameObject: {fileID: 780014257785775481}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.09918638, z: -0, w: 0.9950689}
-  m_LocalPosition: {x: 0.6283094, y: -0.54999995, z: 0.8627932}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.49146482, y: -0.3499999, z: 0.529217}
+  m_LocalScale: {x: 1, y: 1, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8622403278367917759}
@@ -8705,7 +8705,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b660ce037ee1c1b4eb48e41afad6440c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlashlightCharge
-  decay: 0.05
+  decayRate: 0.05
+  chargeRate: 0.5
   flashLightRotationSpeed: 200
   chargeIntensity: 0.1
   flashlightLever: {fileID: 8538803252831386756}
@@ -9201,7 +9202,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 26
+  m_VersionIndex: 41
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -17859,7 +17860,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 18
+  m_VersionIndex: 33
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -17982,9 +17983,11 @@ GameObject:
   - component: {fileID: 3479166647596613607}
   - component: {fileID: 8951635513639445910}
   - component: {fileID: 1632220531409785880}
+  - component: {fileID: 8084624223369409619}
+  - component: {fileID: 567252451981232731}
   m_Layer: 0
   m_Name: PCFirstPersonPlayer
-  m_TagString: Player
+  m_TagString: PCPlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18110,6 +18113,33 @@ MonoBehaviour:
   crouchTransitionSpeed: 10
   cameraOffset: 0.4
   cameraTransform: {fileID: 390953327222768155}
+--- !u!114 &8084624223369409619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3297056328194405524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1509e31440c6454a8327ce99d0c38a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  health: 100
+--- !u!114 &567252451981232731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3297056328194405524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67474a0133c73414aa495cf8991a48bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  _incompleteAchievements: []
+  _completeAchievements: []
 --- !u!1 &4728060782168081163
 GameObject:
   m_ObjectHideFlags: 0
@@ -18248,8 +18278,8 @@ MonoBehaviour:
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
-        AccelTime: 0.2
-        DecelTime: 0.2
+        AccelTime: 0
+        DecelTime: 0
     - Name: Look Y (Tilt)
       Owner: {fileID: 1296469047106682244}
       Enabled: 1
@@ -18259,8 +18289,8 @@ MonoBehaviour:
         CancelDeltaTime: 0
       InputValue: 0
       Driver:
-        AccelTime: 0.2
-        DecelTime: 0.2
+        AccelTime: 0
+        DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 1
 --- !u!1 &4979693422884324215
@@ -19541,7 +19571,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 18
+  m_VersionIndex: 33
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -20028,7 +20058,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 26
+  m_VersionIndex: 41
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

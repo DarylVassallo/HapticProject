@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.IO;
+using System.Collections;
 
 //This script controls the player's score, body type
 public class PlayerProfileManager : MonoBehaviour
@@ -47,7 +48,6 @@ public class PlayerProfileManager : MonoBehaviour
 
     private void AddScore(int _addedScore, int _playerType)
     {        
-        Debug.Log("AddScore: " + _addedScore + ", " + _playerType);
         switch (_playerType)
         {
             case 0:
@@ -57,6 +57,13 @@ public class PlayerProfileManager : MonoBehaviour
                 _vrPlayerProfile.SetScore(_vrPlayerProfile.GetScore() + _addedScore);
                 break;
         }
+
+        StartCoroutine(DelayedUpdateScore());
+    }
+
+    private IEnumerator DelayedUpdateScore()
+    {
+        yield return null;
         OnUpdateScore?.Invoke();
     }
 

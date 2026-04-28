@@ -10,7 +10,7 @@ public class RevealUnderLight : MonoBehaviour
     void Awake()
     {
         _hiddenMaterial = GetComponent<Renderer>().material;
-        _spotLight = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<Light>();
+        _spotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
     }
 
     // Update is called once per frame

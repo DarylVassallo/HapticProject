@@ -2,11 +2,21 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System;
+
+using System.Collections;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Localization.Settings;
+using UnityEngine.UI;
+
 //This script controls all the options in the Pause Menu
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenu;
     private bool _showPauseMenu;
+
+    [SerializeField] private GameObject settingsMenu;
+    private bool _showSettingsMenu;
 
     [SerializeField] private GameObject gameOverMenu;
     private bool _showGameOverMenu;
@@ -26,6 +36,9 @@ public class MenuManager : MonoBehaviour
 
         _showPauseMenu = true;
         TogglePauseMenu();
+        
+        _showSettingsMenu = true;
+        ToggleSettingsMenu();
 
         _showGameOverMenu = true;
         ToggleGameOverMenu();
@@ -41,6 +54,8 @@ public class MenuManager : MonoBehaviour
         PCPlayerInputManager.OnCancel += TogglePauseMenu;
         Health.OnGameOver += ToggleGameOverMenu;
         WinPlatform.OnWinGame += ToggleWinGameMenu;
+
+        Debug.Log("+ PlayerProfileManager.OnUpdateScore");
         PlayerProfileManager.OnUpdateScore += UpdateUIScore;
     }
 
@@ -49,7 +64,69 @@ public class MenuManager : MonoBehaviour
         PCPlayerInputManager.OnCancel -= TogglePauseMenu;
         Health.OnGameOver -= ToggleGameOverMenu;
         WinPlatform.OnWinGame -= ToggleWinGameMenu;
+
+        Debug.Log("- PlayerProfileManager.OnUpdateScore");
         PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
+    }
+
+    [System.Serializable]
+    public struct LanguageButton
+    {
+        public Button button;
+        public Locale locale;
+    }
+    public LanguageButton[] languageButtons;
+    
+    IEnumerator Start()
+    {
+        yield return LocalizationSettings.InitializationOperation;
+
+        LoadSavedLanguage();
+
+        foreach (var langBtn in languageButtons)
+        {
+            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
+        }
+    }
+
+    private void LoadSavedLanguage()
+    {
+        string savedLangCode = PlayerPrefs.GetString("SelectedLanguage", "");
+
+        if (!string.IsNullOrEmpty(savedLangCode))
+        {
+            Locale savedLocale = LocalizationSettings.AvailableLocales.GetLocale(
+                new LocaleIdentifier(savedLangCode)
+            );
+            if (savedLocale != null)
+            {
+                LocalizationSettings.SelectedLocale = savedLocale;
+                Debug.Log("Loaded saved language: " + savedLangCode);
+                return;
+            }
+        }
+
+        Locale deviceLocale = LocalizationSettings.AvailableLocales.GetLocale(
+            Application.systemLanguage
+        );
+        if (deviceLocale != null)
+        {
+            LocalizationSettings.SelectedLocale = deviceLocale;
+            Debug.Log("Using device language: " + Application.systemLanguage);
+        }
+        else
+        {
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
+            Debug.LogWarning("Using default language");
+        }
+    }
+
+    void ChangeLanguage(Locale targetLocale)
+    {
+        LocalizationSettings.SelectedLocale = targetLocale;
+        PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);
+        PlayerPrefs.Save();
+        Debug.Log("Language saved: " + targetLocale.Identifier.Code);
     }
 
     public void TogglePauseMenu()
@@ -72,7 +149,30 @@ public class MenuManager : MonoBehaviour
             if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
         }
 
-        Time.timeScale = _showPauseMenu ? 0 : 1;
+        CheckTimeScale();
+    }
+
+    public void ToggleSettingsMenu()
+    {
+        _showSettingsMenu = !_showSettingsMenu;
+
+        if (_showSettingsMenu)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        for (int i = 0; i < settingsMenu.transform.childCount; i++)
+        {
+            if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
+        }
+
+        CheckTimeScale();
     }
 
     public void ToggleGameOverMenu()
@@ -95,7 +195,7 @@ public class MenuManager : MonoBehaviour
             if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
         }
 
-        Time.timeScale = _showGameOverMenu ? 0 : 1;
+        CheckTimeScale();
     }
 
     public void ToggleWinGameMenu()
@@ -119,23 +219,39 @@ public class MenuManager : MonoBehaviour
             {
                 if (winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>() != null && winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>().text == $"You Win")
                 {
-                    winGameMenu.transform.GetChild(i).GetChild(0).GetComponentInChildren<TMP_Text>().text = $"Final Score: { PlayerProfileManager.GetScore(0) }";
+                    var localized = winGameMenu.transform.GetChild(i)
+                            .GetChild(0)
+                            .GetComponentInChildren<LocalizeStringEvent>()
+                            .StringReference;
+
+                    localized.Arguments = new object[] 
+                    { 
+                        new { score = PlayerProfileManager.GetScore(0) } 
+                    };
+
+                    localized.RefreshString();
                 }
                 winGameMenu.transform.GetChild(i).gameObject.SetActive(_showWinGameMenu);
             }  
         }
 
-        if (_showWinGameMenu) {
-            FreezeGame();
-        } else {
-            ResumeGame();
-        }
-
-        // Time.timeScale = _showWinGameMenu ? 0 : 1;
+        CheckTimeScale();
     }
 
+    private void CheckTimeScale()
+    {
+        if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu || _showWinGameMenu)
+        {
+            FreezeGame();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
     public void UpdateUIScore()
     {
+        Debug.Log("UpdateUIScore, score: " + PlayerProfileManager.GetScore(0));
         _scoreUI.text = $"{PlayerProfileManager.GetScore(0)}";
     }
     

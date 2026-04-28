@@ -35,6 +35,10 @@ public class StatueWithSpotlight : MonoBehaviour
     [SerializeField] private float damageToPlayer;
     [SerializeField] private float _tooCloseDistance;
 
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip burningAudio;
+    [SerializeField] private AudioClip footstepAudio;
+
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -48,6 +52,8 @@ public class StatueWithSpotlight : MonoBehaviour
         _vrPlayerSpotLight = _vrPlayerTransform.GetComponentInChildren<Light>();
 
         health = this.gameObject.GetComponent<Health>();
+
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -61,24 +67,13 @@ public class StatueWithSpotlight : MonoBehaviour
 
         _isPCTooClose = IsCloseToPlayer(_pcPlayerTransform);
         _isVRTooClose = IsCloseToPlayer(_vrPlayerTransform);
-        if (_isPCTooClose)
-        {
-            _agent.speed = 0;
-            _agent.SetDestination(transform.position);
-
-            _pcPlayerHealth.ChangeHealth(-damageToPlayer, -1);
-        }
         
-        if (_isVRTooClose)
-        {
-            _agent.speed = 0;
-            _agent.SetDestination(transform.position);
-
-            _pcPlayerHealth.ChangeHealth(-damageToPlayer, -1);
-        }
+        if (_isPCTooClose) StopAndAttack(damageToPlayer);        
+        if (_isVRTooClose) StopAndAttack(damageToPlayer);
 
         _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight);
         _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
+
         if (_isInsidePCSpotLight && _isInsideVRSpotLight)
         {
             DamageAndFreeze(2);
@@ -92,14 +87,31 @@ public class StatueWithSpotlight : MonoBehaviour
         else if(!_isPCTooClose && !_isVRTooClose)
         {
             _agent.speed = agentSpeed;
+
+            _audioSource.clip = footstepAudio;
+            _audioSource.enabled = true;
+
             _destination = _pcPlayerTransform.position;
             _agent.destination = _destination;
         }
     }
 
+    private void StopAndAttack(float _damage)
+    {
+        _agent.speed = 0;
+        _audioSource.enabled = false;
+        
+        _agent.SetDestination(transform.position);
+
+        _pcPlayerHealth.ChangeHealth(-_damage, -1);
+    }
+
     private void DamageAndFreeze(int _playerType)
     {
         _agent.speed = 0;
+        _audioSource.clip = burningAudio;
+        _audioSource.enabled = true;
+
         _agent.SetDestination(transform.position);
 
         health.ChangeHealth(-damageToAngel, _playerType);

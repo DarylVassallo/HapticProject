@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Languages Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Languages
+  m_TableCollectionNameGuidString: e7ef09186ed54ee42b448eae5f56ab82
+  m_Entries:
+  - m_Id: 1625869750272
+    m_Key: Sauron Button
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3281042771968
+    m_Key: English
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3393445924864
+    m_Key: French
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16827478675456
+    m_Key: Languages
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17127329468416
+    m_Key: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18265743265792
+    m_Key: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22272851283968
+    m_Key: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 23333372661760
+    m_Key: Main Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41137295560704
+    m_Key: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 44746741616640
+    m_Key: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45318878236672
+    m_Key: Game Over
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45565603975168
+    m_Key: Retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 45975337144320
+    m_Key: You Win
+    m_Metadata:
+      m_Items: []
+  - m_Id: 46580659097600
+    m_Key: 'Final Score: '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 47807425908736
+    m_Key: Play Again
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 6788893405390307604
+  references:
+    version: 2
+    RefIds:
+    - rid: 6788893405390307604
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1777369099425
