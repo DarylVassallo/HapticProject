@@ -5,7 +5,8 @@ using System.IO;
 //This script controls the player's score, body type
 public class PlayerProfileManager : MonoBehaviour
 {
-    
+    private AchievementManager _achievementManager;
+
     private string _pcPlayerFilePath;
     private static PlayerProfile _pcPlayerProfile;
 
@@ -17,10 +18,10 @@ public class PlayerProfileManager : MonoBehaviour
     private string[] lines;
 
     [SerializeField] private Mesh[] meshList;
-
-    [SerializeField] private Achievement[] achievementList;
     void Awake()
     {
+        _achievementManager = this.transform.GetComponent<AchievementManager>();
+
         _pcPlayerFilePath = Application.persistentDataPath + "/pcPlayerProgress.txt";
         _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
         LoadProgress(_pcPlayerFilePath, _pcPlayerProfile, 0);
@@ -34,16 +35,19 @@ public class PlayerProfileManager : MonoBehaviour
     {
         WinPlatform.OnWinGame += SaveProgress;
         Health.OnKilledEnemy += AddScore;
+        PlayerProfile.OnUpdateProgress += SaveProgress;
     }
 
     private void OnDisable()
     {
         WinPlatform.OnWinGame -= SaveProgress;
         Health.OnKilledEnemy -= AddScore;
+        PlayerProfile.OnUpdateProgress -= SaveProgress;
     }
 
     private void AddScore(int _addedScore, int _playerType)
     {        
+        Debug.Log("AddScore: " + _addedScore + ", " + _playerType);
         switch (_playerType)
         {
             case 0:
@@ -74,9 +78,9 @@ public class PlayerProfileManager : MonoBehaviour
 
             _playerProfile.SetBodyType(0, meshList[0]);
 
-            for (int i = 0; i < achievementList.Length; i++)
+            for (int i = 0; i < _achievementManager.achievementList.Length; i++)
             {
-                _playerProfile.SetIncompleteAchievment(achievementList[i]);
+                _playerProfile.AddIncompleteAchievement(_achievementManager.achievementList[i]);
             }
             return;
         }
@@ -96,16 +100,16 @@ public class PlayerProfileManager : MonoBehaviour
             }
             else
             {
-                for (int i = 0; i < achievementList.Length; i++)
+                for (int i = 0; i < _achievementManager.achievementList.Length; i++)
                 {
-                    if(lines[0].Equals(achievementList[i].title))
+                    if(lines[0].Equals(_achievementManager.achievementList[i].title))
                     {
                         if (bool.Parse(lines[1]) == true)
                         {
-                            _playerProfile.SetCompleteAchievment(achievementList[i]);
+                            _playerProfile.AddCompleteAchievement(_achievementManager.achievementList[i]);
                         }else if (bool.Parse(lines[1]) == false)
                         {
-                            _playerProfile.SetIncompleteAchievment(achievementList[i]);
+                            _playerProfile.AddIncompleteAchievement(_achievementManager.achievementList[i]);
                         }
                     }
                 }
@@ -119,6 +123,7 @@ public class PlayerProfileManager : MonoBehaviour
         SavePlayerProgress(_pcPlayerFilePath, _pcPlayerProfile);
         SavePlayerProgress(_vrPlayerFilePath, _vrPlayerProfile);
     }
+    
     private void SavePlayerProgress(string _filePath, PlayerProfile _playerProfile) 
     {
         using (StreamWriter writer = new StreamWriter(_filePath)) 
@@ -126,9 +131,9 @@ public class PlayerProfileManager : MonoBehaviour
             writer.WriteLine("Score:" + _playerProfile.GetScore());
             writer.WriteLine("BodyType:" + _playerProfile.GetBodyType());
 
-            for (int i = 0; i < achievementList.Length; i++)
+            for (int i = 0; i < _achievementManager.achievementList.Length; i++)
             {
-                writer.WriteLine(achievementList[i].title + ":" + _playerProfile.HasAchieved(achievementList[i].id));
+                writer.WriteLine(_achievementManager.achievementList[i].title + ":" + _playerProfile.HasAchieved(_achievementManager.achievementList[i].id));
             }
         }
     }

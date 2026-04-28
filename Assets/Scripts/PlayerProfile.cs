@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class PlayerProfile : MonoBehaviour
 {
@@ -8,8 +9,21 @@ public class PlayerProfile : MonoBehaviour
 
     public List<Achievement> _incompleteAchievements;
     public List<Achievement> _completeAchievements;
+
+    private int _angelKillCount;
     private bool _hasCompletedSauronLevel;
-    private bool _hasKilledOneAngel;
+
+    public static event Action OnUpdateProgress;
+
+    public void SetAngelKillCount(int _newAngelKillCount)
+    {
+        _angelKillCount = _newAngelKillCount;
+    }
+
+    public int GetAngelKillCount()
+    {
+        return _angelKillCount;
+    }
 
     public void SetScore(int _newScore)
     {
@@ -47,21 +61,21 @@ public class PlayerProfile : MonoBehaviour
         return false;
     }
 
-    public void SetCompleteAchievment(Achievement achievement)
+    public void AddCompleteAchievement(Achievement achievement)
     {
         _completeAchievements.Add(achievement);
     }
-    public void SetIncompleteAchievment(Achievement achievement)
+
+    public void CompleteAchievement(Achievement achievement)
     {
-        Debug.Log("achievement: " + achievement);
-        Debug.Log("1 _incompleteAchievements.Count: " + _incompleteAchievements.Count);
-        _incompleteAchievements.Add(achievement);
-        Debug.Log("2 _incompleteAchievements.Count: " + _incompleteAchievements.Count);
+        _incompleteAchievements.Remove(achievement);
+        _completeAchievements.Add(achievement);
+
+        OnUpdateProgress?.Invoke();
     }
 
-
-    public bool GetHasKilledOneAngel()
+    public void AddIncompleteAchievement(Achievement achievement)
     {
-        return _hasKilledOneAngel;
+        _incompleteAchievements.Add(achievement);
     }
 }

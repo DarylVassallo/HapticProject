@@ -16,3 +16,5 @@ MonoBehaviour:
   title: KillOneAngel
   description: Kill One Angel
   goal: 1
+  isAboutAngels: 1
+  isAboutPlayers: 0
