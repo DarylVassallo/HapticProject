@@ -3,7 +3,7 @@ using System;
 //This script has the health of the entity, and destroys it upon death.
 public class Health : MonoBehaviour
 {
-    public float health = 0;
+    private float health = 100;
 
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
@@ -24,5 +24,10 @@ public class Health : MonoBehaviour
                 Destroy(this.gameObject);
             }
         } 
+    }
+
+    public float GetHealth()
+    {
+        return health;
     }
 }

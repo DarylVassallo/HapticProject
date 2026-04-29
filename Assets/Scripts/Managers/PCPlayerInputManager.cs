@@ -83,6 +83,8 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.performed += HandleCancel;
 
         MenuManager.OnToggleAll += ToggleAll;
+        // MenuManager.OnSwitchActionMap += SwitchActionMap;
+        // MenuManager.OnCheckActionMap += CheckActionMap;
     }
 
     private void OnDisable()
@@ -112,53 +114,93 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.Disable();
 
         MenuManager.OnToggleAll -= ToggleAll;
+        // MenuManager.OnSwitchActionMap -= SwitchActionMap;
+        // MenuManager.OnCheckActionMap -= CheckActionMap;
     }
 
-    private void ToggleAll(bool toggle)
+    private void ToggleAll(bool _toggle)
     {
-        ToggleRestriction("All", toggle);
+        ToggleRestriction("All", _toggle);
     }
 
-    public static void ToggleRestriction(string restriction, bool toggle)
+    // private void SwitchActionMap(string _actionMapName)
+    // {
+    //     // Debug.Log("===============");
+    //     // Debug.Log("TestA");
+    //     // CheckActionMap();
+    //     foreach (var map in playerInput.actions.actionMaps)
+    //     {
+    //         if(map.name != _actionMapName)
+    //         {
+    //             map.Disable();
+    //         }
+    //         else
+    //         {
+    //             map.Enable();
+    //         }
+    //     }
+
+
+    //     Debug.Log("SwitchActionMap: " + _actionMapName);
+    //     playerInput.SwitchCurrentActionMap(_actionMapName);
+
+    //     Debug.Log("===============");
+    //     Debug.Log("TestB");
+    //     CheckActionMap();
+    // }
+
+    // private void CheckActionMap()
+    // {
+    //     Debug.Log("Current playerInput: " + playerInput);
+    //     Debug.Log("Current playerInput.currentActionMap: " + playerInput.currentActionMap);
+    //     Debug.Log("Current playerInput.currentActionMap.name: " + playerInput.currentActionMap.name);
+
+    //     foreach (var map in playerInput.actions.actionMaps)
+    //     {
+    //         Debug.Log($"{map.name} enabled = {map.enabled}");
+    //     }
+    //     Debug.Log("----------");
+    // }
+    public static void ToggleRestriction(string _restriction, bool _toggle)
     {
-        if(restriction == "Move" || restriction == "All")
+        if(_restriction == "Move" || _restriction == "All")
         {
-            canMove = toggle;
-            if (toggle == false)
+            canMove = _toggle;
+            if (_toggle == false)
             {
                 Vector2 move = Vector2.zero;
                 OnMove?.Invoke(move);
             }
         }
         
-        if(restriction == "Jump" || restriction == "All")
+        if(_restriction == "Jump" || _restriction == "All")
         {
-            canJump = toggle;
+            canJump = _toggle;
         }
         
-        if(restriction == "Crouch" || restriction == "All")
+        if(_restriction == "Crouch" || _restriction == "All")
         {
-            canCrouch = toggle;
+            canCrouch = _toggle;
         }
         
-        if(restriction == "Sprint" || restriction == "All")
+        if(_restriction == "Sprint" || _restriction == "All")
         {
-            canSprint = toggle;
+            canSprint = _toggle;
         }
         
-        if(restriction == "Fire" || restriction == "All")
+        if(_restriction == "Fire" || _restriction == "All")
         {
-            canFire = toggle;
+            canFire = _toggle;
         }
         
-        if(restriction == "Fire2" || restriction == "All")
+        if(_restriction == "Fire2" || _restriction == "All")
         {
-            canFire2 = toggle;
+            canFire2 = _toggle;
         }
         
-        if(restriction == "Cancel" || restriction == "All")
+        if(_restriction == "Cancel" || _restriction == "All")
         {
-            canCancel = toggle;
+            canCancel = _toggle;
         }
     }
 

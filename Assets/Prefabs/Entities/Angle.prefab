@@ -73,7 +73,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  - {fileID: 2100000, guid: f592f3b72bc58374888f9e272ed44681, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -169,11 +169,17 @@ MonoBehaviour:
   agentSpeed: 3
   speed: 64
   amount: 0.08
-  damageToAngel: 0.01
+  damageToAngel: 0.5
   damageToPlayer: 0.125
   _tooCloseDistance: 2.2
   burningAudio: {fileID: 8300000, guid: dc2b315f54c13764d8b5675a6f68eff7, type: 3}
   footstepAudio: {fileID: 8300000, guid: e5488bd69b917544fb71c5d71d47c874, type: 3}
+  whisperingAudios:
+  - {fileID: 8300000, guid: 5c13de1789587624e90ecb6e8681d832, type: 3}
+  - {fileID: 8300000, guid: baa0b2a3917b4ba499c7dc0725bae8af, type: 3}
+  - {fileID: 8300000, guid: fd555e9054bf0e74fb3cfbf0a6c94810, type: 3}
+  - {fileID: 8300000, guid: d1e48533b93a1d14fa310c6fd2417b6e, type: 3}
+  - {fileID: 8300000, guid: 052f311c65be8fd428193d2e748a496a, type: 3}
 --- !u!114 &3128351026506914791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,7 +192,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1509e31440c6454a8327ce99d0c38a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  health: 100
 --- !u!82 &4360777513105819023
 AudioSource:
   m_ObjectHideFlags: 0
@@ -202,16 +207,16 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 5
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

@@ -36,11 +36,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 17127329468416
-    m_Localized: "D\xE9cors"
+    m_Localized: Parametres
     m_Metadata:
       m_Items: []
   - m_Id: 18265743265792
-    m_Localized: "Arr\xEAte"
+    m_Localized: Quitter
     m_Metadata:
       m_Items: []
   - m_Id: 44746741616640
@@ -56,7 +56,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 41137295560704
-    m_Localized: Reprenez
+    m_Localized: Reprendre
     m_Metadata:
       m_Items: []
   - m_Id: 45318878236672

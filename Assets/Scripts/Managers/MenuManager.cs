@@ -9,6 +9,8 @@ using UnityEngine.Localization.Components;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
+using UnityEngine.InputSystem;
+
 //This script controls all the options in the Pause Menu
 public class MenuManager : MonoBehaviour
 {
@@ -28,6 +30,8 @@ public class MenuManager : MonoBehaviour
     private TMP_Text _scoreUI;
 
     public static event Action<bool> OnToggleAll;
+    // public static event Action<string> OnSwitchActionMap;
+    // public static event Action OnCheckActionMap;
 
     private void Awake()
     {
@@ -54,8 +58,6 @@ public class MenuManager : MonoBehaviour
         PCPlayerInputManager.OnCancel += TogglePauseMenu;
         Health.OnGameOver += ToggleGameOverMenu;
         WinPlatform.OnWinGame += ToggleWinGameMenu;
-
-        Debug.Log("+ PlayerProfileManager.OnUpdateScore");
         PlayerProfileManager.OnUpdateScore += UpdateUIScore;
     }
 
@@ -64,8 +66,6 @@ public class MenuManager : MonoBehaviour
         PCPlayerInputManager.OnCancel -= TogglePauseMenu;
         Health.OnGameOver -= ToggleGameOverMenu;
         WinPlatform.OnWinGame -= ToggleWinGameMenu;
-
-        Debug.Log("- PlayerProfileManager.OnUpdateScore");
         PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
     }
 
@@ -74,6 +74,7 @@ public class MenuManager : MonoBehaviour
     {
         public Button button;
         public Locale locale;
+        public String actionMapName;
     }
     public LanguageButton[] languageButtons;
     
@@ -85,12 +86,31 @@ public class MenuManager : MonoBehaviour
 
         foreach (var langBtn in languageButtons)
         {
-            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
+            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale, langBtn.actionMapName));
         }
+
+        // Debug.Log("===============");
+        // Debug.Log("Start");
+        // OnCheckActionMap?.Invoke();
     }
 
     private void LoadSavedLanguage()
     {
+        // Debug.Log("===============");
+        // Debug.Log("Test1");
+        // OnCheckActionMap?.Invoke();
+
+        // string savedActionMap = PlayerPrefs.GetString("SelectedActionMap", "");
+
+        // if (!string.IsNullOrEmpty(savedActionMap))
+        // {
+        //     OnSwitchActionMap?.Invoke(savedActionMap);
+        // }
+
+        // Debug.Log("===============");
+        // Debug.Log("Test2");
+        // OnCheckActionMap?.Invoke();
+
         string savedLangCode = PlayerPrefs.GetString("SelectedLanguage", "");
 
         if (!string.IsNullOrEmpty(savedLangCode))
@@ -101,7 +121,6 @@ public class MenuManager : MonoBehaviour
             if (savedLocale != null)
             {
                 LocalizationSettings.SelectedLocale = savedLocale;
-                Debug.Log("Loaded saved language: " + savedLangCode);
                 return;
             }
         }
@@ -112,7 +131,6 @@ public class MenuManager : MonoBehaviour
         if (deviceLocale != null)
         {
             LocalizationSettings.SelectedLocale = deviceLocale;
-            Debug.Log("Using device language: " + Application.systemLanguage);
         }
         else
         {
@@ -121,12 +139,24 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void ChangeLanguage(Locale targetLocale)
+    void ChangeLanguage(Locale targetLocale, String targetActionMapName)
     {
+        // Debug.Log("===============");
+        // Debug.Log("Test3");
+        // OnCheckActionMap?.Invoke();
+
         LocalizationSettings.SelectedLocale = targetLocale;
         PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);
+
+        // Debug.Log("targetActionMapName: " + targetActionMapName);
+        // OnSwitchActionMap?.Invoke(targetActionMapName);
+        // PlayerPrefs.SetString("SelectedActionMap", targetActionMapName);
+        
         PlayerPrefs.Save();
-        Debug.Log("Language saved: " + targetLocale.Identifier.Code);
+
+        // Debug.Log("===============");
+        // Debug.Log("Test4");
+        // OnCheckActionMap?.Invoke();
     }
 
     public void TogglePauseMenu()
@@ -251,7 +281,6 @@ public class MenuManager : MonoBehaviour
     }
     public void UpdateUIScore()
     {
-        Debug.Log("UpdateUIScore, score: " + PlayerProfileManager.GetScore(0));
         _scoreUI.text = $"{PlayerProfileManager.GetScore(0)}";
     }
     
@@ -263,12 +292,14 @@ public class MenuManager : MonoBehaviour
     private void FreezeGame()
     {
         OnToggleAll?.Invoke(false);
+        AudioListener.volume = 0;
         Time.timeScale = 0;
     }
 
     private void ResumeGame()
     {
         OnToggleAll?.Invoke(true);
+        AudioListener.volume = 1;
         Time.timeScale = 1;
     }
 }

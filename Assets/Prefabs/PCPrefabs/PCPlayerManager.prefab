@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6654751492467200282}
   - component: {fileID: 3256877678761278405}
   - component: {fileID: 4676873493521360035}
-  - component: {fileID: 4478409295994710463}
   - component: {fileID: 3311048432835075669}
   - component: {fileID: 4836615610697599496}
   m_Layer: 0
@@ -111,22 +110,6 @@ MonoBehaviour:
   achievementList:
   - {fileID: 11400000, guid: c92ea1fedbfe2a2408d226f0a5cbde9c, type: 2}
   - {fileID: 11400000, guid: 85ed7e27f24b09e4e97fe386af5ecfc5, type: 2}
---- !u!114 &4478409295994710463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 905547057151570038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 060b2082d5d3d3f4ab45dd179a72cf3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  meshList:
-  - {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
-  - {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  - {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &3311048432835075669
 MonoBehaviour:
   m_ObjectHideFlags: 0

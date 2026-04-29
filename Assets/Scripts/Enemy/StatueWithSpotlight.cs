@@ -38,6 +38,7 @@ public class StatueWithSpotlight : MonoBehaviour
     private AudioSource _audioSource;
     [SerializeField] private AudioClip burningAudio;
     [SerializeField] private AudioClip footstepAudio;
+    [SerializeField] private AudioClip[] whisperingAudios;
 
     void Awake()
     {
@@ -54,46 +55,85 @@ public class StatueWithSpotlight : MonoBehaviour
         health = this.gameObject.GetComponent<Health>();
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+
+
+
+
+
+
+        // _agent.speed = 0;
+        // _agent.SetDestination(transform.position);
+        _agent.speed = agentSpeed;
+        _audioSource.volume = 1;
+        _destination = _pcPlayerTransform.position;
+        _agent.destination = _destination;
+        int audioNum = Random.Range(1, 6) - 1;
+        SwapAudio(whisperingAudios[audioNum]);
+    }
+
+    void FixedUpdate()
+    {
+        _destination = _pcPlayerTransform.position;
+        _agent.destination = _destination;
+
+        _positionDifference = transform.position - _pcPlayerTransform.position;
+        _spotLightDistance = _positionDifference.magnitude;
+        if (_spotLightDistance > 12)
+        {
+            if(_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+            }
+        }
+        else
+        {
+            if(!_audioSource.isPlaying)
+            {
+                int audioNum2 = Random.Range(1, 6) - 1;
+                _audioSource.Stop();
+                SwapAudio(whisperingAudios[audioNum2]);
+                _audioSource.Play();
+            }
+        }
     }
 
     // Update is called once per frame
-    void FixedUpdate()
-    {
-        // health.ChangeHealth(-0.2f);
-        // transform.position = new Vector3(   transform.position.x + 
-        //                                     Mathf.Sin(speed * Time.time * (1 - (health.health / 100))) * amount * (1 - (health.health / 100)),
-        //                                     transform.position.y, 
-        //                                     transform.position.z);
-
-        _isPCTooClose = IsCloseToPlayer(_pcPlayerTransform);
-        _isVRTooClose = IsCloseToPlayer(_vrPlayerTransform);
+    // void FixedUpdate()
+    // {
+    //     _isPCTooClose = IsCloseToPlayer(_pcPlayerTransform);
+    //     _isVRTooClose = IsCloseToPlayer(_vrPlayerTransform);
         
-        if (_isPCTooClose) StopAndAttack(damageToPlayer);        
-        if (_isVRTooClose) StopAndAttack(damageToPlayer);
+    //     if (_isPCTooClose) StopAndAttack(damageToPlayer);        
+    //     if (_isVRTooClose) StopAndAttack(damageToPlayer);
 
-        _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight);
-        _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
+    //     _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight); 
+    //     _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
 
-        if (_isInsidePCSpotLight && _isInsideVRSpotLight)
-        {
-            DamageAndFreeze(2);
-        }else if (_isInsidePCSpotLight)
-        {
-            DamageAndFreeze(0);
-        }else if (_isInsideVRSpotLight)
-        {
-            DamageAndFreeze(1);
-        }
-        else if(!_isPCTooClose && !_isVRTooClose)
-        {
-            _agent.speed = agentSpeed;
+    //     if (_isInsidePCSpotLight && _isInsideVRSpotLight)
+    //     {
+    //         DamageAndFreeze(2);
+    //     }else if (_isInsidePCSpotLight)
+    //     {
+    //         DamageAndFreeze(0);
+    //     }else if (_isInsideVRSpotLight)
+    //     {
+    //         DamageAndFreeze(1);
+    //     }
+    //     else if(!_isPCTooClose && !_isVRTooClose)
+    //     {
+    //         Walk();
+    //     }
+    // }
 
-            _audioSource.clip = footstepAudio;
-            _audioSource.enabled = true;
+    private void Walk()
+    {
+        _agent.speed = agentSpeed;
 
-            _destination = _pcPlayerTransform.position;
-            _agent.destination = _destination;
-        }
+        SwapAudio(footstepAudio);
+        _audioSource.volume = 1;
+
+        _destination = _pcPlayerTransform.position;
+        _agent.destination = _destination;
     }
 
     private void StopAndAttack(float _damage)
@@ -109,20 +149,33 @@ public class StatueWithSpotlight : MonoBehaviour
     private void DamageAndFreeze(int _playerType)
     {
         _agent.speed = 0;
-        _audioSource.clip = burningAudio;
-        _audioSource.enabled = true;
+
+        SwapAudio(burningAudio);
+
+        _audioSource.volume = 1 - (health.GetHealth() / 100);
 
         _agent.SetDestination(transform.position);
 
         health.ChangeHealth(-damageToAngel, _playerType);
         transform.position = new Vector3(   
                                         transform.position.x + 
-                                        Mathf.Sin(speed * Time.time * (1 - (health.health / 100))) * amount * (1 - (health.health / 100)),
+                                        Mathf.Sin(speed * Time.time * (1 - (health.GetHealth() / 100))) * amount * (1 - (health.GetHealth() / 100)),
                                         transform.position.y, 
                                         transform.position.z
                                     );
     }
 
+    private void SwapAudio(AudioClip _audioClip)
+    {
+        if(_audioSource.clip != _audioClip)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _audioClip;
+            _audioSource.Play();
+        }
+        _audioSource.enabled = true;
+    }
+    
     //Used ChatGPT here
     bool IsInsideSpotLight(Light _playerSpotLight)
     {
