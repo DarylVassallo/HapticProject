@@ -1,0 +1,12 @@
+!Game Developer
+Daryl Luke Vassallo
+!Audio Used
+Static 2 (Grittier) by _MokeyMokey -- https://freesound.org/s/836187/ -- License: Creative Commons 0
+Ghost Whispers by IENBA -- https://freesound.org/s/656439/ -- License: Creative Commons 0
+Whispering Midnight.wav by balloonhead -- https://freesound.org/s/362503/ -- License: Creative Commons 0
+!Tutorials Used
+How to reveal Objects Under Light In Unity 3D by Just a Mom in Canada -- https://www.youtube.com/@Justamombyrk
+How to Make a Simple Weeping Angel AI in Unity - Unity C# Tutorial by Omogonix -- https://www.youtube.com/@Omogonix
+Complete FPS Controller in Unity | Walking, Jumping, Sprinting & Crouching by PitiIT -- https://www.youtube.com/@PitiITNet
+How to Make Physics Hands in VR - PART 1 - Unity VR Tutorial by Valem Tutorials -- https://www.youtube.com/@ValemTutorials
+Half Life Alyx Distance Grab - Unity Tutorial by Valem Tutorials -- https://www.youtube.com/@ValemTutorials

@@ -80,6 +80,26 @@ MonoBehaviour:
     m_Localized: Rejouer
     m_Metadata:
       m_Items: []
+  - m_Id: 716285581430784
+    m_Localized: "Cr\xE9dits"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 719969182781440
+    m_Localized: "Cr\xE9dits"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 743574411120640
+    m_Localized: "D\xE9veloppeur de jeux"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 747768794812416
+    m_Localized: "Audio Utilis\xE9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 747866429820928
+    m_Localized: "Tutoriels Utilis\xE9s"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

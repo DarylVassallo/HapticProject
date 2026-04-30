@@ -83,8 +83,6 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.performed += HandleCancel;
 
         MenuManager.OnToggleAll += ToggleAll;
-        // MenuManager.OnSwitchActionMap += SwitchActionMap;
-        // MenuManager.OnCheckActionMap += CheckActionMap;
     }
 
     private void OnDisable()
@@ -114,8 +112,6 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.Disable();
 
         MenuManager.OnToggleAll -= ToggleAll;
-        // MenuManager.OnSwitchActionMap -= SwitchActionMap;
-        // MenuManager.OnCheckActionMap -= CheckActionMap;
     }
 
     private void ToggleAll(bool _toggle)
@@ -123,44 +119,6 @@ public class PCPlayerInputManager : MonoBehaviour
         ToggleRestriction("All", _toggle);
     }
 
-    // private void SwitchActionMap(string _actionMapName)
-    // {
-    //     // Debug.Log("===============");
-    //     // Debug.Log("TestA");
-    //     // CheckActionMap();
-    //     foreach (var map in playerInput.actions.actionMaps)
-    //     {
-    //         if(map.name != _actionMapName)
-    //         {
-    //             map.Disable();
-    //         }
-    //         else
-    //         {
-    //             map.Enable();
-    //         }
-    //     }
-
-
-    //     Debug.Log("SwitchActionMap: " + _actionMapName);
-    //     playerInput.SwitchCurrentActionMap(_actionMapName);
-
-    //     Debug.Log("===============");
-    //     Debug.Log("TestB");
-    //     CheckActionMap();
-    // }
-
-    // private void CheckActionMap()
-    // {
-    //     Debug.Log("Current playerInput: " + playerInput);
-    //     Debug.Log("Current playerInput.currentActionMap: " + playerInput.currentActionMap);
-    //     Debug.Log("Current playerInput.currentActionMap.name: " + playerInput.currentActionMap.name);
-
-    //     foreach (var map in playerInput.actions.actionMaps)
-    //     {
-    //         Debug.Log($"{map.name} enabled = {map.enabled}");
-    //     }
-    //     Debug.Log("----------");
-    // }
     public static void ToggleRestriction(string _restriction, bool _toggle)
     {
         if(_restriction == "Move" || _restriction == "All")

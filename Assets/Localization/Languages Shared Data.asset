@@ -75,6 +75,26 @@ MonoBehaviour:
     m_Key: Play Again
     m_Metadata:
       m_Items: []
+  - m_Id: 716285581430784
+    m_Key: Credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 719969182781440
+    m_Key: Credit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 743574411120640
+    m_Key: Game Developer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 747768794812416
+    m_Key: Audio Used
+    m_Metadata:
+      m_Items: []
+  - m_Id: 747866429820928
+    m_Key: Tutorials Used
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

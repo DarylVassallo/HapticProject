@@ -30,8 +30,6 @@ public class MenuManager : MonoBehaviour
     private TMP_Text _scoreUI;
 
     public static event Action<bool> OnToggleAll;
-    // public static event Action<string> OnSwitchActionMap;
-    // public static event Action OnCheckActionMap;
 
     private void Awake()
     {
@@ -74,7 +72,6 @@ public class MenuManager : MonoBehaviour
     {
         public Button button;
         public Locale locale;
-        public String actionMapName;
     }
     public LanguageButton[] languageButtons;
     
@@ -86,31 +83,12 @@ public class MenuManager : MonoBehaviour
 
         foreach (var langBtn in languageButtons)
         {
-            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale, langBtn.actionMapName));
+            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
         }
-
-        // Debug.Log("===============");
-        // Debug.Log("Start");
-        // OnCheckActionMap?.Invoke();
     }
 
     private void LoadSavedLanguage()
     {
-        // Debug.Log("===============");
-        // Debug.Log("Test1");
-        // OnCheckActionMap?.Invoke();
-
-        // string savedActionMap = PlayerPrefs.GetString("SelectedActionMap", "");
-
-        // if (!string.IsNullOrEmpty(savedActionMap))
-        // {
-        //     OnSwitchActionMap?.Invoke(savedActionMap);
-        // }
-
-        // Debug.Log("===============");
-        // Debug.Log("Test2");
-        // OnCheckActionMap?.Invoke();
-
         string savedLangCode = PlayerPrefs.GetString("SelectedLanguage", "");
 
         if (!string.IsNullOrEmpty(savedLangCode))
@@ -139,24 +117,11 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void ChangeLanguage(Locale targetLocale, String targetActionMapName)
+    void ChangeLanguage(Locale targetLocale)
     {
-        // Debug.Log("===============");
-        // Debug.Log("Test3");
-        // OnCheckActionMap?.Invoke();
-
         LocalizationSettings.SelectedLocale = targetLocale;
-        PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);
-
-        // Debug.Log("targetActionMapName: " + targetActionMapName);
-        // OnSwitchActionMap?.Invoke(targetActionMapName);
-        // PlayerPrefs.SetString("SelectedActionMap", targetActionMapName);
-        
+        PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);        
         PlayerPrefs.Save();
-
-        // Debug.Log("===============");
-        // Debug.Log("Test4");
-        // OnCheckActionMap?.Invoke();
     }
 
     public void TogglePauseMenu()
