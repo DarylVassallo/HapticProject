@@ -19,6 +19,10 @@ public class PCPlayerInputManager : MonoBehaviour
     [SerializeField] private static bool canCrouch = true;
     private InputAction crouchAction;
 
+    public static event Action OnInteract;
+    [SerializeField] private static bool canInteract = true;
+    private InputAction interactAction;
+
     public static event Action<InputAction.CallbackContext> OnSprint;
     [SerializeField] private static bool canSprint = true;
     private InputAction sprintAction;
@@ -37,6 +41,7 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log("canMove 1: " + canMove);
         if (playerInput == null)
         {
             playerInput = FindObjectOfType<PlayerInput>();
@@ -47,13 +52,31 @@ public class PCPlayerInputManager : MonoBehaviour
             }
         }
 
+        canMove = true;
         moveAction = playerInput.actions["Move"];
+
+        canJump = true;
         jumpAction = playerInput.actions["Jump"];
+
+        canCrouch = true;
         crouchAction = playerInput.actions["Crouch"];
+
+        canInteract = true;
+        interactAction = playerInput.actions["Interact"];
+
+        canSprint = true;
         sprintAction = playerInput.actions["Sprint"];
+
+        canFire = true;
         fireAction = playerInput.actions["Fire"];
+
+        canFire2 = true;
         fire2Action = playerInput.actions["Fire2"];
+
+        canCancel = true;
         cancelAction = playerInput.actions["Cancel"];
+
+        
     }
 
     private void OnEnable()
@@ -67,6 +90,10 @@ public class PCPlayerInputManager : MonoBehaviour
 
         crouchAction.Enable();
         crouchAction.performed += HandleCrouch;
+
+        interactAction.Enable();
+        interactAction.performed += HandleInteract;
+        // interactAction.canceled += HandleInteract;
 
         sprintAction.Enable();
         sprintAction.performed += HandleSprint;
@@ -96,6 +123,10 @@ public class PCPlayerInputManager : MonoBehaviour
 
         crouchAction.performed -= HandleCrouch;
         crouchAction.Disable();
+
+        interactAction.performed -= HandleInteract;
+        // interactAction.canceled -= HandleInteract;
+        interactAction.Disable();
 
         sprintAction.performed -= HandleSprint;
         sprintAction.canceled -= HandleSprint;
@@ -139,6 +170,11 @@ public class PCPlayerInputManager : MonoBehaviour
         if(_restriction == "Crouch" || _restriction == "All")
         {
             canCrouch = _toggle;
+        }
+
+        if(_restriction == "Interact" || _restriction == "All")
+        {
+            canInteract = _toggle;
         }
         
         if(_restriction == "Sprint" || _restriction == "All")
@@ -184,6 +220,14 @@ public class PCPlayerInputManager : MonoBehaviour
         if (canCrouch)
         {
             OnCrouch?.Invoke();
+        }
+    }
+
+    private void HandleInteract(InputAction.CallbackContext ctx)
+    {
+        if (canInteract)
+        {
+            OnInteract?.Invoke();
         }
     }
 

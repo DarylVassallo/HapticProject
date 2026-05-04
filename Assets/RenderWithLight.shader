@@ -8,13 +8,17 @@ Shader "Custom/RevealingUnderLight_URP"
         _MyGlossiness("Smoothness", Range(0,1)) = 0.5
         _MyMetallic("Metallic", Range(0,1)) = 0.0
 
-	   _MyLightRange("Light Range", Float) = 5
+	   _PCLightRange("Light Range", Float) = 5
+        _PCLightDirection("Light Direction", Vector) = (0,0,1,0)
+        _PCLightPosition("Light Position", Vector) = (0,0,0,0)
+        _PCLightAngle("Light Angle", Range(0,180)) = 45
+        _PCStrengthScalor("Strength", Float) = 50
 
-        _MyLightDirection("Light Direction", Vector) = (0,0,1,0)
-        _MyLightPosition("Light Position", Vector) = (0,0,0,0)
-
-        _MyLightAngle("Light Angle", Range(0,180)) = 45
-        _MyStrengthScalor("Strength", Float) = 50
+	   _VRLightRange("Light Range", Float) = 5
+        _VRLightDirection("Light Direction", Vector) = (0,0,1,0)
+        _VRLightPosition("Light Position", Vector) = (0,0,0,0)
+        _VRLightAngle("Light Angle", Range(0,180)) = 45
+        _VRStrengthScalor("Strength", Float) = 50
         
         _RimColor("Rim Color", Color) = (1,1,1,1)
         _RimPower("Rim Power", Float) = 1
@@ -56,12 +60,18 @@ Shader "Custom/RevealingUnderLight_URP"
                 float _MyGlossiness;
                 float _MyMetallic;
 
-			float _MyLightRange;
-                float4 _MyLightDirection;
-                float4 _MyLightPosition;
+			float _PCLightRange;
+                float4 _PCLightDirection;
+                float4 _PCLightPosition;
+                float _PCLightAngle;
+                float _PCStrengthScalor;
 
-                float _MyLightAngle;
-                float _MyStrengthScalor;
+			float _VRLightRange;
+                float4 _VRLightDirection;
+                float4 _VRLightPosition;
+                float _VRLightAngle;
+                float _VRStrengthScalor;
+
                 
                 float4 _RimColor;
                 float _RimPower;
@@ -92,6 +102,29 @@ Shader "Custom/RevealingUnderLight_URP"
                 return o;
             }
 
+		 float ComputeStrength(	float3 _currLightPosition, 
+		 					float3 _currLightDirection, 
+		 					float _currLightAngle, 
+		 					float _currLightRange, 
+		 					float _currLightStrength,
+		 					float3 _worldPosition)
+		 {
+		 	float dist = distance(_currLightPosition, _worldPosition);
+                float3 dir = normalize(_currLightPosition - _worldPosition);
+                float3 lightDir = normalize(_currLightDirection);
+
+                float scale = dot(dir, lightDir);
+
+                float angleRad = radians(_currLightAngle* 0.5);
+			float threshold = cos(angleRad);
+			
+			float range = saturate(1.0 - (dist * dist) / (_currLightRange * _currLightRange));
+                float strength = scale - threshold;
+                strength = saturate(strength * _currLightStrength) * range;
+
+			return strength;
+		 }
+		 
             half4 frag (Varyings i) : SV_Target
             {
             	Light mainLight = GetMainLight();
@@ -100,20 +133,23 @@ Shader "Custom/RevealingUnderLight_URP"
             	float NdotL = saturate(dot(normal, mainLight.direction));
             	float3 lighting = mainLight.color * NdotL;
             	
-            	float dist = distance(_MyLightPosition.xyz, i.positionWS);
-                float3 dir = normalize(_MyLightPosition.xyz - i.positionWS);
+            	float pcStrength = ComputeStrength(	_PCLightPosition.xyz,
+            								_PCLightDirection.xyz,
+            								_PCLightAngle,
+            								_PCLightRange,
+            								_PCStrengthScalor,
+            								i.positionWS);
 
-                float3 lightDir = normalize(_MyLightDirection.xyz);
-
-                float scale = dot(dir, lightDir);
-
-                float angleRad = radians(_MyLightAngle * 0.5);
-			float threshold = cos(angleRad);
-			
-			float range = saturate(1.0 - (dist * dist) / (_MyLightRange * _MyLightRange));
-                float strength = scale - threshold;
-                strength = saturate(strength * _MyStrengthScalor) * range;
-
+			float vrStrength = ComputeStrength(	_VRLightPosition.xyz,
+            								_VRLightDirection.xyz,
+            								_VRLightAngle,
+            								_VRLightRange,
+            								_VRStrengthScalor,
+            								i.positionWS);
+            	
+            	float strength = saturate(pcStrength + vrStrength);
+            	
+            	
                 half4 tex = SAMPLE_TEXTURE2D(_MyMainTex, sampler_MyMainTex, i.uv) * _MyColor;
 
                 float3 albedo = tex.rgb;

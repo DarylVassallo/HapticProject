@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 3201566917236771553}
   - component: {fileID: 3128351026506914791}
   - component: {fileID: 4360777513105819023}
-  - component: {fileID: 6229465416077793364}
   m_Layer: 0
   m_Name: Angle
   m_TagString: Enemy
@@ -167,11 +166,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatueWithSpotlight
   agentSpeed: 3
-  speed: 64
-  amount: 0.08
+  shakeSpeed: 64
+  shakeAmount: 0.08
   damageToAngel: 0.5
   damageToPlayer: 0.125
   _tooCloseDistance: 2.2
+  _tooFarDistance: 40
   burningAudio: {fileID: 8300000, guid: dc2b315f54c13764d8b5675a6f68eff7, type: 3}
   footstepAudio: {fileID: 8300000, guid: e5488bd69b917544fb71c5d71d47c874, type: 3}
   whisperingAudios:
@@ -289,15 +289,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &6229465416077793364
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4488053546621565365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5393ff75d733a44f9c750c80a7f10a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
