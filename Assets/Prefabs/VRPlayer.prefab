@@ -150,7 +150,6 @@ GameObject:
   - component: {fileID: 4548537005005525337}
   - component: {fileID: 277705224227592789}
   - component: {fileID: 1011711812046149857}
-  - component: {fileID: 3730457025814860665}
   - component: {fileID: 5674609396079138249}
   m_Layer: 0
   m_Name: VRPlayer
@@ -303,21 +302,6 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &3730457025814860665
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2811240125453348630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0193ff37abeeefc49a6b8ca4e8342fb6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  ShowTopMostFoldoutHeaderGroup: 1
-  speed: 5
-  camera: {fileID: 1525089931315867513}
 --- !u!65 &5674609396079138249
 BoxCollider:
   m_ObjectHideFlags: 0

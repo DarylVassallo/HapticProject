@@ -20,6 +20,8 @@ public class FlashlightCharge : MonoBehaviour
 
     [SerializeField] private Transform flashlightLever;
 
+    private int _suddenDrain;
+
     private void Awake()
     {
         _spotLight = this.GetComponentInChildren<Light>();
@@ -27,18 +29,30 @@ public class FlashlightCharge : MonoBehaviour
 
         _maxSpotLightIntensity = _spotLight.intensity;
         _maxSpotLightRange = _spotLight.range;
+
+        _suddenDrain = 0;
     }
 
     private void OnEnable()
     {
         PCPlayerInputManager.OnFire += ChargeFlashlight;
         PCPlayerInputManager.OnFire2 += ToggleFlashlight;
+
+        MazeManager.OnDrainFlashlight += DrainFlashlight;
     }
 
     private void OnDisable()
     {
         PCPlayerInputManager.OnFire -= ChargeFlashlight;
         PCPlayerInputManager.OnFire2 -= ToggleFlashlight;
+
+        MazeManager.OnDrainFlashlight -= DrainFlashlight;
+    }
+
+    private void DrainFlashlight()
+    {
+        _suddenDrain = 100;
+        // ChangeSpotLightStrength(-decayRate * 999999, _isCharging ? chargeIntensity : 1f);
     }
 
     private void ChargeFlashlight(InputAction.CallbackContext context)
@@ -54,23 +68,31 @@ public class FlashlightCharge : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {        
-        if ((_charge >= 100 && _isCharging) || (_charge <= 0 && !_isCharging && _spotLight.enabled)) return;
-
-        if (_isCharging && _charge < 100)
+    {      
+        if (_suddenDrain > 0)
         {
-            _spotLight.enabled = true;
-            ChangeSpotLightStrength(chargeRate, _isCharging ? chargeIntensity : 1f);
-            flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
-            // flashlightLeverRb.MoveRotation(flashlightLeverRb.rotation * Quaternion.Euler(0f, 0f, flashLightRotationSpeed * Time.fixedDeltaTime));
+            ChangeSpotLightStrength(-decayRate * 100, _isCharging ? chargeIntensity : 1f);
+            _suddenDrain--;
         }else{
-            ChangeSpotLightStrength(-decayRate, _isCharging ? chargeIntensity : 1f);
+            if ((_charge >= 100 && _isCharging) || (_charge <= 0 && !_isCharging && _spotLight.enabled)) return;
+
+            if (_isCharging && _charge < 100)
+            {
+                _spotLight.enabled = true;
+                ChangeSpotLightStrength(chargeRate, _isCharging ? chargeIntensity : 1f);
+                flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+            }else{
+                ChangeSpotLightStrength(-decayRate, _isCharging ? chargeIntensity : 1f);
+            }
         }
     }
 
     private void ChangeSpotLightStrength(float _change, float _brightness)
     {
         _charge += _change;
+        if(_charge < 0) _charge = 0;
+        if(_charge > 100) _charge = 100;
+
         _spotLight.intensity = _maxSpotLightIntensity * (_charge / 100f) * _brightness;
         _spotLight.range = _maxSpotLightRange * (_charge / 100f) * _brightness;
     }

@@ -9,8 +9,18 @@ public class RevealUnderLight : MonoBehaviour
 
     [SerializeField] private bool isPCInteractable;
     [SerializeField] private bool isVRInteractable;
+    [SerializeField] private bool isEffectedByLight;
+    private bool _isInteractable;
 
-    public GameObject arch;
+    Vector3 positionDifference;
+    float positionDistance;
+    Vector3 positionDirection;
+    Vector3 spotlightDirection;
+    float scale;
+    float angleRad;
+    float threshold;
+    float range;
+    float strength;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Awake()
@@ -24,26 +34,26 @@ public class RevealUnderLight : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (arch != null)
+        if (isEffectedByLight)
         {
-            Vector3 toObject = transform.position - _vrSpotLight.transform.position;
-
-            float dist = toObject.magnitude;
-
-            Vector3 dir = toObject.normalized;
-            Vector3 lightDir = _vrSpotLight.transform.forward.normalized;
-
-            float scale = Vector3.Dot(dir, lightDir);
-
-            float angleRad = _vrSpotLight.spotAngle * 0.5f * Mathf.Deg2Rad;
-            float threshold = Mathf.Cos(angleRad);
-
-            float range = Mathf.Clamp01(1.0f - (dist * dist) / 
-                ((_vrSpotLight.range * 0.5f) * (_vrSpotLight.range * 0.5f)));
-
-            float strength = Mathf.Clamp01((scale - threshold)) * range;
-
-            Debug.Log("arch strength: " + strength);
+            if (CheckLightStrength() >= 0.15f)
+            {
+                if(!_isInteractable)
+                {
+                    _isInteractable = true;
+                    if (this.GetComponent<Collider>() != null) this.GetComponent<Collider>().enabled = true;
+                    if (this.GetComponent<IInteractable>() != null) this.GetComponent<IInteractable>().EnableInteraction();
+                }
+            }
+            else
+            {
+                if(_isInteractable)
+                {
+                    _isInteractable = false;
+                    if (this.GetComponent<Collider>() != null) this.GetComponent<Collider>().enabled = false;
+                    if (this.GetComponent<IInteractable>() != null) this.GetComponent<IInteractable>().DisableInteraction();
+                }
+            }
         }
         
         if(_hiddenMaterial && _pcSpotLight && _vrSpotLight)
@@ -83,5 +93,24 @@ public class RevealUnderLight : MonoBehaviour
                 }
             }
         }
+    }
+
+    private float CheckLightStrength()
+    {
+        positionDifference = transform.position - _vrSpotLight.transform.position;
+        positionDistance = positionDifference.magnitude;
+        positionDirection = positionDifference.normalized;
+
+        spotlightDirection = _vrSpotLight.transform.forward.normalized;
+
+        scale = Vector3.Dot(positionDirection, spotlightDirection);
+
+        angleRad = _vrSpotLight.spotAngle * 0.5f * Mathf.Deg2Rad;
+        threshold = Mathf.Cos(angleRad);
+
+        range = Mathf.Clamp01(1.0f - (positionDistance * positionDistance) / ((_vrSpotLight.range * 0.5f) * (_vrSpotLight.range * 0.5f)));
+        strength = Mathf.Clamp01((scale - threshold)) * range;
+
+        return strength;
     }
 }

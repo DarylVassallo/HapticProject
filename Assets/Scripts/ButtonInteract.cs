@@ -1,39 +1,29 @@
 using UnityEngine;
-
+using System;
+using System.Collections.Generic;
+//This script controls is the button can be interacted with, and for what switch it is for
 public class ButtonInteract : MonoBehaviour, IInteractable
-{
-    private Transform _pcPlayerTransform;
-    private float _distance;
+{    
+    public static event Action<MazeManager.ShapeType> OnTriggerButton;
+    private bool _isInteractable = true;    
 
-    [SerializeField] private GameObject symbol;
-
-    // void Awake()
-    // {        
-    //     _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-    // }
-
-    // private void OnEnable()
-    // {
-    //     PCPlayerInputManager.OnInteract += Interact;
-    // }
-
-    // private void OnDisable()
-    // {
-    //     PCPlayerInputManager.OnInteract -= Interact;
-    // }
-
-    // private void Interact()
-    // {
-    //     _distance = (transform.position - _pcPlayerTransform.position).magnitude;
-    //     Debug.Log("distance: " + _distance);
-    //     if (_distance <= 2)
-    //     {
-    //         symbol.SetActive(!symbol.active);
-    //     }
-    // }
+    [SerializeField] private MazeManager.ShapeType shape;
 
     public void TriggerInteraction()
     {
-        symbol.SetActive(!symbol.active);
+        if (_isInteractable)
+        {
+            OnTriggerButton?.Invoke(shape);
+        }
+    }
+
+    public void EnableInteraction()
+    {
+        _isInteractable = true;
+    }
+
+    public void DisableInteraction()
+    {
+        _isInteractable = false;
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
-
+//This is where all the incompleted and completed achievements are stored for a player, as well as the player data
 public class PlayerProfile : MonoBehaviour
 {
     private int _score;

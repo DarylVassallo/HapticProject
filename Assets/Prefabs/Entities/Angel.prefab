@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 3128351026506914791}
   - component: {fileID: 4360777513105819023}
   m_Layer: 0
-  m_Name: Angle
+  m_Name: Angel
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,7 +72,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f592f3b72bc58374888f9e272ed44681, type: 2}
+  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -153,6 +153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 0
+  isVRInteractable: 0
+  isEffectedByLight: 0
 --- !u!114 &3201566917236771553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -160,7 +163,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4488053546621565365}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c6cfac063dc52d4c8ae32f337838ecc, type: 3}
   m_Name: 
