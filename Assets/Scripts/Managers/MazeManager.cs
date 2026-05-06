@@ -4,19 +4,24 @@ using System;
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : MonoBehaviour
 {
-    private bool _isRotatingFirstBridges;
-    private bool _isMovingFirstBridges;
+    [SerializeField] private Transform signs;
+
+    private bool _isMovingObject;
+    private Transform movingObject;
+
+    [Header("Bridges")]
     [SerializeField] private Transform firstBridges;
+    private bool _isRotatingFirstBridges;
 
-    private bool _isRotatingSecondBridges;
     [SerializeField] private Transform secondBridges;
+    private bool _isRotatingSecondBridges;
 
-    private bool _isRotatingThirdBridges;
     [SerializeField] private Transform thirdBridges;
+    private bool _isRotatingThirdBridges;
 
     [SerializeField] private float bridgeRotateSpeed;
 
-
+    [Header("Angel")]
     [SerializeField] private GameObject angel;
     [SerializeField] private Transform angelSpawnPoints;
     [SerializeField] private float spawnTooFarRange;
@@ -49,9 +54,21 @@ public class MazeManager : MonoBehaviour
     [SerializeField] private int circleMaxAngels;
     private bool _isCircleActive;
 
+    [Header("Pentagon")]
+    [SerializeField] private float pentagonChancesOfAngel;
+    [SerializeField] private int pentagonMaxAngels;
+    private bool _isPentagonActive;
+
+    [Header("Diamond")]
+    [SerializeField] private float diamondChancesOfAngel;
+    [SerializeField] private int diamondMaxAngels;
+    private bool _isDiamondActive;
+
     private float lerpTargetY;
 
     public static event Action OnDrainFlashlight;
+
+
     
     void Awake()
     {        
@@ -71,25 +88,25 @@ public class MazeManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (_isMovingFirstBridges)
+        if (_isMovingObject)
         {
-            Debug.Log("firstBridges.position.y: " + firstBridges.position.y);
+            Debug.Log("movingObject.position.y: " + movingObject.position.y);
             Vector3 targetPosition = new Vector3(
-                firstBridges.position.x,
+                movingObject.position.x,
                 lerpTargetY,
-                firstBridges.position.z
+                movingObject.position.z
             );
 
-            firstBridges.position = Vector3.Lerp(
-                firstBridges.position,
+            movingObject.position = Vector3.Lerp(
+                movingObject.position,
                 targetPosition,
                 Time.deltaTime * 2f // speed factor
             );
 
-            if (Mathf.Abs(firstBridges.position.y - lerpTargetY) <= 0.05)
+            if (Mathf.Abs(movingObject.position.y - lerpTargetY) <= 0.05)
             {
-                firstBridges.position = new Vector3(firstBridges.position.x, lerpTargetY, firstBridges.position.z);
-                _isMovingFirstBridges = !_isMovingFirstBridges;
+                movingObject.position = new Vector3(movingObject.position.x, lerpTargetY, movingObject.position.z);
+                _isMovingObject = !_isMovingObject;
             }
         }
 
@@ -106,7 +123,7 @@ public class MazeManager : MonoBehaviour
         {
             case ShapeType.Triangle:
                 _isTriangleActive = !_isTriangleActive;
-                ToggleFirstBridgesPosition();
+                StartMovingObject(firstBridges, -20f, 0f);
                 AngelCreation(triangleChancesOfAngel, triangleMaxAngels);
                 break;
 
@@ -117,10 +134,32 @@ public class MazeManager : MonoBehaviour
 
             case ShapeType.Circle:
                 _isCircleActive = !_isCircleActive;
-                DrainFlashlightCharge();
+                DisableMotion();
                 AngelCreation(circleChancesOfAngel, circleMaxAngels);
                 break;
+
+            case ShapeType.Pentagon:
+                _isPentagonActive = !_isPentagonActive;
+                StartMovingObject(signs, -1f, 4f);
+                AngelCreation(pentagonChancesOfAngel, pentagonMaxAngels);
+                break;
+
+            case ShapeType.Diamond:
+                _isDiamondActive = !_isDiamondActive;
+                DrainFlashlightCharge();
+                AngelCreation(diamondChancesOfAngel, diamondMaxAngels);
+                break;
         }
+
+        if (_isSquareActive && _isDiamondActive && Mathf.Abs(secondBridges.position.y - 0) > 1)
+        {
+            StartMovingObject(secondBridges, -20f, 0f);
+        }
+    }
+
+    private void DisableMotion()
+    {
+        PCPlayerInputManager.ToggleRestriction("Move", false);
     }
 
     private void AngelCreation(float chancesOfAngel, int maxAngels)
@@ -143,17 +182,18 @@ public class MazeManager : MonoBehaviour
         OnDrainFlashlight?.Invoke();
     }
 
-    private void ToggleFirstBridgesPosition()
+    private void StartMovingObject(Transform currentObject, float minPosition, float maxPosition)
     {
-        _isMovingFirstBridges = !_isMovingFirstBridges;
+        _isMovingObject = !_isMovingObject;
+        movingObject = currentObject;
 
         lerpTargetY = -100;
-        if (firstBridges.position.y == 0f)
+        if (movingObject.position.y == maxPosition)
         {
-            lerpTargetY = -20f;
-        }else if (firstBridges.position.y == -20f)
+            lerpTargetY = minPosition;
+        }else if (movingObject.position.y == minPosition)
         {
-            lerpTargetY = 0f;
+            lerpTargetY = maxPosition;
         }
     }
 

@@ -6,7 +6,7 @@ public class HandPresencePhysics : MonoBehaviour
 {
     [SerializeField] private Transform handTargetTransform;
     private Rigidbody _rb;
-    [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor _nearFarInteractor;
+    // [SerializeField] private UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor _nearFarInteractor;
 
     private Transform _currentTargetTransform;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -18,12 +18,12 @@ public class HandPresencePhysics : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (_nearFarInteractor.firstGrabTransform != null && _nearFarInteractor.hasAttachment && _nearFarInteractor.hasGrabbedFar == false)
-        {
-            _currentTargetTransform = _nearFarInteractor.firstGrabTransform;
-        }else{
-            _currentTargetTransform = handTargetTransform;
-        }
+        // if (_nearFarInteractor.firstGrabTransform != null && _nearFarInteractor.hasAttachment && _nearFarInteractor.hasGrabbedFar == false)
+        // {
+        //     _currentTargetTransform = _nearFarInteractor.firstGrabTransform;
+        // }else{
+        _currentTargetTransform = handTargetTransform;
+        // }
         _rb.linearVelocity = (_currentTargetTransform.position - transform.position) / Time.fixedDeltaTime;
 
         Quaternion rotationDifference = _currentTargetTransform.rotation * Quaternion.Inverse(transform.rotation);
