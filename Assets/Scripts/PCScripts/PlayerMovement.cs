@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
+using Unity.Cinemachine;
+
 //This script allows the PC Player to move, sprint, jump, and crouch (modified to using input actions from an input manager script).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     [Header("Speed")]
     [SerializeField] private float walkSpeed = 5f;
@@ -36,8 +39,22 @@ public class PlayerMovement : MonoBehaviour
     {
         _characterController = GetComponent<CharacterController>();
         _targetHeight = standingHeight;
+
+        CinemachineCore.GetInputAxis = HandleAxisInput;
     }
 
+    private float HandleAxisInput(string axisName)
+    {
+        Debug.Log("HandleAxisInput");
+        // if (axisName == "Mouse X")
+        //     return Mouse.current.delta.x.ReadValue();
+
+        // if (axisName == "Mouse Y")
+        //     return Mouse.current.delta.y.ReadValue();
+
+        return 0;
+    }
+    
     private void OnEnable()
     {
         PCPlayerInputManager.OnMove += ChangeMotion;
@@ -56,10 +73,33 @@ public class PlayerMovement : MonoBehaviour
 
     private void ChangeMotion(Vector2 input)
     {
+        if(!IsOwner) return;
+
         _moveInput = input;
     }
     private void FixedUpdate()
     {
+
+        if (!IsOwner)
+        {
+            GetComponent<Renderer>().material.color = Color.blue;
+            // transform.rotation = rotation.Value;
+            
+            cameraTransform.GetComponent<CinemachineCamera>().enabled = false;
+            // GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CinemachineBrain>().enabled = false;
+            // cameraTransform.GetComponent<CinemachineInputAxisController>().enabled = false;
+            return;
+        }
+        else
+        {
+            GetComponent<Renderer>().material.color = Color.red;
+            // rotation.Value = transform.rotation;
+
+            cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
+            // GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CinemachineBrain>().enabled = true;
+            // cameraTransform.GetComponent<CinemachineInputAxisController>().enabled = true;
+        }
+
         _isGrounded = _characterController.isGrounded;
         HandleGravity();
         HandleMovement();
@@ -68,6 +108,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Jump()
     {
+        if(!IsOwner) return;
+
         if(_isGrounded)
         {
             _verticalVelocity = jumpForce;
@@ -76,6 +118,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Crouch()
     {
+        if(!IsOwner) return;
+
         if (_isCrouching)
         {
             if (!CanStandUp())
@@ -102,6 +146,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Sprint(InputAction.CallbackContext context)
     {
+        if(!IsOwner) return;
+
         _isRunning = context.performed;
     }
 

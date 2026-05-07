@@ -22,8 +22,9 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
     {
         if(isSelected && firstInteractorSelecting is UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor && _canJump)
         {
-            Vector3 velocity = (_nearFarInteractor.transform.position - _previousPosition) / Time.deltaTime;
-            _previousPosition = _nearFarInteractor.transform.position;
+            Transform attach = _nearFarInteractor.GetAttachTransform(this);
+            Vector3 velocity = (attach.position - _previousPosition) / Time.deltaTime;
+            _previousPosition = attach.position;
 
             if(velocity.magnitude > velocityThreshold)
             {
@@ -41,7 +42,7 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
         float diffXZLength = diffXZ.magnitude;
         float diffYLength = diff.y;
 
-        float angleInRadian = jumpAngleInDegree * Mathf.Deg2Rad;
+        float angleInRadian = Mathf.Clamp(diff.normalized.y * 90, jumpAngleInDegree, 90) * Mathf.Deg2Rad;
 
         float jumpSpeed = Mathf.Sqrt(   -Physics.gravity.y * Mathf.Pow(diffXZLength, 2) / 
                                         (   2 * 
@@ -63,16 +64,18 @@ public class XRAlyxGrabInteractable : UnityEngine.XR.Interaction.Toolkit.Interac
             _nearFarInteractor = (UnityEngine.XR.Interaction.Toolkit.Interactors.NearFarInteractor)args.interactorObject;
             float distance = Vector3.Distance(_nearFarInteractor.transform.position, transform.position);
 
-            if(distance >= 0.3)
+            if(distance >= 0.3f)
             {
+                Debug.Log("FAR: " + distance);
                 trackPosition = false;
                 trackRotation = false;
                 throwOnDetach = false;
 
                 
-                _previousPosition = _nearFarInteractor.transform.position;
+                _previousPosition = _nearFarInteractor.GetAttachTransform(this).position;
                 _canJump = true;
             }else{
+                Debug.Log("CLOSE: " + distance);
                 trackPosition = true;
                 trackRotation = true;
                 throwOnDetach = true;

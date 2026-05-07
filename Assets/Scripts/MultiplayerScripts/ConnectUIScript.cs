@@ -17,10 +17,16 @@ public class ConnectUIScript : MonoBehaviour
         hostButton.onClick.AddListener(HostButtonClick);
         clientButton.onClick.AddListener(ClientButtonOnClick);
         serverButton.onClick.AddListener(ServerButtonOnClick);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private  void HostButtonClick()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         NetworkManager.Singleton.NetworkConfig.PlayerPrefab = vrPlayer;
         NetworkManager.Singleton.StartHost();
         NetworkManager.Singleton.NetworkConfig.PlayerPrefab = pcPlayer;
@@ -28,6 +34,9 @@ public class ConnectUIScript : MonoBehaviour
 
     private void ClientButtonOnClick()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
         NetworkManager.Singleton.NetworkConfig.PlayerPrefab = pcPlayer;
         NetworkManager.Singleton.StartClient();
         NetworkManager.Singleton.NetworkConfig.PlayerPrefab = vrPlayer;
