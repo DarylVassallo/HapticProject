@@ -11,8 +11,14 @@ public class NetworkPlayer : NetworkBehaviour
 
     public Renderer[] meshToDisable;
 
+
+    private GameObject mainCamera;
+    private GameObject vrPlayer;
     public override void OnNetworkSpawn()
     {
+        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        vrPlayer = GameObject.FindGameObjectWithTag("VRPlayer");
+
         base.OnNetworkSpawn();
         if (IsOwner)
         {
@@ -23,11 +29,13 @@ public class NetworkPlayer : NetworkBehaviour
         }
     }
     
-    // Update is called once per frame
     void Update()
     {
         if (IsOwner)
         {
+            mainCamera.SetActive(false);
+            vrPlayer.SetActive(true);
+
             root.position = VRRigReferences.Singleton.root.position;
             root.rotation = VRRigReferences.Singleton.root.rotation;
 
@@ -39,6 +47,11 @@ public class NetworkPlayer : NetworkBehaviour
 
             rightHand.position = VRRigReferences.Singleton.rightHand.position;
             rightHand.rotation = VRRigReferences.Singleton.rightHand.rotation;
+        }
+        else
+        {
+            mainCamera.SetActive(true);
+            vrPlayer.SetActive(false);
         }
     }
 }

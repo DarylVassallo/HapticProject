@@ -24,6 +24,7 @@ public class ConnectUIScript : MonoBehaviour
 
     private  void HostButtonClick()
     {
+        Debug.Log("HOST");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -34,6 +35,7 @@ public class ConnectUIScript : MonoBehaviour
 
     private void ClientButtonOnClick()
     {
+        Debug.Log("CLIENT");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
