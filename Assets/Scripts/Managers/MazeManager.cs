@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Unity.VRTemplate;
+
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : MonoBehaviour
 {
@@ -68,7 +70,9 @@ public class MazeManager : MonoBehaviour
 
     public static event Action OnDrainFlashlight;
 
-
+    public XRKnob knob;
+    private float prevKnobValue = 0;
+    private float knobValueDiff = 0;
     
     void Awake()
     {        
@@ -110,11 +114,21 @@ public class MazeManager : MonoBehaviour
             }
         }
 
-        if (_isRotatingFirstBridges) firstBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
+        Debug.Log("Knob: " + knob.value);
+        Debug.Log("===============");
 
-        if (_isRotatingSecondBridges) secondBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
+        knobValueDiff = knob.value - prevKnobValue;
+        firstBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+        secondBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+        thirdBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
 
-        if (_isRotatingThirdBridges) thirdBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
+        prevKnobValue = knob.value;
+
+        // if (_isRotatingFirstBridges) firstBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
+
+        // if (_isRotatingSecondBridges) secondBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
+
+        // if (_isRotatingThirdBridges) thirdBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
     }
 
     private void Activate(ShapeType shape)
