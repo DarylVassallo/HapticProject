@@ -8,8 +8,8 @@ TagManager:
   - Enemy
   - PCPlayer
   - VRPlayer
-  - FlashLight
   - Button
+  - VRFlashLight
   layers:
   - Default
   - TransparentFX

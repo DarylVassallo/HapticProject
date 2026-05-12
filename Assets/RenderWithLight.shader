@@ -34,7 +34,7 @@ Shader "Custom/RevealingUnderLight_URP"
         }
 
         Blend SrcAlpha OneMinusSrcAlpha
-        ZWrite Off
+        ZWrite On
         Cull Back
 
         Pass
@@ -46,6 +46,9 @@ Shader "Custom/RevealingUnderLight_URP"
             #pragma vertex vert
             #pragma fragment frag
             #pragma target 3.0
+            
+            #pragma multi_compile_instancing
+		 #pragma multi_compile _ UNITY_SINGLE_PASS_STEREO
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -82,6 +85,8 @@ Shader "Custom/RevealingUnderLight_URP"
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
                 float2 uv         : TEXCOORD0;
+                
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
@@ -90,15 +95,22 @@ Shader "Custom/RevealingUnderLight_URP"
                 float2 uv          : TEXCOORD0;
                 float3 positionWS  : TEXCOORD1;
                 float3 normalWS    : TEXCOORD2;
+                
+                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             Varyings vert (Attributes v)
             {
                 Varyings o;
+                
+                UNITY_SETUP_INSTANCE_ID(v);
+    			UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+    
                 o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
                 o.positionHCS = TransformWorldToHClip(o.positionWS);
                 o.uv = TRANSFORM_TEX(v.uv, _MyMainTex);
                 o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+                
                 return o;
             }
 
@@ -127,6 +139,8 @@ Shader "Custom/RevealingUnderLight_URP"
 		 
             half4 frag (Varyings i) : SV_Target
             {
+            	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+            	
             	Light mainLight = GetMainLight();
             	float3 normal = normalize(i.normalWS);
             	

@@ -28,7 +28,7 @@ public class RevealUnderLight : MonoBehaviour
         _hiddenMaterial = GetComponent<Renderer>().material;
         
         _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
-        _vrSpotLight = GameObject.FindGameObjectWithTag("VRPlayer").GetComponentInChildren<Light>();
+        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
     }
 
     // Update is called once per frame

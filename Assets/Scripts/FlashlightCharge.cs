@@ -21,6 +21,11 @@ public class FlashlightCharge : MonoBehaviour
     [SerializeField] private Transform flashlightLever;
 
     private int _suddenDrain;
+    
+    [SerializeField] private Transform chargeBar;
+    private float _maxChargeBarLength;
+
+    [SerializeField] private bool canUseChargeStation;
 
     private void Awake()
     {
@@ -31,22 +36,28 @@ public class FlashlightCharge : MonoBehaviour
         _maxSpotLightRange = _spotLight.range;
 
         _suddenDrain = 0;
+
+        _maxChargeBarLength = chargeBar.localScale.z;
     }
 
     private void OnEnable()
     {
-        PCPlayerInputManager.OnFire += ChargeFlashlight;
+        PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
         PCPlayerInputManager.OnFire2 += ToggleFlashlight;
 
         MazeManager.OnDrainFlashlight += DrainFlashlight;
+
+        if(canUseChargeStation) ChargeStation.OnCharge += ChargeFlashlight;
     }
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnFire -= ChargeFlashlight;
+        PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
         PCPlayerInputManager.OnFire2 -= ToggleFlashlight;
 
         MazeManager.OnDrainFlashlight -= DrainFlashlight;
+
+        if(canUseChargeStation) ChargeStation.OnCharge -= ChargeFlashlight;
     }
 
     private void DrainFlashlight()
@@ -55,9 +66,14 @@ public class FlashlightCharge : MonoBehaviour
         // ChangeSpotLightStrength(-decayRate * 999999, _isCharging ? chargeIntensity : 1f);
     }
 
-    private void ChargeFlashlight(InputAction.CallbackContext context)
+    private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
     {
-        _isCharging = context.performed;
+        ChargeFlashlight();
+    }
+
+    private void ChargeFlashlight()
+    {
+        _isCharging = true;
 
         ChangeSpotLightStrength(0, _isCharging ? chargeIntensity : 1f);
     }
@@ -95,5 +111,10 @@ public class FlashlightCharge : MonoBehaviour
 
         _spotLight.intensity = _maxSpotLightIntensity * (_charge / 100f) * _brightness;
         _spotLight.range = _maxSpotLightRange * (_charge / 100f) * _brightness;
+
+        chargeBar.localScale = new Vector3  (   chargeBar.localScale.x, 
+                                                chargeBar.localScale.y,
+                                                _maxChargeBarLength * (_charge / 100f)
+                                            );
     }
 }

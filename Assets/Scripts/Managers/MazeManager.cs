@@ -94,7 +94,6 @@ public class MazeManager : MonoBehaviour
     {
         if (_isMovingObject)
         {
-            Debug.Log("movingObject.position.y: " + movingObject.position.y);
             Vector3 targetPosition = new Vector3(
                 movingObject.position.x,
                 lerpTargetY,
@@ -113,9 +112,6 @@ public class MazeManager : MonoBehaviour
                 _isMovingObject = !_isMovingObject;
             }
         }
-
-        Debug.Log("Knob: " + knob.value);
-        Debug.Log("===============");
 
         knobValueDiff = knob.value - prevKnobValue;
         firstBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
