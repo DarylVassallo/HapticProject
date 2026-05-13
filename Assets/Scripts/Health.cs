@@ -8,6 +8,8 @@ public class Health : MonoBehaviour
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
 
+    public static event Action<float> OnChangeHealthBar;
+
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
         health += _healthChange;
@@ -23,7 +25,11 @@ public class Health : MonoBehaviour
                 OnKilledEnemy?.Invoke(1, _attackerType);
                 Destroy(this.gameObject);
             }
-        } 
+        }
+        else
+        {
+            if (this.CompareTag("PCPlayer")) OnChangeHealthBar?.Invoke(health);
+        }
     }
 
     public float GetHealth()

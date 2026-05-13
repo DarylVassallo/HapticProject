@@ -27,6 +27,8 @@ public class MenuManager : MonoBehaviour
     private bool _showWinGameMenu;
 
     [SerializeField] private GameObject pcPlayerUI;
+    [SerializeField] private Transform pcHealthBar;
+    private float _maxHealthBarLength;
     private TMP_Text _scoreUI;
 
     public static event Action<bool> OnToggleAll;
@@ -49,12 +51,15 @@ public class MenuManager : MonoBehaviour
         ToggleWinGameMenu();
 
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
+
+        _maxHealthBarLength = pcHealthBar.localScale.y;
     }
 
     private void OnEnable()
     {
         PCPlayerInputManager.OnCancel += TogglePauseMenu;
         Health.OnGameOver += ToggleGameOverMenu;
+        Health.OnChangeHealthBar += ChangeHealthBar;
         WinPlatform.OnWinGame += ToggleWinGameMenu;
         PlayerProfileManager.OnUpdateScore += UpdateUIScore;
     }
@@ -63,6 +68,7 @@ public class MenuManager : MonoBehaviour
     {
         PCPlayerInputManager.OnCancel -= TogglePauseMenu;
         Health.OnGameOver -= ToggleGameOverMenu;
+        Health.OnChangeHealthBar -= ChangeHealthBar;
         WinPlatform.OnWinGame -= ToggleWinGameMenu;
         PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
     }
@@ -117,7 +123,7 @@ public class MenuManager : MonoBehaviour
         }
     }
 
-    void ChangeLanguage(Locale targetLocale)
+    private void ChangeLanguage(Locale targetLocale)
     {
         LocalizationSettings.SelectedLocale = targetLocale;
         PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);        
@@ -170,6 +176,11 @@ public class MenuManager : MonoBehaviour
         CheckTimeScale();
     }
 
+    private void ChangeHealthBar(float _currentHealth)
+    {
+        pcHealthBar.localScale = new Vector3(_maxHealthBarLength * (_currentHealth / 100f), pcHealthBar.localScale.y, pcHealthBar.localScale.z);
+    }
+    
     public void ToggleGameOverMenu()
     {
         _showGameOverMenu = !_showGameOverMenu;
@@ -201,33 +212,33 @@ public class MenuManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            for (int i = 0; i < winGameMenu.transform.childCount; i++)
+            {
+                if (winGameMenu.transform.GetChild(i).gameObject != null)
+                {
+                    if (winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>() != null && winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>().text == $"You Win")
+                    {
+                        var localized = winGameMenu.transform.GetChild(i)
+                                .GetChild(0)
+                                .GetComponentInChildren<LocalizeStringEvent>()
+                                .StringReference;
+
+                        localized.Arguments = new object[] 
+                        { 
+                            new { score = PlayerProfileManager.GetScore(0) } 
+                        };
+
+                        localized.RefreshString();
+                    }
+                    winGameMenu.transform.GetChild(i).gameObject.SetActive(_showWinGameMenu);
+                }  
+            }
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-        }
-
-        for (int i = 0; i < winGameMenu.transform.childCount; i++)
-        {
-            if (winGameMenu.transform.GetChild(i).gameObject != null)
-            {
-                if (winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>() != null && winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>().text == $"You Win")
-                {
-                    var localized = winGameMenu.transform.GetChild(i)
-                            .GetChild(0)
-                            .GetComponentInChildren<LocalizeStringEvent>()
-                            .StringReference;
-
-                    localized.Arguments = new object[] 
-                    { 
-                        new { score = PlayerProfileManager.GetScore(0) } 
-                    };
-
-                    localized.RefreshString();
-                }
-                winGameMenu.transform.GetChild(i).gameObject.SetActive(_showWinGameMenu);
-            }  
         }
 
         CheckTimeScale();

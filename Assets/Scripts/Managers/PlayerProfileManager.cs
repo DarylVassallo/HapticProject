@@ -19,17 +19,16 @@ public class PlayerProfileManager : MonoBehaviour
     private string[] lines;
 
     [SerializeField] private Mesh[] meshList;
+
+    private bool canPCFunction = false;
+    private bool canVRFunction = false;
+
     void Awake()
     {
         _achievementManager = this.transform.GetComponent<AchievementManager>();
 
         _pcPlayerFilePath = Application.persistentDataPath + "/pcPlayerProgress.txt";
-        _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
-        LoadProgress(_pcPlayerFilePath, _pcPlayerProfile, 0);
-
         _vrPlayerFilePath = Application.persistentDataPath + "/vrPlayerProgress.txt";
-        _vrPlayerProfile = GameObject.FindGameObjectWithTag("VRPlayer").transform.GetComponent<PlayerProfile>();
-        LoadProgress(_vrPlayerFilePath, _vrPlayerProfile, 1);
     }
 
     private void OnEnable()
@@ -37,6 +36,9 @@ public class PlayerProfileManager : MonoBehaviour
         WinPlatform.OnWinGame += SaveProgress;
         Health.OnKilledEnemy += AddScore;
         PlayerProfile.OnUpdateProgress += SaveProgress;
+
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
     }
 
     private void OnDisable()
@@ -44,6 +46,23 @@ public class PlayerProfileManager : MonoBehaviour
         WinPlatform.OnWinGame -= SaveProgress;
         Health.OnKilledEnemy -= AddScore;
         PlayerProfile.OnUpdateProgress -= SaveProgress;
+
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+    }
+
+    private void GetPCPlayerData()
+    {
+        _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
+        LoadProgress(_pcPlayerFilePath, _pcPlayerProfile, 0);
+        canPCFunction = true;
+    }
+
+    private void GetVRPlayerData()
+    {
+        _vrPlayerProfile = GameObject.FindGameObjectWithTag("VRPlayer").transform.GetComponent<PlayerProfile>();
+        LoadProgress(_vrPlayerFilePath, _vrPlayerProfile, 1);
+        canVRFunction = true;
     }
 
     private void AddScore(int _addedScore, int _playerType)
@@ -69,6 +88,7 @@ public class PlayerProfileManager : MonoBehaviour
 
     public static int GetScore(int _playerType)
     {
+        Debug.Log("GetScore: " + _playerType);
         if (_playerType == 0)  return _pcPlayerProfile.GetScore();
 
         return -1;

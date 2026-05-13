@@ -42,22 +42,32 @@ public class FlashlightCharge : MonoBehaviour
 
     private void OnEnable()
     {
-        PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
-        PCPlayerInputManager.OnFire2 += ToggleFlashlight;
-
         MazeManager.OnDrainFlashlight += DrainFlashlight;
 
-        if(canUseChargeStation) ChargeStation.OnCharge += ChargeFlashlight;
+        if(canUseChargeStation)
+        {
+            ChargeStation.OnCharge += ChargeFlashlightWithStation;
+        }
+        else
+        {
+            PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
+            PCPlayerInputManager.OnFire2 += ToggleFlashlight;
+        }
     }
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
-        PCPlayerInputManager.OnFire2 -= ToggleFlashlight;
-
         MazeManager.OnDrainFlashlight -= DrainFlashlight;
 
-        if(canUseChargeStation) ChargeStation.OnCharge -= ChargeFlashlight;
+        if(canUseChargeStation)
+        {
+            ChargeStation.OnCharge -= ChargeFlashlightWithStation;
+        }
+        else
+        {
+            PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
+            PCPlayerInputManager.OnFire2 -= ToggleFlashlight;
+        }
     }
 
     private void DrainFlashlight()
@@ -68,13 +78,13 @@ public class FlashlightCharge : MonoBehaviour
 
     private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
     {
-        ChargeFlashlight();
+        _isCharging = context.performed;
+        ChangeSpotLightStrength(0, _isCharging ? chargeIntensity : 1f);
     }
 
-    private void ChargeFlashlight()
+    private void ChargeFlashlightWithStation(bool charge)
     {
-        _isCharging = true;
-
+        _isCharging = charge;
         ChangeSpotLightStrength(0, _isCharging ? chargeIntensity : 1f);
     }
 

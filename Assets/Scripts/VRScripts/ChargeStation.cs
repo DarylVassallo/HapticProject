@@ -1,18 +1,40 @@
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using System;
 public class ChargeStation : MonoBehaviour
 {
-    public static event Action OnCharge;
+    public static event Action<bool> OnCharge;
     private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor socket;
-    void Start()
+    void Awake()
     {
         socket = this.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+        socket.selectEntered.AddListener(OnInserted);
+        socket.selectExited.AddListener(OnRemoved);
     }
 
-    void FixedUpdate()
+    private void OnDestroy()
     {
-        if (!socket.hasSelection) return;
-        
-        OnCharge?.Invoke();
+        socket.selectEntered.RemoveListener(OnInserted);
+        socket.selectExited.RemoveListener(OnRemoved);
     }
+    private void OnInserted(SelectEnterEventArgs args)
+    {
+        Debug.Log("ONINSERTED");
+        OnCharge?.Invoke(true);
+    }
+
+    private void OnRemoved(SelectExitEventArgs args)
+    {
+        Debug.Log("ONREMOVED");
+        OnCharge?.Invoke(false);
+    }
+
+    // void FixedUpdate()
+    // {
+    //     Debug.Log("socket.hasSelection: " + socket.hasSelection);
+    //     if (!socket.hasSelection) return;
+    //     Debug.Log("Charge");
+    //     OnCharge?.Invoke();
+    // }
 }

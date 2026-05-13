@@ -73,25 +73,38 @@ public class MazeManager : MonoBehaviour
     public XRKnob knob;
     private float prevKnobValue = 0;
     private float knobValueDiff = 0;
+
+    private bool canPCFunction = false;
     
     void Awake()
     {        
-        _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _closeSpawnPoints = new List<Transform>();
     }
 
     private void OnEnable()
     {
         ButtonInteract.OnTriggerButton += Activate;
+
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
     }
 
     private void OnDisable()
     {
         ButtonInteract.OnTriggerButton -= Activate;
+
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+    }
+
+    private void GetPCPlayerData()
+    {
+        _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+        canPCFunction = true;
     }
 
     void FixedUpdate()
     {
+        if(!canPCFunction) return;
+        
         if (_isMovingObject)
         {
             Vector3 targetPosition = new Vector3(

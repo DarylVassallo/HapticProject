@@ -41,7 +41,6 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void Awake()
     {
-        Debug.Log("canMove 1: " + canMove);
         if (playerInput == null)
         {
             playerInput = FindObjectOfType<PlayerInput>();

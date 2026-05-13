@@ -10,13 +10,13 @@ public class AchievementManager : MonoBehaviour
     private bool _checkOnAngels;
     private bool _checkOnLevel;
 
+    private bool canPCFunction = false;
+    private bool canVRFunction = false;
+
     private void Awake()
     {
         _checkOnAngels = false;
         _checkOnLevel = false;
-
-        _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
-        _vrPlayerProfile = GameObject.FindGameObjectWithTag("VRPlayer").transform.GetComponent<PlayerProfile>();
 
         for (int i = 0; i < achievementList.Length; i++)
         {
@@ -34,6 +34,9 @@ public class AchievementManager : MonoBehaviour
 
     private void OnEnable()
     {
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+
         if(_checkOnAngels)
         {
             Health.OnKilledEnemy += UpdateAngelAchievements;
@@ -47,6 +50,9 @@ public class AchievementManager : MonoBehaviour
 
     private void OnDisable()
     {
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+
         if(_checkOnAngels)
         {
             Health.OnKilledEnemy -= UpdateAngelAchievements;
@@ -56,6 +62,18 @@ public class AchievementManager : MonoBehaviour
         {
             WinPlatform.OnWinGame -= UpdateLevelAchievements;
         }
+    }
+
+    private void GetPCPlayerData()
+    {
+        _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
+        canPCFunction = true;
+    }
+
+    private void GetVRPlayerData()
+    {
+        _vrPlayerProfile = GameObject.FindGameObjectWithTag("VRPlayer").transform.GetComponent<PlayerProfile>();
+        canVRFunction = true;
     }
 
     private void UpdateAngelAchievements(int _addedScore, int _playerType)

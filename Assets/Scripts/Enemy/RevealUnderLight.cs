@@ -22,18 +22,44 @@ public class RevealUnderLight : MonoBehaviour
     float range;
     float strength;
 
+
+    private bool canPCFunction = false;
+    private bool canVRFunction = false;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Awake()
     {
         _hiddenMaterial = GetComponent<Renderer>().material;
-        
-        _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
-        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
     }
 
-    // Update is called once per frame
+    private void OnEnable()
+    {
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+    }
+
+    private void OnDisable()
+    {
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+    }
+
+    private void GetPCPlayerData()
+    {
+        _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
+        canPCFunction = true;
+    }
+
+    private void GetVRPlayerData()
+    {
+        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        canVRFunction = true;
+    }
+
     void FixedUpdate()
     {
+        if(!canPCFunction || !canVRFunction) return;
+
         if (isEffectedByLight)
         {
             if (CheckLightStrength() >= 0.15f)
