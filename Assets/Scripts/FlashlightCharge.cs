@@ -27,6 +27,8 @@ public class FlashlightCharge : MonoBehaviour
 
     [SerializeField] private bool canUseChargeStation;
 
+    public static event Action<float> OnChangeChargeBar;
+
     private void Awake()
     {
         _spotLight = this.GetComponentInChildren<Light>();
@@ -126,5 +128,7 @@ public class FlashlightCharge : MonoBehaviour
                                                 chargeBar.localScale.y,
                                                 _maxChargeBarLength * (_charge / 100f)
                                             );
+
+        if (this.CompareTag("PCFlashLight")) OnChangeChargeBar?.Invoke(_charge);
     }
 }

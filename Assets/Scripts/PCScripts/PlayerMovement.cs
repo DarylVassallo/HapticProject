@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 using Unity.Netcode;
 using Unity.Cinemachine;
 
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
 //This script allows the PC Player to move, sprint, jump, and crouch (modified to using input actions from an input manager script).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
 public class PlayerMovement : NetworkBehaviour
@@ -26,6 +29,7 @@ public class PlayerMovement : NetworkBehaviour
 
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
+    private CinemachineInputAxisController _inputAxisController;
 
     private CharacterController _characterController;
     private Vector2 _moveInput;
@@ -35,12 +39,24 @@ public class PlayerMovement : NetworkBehaviour
     private float _verticalVelocity;
     private float _targetHeight;
 
+    private Volume volume;
+
+    [SerializeField] private float bobSpeed = 7f;
+    [SerializeField] private float bobAmount = 0.2f;
+    private float healthBobAmount = 1;
+    private float totalBobTimer = 0f;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
         _targetHeight = standingHeight;
 
         CinemachineCore.GetInputAxis = HandleAxisInput;
+
+        _inputAxisController = cameraTransform.GetComponent<CinemachineInputAxisController>();
+
+        volume = GameObject.FindGameObjectWithTag("GlobalVolume").GetComponent<Volume>();
+        volume.weight = 0f;
     }
 
     private float HandleAxisInput(string axisName)
@@ -61,6 +77,8 @@ public class PlayerMovement : NetworkBehaviour
         PCPlayerInputManager.OnJump += Jump;
         PCPlayerInputManager.OnCrouch += Crouch;
         PCPlayerInputManager.OnSprint += Sprint;
+
+        Health.OnChangeHealthCamera += ChangeHealthCamera;
     }
 
     private void OnDisable()
@@ -69,6 +87,8 @@ public class PlayerMovement : NetworkBehaviour
         PCPlayerInputManager.OnJump -= Jump;
         PCPlayerInputManager.OnCrouch -= Crouch;
         PCPlayerInputManager.OnSprint -= Sprint;
+
+        Health.OnChangeHealthCamera += ChangeHealthCamera;
     }
 
     private void ChangeMotion(Vector2 input)
@@ -79,25 +99,16 @@ public class PlayerMovement : NetworkBehaviour
     }
     private void FixedUpdate()
     {
-
         if (!IsOwner)
         {
-            GetComponent<Renderer>().material.color = Color.blue;
-            // transform.rotation = rotation.Value;
-            
+            GetComponent<Renderer>().material.color = Color.blue;            
             cameraTransform.GetComponent<CinemachineCamera>().enabled = false;
-            // GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CinemachineBrain>().enabled = false;
-            // cameraTransform.GetComponent<CinemachineInputAxisController>().enabled = false;
             return;
         }
         else
         {
             GetComponent<Renderer>().material.color = Color.red;
-            // rotation.Value = transform.rotation;
-
             cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
-            // GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CinemachineBrain>().enabled = true;
-            // cameraTransform.GetComponent<CinemachineInputAxisController>().enabled = true;
         }
 
         _isGrounded = _characterController.isGrounded;
@@ -151,6 +162,12 @@ public class PlayerMovement : NetworkBehaviour
         _isRunning = context.performed;
     }
 
+    private void ChangeHealthCamera(float _currentHealth)
+    {
+        healthBobAmount = _currentHealth / 100f;
+        volume.weight = Mathf.Lerp(0f, 1f, 1f - healthBobAmount);
+    }
+
     private void HandleGravity()
     {
         if(_isGrounded && _verticalVelocity < 0)
@@ -164,8 +181,19 @@ public class PlayerMovement : NetworkBehaviour
     private void HandleMovement()
     {
         var move = cameraTransform.TransformDirection(new Vector3(_moveInput.x, 0, _moveInput.y)).normalized;
+        
+        if(move != new Vector3(0, 0, 0))
+        {
+            //Used ChatGPT to generate initial bobbing logic
+            totalBobTimer += Time.deltaTime * bobSpeed;
+            cameraTransform.parent.transform.localPosition = new Vector3(   cameraTransform.parent.transform.localPosition.x, 
+                                                                            Mathf.Sin(totalBobTimer) * (bobAmount * (1f - healthBobAmount)), 
+                                                                            cameraTransform.parent.transform.localPosition.z);
+        }
+        
         var currentSpeed = _isCrouching ? crouchSpeed : _isRunning ? runSpeed : walkSpeed;
         var finalMove = move * currentSpeed;
+
         finalMove.y = _verticalVelocity;
 
         var collisions = _characterController.Move(finalMove * Time.deltaTime);

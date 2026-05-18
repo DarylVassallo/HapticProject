@@ -116,7 +116,7 @@ public class MazeManager : MonoBehaviour
             movingObject.position = Vector3.Lerp(
                 movingObject.position,
                 targetPosition,
-                Time.deltaTime * 2f // speed factor
+                Time.deltaTime * 2f
             );
 
             if (Mathf.Abs(movingObject.position.y - lerpTargetY) <= 0.05)

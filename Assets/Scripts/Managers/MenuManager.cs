@@ -11,6 +11,8 @@ using UnityEngine.UI;
 
 using UnityEngine.InputSystem;
 
+using Unity.Netcode;
+
 //This script controls all the options in the Pause Menu
 public class MenuManager : MonoBehaviour
 {
@@ -29,6 +31,8 @@ public class MenuManager : MonoBehaviour
     [SerializeField] private GameObject pcPlayerUI;
     [SerializeField] private Transform pcHealthBar;
     private float _maxHealthBarLength;
+    [SerializeField] private Transform pcChargeBar;
+    private float _maxChargeBarLength;
     private TMP_Text _scoreUI;
 
     public static event Action<bool> OnToggleAll;
@@ -53,13 +57,17 @@ public class MenuManager : MonoBehaviour
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
 
         _maxHealthBarLength = pcHealthBar.localScale.y;
+        _maxChargeBarLength = pcChargeBar.localScale.y;
     }
 
     private void OnEnable()
     {
         PCPlayerInputManager.OnCancel += TogglePauseMenu;
+        
         Health.OnGameOver += ToggleGameOverMenu;
         Health.OnChangeHealthBar += ChangeHealthBar;
+        FlashlightCharge.OnChangeChargeBar += ChangeChargeBar;
+
         WinPlatform.OnWinGame += ToggleWinGameMenu;
         PlayerProfileManager.OnUpdateScore += UpdateUIScore;
     }
@@ -67,8 +75,11 @@ public class MenuManager : MonoBehaviour
     private void OnDisable()
     {
         PCPlayerInputManager.OnCancel -= TogglePauseMenu;
+
         Health.OnGameOver -= ToggleGameOverMenu;
         Health.OnChangeHealthBar -= ChangeHealthBar;
+        FlashlightCharge.OnChangeChargeBar -= ChangeChargeBar;
+
         WinPlatform.OnWinGame -= ToggleWinGameMenu;
         PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
     }
@@ -178,7 +189,17 @@ public class MenuManager : MonoBehaviour
 
     private void ChangeHealthBar(float _currentHealth)
     {
-        pcHealthBar.localScale = new Vector3(_maxHealthBarLength * (_currentHealth / 100f), pcHealthBar.localScale.y, pcHealthBar.localScale.z);
+        ChangeBar(pcHealthBar, _maxHealthBarLength, _currentHealth / 100f);
+    }
+
+    private void ChangeChargeBar(float _currentCharge)
+    {
+       ChangeBar(pcChargeBar, _maxChargeBarLength, _currentCharge / 100f);
+    }
+    
+    private void ChangeBar(Transform _bar, float _maxBarLength, float _newValue)
+    {
+        _bar.localScale = new Vector3(_maxBarLength * _newValue, _bar.localScale.y, _bar.localScale.z);
     }
     
     public void ToggleGameOverMenu()
@@ -262,6 +283,7 @@ public class MenuManager : MonoBehaviour
     
     public void PlayLevel(string _sceneName)
     {
+        NetworkManager.Singleton.Shutdown();
         SceneManager.LoadScene(_sceneName);
     }
 

@@ -47,18 +47,19 @@ public class RevealUnderLight : MonoBehaviour
     private void GetPCPlayerData()
     {
         _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
+        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
         canPCFunction = true;
     }
 
     private void GetVRPlayerData()
     {
-        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        // _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
         canVRFunction = true;
     }
 
     void FixedUpdate()
     {
-        if(!canPCFunction || !canVRFunction) return;
+        if(!canPCFunction && !canVRFunction) return;
 
         if (isEffectedByLight)
         {

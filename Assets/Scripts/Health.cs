@@ -9,6 +9,7 @@ public class Health : MonoBehaviour
     public static event Action<int, int> OnKilledEnemy;
 
     public static event Action<float> OnChangeHealthBar;
+    public static event Action<float> OnChangeHealthCamera;
 
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
@@ -28,7 +29,11 @@ public class Health : MonoBehaviour
         }
         else
         {
-            if (this.CompareTag("PCPlayer")) OnChangeHealthBar?.Invoke(health);
+            if (this.CompareTag("PCPlayer"))
+            {
+                OnChangeHealthBar?.Invoke(health);
+                OnChangeHealthCamera?.Invoke(health);
+            }
         }
     }
 

@@ -71,18 +71,21 @@ public class StatueWithSpotlight : MonoBehaviour
         _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
         _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
+        
+        _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        
         canPCFunction = true;
     }
 
     private void GetVRPlayerData()
     {
-        _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        // _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
         canVRFunction = true;
     }
 
     void FixedUpdate()
     {
-        if(!canPCFunction || !canVRFunction) return;
+        if(!canPCFunction && !canVRFunction) return;
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
         
@@ -176,6 +179,7 @@ public class StatueWithSpotlight : MonoBehaviour
     //Used ChatGPT here
     bool IsInsideSpotLight(Light _playerSpotLight)
     {
+        if (_playerSpotLight == null) return false;
         if (!_playerSpotLight.enabled) return false;
 
         _positionDifference = transform.position - _playerSpotLight.transform.position;

@@ -3,6 +3,9 @@ using Unity.Netcode;
 using UnityEngine.UI;
 using System;
 
+using UnityEngine.XR.Interaction.Toolkit.UI;
+using UnityEngine.InputSystem.UI;
+
 //This script uses UI buttons to create the host, client, and server for the multiplayer network.
 public class ConnectUIScript : MonoBehaviour
 {
@@ -17,7 +20,11 @@ public class ConnectUIScript : MonoBehaviour
     [SerializeField] private Transform vrSpawnPoint;
 
     private GameObject mainCamera;
+    private InputSystemUIInputModule pcInput;
+
     private GameObject vrComponent;
+    private XRUIInputModule vrInput;
+
 
     public static event Action OnCreatedPCPlayer;
     public static event Action OnCreatedVRPlayer;
@@ -28,7 +35,10 @@ public class ConnectUIScript : MonoBehaviour
     void Start()
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
+
         vrComponent = GameObject.FindGameObjectWithTag("VRPlayer");
+        vrInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<XRUIInputModule>();
 
         Debug.Log("mainCamera: " + mainCamera);
         Debug.Log("vrComponent: " + vrComponent);
@@ -97,7 +107,10 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.visible = false;
 
         mainCamera.SetActive(false);
+        pcInput.enabled = false;
+
         vrComponent.SetActive(true);
+        vrInput.enabled = true;
 
         NetworkManager.Singleton.StartHost();
 
@@ -112,7 +125,10 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.visible = false;
 
         mainCamera.SetActive(true);
+        pcInput.enabled = true;
+
         vrComponent.SetActive(false);
+        vrInput.enabled = false;
 
         NetworkManager.Singleton.StartHost();
 
@@ -126,7 +142,10 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.visible = false;
 
         mainCamera.SetActive(false);
+        pcInput.enabled = false;
+
         vrComponent.SetActive(true);
+        vrInput.enabled = true;
 
         NetworkManager.Singleton.StartHost();
 
@@ -140,7 +159,10 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.visible = false;
         
         mainCamera.SetActive(true);
+        pcInput.enabled = true;
+
         vrComponent.SetActive(false);
+        vrInput.enabled = false;
 
         NetworkManager.Singleton.StartClient();
 

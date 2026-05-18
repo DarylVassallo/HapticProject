@@ -10,6 +10,9 @@ TagManager:
   - VRPlayer
   - Button
   - VRFlashLight
+  - EventSystem
+  - PCFlashLight
+  - GlobalVolume
   layers:
   - Default
   - TransparentFX
