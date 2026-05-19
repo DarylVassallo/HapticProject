@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System;
 using Unity.VRTemplate;
 
+using UnityEngine.Events;
+
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : MonoBehaviour
 {
@@ -32,14 +34,39 @@ public class MazeManager : MonoBehaviour
 
     private List<Transform> _closeSpawnPoints;
 
+    [System.Serializable]
+    public struct HiddenSwitches
+    {
+        public ShapeType shape;
+        public ButtonType[] buttonOrder;
+        public UnityEvent activateMethod;
+    }
+    public HiddenSwitches[] hiddenSwitches;
+
     public enum ShapeType
     {
+        None,
         Triangle,
         Square,
         Circle,
         Pentagon,
         Diamond
     }
+
+    public enum ButtonType
+    {
+        None,
+        Square,
+        Circle,
+        Triangle,
+        Cross,
+        Star
+    }
+
+    private ShapeType[] currentShapeOrder = new ShapeType[5];
+    private ButtonType[] currentButtonOrder = new ButtonType[5];
+    private int entryNum = 0;
+
 
     [Header("Triangle")]
     [SerializeField] private float triangleChancesOfAngel;
@@ -83,14 +110,14 @@ public class MazeManager : MonoBehaviour
 
     private void OnEnable()
     {
-        ButtonInteract.OnTriggerButton += Activate;
+        ButtonInteract.OnTriggerButton += PressedButton;
 
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
     }
 
     private void OnDisable()
     {
-        ButtonInteract.OnTriggerButton -= Activate;
+        ButtonInteract.OnTriggerButton -= PressedButton;
 
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
     }
@@ -140,45 +167,101 @@ public class MazeManager : MonoBehaviour
         // if (_isRotatingThirdBridges) thirdBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
     }
 
-    private void Activate(ShapeType shape)
+    public void ActivateWheel()
     {
-        switch(shape)
+        
+    }
+
+    private void PressedButton(ShapeType _shape, ButtonType button)
+    {
+        for(int i = 0; i < currentShapeOrder.Length; i++)
         {
-            case ShapeType.Triangle:
-                _isTriangleActive = !_isTriangleActive;
-                StartMovingObject(firstBridges, -20f, 0f);
-                AngelCreation(triangleChancesOfAngel, triangleMaxAngels);
+            if(currentShapeOrder[i] == ShapeType.None)
+            {
                 break;
+            } 
 
-            case ShapeType.Square:
-                _isSquareActive = !_isSquareActive;
-                AngelCreation(squareChancesOfAngel, squareMaxAngels);
+            if(currentShapeOrder[i] != _shape)
+            {
+                currentShapeOrder = new ShapeType[5];
+                currentButtonOrder = new ButtonType[5];
+                entryNum = 0;
                 break;
-
-            case ShapeType.Circle:
-                _isCircleActive = !_isCircleActive;
-                DisableMotion();
-                AngelCreation(circleChancesOfAngel, circleMaxAngels);
-                break;
-
-            case ShapeType.Pentagon:
-                _isPentagonActive = !_isPentagonActive;
-                StartMovingObject(signs, -1f, 4f);
-                AngelCreation(pentagonChancesOfAngel, pentagonMaxAngels);
-                break;
-
-            case ShapeType.Diamond:
-                _isDiamondActive = !_isDiamondActive;
-                DrainFlashlightCharge();
-                AngelCreation(diamondChancesOfAngel, diamondMaxAngels);
-                break;
+            }
         }
+        
+        currentShapeOrder[entryNum] = _shape;
+        currentButtonOrder[entryNum] = button;
+        entryNum++;
 
-        if (_isSquareActive && _isDiamondActive && Mathf.Abs(secondBridges.position.y - 0) > 1)
+        for (int i = 0; i < hiddenSwitches.Length; i++)
         {
-            StartMovingObject(secondBridges, -20f, 0f);
+            if(hiddenSwitches[i].shape == _shape)
+            {
+                for (int j = 0; j < hiddenSwitches[i].buttonOrder.Length; j++)
+                {
+                    if(currentButtonOrder[j] == ButtonType.None)
+                    {
+                        return; 
+                    }
+
+                    if (hiddenSwitches[i].buttonOrder[j] != currentButtonOrder[j])
+                    {
+                        currentShapeOrder = new ShapeType[5];
+                        currentButtonOrder = new ButtonType[5];
+                        entryNum = 0;
+                        return;
+                    }
+                }
+
+                currentShapeOrder = new ShapeType[5];
+                currentButtonOrder = new ButtonType[5];
+                entryNum = 0;
+                hiddenSwitches[i].activateMethod.Invoke();
+                return;
+            }
         }
     }
+
+    // private void Activate(ShapeType shape)
+    // {
+    //     switch(shape)
+    //     {
+    //         case ShapeType.Triangle:
+    //             _isTriangleActive = !_isTriangleActive;
+    //             StartMovingObject(firstBridges, -20f, 0f);
+    //             AngelCreation(triangleChancesOfAngel, triangleMaxAngels);
+    //             break;
+
+    //         case ShapeType.Square:
+    //             _isSquareActive = !_isSquareActive;
+    //             AngelCreation(squareChancesOfAngel, squareMaxAngels);
+    //             break;
+
+    //         case ShapeType.Circle:
+    //             _isCircleActive = !_isCircleActive;
+    //             DisableMotion();
+    //             AngelCreation(circleChancesOfAngel, circleMaxAngels);
+    //             break;
+
+    //         case ShapeType.Pentagon:
+    //             _isPentagonActive = !_isPentagonActive;
+    //             StartMovingObject(signs, -1f, 4f);
+    //             AngelCreation(pentagonChancesOfAngel, pentagonMaxAngels);
+    //             break;
+
+    //         case ShapeType.Diamond:
+    //             _isDiamondActive = !_isDiamondActive;
+    //             DrainFlashlightCharge();
+    //             AngelCreation(diamondChancesOfAngel, diamondMaxAngels);
+    //             break;
+    //     }
+
+    //     if (_isSquareActive && _isDiamondActive && Mathf.Abs(secondBridges.position.y - 0) > 1)
+    //     {
+    //         StartMovingObject(secondBridges, -20f, 0f);
+    //     }
+    // }
 
     private void DisableMotion()
     {

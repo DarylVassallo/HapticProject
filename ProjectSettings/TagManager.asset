@@ -13,6 +13,8 @@ TagManager:
   - EventSystem
   - PCFlashLight
   - GlobalVolume
+  - LeftHandInteractor
+  - RightHandInteractor
   layers:
   - Default
   - TransparentFX
@@ -23,11 +25,11 @@ TagManager:
   - LeftHandPhysics
   - RightHandPhysics
   - ButtonInteractable
-  - 
-  - 
-  - 
-  - 
-  - 
+  - LeftHandInteractable
+  - RightHandInteractable
+  - BothHandInteractable
+  - InvisibleToVRPlayer
+  - InvisibleToPCPlayer
   - 
   - 
   - 
