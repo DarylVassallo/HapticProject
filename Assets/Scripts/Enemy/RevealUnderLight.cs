@@ -10,27 +10,38 @@ public class RevealUnderLight : MonoBehaviour
     [SerializeField] private bool isPCInteractable;
     [SerializeField] private bool isVRInteractable;
     [SerializeField] private bool isEffectedByLight;
+    [SerializeField] private bool isReversed;
     private bool _isInteractable;
 
-    Vector3 positionDifference;
-    float positionDistance;
-    Vector3 positionDirection;
-    Vector3 spotlightDirection;
-    float scale;
-    float angleRad;
-    float threshold;
-    float range;
-    float strength;
+    private Vector3 _positionDifference;
+    private float _positionDistance;
+    private Vector3 _positionDirection;
+    private Vector3 _spotlightDirection;
+    private float _scale;
+    private float _angleRad;
+    private float _threshold;
+    private float _range;
+    private float _strength;
+    private float _totalStrength;
 
+    private bool _canPCFunction = false;
+    private bool _canVRFunction = false;
 
-    private bool canPCFunction = false;
-    private bool canVRFunction = false;
+    private float _strengthLimit;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Awake()
     {
         _hiddenMaterial = GetComponent<Renderer>().material;
         _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+
+        if (isReversed)
+        {
+            _strengthLimit = 1f;
+        }else
+        {
+            _strengthLimit = 0.15f;
+        }
     }
 
     private void OnEnable()
@@ -48,22 +59,23 @@ public class RevealUnderLight : MonoBehaviour
     private void GetPCPlayerData()
     {
         _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
-        canPCFunction = true;
+        _canPCFunction = true;
     }
 
     private void GetVRPlayerData()
     {
         // _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
-        canVRFunction = true;
+        _canVRFunction = true;
     }
 
     void FixedUpdate()
     {
-        if(!canPCFunction && !canVRFunction) return;
+        if(!_canPCFunction && !_canVRFunction) return;
 
         if (isEffectedByLight)
         {
-            if (CheckLightStrength() >= 0.15f)
+            Debug.Log(this.gameObject + ": " + CheckLightStrength());
+            if (CheckLightStrength() >= _strengthLimit)
             {
                 if(!_isInteractable)
                 {
@@ -122,22 +134,35 @@ public class RevealUnderLight : MonoBehaviour
         }
     }
 
+    private float CheckPlayerLightStrength(Light _spotLight)
+    {
+        _positionDifference = transform.position - _spotLight.transform.position;
+        _positionDistance = _positionDifference.magnitude;
+        _positionDirection = _positionDifference.normalized;
+
+        _spotlightDirection = _spotLight.transform.forward.normalized;
+
+        _scale = Vector3.Dot(_positionDirection, _spotlightDirection);
+
+        _angleRad = _spotLight.spotAngle * 0.5f * Mathf.Deg2Rad;
+        _threshold = Mathf.Cos(_angleRad);
+
+        _range = Mathf.Clamp01(1.0f - (_positionDistance * _positionDistance) / ((_spotLight.range * 0.5f) * (_spotLight.range * 0.5f)));
+        _strength = Mathf.Clamp01((_scale - _threshold)) * _range;
+
+        return _strength;
+    }
+
     private float CheckLightStrength()
     {
-        positionDifference = transform.position - _vrSpotLight.transform.position;
-        positionDistance = positionDifference.magnitude;
-        positionDirection = positionDifference.normalized;
+        _totalStrength = 0;
 
-        spotlightDirection = _vrSpotLight.transform.forward.normalized;
+        if(isPCInteractable) _totalStrength += CheckPlayerLightStrength(_pcSpotLight);
+        if(isVRInteractable) _totalStrength += CheckPlayerLightStrength(_vrSpotLight);
+        _totalStrength = Mathf.Clamp01(_totalStrength);
 
-        scale = Vector3.Dot(positionDirection, spotlightDirection);
+        if(isReversed) _totalStrength = 1 - _totalStrength;
 
-        angleRad = _vrSpotLight.spotAngle * 0.5f * Mathf.Deg2Rad;
-        threshold = Mathf.Cos(angleRad);
-
-        range = Mathf.Clamp01(1.0f - (positionDistance * positionDistance) / ((_vrSpotLight.range * 0.5f) * (_vrSpotLight.range * 0.5f)));
-        strength = Mathf.Clamp01((scale - threshold)) * range;
-
-        return strength;
+        return _totalStrength;
     }
 }

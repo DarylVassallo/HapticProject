@@ -19,8 +19,6 @@ public class FlashlightCharge : MonoBehaviour
     [SerializeField] private float chargeIntensity;
 
     [SerializeField] private Transform flashlightLever;
-
-    private int _suddenDrain;
     
     [SerializeField] private Transform chargeBar;
     private float _maxChargeBarLength;
@@ -28,6 +26,8 @@ public class FlashlightCharge : MonoBehaviour
     [SerializeField] private bool canUseChargeStation;
 
     public static event Action<float> OnChangeChargeBar;
+
+    private float _decayMultiplier;
 
     private void Awake()
     {
@@ -37,14 +37,15 @@ public class FlashlightCharge : MonoBehaviour
         _maxSpotLightIntensity = _spotLight.intensity;
         _maxSpotLightRange = _spotLight.range;
 
-        _suddenDrain = 0;
+        _decayMultiplier = 1;
 
         _maxChargeBarLength = chargeBar.localScale.z;
     }
 
     private void OnEnable()
     {
-        MazeManager.OnDrainFlashlight += DrainFlashlight;
+        MazeManager.EnableDrainFlashlight += EnableDrainFlashlight;
+        MazeManager.DisableDrainFlashlight += DisableDrainFlashlight;
 
         if(canUseChargeStation)
         {
@@ -59,7 +60,8 @@ public class FlashlightCharge : MonoBehaviour
 
     private void OnDisable()
     {
-        MazeManager.OnDrainFlashlight -= DrainFlashlight;
+        MazeManager.EnableDrainFlashlight -= EnableDrainFlashlight;
+        MazeManager.DisableDrainFlashlight -= DisableDrainFlashlight;
 
         if(canUseChargeStation)
         {
@@ -72,10 +74,14 @@ public class FlashlightCharge : MonoBehaviour
         }
     }
 
-    private void DrainFlashlight()
+    private void EnableDrainFlashlight()
     {
-        _suddenDrain = 100;
-        // ChangeSpotLightStrength(-decayRate * 999999, _isCharging ? chargeIntensity : 1f);
+        _decayMultiplier = 100f;
+    }
+
+    private void DisableDrainFlashlight()
+    {
+        _decayMultiplier = 1f;
     }
 
     private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
@@ -97,21 +103,15 @@ public class FlashlightCharge : MonoBehaviour
 
     private void FixedUpdate()
     {      
-        if (_suddenDrain > 0)
-        {
-            ChangeSpotLightStrength(-decayRate * 100, _isCharging ? chargeIntensity : 1f);
-            _suddenDrain--;
-        }else{
-            if ((_charge >= 100 && _isCharging) || (_charge <= 0 && !_isCharging && _spotLight.enabled)) return;
+        if ((_charge >= 100 && _isCharging) || (_charge <= 0 && !_isCharging && _spotLight.enabled)) return;
 
-            if (_isCharging && _charge < 100)
-            {
-                _spotLight.enabled = true;
-                ChangeSpotLightStrength(chargeRate, _isCharging ? chargeIntensity : 1f);
-                flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
-            }else{
-                ChangeSpotLightStrength(-decayRate, _isCharging ? chargeIntensity : 1f);
-            }
+        if (_isCharging && _charge < 100)
+        {
+            _spotLight.enabled = true;
+            ChangeSpotLightStrength(chargeRate / _decayMultiplier, _isCharging ? chargeIntensity : 1f);
+            flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+        }else{
+            ChangeSpotLightStrength(-decayRate * _decayMultiplier, _isCharging ? chargeIntensity : 1f);
         }
     }
 

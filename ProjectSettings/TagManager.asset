@@ -15,6 +15,7 @@ TagManager:
   - GlobalVolume
   - LeftHandInteractor
   - RightHandInteractor
+  - ActiveLight
   layers:
   - Default
   - TransparentFX

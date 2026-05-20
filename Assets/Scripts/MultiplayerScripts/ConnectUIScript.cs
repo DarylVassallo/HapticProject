@@ -53,7 +53,7 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.visible = true;
 
         // DebugStartVRPlayer();
-        // DebugStartPCPlayer();
+        DebugStartPCPlayer();
     }
 
     private void OnEnable()

@@ -2,6 +2,8 @@ Shader "Custom/RevealingUnderLight_URP"
 {
     Properties
     {
+        _ReverseStrength("Reverse Strength", Integer) = 0
+        
         _MyColor("Color", Color) = (1,1,1,1)
         _MyMainTex("Albedo (RGB)", 2D) = "white" {}
 
@@ -57,6 +59,8 @@ Shader "Custom/RevealingUnderLight_URP"
             SAMPLER(sampler_MyMainTex);
 
             CBUFFER_START(UnityPerMaterial)
+                int _ReverseStrength;
+                
                 float4 _MyColor;
                 float4 _MyMainTex_ST;
 
@@ -162,7 +166,7 @@ Shader "Custom/RevealingUnderLight_URP"
             								i.positionWS);
             	
             	float strength = saturate(pcStrength + vrStrength);
-            	
+            	strength = lerp(strength, 1.0 - strength, _ReverseStrength);
             	
                 half4 tex = SAMPLE_TEXTURE2D(_MyMainTex, sampler_MyMainTex, i.uv) * _MyColor;
 

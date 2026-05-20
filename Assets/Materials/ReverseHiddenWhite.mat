@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Hidden White
+  m_Name: ReverseHiddenWhite
   m_Shader: {fileID: 4800000, guid: aef6db2188ce7d7429ff41b03abb9ebc, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -106,7 +106,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints:
-    - _ReverseStrength: 0
+    - _ReverseStrength: 1
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0

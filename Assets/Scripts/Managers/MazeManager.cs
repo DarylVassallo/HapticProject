@@ -4,6 +4,7 @@ using System;
 using Unity.VRTemplate;
 
 using UnityEngine.Events;
+using Unity.AI.Navigation;
 
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : MonoBehaviour
@@ -13,15 +14,6 @@ public class MazeManager : MonoBehaviour
     private bool _isMovingObject;
     private Transform movingObject;
 
-    [Header("Bridges")]
-    [SerializeField] private Transform firstBridges;
-    private bool _isRotatingFirstBridges;
-
-    [SerializeField] private Transform secondBridges;
-    private bool _isRotatingSecondBridges;
-
-    [SerializeField] private Transform thirdBridges;
-    private bool _isRotatingThirdBridges;
 
     [SerializeField] private float bridgeRotateSpeed;
 
@@ -67,58 +59,46 @@ public class MazeManager : MonoBehaviour
     private ButtonType[] currentButtonOrder = new ButtonType[5];
     private int entryNum = 0;
 
+    public static event Action EnableDrainFlashlight;
+    public static event Action DisableDrainFlashlight;
+    public static event Action GivePCPlayerHealth;
 
-    [Header("Triangle")]
-    [SerializeField] private float triangleChancesOfAngel;
-    [SerializeField] private int triangleMaxAngels;
-    private bool _isTriangleActive;
+    [SerializeField] private Transform halfBridges;
 
-    [Header("Square")]
-    [SerializeField] private float squareChancesOfAngel;
-    [SerializeField] private int squareMaxAngels;
-    private bool _isSquareActive;
+    [SerializeField] private Transform wheelObject;
+    private XRKnob wheelKnob;
+    private bool isWheelActive;
+    private float prevWheelKnobValue = 0;
+    private float wheelKnobValueDiff = 0;
 
-    [Header("Circle")]
-    [SerializeField] private float circleChancesOfAngel;
-    [SerializeField] private int circleMaxAngels;
-    private bool _isCircleActive;
-
-    [Header("Pentagon")]
-    [SerializeField] private float pentagonChancesOfAngel;
-    [SerializeField] private int pentagonMaxAngels;
-    private bool _isPentagonActive;
-
-    [Header("Diamond")]
-    [SerializeField] private float diamondChancesOfAngel;
-    [SerializeField] private int diamondMaxAngels;
-    private bool _isDiamondActive;
-
-    private float lerpTargetY;
-
-    public static event Action OnDrainFlashlight;
-
-    public XRKnob knob;
-    private float prevKnobValue = 0;
-    private float knobValueDiff = 0;
+    [SerializeField] private Transform leverObject;
+    private bool isLeverActive;
 
     private bool canPCFunction = false;
+
     
+    [SerializeField] private Material activeMaterial;
+
+    [SerializeField] private GameObject crookedBridge;
+
+    private bool _isNewNavMeshAvailable = false;
+
+    [SerializeField] private NavMeshSurface levelGround;
     void Awake()
     {        
         _closeSpawnPoints = new List<Transform>();
+        wheelKnob = wheelObject.GetComponentInChildren<XRKnob>();
     }
 
     private void OnEnable()
     {
         ButtonInteract.OnTriggerButton += PressedButton;
-
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
     }
 
     private void OnDisable()
     {
         ButtonInteract.OnTriggerButton -= PressedButton;
-
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
     }
 
@@ -130,46 +110,58 @@ public class MazeManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!canPCFunction) return;
-        
-        if (_isMovingObject)
+        if(!canPCFunction || (!isWheelActive)) return;
+
+        if(isWheelActive)
         {
-            Vector3 targetPosition = new Vector3(
-                movingObject.position.x,
-                lerpTargetY,
-                movingObject.position.z
-            );
+            wheelKnobValueDiff = wheelKnob.value - prevWheelKnobValue;
+            halfBridges.Rotate(0.0f, wheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+            prevWheelKnobValue = wheelKnob.value;
 
-            movingObject.position = Vector3.Lerp(
-                movingObject.position,
-                targetPosition,
-                Time.deltaTime * 2f
-            );
-
-            if (Mathf.Abs(movingObject.position.y - lerpTargetY) <= 0.05)
+            if(wheelKnobValueDiff > 0)
             {
-                movingObject.position = new Vector3(movingObject.position.x, lerpTargetY, movingObject.position.z);
-                _isMovingObject = !_isMovingObject;
+                _isNewNavMeshAvailable = true;
+            }else if(wheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
+            {
+                _isNewNavMeshAvailable = false;
+                levelGround.RemoveData();
+                levelGround.BuildNavMesh();
             }
         }
-
-        knobValueDiff = knob.value - prevKnobValue;
-        firstBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
-        secondBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
-        thirdBridges.Rotate(0.0f, knobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
-
-        prevKnobValue = knob.value;
-
-        // if (_isRotatingFirstBridges) firstBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
-
-        // if (_isRotatingSecondBridges) secondBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
-
-        // if (_isRotatingThirdBridges) thirdBridges.Rotate(0.0f, Time.deltaTime * bridgeRotateSpeed, 0.0f, Space.Self);
     }
 
     public void ActivateWheel()
     {
-        
+        isWheelActive = true;
+        wheelObject.Find("ActiveLight").GetComponent<Renderer>().material = activeMaterial;
+    }
+
+    public void ActivateLever()
+    {
+        isLeverActive = true;
+        leverObject.Find("ActiveLight").GetComponent<Renderer>().material = activeMaterial;
+    }
+
+    public void EnableDrainFlashlightCharge()
+    {
+        crookedBridge.SetActive(true);
+        levelGround.RemoveData();
+        levelGround.BuildNavMesh();
+
+        EnableDrainFlashlight?.Invoke();
+    }
+    public void DisableDrainFlashlightCharge()
+    {
+        crookedBridge.SetActive(false);
+        levelGround.RemoveData();
+        levelGround.BuildNavMesh();
+
+        DisableDrainFlashlight?.Invoke();
+    }
+
+    public void GivePCPlayerHealthByLever()
+    {
+        GivePCPlayerHealth?.Invoke();
     }
 
     private void PressedButton(ShapeType _shape, ButtonType button)
@@ -223,46 +215,6 @@ public class MazeManager : MonoBehaviour
         }
     }
 
-    // private void Activate(ShapeType shape)
-    // {
-    //     switch(shape)
-    //     {
-    //         case ShapeType.Triangle:
-    //             _isTriangleActive = !_isTriangleActive;
-    //             StartMovingObject(firstBridges, -20f, 0f);
-    //             AngelCreation(triangleChancesOfAngel, triangleMaxAngels);
-    //             break;
-
-    //         case ShapeType.Square:
-    //             _isSquareActive = !_isSquareActive;
-    //             AngelCreation(squareChancesOfAngel, squareMaxAngels);
-    //             break;
-
-    //         case ShapeType.Circle:
-    //             _isCircleActive = !_isCircleActive;
-    //             DisableMotion();
-    //             AngelCreation(circleChancesOfAngel, circleMaxAngels);
-    //             break;
-
-    //         case ShapeType.Pentagon:
-    //             _isPentagonActive = !_isPentagonActive;
-    //             StartMovingObject(signs, -1f, 4f);
-    //             AngelCreation(pentagonChancesOfAngel, pentagonMaxAngels);
-    //             break;
-
-    //         case ShapeType.Diamond:
-    //             _isDiamondActive = !_isDiamondActive;
-    //             DrainFlashlightCharge();
-    //             AngelCreation(diamondChancesOfAngel, diamondMaxAngels);
-    //             break;
-    //     }
-
-    //     if (_isSquareActive && _isDiamondActive && Mathf.Abs(secondBridges.position.y - 0) > 1)
-    //     {
-    //         StartMovingObject(secondBridges, -20f, 0f);
-    //     }
-    // }
-
     private void DisableMotion()
     {
         PCPlayerInputManager.ToggleRestriction("Move", false);
@@ -281,41 +233,6 @@ public class MazeManager : MonoBehaviour
                 InstantiateRandomAngel();
             }
         }
-    }
-
-    private void DrainFlashlightCharge()
-    {
-        OnDrainFlashlight?.Invoke();
-    }
-
-    private void StartMovingObject(Transform currentObject, float minPosition, float maxPosition)
-    {
-        _isMovingObject = !_isMovingObject;
-        movingObject = currentObject;
-
-        lerpTargetY = -100;
-        if (movingObject.position.y == maxPosition)
-        {
-            lerpTargetY = minPosition;
-        }else if (movingObject.position.y == minPosition)
-        {
-            lerpTargetY = maxPosition;
-        }
-    }
-
-    private void ToggleFirstBridgesRotation()
-    {
-        _isRotatingFirstBridges = !_isRotatingFirstBridges;
-    }
-
-    private void ToggleSecondBridges()
-    {
-        _isRotatingSecondBridges = !_isRotatingSecondBridges;
-    }
-
-    private void ToggleThirdBridges()
-    {
-        _isRotatingThirdBridges = !_isRotatingThirdBridges;
     }
 
     private void InstantiateRandomAngel()
