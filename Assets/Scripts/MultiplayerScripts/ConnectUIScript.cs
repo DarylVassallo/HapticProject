@@ -155,6 +155,11 @@ public class ConnectUIScript : MonoBehaviour
     private void ClientButtonOnClick()
     {
         Debug.Log("CLIENT");
+
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.ConnectionData.Address = "192.168.1.10";
+        transport.ConnectionData.Port = 7777;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
