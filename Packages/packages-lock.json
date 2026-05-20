@@ -583,20 +583,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "fr.imt-atlantique.cexiha.core": {
-      "version": "https://gitlab.imt-atlantique.fr/cexi-ha/unity/packages/core.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "6caf1df6abc2b354da31a5a00e4751dfc8530225"
-    },
-    "fr.imt-atlantique.cexiha.material-library": {
-      "version": "https://gitlab.imt-atlantique.fr/cexi-ha/unity/packages/material-library.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "c1724841355793dbe2849bcbb6a02cf397f43ce5"
-    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

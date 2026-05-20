@@ -25,8 +25,6 @@
     "com.unity.xr.interaction.toolkit": "3.4.1",
     "com.unity.xr.management": "4.5.4",
     "com.unity.xr.openxr": "1.16.1",
-    "fr.imt-atlantique.cexiha.core": "https://gitlab.imt-atlantique.fr/cexi-ha/unity/packages/core.git",
-    "fr.imt-atlantique.cexiha.material-library": "https://gitlab.imt-atlantique.fr/cexi-ha/unity/packages/material-library.git",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.ai": "1.0.0",

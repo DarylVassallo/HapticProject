@@ -6,6 +6,8 @@ using System;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 using UnityEngine.InputSystem.UI;
 
+using Unity.Netcode.Transports.UTP;
+
 //This script uses UI buttons to create the host, client, and server for the multiplayer network.
 public class ConnectUIScript : MonoBehaviour
 {
@@ -51,7 +53,7 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.visible = true;
 
         // DebugStartVRPlayer();
-        DebugStartPCPlayer();
+        // DebugStartPCPlayer();
     }
 
     private void OnEnable()
