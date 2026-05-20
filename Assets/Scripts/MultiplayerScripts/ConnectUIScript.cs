@@ -149,6 +149,8 @@ public class ConnectUIScript : MonoBehaviour
         vrComponent.SetActive(true);
         vrInput.enabled = true;
 
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData("0.0.0.0", 7777);
         NetworkManager.Singleton.StartHost();
 
         hostButton.transform.parent.gameObject.SetActive(false);
@@ -158,9 +160,9 @@ public class ConnectUIScript : MonoBehaviour
     {
         Debug.Log("CLIENT");
 
-        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        transport.ConnectionData.Address = "192.168.1.10";
-        transport.ConnectionData.Port = 7777;
+        // var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        // transport.ConnectionData.Address = "192.168.1.10";
+        // transport.ConnectionData.Port = 7777;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -171,6 +173,8 @@ public class ConnectUIScript : MonoBehaviour
         vrComponent.SetActive(false);
         vrInput.enabled = false;
 
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData("192.168.1.10", 7777);
         NetworkManager.Singleton.StartClient();
 
         clientButton.transform.parent.gameObject.SetActive(false);

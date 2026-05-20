@@ -30,6 +30,7 @@ public class RevealUnderLight : MonoBehaviour
     void Awake()
     {
         _hiddenMaterial = GetComponent<Renderer>().material;
+        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
     }
 
     private void OnEnable()
@@ -47,7 +48,6 @@ public class RevealUnderLight : MonoBehaviour
     private void GetPCPlayerData()
     {
         _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
-        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
         canPCFunction = true;
     }
 

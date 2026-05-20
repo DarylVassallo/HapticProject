@@ -256,9 +256,9 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void HandleCancel(InputAction.CallbackContext ctx)
     {
-        if (canCancel)
-        {
-            OnCancel?.Invoke();
-        }
+        // if (canCancel)
+        // {
+        //     OnCancel?.Invoke();
+        // }
     }
 }
