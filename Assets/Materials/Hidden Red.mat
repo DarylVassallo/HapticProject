@@ -105,7 +105,8 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    m_Ints: []
+    m_Ints:
+    - _ReverseStrength: 0
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
@@ -136,6 +137,9 @@ Material:
     - _MyStrengthScalor: 50
     - _NormalStrength: 0.2
     - _OcclusionStrength: 1
+    - _PCLightAngle: 45
+    - _PCLightRange: 5
+    - _PCStrengthScalor: 50
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -155,6 +159,9 @@ Material:
     - _StrengthScalar: 50
     - _Surface: 0
     - _UseUIAlphaClip: 0
+    - _VRLightAngle: 45
+    - _VRLightRange: 5
+    - _VRStrengthScalor: 50
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZTest: 4
@@ -173,7 +180,11 @@ Material:
     - _MyLightPosition: {r: -9.057404, g: 1.7484021, b: 20.893347, a: 0}
     - _NormalOffset: {r: 0, g: 0, b: 0, a: 0}
     - _NormalTiling: {r: 1, g: 1, b: 0, a: 0}
+    - _PCLightDirection: {r: 0, g: 0, b: 1, a: 0}
+    - _PCLightPosition: {r: 0, g: 0, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 0.5803922}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _VRLightDirection: {r: 0, g: 0, b: 1, a: 0}
+    - _VRLightPosition: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

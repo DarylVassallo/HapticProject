@@ -74,7 +74,6 @@ public class RevealUnderLight : MonoBehaviour
 
         if (isEffectedByLight)
         {
-            Debug.Log(this.gameObject + ": " + CheckLightStrength());
             if (CheckLightStrength() >= _strengthLimit)
             {
                 if(!_isInteractable)

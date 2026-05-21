@@ -4,11 +4,11 @@ Shader "Custom/RevealingUnderLight_URP"
     {
         _ReverseStrength("Reverse Strength", Integer) = 0
         
-        _MyColor("Color", Color) = (1,1,1,1)
-        _MyMainTex("Albedo (RGB)", 2D) = "white" {}
-
-        _MyGlossiness("Smoothness", Range(0,1)) = 0.5
-        _MyMetallic("Metallic", Range(0,1)) = 0.0
+        [MainTexture] _BaseMap("Base Map", 2D) = "white" {}
+        [MainColor] _BaseColor("Base Color", Color) = (1,1,1,1)
+        
+        _Smoothness("Smoothness", Range(0,1)) = 0.5
+        _Metallic("Metallic", Range(0,1)) = 0.0
 
 	   _PCLightRange("Light Range", Float) = 5
         _PCLightDirection("Light Direction", Vector) = (0,0,1,0)
@@ -55,17 +55,17 @@ Shader "Custom/RevealingUnderLight_URP"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-            TEXTURE2D(_MyMainTex);
-            SAMPLER(sampler_MyMainTex);
+            TEXTURE2D(_BaseMap);
+            SAMPLER(sampler_BaseMap);
 
             CBUFFER_START(UnityPerMaterial)
                 int _ReverseStrength;
                 
-                float4 _MyColor;
-                float4 _MyMainTex_ST;
+                float4 _BaseColor;
+                float4 _BaseMap_ST;
 
-                float _MyGlossiness;
-                float _MyMetallic;
+                float _Smoothness;
+                float _Metallic;
 
 			float _PCLightRange;
                 float4 _PCLightDirection;
@@ -112,7 +112,7 @@ Shader "Custom/RevealingUnderLight_URP"
     
                 o.positionWS = TransformObjectToWorld(v.positionOS.xyz);
                 o.positionHCS = TransformWorldToHClip(o.positionWS);
-                o.uv = TRANSFORM_TEX(v.uv, _MyMainTex);
+                o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.normalWS = TransformObjectToWorldNormal(v.normalOS);
                 
                 return o;
@@ -168,7 +168,7 @@ Shader "Custom/RevealingUnderLight_URP"
             	float strength = saturate(pcStrength + vrStrength);
             	strength = lerp(strength, 1.0 - strength, _ReverseStrength);
             	
-                half4 tex = SAMPLE_TEXTURE2D(_MyMainTex, sampler_MyMainTex, i.uv) * _MyColor;
+                half4 tex = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv) * _BaseColor;
 
                 float3 albedo = tex.rgb;
 

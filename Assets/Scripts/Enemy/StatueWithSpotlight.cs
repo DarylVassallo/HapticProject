@@ -52,6 +52,16 @@ public class StatueWithSpotlight : MonoBehaviour
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+        Debug.Log(this.gameObject + " : Awake");
+
+        _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+        _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
+        _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
+        
+        _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        
+        canPCFunction = true;
+        canVRFunction = true;
     }
 
     private void OnEnable()
@@ -68,6 +78,7 @@ public class StatueWithSpotlight : MonoBehaviour
 
     private void GetPCPlayerData()
     {
+        Debug.Log(this.gameObject + " : GetPCPlayerData");
         _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
         _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
@@ -79,16 +90,19 @@ public class StatueWithSpotlight : MonoBehaviour
 
     private void GetVRPlayerData()
     {
+        Debug.Log(this.gameObject + " : GetVRPlayerData");
         // _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
         canVRFunction = true;
     }
 
     void FixedUpdate()
     {
+        Debug.Log("Angel 1");
         if(!canPCFunction && !canVRFunction) return;
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
-        
+        Debug.Log("_isPCTooClose: " + _isPCTooClose);
+        Debug.Log("_isPCTooFar: " + _isPCTooFar);
         if (_isPCTooFar)
         {
             StandBy();

@@ -6,8 +6,10 @@ using Unity.VRTemplate;
 using UnityEngine.Events;
 using Unity.AI.Navigation;
 
+using Unity.Netcode;
+
 //This controls the various things that could occur due to the hidden switches
-public class MazeManager : MonoBehaviour
+public class MazeManager : NetworkBehaviour
 {
     [SerializeField] private Transform signs;
 
@@ -35,25 +37,9 @@ public class MazeManager : MonoBehaviour
     }
     public HiddenSwitches[] hiddenSwitches;
 
-    public enum ShapeType
-    {
-        None,
-        Triangle,
-        Square,
-        Circle,
-        Pentagon,
-        Diamond
-    }
-
-    public enum ButtonType
-    {
-        None,
-        Square,
-        Circle,
-        Triangle,
-        Cross,
-        Star
-    }
+    public enum ShapeType { None, Triangle, Square, Circle, Pentagon, Diamond }
+    public enum ButtonType { None, Square, Circle, Triangle, Cross, Star }
+    public enum InteractiveObject { SquareWheel, DiamondLever, TriangleLever, CircleButton }
 
     private ShapeType[] currentShapeOrder = new ShapeType[5];
     private ButtonType[] currentButtonOrder = new ButtonType[5];
@@ -65,14 +51,20 @@ public class MazeManager : MonoBehaviour
 
     [SerializeField] private Transform halfBridges;
 
-    [SerializeField] private Transform wheelObject;
-    private XRKnob wheelKnob;
-    private bool isWheelActive;
-    private float prevWheelKnobValue = 0;
-    private float wheelKnobValueDiff = 0;
+    [SerializeField] private Transform squareWheelObject;
+    private NetworkVariable<bool> isSquareWheelActive = new (false);
+    private XRKnob squareWheelKnob;
+    private float prevSquareWheelKnobValue = 0;
+    private float squareWheelKnobValueDiff = 0;
 
-    [SerializeField] private Transform leverObject;
-    private bool isLeverActive;
+    [SerializeField] private Transform diamondLeverObject;
+    private NetworkVariable<bool> isDiamondLeverActive = new (false);
+
+    [SerializeField] private Transform triangleLeverObject;
+    private NetworkVariable<bool> isTriangleLeverActive = new (false);
+
+    [SerializeField] private Transform circleButtonObject;
+    private NetworkVariable<bool> isCircleButtonActive = new (false);
 
     private bool canPCFunction = false;
 
@@ -84,10 +76,13 @@ public class MazeManager : MonoBehaviour
     private bool _isNewNavMeshAvailable = false;
 
     [SerializeField] private NavMeshSurface levelGround;
+
+    private NetworkVariable<float> chancesOfAngel = new(0f);
+
     void Awake()
     {        
         _closeSpawnPoints = new List<Transform>();
-        wheelKnob = wheelObject.GetComponentInChildren<XRKnob>();
+        squareWheelKnob = squareWheelObject.GetComponentInChildren<XRKnob>();
     }
 
     private void OnEnable()
@@ -108,21 +103,62 @@ public class MazeManager : MonoBehaviour
         canPCFunction = true;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        isSquareWheelActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.SquareWheel, p, c);
+        if(isSquareWheelActive.Value)
+        {
+            ActivateObjectLight(squareWheelObject);
+        }
+
+        isDiamondLeverActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.DiamondLever, p, c);
+        if(isDiamondLeverActive.Value)
+        {
+            ActivateObjectLight(diamondLeverObject);
+        }
+
+        isTriangleLeverActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.TriangleLever, p, c);
+        if(isTriangleLeverActive.Value)
+        {
+            ActivateObjectLight(triangleLeverObject);
+        }
+
+        isCircleButtonActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.CircleButton, p, c);
+        if(isCircleButtonActive.Value)
+        {
+            ActivateObjectLight(circleButtonObject);
+        }
+
+        base.OnNetworkSpawn();
+    }
+
     void FixedUpdate()
     {
-        if(!canPCFunction || (!isWheelActive)) return;
+        Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
+        PotentialAngelCreation(chancesOfAngel.Value, 1);
 
-        if(isWheelActive)
+        if(!canPCFunction || (!isSquareWheelActive.Value)) return;
+
+        if(isSquareWheelActive.Value)
         {
-            wheelKnobValueDiff = wheelKnob.value - prevWheelKnobValue;
-            halfBridges.Rotate(0.0f, wheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
-            prevWheelKnobValue = wheelKnob.value;
+            squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
+            halfBridges.Rotate(0.0f, squareWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+            
+            if(squareWheelKnobValueDiff * bridgeRotateSpeed > 0)
+            {
+                SetChanceOfAngelsServerRpc(0.1f);
+            }
+            prevSquareWheelKnobValue = squareWheelKnob.value;
 
-            if(wheelKnobValueDiff > 0)
+            if(squareWheelKnobValueDiff > 0)
             {
+                Debug.Log("INCREASE CHANCES");
+                // SetChanceOfAngelsServerRpc(0.1f);
                 _isNewNavMeshAvailable = true;
-            }else if(wheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
+            }else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
             {
+                Debug.Log("DECREASE CHANCES");
+                SetChanceOfAngelsServerRpc(0f);
                 _isNewNavMeshAvailable = false;
                 levelGround.RemoveData();
                 levelGround.BuildNavMesh();
@@ -130,28 +166,108 @@ public class MazeManager : MonoBehaviour
         }
     }
 
-    public void ActivateWheel()
+    [ServerRpc(RequireOwnership = false)]
+    private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
-        isWheelActive = true;
-        wheelObject.Find("ActiveLight").GetComponent<Renderer>().material = activeMaterial;
+        switch(interactiveObject)
+        {
+            case InteractiveObject.SquareWheel:
+                isSquareWheelActive.Value = true;
+                break;
+
+            case InteractiveObject.DiamondLever:
+                isDiamondLeverActive.Value = true;
+                break;
+
+            case InteractiveObject.TriangleLever:
+                isTriangleLeverActive.Value = true;
+                break;
+
+            case InteractiveObject.CircleButton:
+                isCircleButtonActive.Value = true;
+                break;
+        }
     }
 
-    public void ActivateLever()
+    [ServerRpc(RequireOwnership = false)]
+    private void SetChanceOfAngelsServerRpc(float _chance)
     {
-        isLeverActive = true;
-        leverObject.Find("ActiveLight").GetComponent<Renderer>().material = activeMaterial;
+        Debug.Log("SetChanceOfAngelsServerRpc: " + _chance);
+        chancesOfAngel.Value = _chance;
+        Debug.Log("MOd chancesOfAngel.Value: " + chancesOfAngel.Value);
+    }
+    
+    private void OnObjectChanged(InteractiveObject interactiveObject, bool previous, bool current)
+    {
+        if (!current) return;
+
+        switch(interactiveObject)
+        {
+            case InteractiveObject.SquareWheel:
+                ActivateObjectLight(squareWheelObject);
+                break;
+
+            case InteractiveObject.DiamondLever:
+                ActivateObjectLight(diamondLeverObject);
+                break;
+
+            case InteractiveObject.TriangleLever:
+                ActivateObjectLight(triangleLeverObject);
+                break;
+
+            case InteractiveObject.CircleButton:
+                ActivateObjectLight(circleButtonObject);
+                break;
+        }
+    }
+    
+    public void ActivateSquareWheel()
+    {
+        ActivateServerRpc(InteractiveObject.SquareWheel);
+    }
+
+    public void ActivateDiamondLever()
+    {
+        ActivateServerRpc(InteractiveObject.DiamondLever);
+    }
+
+    public void ActivateTriangleLever()
+    {
+        ActivateServerRpc(InteractiveObject.TriangleLever);
+    }
+
+    public void ActivateCircleButton()
+    {
+        ActivateServerRpc(InteractiveObject.CircleButton);
+    }
+
+    private void ActivateObjectLight(Transform interactiveObject)
+    {
+        foreach (Renderer rend in interactiveObject.GetComponentsInChildren<Renderer>(true))
+        {
+            if (rend.CompareTag("ActiveLight"))
+            {
+                rend.material = activeMaterial;
+                break;
+            }
+        }
     }
 
     public void EnableDrainFlashlightCharge()
     {
+        if(!isDiamondLeverActive.Value) return;
+
         crookedBridge.SetActive(true);
         levelGround.RemoveData();
         levelGround.BuildNavMesh();
 
         EnableDrainFlashlight?.Invoke();
     }
+
     public void DisableDrainFlashlightCharge()
     {
+        if(!isDiamondLeverActive.Value) return;
+        
         crookedBridge.SetActive(false);
         levelGround.RemoveData();
         levelGround.BuildNavMesh();
@@ -161,10 +277,10 @@ public class MazeManager : MonoBehaviour
 
     public void GivePCPlayerHealthByLever()
     {
-        GivePCPlayerHealth?.Invoke();
+        GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(2f, -1);
     }
 
-    private void PressedButton(ShapeType _shape, ButtonType button)
+    private void PressedButton(ShapeType _shape, ButtonType _button)
     {
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
@@ -181,9 +297,9 @@ public class MazeManager : MonoBehaviour
                 break;
             }
         }
-        
+
         currentShapeOrder[entryNum] = _shape;
-        currentButtonOrder[entryNum] = button;
+        currentButtonOrder[entryNum] = _button;
         entryNum++;
 
         for (int i = 0; i < hiddenSwitches.Length; i++)
@@ -220,7 +336,25 @@ public class MazeManager : MonoBehaviour
         PCPlayerInputManager.ToggleRestriction("Move", false);
     }
 
-    private void AngelCreation(float chancesOfAngel, int maxAngels)
+    public void AngelCreation(int maxAngels)
+    {
+        int _numberOfAngels = UnityEngine.Random.Range(1, maxAngels);
+
+        for (int i = 0; i < _numberOfAngels; i++)
+        {
+            InstantiateRandomAngelServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InstantiateRandomAngelServerRpc()
+    {
+        int angelNum = UnityEngine.Random.Range(1, angelSpawnPoints.childCount) - 1;
+        var newAngel = Instantiate(angel, angelSpawnPoints.GetChild(angelNum).position, Quaternion.identity);
+        newAngel.GetComponent<NetworkObject>().Spawn();
+    }
+
+    private void PotentialAngelCreation(float chancesOfAngel, int maxAngels)
     {
         float _chanceOfAngel = UnityEngine.Random.Range(0f, 1f);
 
@@ -230,12 +364,12 @@ public class MazeManager : MonoBehaviour
 
             for (int i = 0; i < _numberOfAngels; i++)
             {
-                InstantiateRandomAngel();
+                InstantiateRandomAngelServerRpc();
             }
         }
     }
 
-    private void InstantiateRandomAngel()
+    private void InstantiateNearbyRandomAngel()
     {
         float distance = 0;
         for (int i = 0; i < angelSpawnPoints.childCount; i++)

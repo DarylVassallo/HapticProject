@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+
+using Unity.Netcode;
+
 //This script controls the flashlight's charge, as it runs out, the strength and range is also reduced. It can be charged, but the flash light is off during it.
-public class FlashlightCharge : MonoBehaviour
+public class FlashlightCharge : NetworkBehaviour
 {
     private Light _spotLight;
 
@@ -27,7 +30,7 @@ public class FlashlightCharge : MonoBehaviour
 
     public static event Action<float> OnChangeChargeBar;
 
-    private float _decayMultiplier;
+    private NetworkVariable<float> _decayMultiplier = new (1f);
 
     private void Awake()
     {
@@ -36,8 +39,6 @@ public class FlashlightCharge : MonoBehaviour
 
         _maxSpotLightIntensity = _spotLight.intensity;
         _maxSpotLightRange = _spotLight.range;
-
-        _decayMultiplier = 1;
 
         _maxChargeBarLength = chargeBar.localScale.z;
     }
@@ -74,14 +75,20 @@ public class FlashlightCharge : MonoBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SetDecayMultiplayerServerRpc(float _newDecay)
+    {
+        _decayMultiplier.Value = _newDecay;
+    }
+
     private void EnableDrainFlashlight()
     {
-        _decayMultiplier = 100f;
+        SetDecayMultiplayerServerRpc(10f);
     }
 
     private void DisableDrainFlashlight()
     {
-        _decayMultiplier = 1f;
+        SetDecayMultiplayerServerRpc(1f);
     }
 
     private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
@@ -108,10 +115,10 @@ public class FlashlightCharge : MonoBehaviour
         if (_isCharging && _charge < 100)
         {
             _spotLight.enabled = true;
-            ChangeSpotLightStrength(chargeRate / _decayMultiplier, _isCharging ? chargeIntensity : 1f);
-            flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+            ChangeSpotLightStrength(chargeRate / _decayMultiplier.Value, _isCharging ? chargeIntensity : 1f);
+            if(flashlightLever != null) flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
         }else{
-            ChangeSpotLightStrength(-decayRate * _decayMultiplier, _isCharging ? chargeIntensity : 1f);
+            ChangeSpotLightStrength(-decayRate * _decayMultiplier.Value, _isCharging ? chargeIntensity : 1f);
         }
     }
 
