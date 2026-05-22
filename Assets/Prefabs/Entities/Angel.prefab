@@ -14,10 +14,10 @@ GameObject:
   - component: {fileID: 4558516291808930690}
   - component: {fileID: 4489439866968851057}
   - component: {fileID: 91216272316676775}
+  - component: {fileID: 9013005419592484228}
   - component: {fileID: 3201566917236771553}
   - component: {fileID: 3128351026506914791}
   - component: {fileID: 4360777513105819023}
-  - component: {fileID: 9013005419592484228}
   - component: {fileID: 304806855208054045}
   m_Layer: 0
   m_Name: Angel
@@ -74,7 +74,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f592f3b72bc58374888f9e272ed44681, type: 2}
+  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -159,6 +159,31 @@ MonoBehaviour:
   isVRInteractable: 0
   isEffectedByLight: 0
   isReversed: 0
+--- !u!114 &9013005419592484228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4488053546621565365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 3520362744
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &3201566917236771553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,6 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c6cfac063dc52d4c8ae32f337838ecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StatueWithSpotlight
+  ShowTopMostFoldoutHeaderGroup: 1
   agentSpeed: 3
   shakeSpeed: 64
   shakeAmount: 0.08
@@ -295,31 +321,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &9013005419592484228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4488053546621565365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3520362744
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
 --- !u!114 &304806855208054045
 MonoBehaviour:
   m_ObjectHideFlags: 0

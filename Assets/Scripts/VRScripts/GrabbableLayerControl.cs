@@ -75,6 +75,10 @@ public class GrabbableLayerControl : MonoBehaviour
             {
                 layer = LayerMask.NameToLayer("RightHandInteractable");
             }
+            else
+            {
+                layer = 0;
+            }
         }
 
         currentObject.layer = layer;

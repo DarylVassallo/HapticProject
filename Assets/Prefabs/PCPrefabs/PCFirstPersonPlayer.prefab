@@ -8823,7 +8823,7 @@ GameObject:
   - component: {fileID: 1720590019035312166}
   - component: {fileID: 808576883688143895}
   m_Layer: 0
-  m_Name: Flashlight
+  m_Name: PCFlashlight
   m_TagString: PCFlashLight
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

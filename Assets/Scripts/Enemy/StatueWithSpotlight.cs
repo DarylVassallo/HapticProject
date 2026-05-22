@@ -47,15 +47,14 @@ public class StatueWithSpotlight : NetworkBehaviour
     [SerializeField] private AudioClip[] whisperingAudios;
     private AudioSource _audioSource;
 
-    private bool canPCFunction = false;
-    private bool canVRFunction = false;
+    private bool _canPCFunction = false;
+    private bool _canVRFunction = false;
 
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
-        // Debug.Log(this.gameObject + " : Awake");
 
         _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
@@ -63,8 +62,8 @@ public class StatueWithSpotlight : NetworkBehaviour
         
         _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
         
-        canPCFunction = true;
-        canVRFunction = true;
+        _canPCFunction = true;
+        _canVRFunction = true;
     }
 
     private void OnEnable()
@@ -83,14 +82,13 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            // Debug.Log(this.gameObject + " : GetPCPlayerData");
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
             _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
             _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
             
             _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
             
-            canPCFunction = true;
+            _canPCFunction = true;
         }
     }
 
@@ -98,27 +96,22 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
-            // Debug.Log(this.gameObject + " : GetVRPlayerData");
             // _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
-            canVRFunction = true;
+            _canVRFunction = true;
         }
     }
 
     void FixedUpdate()
     {
-        Debug.Log("canPCFunction: " + canPCFunction);
-        Debug.Log("canVRFunction: " + canVRFunction);
-        if(!canPCFunction) GetPCPlayerData();
-        if(!canVRFunction) GetVRPlayerData();
+        if(!_canPCFunction) GetPCPlayerData();
+        if(!_canVRFunction) GetVRPlayerData();
 
         if(!IsServer) return;
 
-        // Debug.Log("Angel 1");
-        if(!canPCFunction && !canVRFunction) return;
+        if(!_canPCFunction && !_canVRFunction) return;
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
-        Debug.Log("_isPCTooClose: " + _isPCTooClose);
-        Debug.Log("_isPCTooFar: " + _isPCTooFar);
+
         if (_isPCTooFar)
         {
             StandBy();
@@ -209,24 +202,19 @@ public class StatueWithSpotlight : NetworkBehaviour
     //Used ChatGPT here
     bool IsInsideSpotLight(Light _playerSpotLight)
     {
-        Debug.Log("_playerSpotLight: " + _playerSpotLight);
         if (_playerSpotLight == null) return false;
         if (!_playerSpotLight.enabled) return false;
 
         _positionDifference = transform.position - _playerSpotLight.transform.position;
         _spotLightDistance = _positionDifference.magnitude;
-        
-        Debug.Log("_spotLightDistance: " + _spotLightDistance);
-        Debug.Log("(_playerSpotLight.range * 0.5f): " + (_playerSpotLight.range * 0.5f));
+
         if (_spotLightDistance > (_playerSpotLight.range * 0.5f))
         {
             return false;
         }
 
         _spotLightAngle = Vector3.Angle(_playerSpotLight.transform.forward, _positionDifference);
-        
-        Debug.Log("_spotLightAngle: " + _spotLightAngle);
-        Debug.Log("(_playerSpotLight.spotAngle * 0.5f): " + (_playerSpotLight.spotAngle * 0.5f));
+
         if (_spotLightAngle > _playerSpotLight.spotAngle * 0.5f)
         {
             return false;

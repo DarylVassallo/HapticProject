@@ -58,8 +58,11 @@ public class RevealUnderLight : MonoBehaviour
 
     private void GetPCPlayerData()
     {
-        _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
-        _canPCFunction = true;
+        if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
+        {
+            _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
+            _canPCFunction = true;
+        }
     }
 
     private void GetVRPlayerData()
@@ -70,6 +73,10 @@ public class RevealUnderLight : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(!_canPCFunction) GetPCPlayerData();
+        if(!_canVRFunction) GetVRPlayerData();
+    
+
         if(_pcSpotLight == null && GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
             _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
