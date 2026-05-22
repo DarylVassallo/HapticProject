@@ -70,6 +70,11 @@ public class RevealUnderLight : MonoBehaviour
 
     void FixedUpdate()
     {
+        if(_pcSpotLight == null && GameObject.FindGameObjectWithTag("PCPlayer") != null)
+        {
+            _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
+        }
+
         if(!_canPCFunction && !_canVRFunction) return;
 
         if (isEffectedByLight)

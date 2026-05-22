@@ -8860,6 +8860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b660ce037ee1c1b4eb48e41afad6440c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlashlightCharge
+  ShowTopMostFoldoutHeaderGroup: 1
   decayRate: 0.05
   chargeRate: 0.5
   flashLightRotationSpeed: 200
@@ -18142,7 +18143,6 @@ GameObject:
   - component: {fileID: 6647626456711267737}
   - component: {fileID: 1632220531409785880}
   - component: {fileID: 8084624223369409619}
-  - component: {fileID: 567252451981232731}
   - component: {fileID: 8673969827659363446}
   - component: {fileID: 8331066380071382777}
   m_Layer: 0
@@ -18262,7 +18262,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2484704680
+  GlobalObjectIdHash: 4241262732
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -18291,9 +18291,9 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 8
   crouchSpeed: 2
-  jumpForce: 7
-  gravity: -12
-  initialFallVelocity: -2
+  jumpForce: 5
+  gravity: -24
+  initialFallVelocity: -4
   standingHeight: 2
   crouchingHeight: 1
   crouchTransitionSpeed: 10
@@ -18313,20 +18313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1509e31440c6454a8327ce99d0c38a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
---- !u!114 &567252451981232731
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3297056328194405524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67474a0133c73414aa495cf8991a48bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  _incompleteAchievements: []
-  _completeAchievements: []
 --- !u!114 &8673969827659363446
 MonoBehaviour:
   m_ObjectHideFlags: 0

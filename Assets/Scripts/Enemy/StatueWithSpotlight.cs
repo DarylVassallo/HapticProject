@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
+
+using Unity.Netcode;
+
 //This script detects if the statue is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
 //Source: https://www.youtube.com/watch?v=_e57zSZSOS8
-public class StatueWithSpotlight : MonoBehaviour
+public class StatueWithSpotlight : NetworkBehaviour
 {
     private NavMeshAgent _agent;
 
@@ -52,7 +55,7 @@ public class StatueWithSpotlight : MonoBehaviour
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
-        Debug.Log(this.gameObject + " : Awake");
+        // Debug.Log(this.gameObject + " : Awake");
 
         _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
@@ -78,26 +81,39 @@ public class StatueWithSpotlight : MonoBehaviour
 
     private void GetPCPlayerData()
     {
-        Debug.Log(this.gameObject + " : GetPCPlayerData");
-        _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-        _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
-        _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
-        
-        _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
-        
-        canPCFunction = true;
+        if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
+        {
+            // Debug.Log(this.gameObject + " : GetPCPlayerData");
+            _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+            _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
+            _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
+            
+            _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+            
+            canPCFunction = true;
+        }
     }
 
     private void GetVRPlayerData()
     {
-        Debug.Log(this.gameObject + " : GetVRPlayerData");
-        // _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
-        canVRFunction = true;
+        if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
+        {
+            // Debug.Log(this.gameObject + " : GetVRPlayerData");
+            // _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+            canVRFunction = true;
+        }
     }
 
     void FixedUpdate()
     {
-        Debug.Log("Angel 1");
+        Debug.Log("canPCFunction: " + canPCFunction);
+        Debug.Log("canVRFunction: " + canVRFunction);
+        if(!canPCFunction) GetPCPlayerData();
+        if(!canVRFunction) GetVRPlayerData();
+
+        if(!IsServer) return;
+
+        // Debug.Log("Angel 1");
         if(!canPCFunction && !canVRFunction) return;
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
@@ -193,17 +209,24 @@ public class StatueWithSpotlight : MonoBehaviour
     //Used ChatGPT here
     bool IsInsideSpotLight(Light _playerSpotLight)
     {
+        Debug.Log("_playerSpotLight: " + _playerSpotLight);
         if (_playerSpotLight == null) return false;
         if (!_playerSpotLight.enabled) return false;
 
         _positionDifference = transform.position - _playerSpotLight.transform.position;
         _spotLightDistance = _positionDifference.magnitude;
+        
+        Debug.Log("_spotLightDistance: " + _spotLightDistance);
+        Debug.Log("(_playerSpotLight.range * 0.5f): " + (_playerSpotLight.range * 0.5f));
         if (_spotLightDistance > (_playerSpotLight.range * 0.5f))
         {
             return false;
         }
 
         _spotLightAngle = Vector3.Angle(_playerSpotLight.transform.forward, _positionDifference);
+        
+        Debug.Log("_spotLightAngle: " + _spotLightAngle);
+        Debug.Log("(_playerSpotLight.spotAngle * 0.5f): " + (_playerSpotLight.spotAngle * 0.5f));
         if (_spotLightAngle > _playerSpotLight.spotAngle * 0.5f)
         {
             return false;

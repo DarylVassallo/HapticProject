@@ -93,6 +93,7 @@ public class ConnectUIScript : MonoBehaviour
                 GameObject _newVRPlayer = Instantiate(vrPlayer, vrSpawnPoint.position, Quaternion.identity);
                 NetworkObject _vrNetObj = _newVRPlayer.GetComponent<NetworkObject>();
                 _vrNetObj.SpawnAsPlayerObject(clientId, true);
+                Debug.Log("Create VR");
                 OnCreatedVRPlayer?.Invoke();
             }else if (clientId == 1)
             {
@@ -100,6 +101,7 @@ public class ConnectUIScript : MonoBehaviour
                 GameObject _newPCPlayer = Instantiate(pcPlayer, pcSpawnPoint.position, Quaternion.identity);
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
+                Debug.Log("Create PC");
                 OnCreatedPCPlayer?.Invoke();
             }
         }

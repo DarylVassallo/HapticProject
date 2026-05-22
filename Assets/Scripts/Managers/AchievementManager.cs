@@ -1,7 +1,12 @@
 using UnityEngine;
 
-public class AchievementManager : MonoBehaviour
+using Unity.Netcode;
+
+public class AchievementManager : NetworkBehaviour
 {
+    private NetworkVariable<NetworkObjectReference> pcPlayerRef = new NetworkVariable<NetworkObjectReference>();
+    private NetworkVariable<NetworkObjectReference> vrPlayerRef = new NetworkVariable<NetworkObjectReference>();
+
     private static PlayerProfile _pcPlayerProfile;
     private static PlayerProfile _vrPlayerProfile;
 
@@ -10,8 +15,8 @@ public class AchievementManager : MonoBehaviour
     private bool _checkOnAngels;
     private bool _checkOnLevel;
 
-    private bool canPCFunction = false;
-    private bool canVRFunction = false;
+    private NetworkVariable<bool> canPCFunction = new (false);
+    private NetworkVariable<bool> canVRFunction = new (false);
 
     private void Awake()
     {
@@ -34,8 +39,8 @@ public class AchievementManager : MonoBehaviour
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataServerRpc;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataServerRpc;
 
         if(_checkOnAngels)
         {
@@ -50,8 +55,8 @@ public class AchievementManager : MonoBehaviour
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataServerRpc;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataServerRpc;
 
         if(_checkOnAngels)
         {
@@ -64,26 +69,66 @@ public class AchievementManager : MonoBehaviour
         }
     }
 
-    private void GetPCPlayerData()
+    [ServerRpc(RequireOwnership = false)]
+    private void GetPCPlayerDataServerRpc()
     {
-        _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
-        canPCFunction = true;
+        GameObject pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
+
+        if (pcPlayer != null)
+        {
+            NetworkObject networkObject = pcPlayer.GetComponent<NetworkObject>();
+            pcPlayerRef.Value = networkObject;
+        }
     }
 
-    private void GetVRPlayerData()
+    [ServerRpc(RequireOwnership = false)]
+    private void GetVRPlayerDataServerRpc()
     {
-        _vrPlayerProfile = GameObject.FindGameObjectWithTag("VRPlayer").transform.GetComponent<PlayerProfile>();
-        canVRFunction = true;
+        GameObject vrPlayer = GameObject.FindGameObjectWithTag("VRPlayer");
+
+        if (vrPlayer != null)
+        {
+            NetworkObject networkObject = vrPlayer.GetComponent<NetworkObject>();
+            vrPlayerRef.Value = networkObject;
+        }
+    }
+
+    private PlayerProfile GetPCProfile()
+    {
+        if (pcPlayerRef.Value.TryGet(out NetworkObject networkObject))
+        {
+            return networkObject.GetComponent<PlayerProfile>();
+        }
+
+        return null;
+    }
+
+    private PlayerProfile GetVRProfile()
+    {
+        if (vrPlayerRef.Value.TryGet(out NetworkObject networkObject))
+        {
+            return networkObject.GetComponent<PlayerProfile>();
+        }
+
+        return null;
     }
 
     private void UpdateAngelAchievements(int _addedScore, int _playerType)
     {       
+        if(_pcPlayerProfile == null) _pcPlayerProfile = GetPCProfile();
+        if(_vrPlayerProfile == null) _vrPlayerProfile = GetVRProfile();
+
+        // GetPlayerData();
+        Debug.Log("canVRFunction: " + canVRFunction.Value);
+        Debug.Log("canPCFunction: " + canPCFunction.Value);
+        
         for (int i = 0; i < achievementList.Length; i++)
         {
             if (achievementList[i].isAboutAngels)
             {
                 if (_playerType == 0)
                 {
+                    Debug.Log("_pcPlayerProfile: " + _pcPlayerProfile);
                     _pcPlayerProfile.SetAngelKillCount(_pcPlayerProfile.GetAngelKillCount() + 1);
 
                     if (_pcPlayerProfile.GetAngelKillCount() == achievementList[i].goal && _pcPlayerProfile._incompleteAchievements.Contains(achievementList[i])) _pcPlayerProfile.CompleteAchievement(achievementList[i]);
@@ -97,6 +142,21 @@ public class AchievementManager : MonoBehaviour
             }
         }
     }
+
+    // private void GetPlayerData()
+    // {
+    //     if(GameObject.FindGameObjectWithTag("PCPlayer") != null && _pcPlayerProfile == null)
+    //     {
+    //         _pcPlayerProfile = GameObject.FindGameObjectWithTag("PCPlayer").transform.GetComponent<PlayerProfile>();
+    //         canPCFunction = true;
+    //     }
+
+    //     if(GameObject.FindGameObjectWithTag("VRPlayer") != null && _vrPlayerProfile == null)
+    //     {
+    //         _vrPlayerProfile = GameObject.FindGameObjectWithTag("VRPlayer").transform.GetComponent<PlayerProfile>();
+    //         canVRFunction = true;
+    //     }
+    // }
 
     private void UpdateLevelAchievements()
     {       

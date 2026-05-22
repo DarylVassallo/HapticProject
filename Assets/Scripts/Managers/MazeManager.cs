@@ -134,8 +134,8 @@ public class MazeManager : NetworkBehaviour
 
     void FixedUpdate()
     {
-        Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
-        PotentialAngelCreation(chancesOfAngel.Value, 1);
+        // Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
+        // PotentialAngelCreation(chancesOfAngel.Value, 1);
 
         if(!canPCFunction || (!isSquareWheelActive.Value)) return;
 
@@ -152,12 +152,12 @@ public class MazeManager : NetworkBehaviour
 
             if(squareWheelKnobValueDiff > 0)
             {
-                Debug.Log("INCREASE CHANCES");
+                // Debug.Log("INCREASE CHANCES");
                 // SetChanceOfAngelsServerRpc(0.1f);
                 _isNewNavMeshAvailable = true;
             }else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
             {
-                Debug.Log("DECREASE CHANCES");
+                // Debug.Log("DECREASE CHANCES");
                 SetChanceOfAngelsServerRpc(0f);
                 _isNewNavMeshAvailable = false;
                 levelGround.RemoveData();
@@ -192,9 +192,9 @@ public class MazeManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetChanceOfAngelsServerRpc(float _chance)
     {
-        Debug.Log("SetChanceOfAngelsServerRpc: " + _chance);
+        // Debug.Log("SetChanceOfAngelsServerRpc: " + _chance);
         chancesOfAngel.Value = _chance;
-        Debug.Log("MOd chancesOfAngel.Value: " + chancesOfAngel.Value);
+        // Debug.Log("MOd chancesOfAngel.Value: " + chancesOfAngel.Value);
     }
     
     private void OnObjectChanged(InteractiveObject interactiveObject, bool previous, bool current)
@@ -282,6 +282,8 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButton(ShapeType _shape, ButtonType _button)
     {
+        // crookedBridge.SetActive(true);
+        // InstantiateRandomAngelServerRpc();
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
             if(currentShapeOrder[i] == ShapeType.None)
