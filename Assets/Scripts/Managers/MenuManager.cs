@@ -210,6 +210,8 @@ public class MenuManager : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+
+            PlayLevel("GameOverScene");
         }
         else
         {
@@ -217,12 +219,12 @@ public class MenuManager : MonoBehaviour
             Cursor.visible = false;
         }
 
-        for (int i = 0; i < gameOverMenu.transform.childCount; i++)
-        {
-            if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
-        }
+        // for (int i = 0; i < gameOverMenu.transform.childCount; i++)
+        // {
+        //     if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
+        // }
 
-        CheckTimeScale();
+        // CheckTimeScale();
     }
 
     public void ToggleWinGameMenu()
@@ -283,8 +285,10 @@ public class MenuManager : MonoBehaviour
     
     public void PlayLevel(string _sceneName)
     {
-        NetworkManager.Singleton.Shutdown();
-        SceneManager.LoadScene(_sceneName);
+        // NetworkManager.Singleton.Shutdown();
+        // SceneManager.LoadScene(_sceneName);
+        Debug.Log("New Scene: " + _sceneName);
+        NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 
     private void FreezeGame()

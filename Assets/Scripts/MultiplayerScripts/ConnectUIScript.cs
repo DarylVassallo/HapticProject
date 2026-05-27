@@ -3,10 +3,10 @@ using Unity.Netcode;
 using UnityEngine.UI;
 using System;
 
-using UnityEngine.XR.Interaction.Toolkit.UI;
-using UnityEngine.InputSystem.UI;
-
 using Unity.Netcode.Transports.UTP;
+
+using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 //This script uses UI buttons to create the host, client, and server for the multiplayer network.
 public class ConnectUIScript : MonoBehaviour
@@ -15,18 +15,13 @@ public class ConnectUIScript : MonoBehaviour
     [SerializeField] private Button clientButton;
     [SerializeField] private Button serverButton;
 
-    [SerializeField] private GameObject pcPlayer;
+    [SerializeField] private GameObject pcPlayerWithBody;
+    [SerializeField] private GameObject pcPlayerWithoutBody;
+    [SerializeField] private GameObject currentPCPlayer;
     [SerializeField] private Transform pcSpawnPoint;
 
     [SerializeField] private GameObject vrPlayer;
     [SerializeField] private Transform vrSpawnPoint;
-
-    private GameObject mainCamera;
-    private InputSystemUIInputModule pcInput;
-
-    private GameObject vrComponent;
-    private XRUIInputModule vrInput;
-
 
     public static event Action OnCreatedPCPlayer;
     public static event Action OnCreatedVRPlayer;
@@ -34,17 +29,11 @@ public class ConnectUIScript : MonoBehaviour
     private bool _isTestingVRPlayer = false;
     private bool _isTestingPCPlayer = false;
 
+    [SerializeField] private bool isUsingPlayMode;
+
     void Start()
     {
         Debug.Log("Start");
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
-
-        vrComponent = GameObject.FindGameObjectWithTag("VRPlayer");
-        vrInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<XRUIInputModule>();
-
-        Debug.Log("mainCamera: " + mainCamera);
-        Debug.Log("vrComponent: " + vrComponent);
 
         hostButton.onClick.AddListener(HostButtonClick);
         clientButton.onClick.AddListener(ClientButtonOnClick);
@@ -68,6 +57,93 @@ public class ConnectUIScript : MonoBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
     }
 
+    private void RegisterSceneEvents()
+    {
+        if (NetworkManager.Singleton == null)
+        {
+            Debug.LogWarning("No NetworkManager yet");
+            return;
+        }
+
+        if (NetworkManager.Singleton.SceneManager == null)
+        {
+            Debug.LogWarning("SceneManager is NULL");
+            return;
+        }
+
+        NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        if (NetworkManager.Singleton != null)
+            NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
+    }
+
+    private void SceneLoaded(   string sceneName, 
+                                LoadSceneMode mode, 
+                                List<ulong> clientsCompleted, 
+                                List<ulong> clientsTimedOut)
+    {
+        Debug.Log("Scene Loaded!!");
+        Debug.Log("sceneName: " + sceneName);
+        Debug.Log("mode: " + mode);
+        Debug.Log("clientsCompleted: " + clientsCompleted);
+        Debug.Log("clientsTimedOut: " + clientsTimedOut);
+
+        if(sceneName == "SauronLevelScene")
+        {
+            currentPCPlayer = pcPlayerWithBody;
+        }else if(sceneName == "GameOverScene")
+        {
+            currentPCPlayer = pcPlayerWithoutBody;
+        }
+
+        CacheSpawnPoints();
+        LoadPlayers();
+    }
+
+    private void CacheSpawnPoints()
+    {
+        vrSpawnPoint = GameObject.Find("VRSpawnpoint")?.transform;
+        pcSpawnPoint = GameObject.Find("PCSpawnpoint")?.transform;
+
+        Debug.Log("new vrSpawnPoint: " + vrSpawnPoint);
+        Debug.Log("new pcSpawnPoint: " + pcSpawnPoint);
+    }
+
+    private void LoadPlayers()
+    {
+        foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+        {
+            Debug.Log("Spawn client: " + clientId);
+
+            if(clientId == 0)
+            {
+                Debug.Log("Spawn VR Player");
+                Debug.Log("vrPlayer: " + vrPlayer);
+                Debug.Log("vrSpawnPoint.position: " + vrSpawnPoint.position);
+
+                GameObject _newVRPlayer = Instantiate(vrPlayer, vrSpawnPoint.position, Quaternion.identity);
+                NetworkObject _vrNetObj = _newVRPlayer.GetComponent<NetworkObject>();
+                _vrNetObj.SpawnAsPlayerObject(0, true);
+                Debug.Log("Create VR");
+                OnCreatedVRPlayer?.Invoke();
+            }else if(clientId == 1)
+            {
+                Debug.Log("Spawn PC Player");
+                Debug.Log("currentPCPlayer: " + currentPCPlayer);
+                Debug.Log("pcSpawnPoint.position: " + pcSpawnPoint.position);
+
+                GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
+                NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
+                _pcNetObj.SpawnAsPlayerObject(1, true);
+                Debug.Log("Create PC");
+                OnCreatedPCPlayer?.Invoke();
+            }
+        }
+    }
+
     private void HandleClientConnected(ulong clientId)
     {
         Debug.Log("HandleClientConnected");
@@ -75,7 +151,7 @@ public class ConnectUIScript : MonoBehaviour
 
         if (_isTestingPCPlayer)
         {
-            GameObject _newPCPlayer = Instantiate(pcPlayer, pcSpawnPoint.position, Quaternion.identity);
+            GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
             _pcNetObj.SpawnAsPlayerObject(clientId, true);
             OnCreatedPCPlayer?.Invoke();
@@ -98,7 +174,7 @@ public class ConnectUIScript : MonoBehaviour
             }else if (clientId == 1)
             {
                 Debug.Log("Spawn PC Player");
-                GameObject _newPCPlayer = Instantiate(pcPlayer, pcSpawnPoint.position, Quaternion.identity);
+                GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
                 Debug.Log("Create PC");
@@ -106,6 +182,7 @@ public class ConnectUIScript : MonoBehaviour
             }
         }
         
+        RegisterSceneEvents();
     }
 
     private  void DebugStartVRPlayer()
@@ -115,12 +192,6 @@ public class ConnectUIScript : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        mainCamera.SetActive(false);
-        pcInput.enabled = false;
-
-        vrComponent.SetActive(true);
-        vrInput.enabled = true;
 
         NetworkManager.Singleton.StartHost();
 
@@ -135,12 +206,6 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        mainCamera.SetActive(true);
-        pcInput.enabled = true;
-
-        vrComponent.SetActive(false);
-        vrInput.enabled = false;
-
         NetworkManager.Singleton.StartHost();
 
         hostButton.transform.parent.gameObject.SetActive(false);
@@ -153,14 +218,11 @@ public class ConnectUIScript : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        mainCamera.SetActive(false);
-        pcInput.enabled = false;
-
-        vrComponent.SetActive(true);
-        vrInput.enabled = true;
-
-        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        transport.SetConnectionData("0.0.0.0", 7777);
+        if(!isUsingPlayMode)
+        {
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            transport.SetConnectionData("0.0.0.0", 7777);
+        }
         NetworkManager.Singleton.StartHost();
 
         hostButton.transform.parent.gameObject.SetActive(false);
@@ -171,21 +233,14 @@ public class ConnectUIScript : MonoBehaviour
         Debug.Log("ClientButtonOnClick");
         Debug.Log("CLIENT");
 
-        // var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        // transport.ConnectionData.Address = "192.168.1.10";
-        // transport.ConnectionData.Port = 7777;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
-        mainCamera.SetActive(true);
-        pcInput.enabled = true;
-
-        vrComponent.SetActive(false);
-        vrInput.enabled = false;
-
-        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        transport.SetConnectionData("192.168.1.10", 7777);
+        if(!isUsingPlayMode)
+        {
+            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            transport.SetConnectionData("192.168.1.10", 7777);
+        }
         NetworkManager.Singleton.StartClient();
 
         clientButton.transform.parent.gameObject.SetActive(false);

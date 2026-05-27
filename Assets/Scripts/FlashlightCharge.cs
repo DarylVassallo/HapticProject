@@ -9,6 +9,8 @@ public class FlashlightCharge : NetworkBehaviour
 {
     private Light _spotLight;
 
+    private NetworkVariable<bool> _spotLightToggle = new (true);
+
     private NetworkVariable<float> _charge = new (100f);
     private NetworkVariable<bool> _isCharging = new (false);
 
@@ -49,7 +51,6 @@ public class FlashlightCharge : NetworkBehaviour
         MazeManager.EnableDrainFlashlight += EnableDrainFlashlight;
         MazeManager.DisableDrainFlashlight += DisableDrainFlashlight;
 
-        Debug.Log(this.gameObject + ": canUseChargeStation: " + canUseChargeStation);
         if(canUseChargeStation)
         {
             ChargeStation.OnCharge += ChargeFlashlightWithStation;
@@ -57,7 +58,7 @@ public class FlashlightCharge : NetworkBehaviour
         else
         {
             PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
-            PCPlayerInputManager.OnFire2 += ToggleFlashlight;
+            PCPlayerInputManager.OnFire2 += SetFlashlightEnableServerRpc;
         }
     }
 
@@ -73,7 +74,7 @@ public class FlashlightCharge : NetworkBehaviour
         else
         {
             PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
-            PCPlayerInputManager.OnFire2 -= ToggleFlashlight;
+            PCPlayerInputManager.OnFire2 -= SetFlashlightEnableServerRpc;
         }
     }
 
@@ -102,9 +103,7 @@ public class FlashlightCharge : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetIsChargingServerRpc(bool _newIsCharging)
     {
-        Debug.Log(this.gameObject + " : New Change : " + _newIsCharging);
         _isCharging.Value = _newIsCharging;
-        Debug.Log(this.gameObject + " : Change Charging To : " + _isCharging.Value);
     }
 
     private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
@@ -115,25 +114,29 @@ public class FlashlightCharge : NetworkBehaviour
 
     private void ChargeFlashlightWithStation(bool charge)
     {
-        Debug.Log(this.gameObject + ": ChargeFlashlightWithStation : " + charge);
         if(_isNetworkSpawned) SetIsChargingServerRpc(charge);
-        Debug.Log(this.gameObject + ": 1 _isCharging.Value: " + _isCharging.Value);
         ChangeSpotLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
-        Debug.Log(this.gameObject + ": 2 _isCharging.Value: " + _isCharging.Value);
     }
 
-    private void ToggleFlashlight()
+    [ServerRpc(RequireOwnership = false)]
+    private void SetFlashlightEnableServerRpc()
     {
-        _spotLight.enabled = !_spotLight.enabled;
+        _spotLightToggle.Value = !_spotLightToggle.Value;
     }
 
     private void FixedUpdate()
     {      
+        if(_spotLight.enabled != _spotLightToggle.Value)
+        {
+            _spotLight.enabled = _spotLightToggle.Value;
+        }
+        
         if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && _spotLight.enabled)) return;
 
         if (_isCharging.Value && _charge.Value < 100)
         {
-            _spotLight.enabled = true;
+
+            SetFlashlightEnableServerRpc();
             ChangeSpotLightStrength(chargeRate / _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
             if(flashlightLever != null) flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
         }else{

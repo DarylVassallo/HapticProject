@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3650177504169892972}
@@ -8874,6 +8874,7 @@ GameObject:
   - component: {fileID: 1100752644393661757}
   - component: {fileID: 3890419338028605807}
   - component: {fileID: 6167582222107454716}
+  - component: {fileID: 608616310865502173}
   m_Layer: 2
   m_Name: MultiplayerVR
   m_TagString: VRPlayer
@@ -8989,6 +8990,21 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &608616310865502173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2377951386485336311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f59c7d1fcf10d514db4bea9d58529e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SetupNetworkPlayer
+  ShowTopMostFoldoutHeaderGroup: 1
+  isPCPlayer: 0
+  isVRPlayer: 1
 --- !u!1 &8101807325370180372
 GameObject:
   m_ObjectHideFlags: 0

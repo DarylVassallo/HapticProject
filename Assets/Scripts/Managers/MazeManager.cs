@@ -73,16 +73,22 @@ public class MazeManager : NetworkBehaviour
 
     [SerializeField] private GameObject crookedBridge;
 
-    private bool _isNewNavMeshAvailable = false;
+    private bool _isNewNavMeshAvailable;
 
     [SerializeField] private NavMeshSurface levelGround;
 
     private NetworkVariable<float> chancesOfAngel = new(0f);
 
+    private bool isFunctioningWheelRotating;
+
     void Awake()
     {        
+        _isNewNavMeshAvailable = false;
+
         _closeSpawnPoints = new List<Transform>();
         squareWheelKnob = squareWheelObject.GetComponentInChildren<XRKnob>();
+
+        isFunctioningWheelRotating = false;
     }
 
     private void OnEnable()
@@ -134,33 +140,38 @@ public class MazeManager : NetworkBehaviour
 
     void FixedUpdate()
     {
-        // PotentialAngelCreation(chancesOfAngel.Value, 1);
+        if(chancesOfAngel.Value > 0) PotentialAngelCreation();
+
+        CheckSquareWheel();
 
         if(!canPCFunction || (!isSquareWheelActive.Value)) return;
 
         if(isSquareWheelActive.Value)
         {
-            squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
+            CheckSquareWheel();
             halfBridges.Rotate(0.0f, squareWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
-            
-            if(squareWheelKnobValueDiff * bridgeRotateSpeed > 0)
-            {
-                SetChanceOfAngelsServerRpc(0.1f);
-            }
-            prevSquareWheelKnobValue = squareWheelKnob.value;
-
-            if(squareWheelKnobValueDiff > 0)
-            {
-                // SetChanceOfAngelsServerRpc(0.1f);
-                _isNewNavMeshAvailable = true;
-            }else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
-            {
-                SetChanceOfAngelsServerRpc(0f);
-                _isNewNavMeshAvailable = false;
-                levelGround.RemoveData();
-                levelGround.BuildNavMesh();
-            }
         }
+    }
+
+    private void CheckSquareWheel()
+    {
+        squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
+
+        if(squareWheelKnobValueDiff != 0)
+        {
+            _isNewNavMeshAvailable = true;
+            AddChanceOfAngelsServerRpc(0.1f);
+        }
+        else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
+        {
+            _isNewNavMeshAvailable = false;
+            levelGround.RemoveData();
+            levelGround.BuildNavMesh();
+
+            AddChanceOfAngelsServerRpc(-0.1f);
+        }
+
+        prevSquareWheelKnobValue = squareWheelKnob.value;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -187,9 +198,9 @@ public class MazeManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void SetChanceOfAngelsServerRpc(float _chance)
+    private void AddChanceOfAngelsServerRpc(float _chance)
     {
-        chancesOfAngel.Value = _chance;
+        chancesOfAngel.Value = chancesOfAngel.Value + _chance;
     }
     
     private void OnObjectChanged(InteractiveObject interactiveObject, bool previous, bool current)
@@ -351,19 +362,9 @@ public class MazeManager : NetworkBehaviour
         newAngel.GetComponent<NetworkObject>().Spawn();
     }
 
-    private void PotentialAngelCreation(float chancesOfAngel, int maxAngels)
+    private void PotentialAngelCreation()
     {
-        float _chanceOfAngel = UnityEngine.Random.Range(0f, 1f);
-
-        if (_chanceOfAngel <= chancesOfAngel)
-        {
-            int _numberOfAngels = UnityEngine.Random.Range(1, maxAngels);
-
-            for (int i = 0; i < _numberOfAngels; i++)
-            {
-                InstantiateRandomAngelServerRpc();
-            }
-        }
+        if (UnityEngine.Random.Range(0f, 1f) <= chancesOfAngel.Value) InstantiateRandomAngelServerRpc();
     }
 
     private void InstantiateNearbyRandomAngel()

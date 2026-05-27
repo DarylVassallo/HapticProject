@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LevelScenes/SauronLevelScene.unity
     guid: 11f567fa7cd3ba3458c79d4c65b4d109
+  - enabled: 1
+    path: Assets/Scenes/LevelScenes/GameOverScene.unity
+    guid: cb84250812e9490419e21815b11867dc
   - enabled: 0
     path: Assets/Scenes/TestScenes/MultiplayerScene.unity
     guid: e45fae1f2d285294f888339cc9337890

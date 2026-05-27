@@ -23,8 +23,6 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     public void TriggerInteraction()
     {
-        Debug.Log("TriggerInteraction");
-        Debug.Log("_isInteractable: " + _isInteractable);
         if (_isInteractable)
         {
             OnTriggerButton?.Invoke(shape, button);
@@ -41,13 +39,11 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     public void EnableInteraction()
     {
-        Debug.Log("EnableInteraction");
         _isInteractable = true;
     }
 
     public void DisableInteraction()
     {
-        Debug.Log("DisableInteraction");
         _isInteractable = false;
     }
 
