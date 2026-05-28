@@ -44,11 +44,17 @@ public class StatueWithSpotlight : NetworkBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip burningAudio;
     [SerializeField] private AudioClip footstepAudio;
+    [SerializeField] private AudioClip[] attackingAudios;
     [SerializeField] private AudioClip[] whisperingAudios;
     private AudioSource _audioSource;
 
     private bool _canPCFunction = false;
     private bool _canVRFunction = false;
+
+    private bool _shuttingDown = false;
+
+    [SerializeField] private int maxAttackDelay;
+    private int attackCount;
 
     void Awake()
     {
@@ -64,6 +70,8 @@ public class StatueWithSpotlight : NetworkBehaviour
         
         _canPCFunction = true;
         _canVRFunction = true;
+
+        attackCount = maxAttackDelay;
     }
 
     private void OnEnable()
@@ -76,6 +84,40 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        _shuttingDown = true;
+    }
+
+    [ClientRpc]
+    private void PlayAudioClientRpc(int _audioNum)
+    {
+        AudioClip _currentAudio = burningAudio;
+        switch (_audioNum)
+        {
+            case 0:
+                _currentAudio = burningAudio;
+                break;
+            case 1:
+                _currentAudio = footstepAudio;
+                break;
+            case 2:
+                _currentAudio = attackingAudios[Random.Range(0, attackingAudios.Length)];
+                break;
+            case 3:
+                _currentAudio = whisperingAudios[Random.Range(0, whisperingAudios.Length)];
+                break;
+        }
+
+        if(!_audioSource.isPlaying || _audioSource.clip != _currentAudio)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _currentAudio;
+            _audioSource.Play();
+            _audioSource.enabled = true; 
+        }
     }
 
     private void GetPCPlayerData()
@@ -110,6 +152,8 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         if(!_canPCFunction && !_canVRFunction) return;
 
+        if(attackCount > 0) attackCount--;
+
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
 
         if (_isPCTooFar)
@@ -117,7 +161,7 @@ public class StatueWithSpotlight : NetworkBehaviour
             StandBy();
         }else{
 
-            if (_isPCTooClose) StopAndAttack(damageToPlayer);        
+            if (_isPCTooClose && attackCount <= 0) StopAndAttack(damageToPlayer);        
 
             _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight); 
             _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
@@ -151,7 +195,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         _agent.speed = agentSpeed;
 
-        SwapAudio(footstepAudio);
+        PlayAudioClientRpc(1);
         _audioSource.volume = 1;
 
         _destination = _pcPlayerTransform.position;
@@ -161,11 +205,15 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private void StopAndAttack(float _damage)
     {
+        attackCount = maxAttackDelay;
+
         _agent.speed = 0;
-        _audioSource.enabled = false;
+        
+        if(!_shuttingDown) PlayAudioClientRpc(2);
         
         _agent.SetDestination(transform.position);
 
+        Debug.Log("Health: _pcPlayerHealth: " + _pcPlayerHealth);
         _pcPlayerHealth.ChangeHealth(-_damage, -1);
     }
 
@@ -173,7 +221,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         _agent.speed = 0;
 
-        SwapAudio(burningAudio);
+        PlayAudioClientRpc(0);
 
         _audioSource.volume = 1 - (health.GetHealth() / 100);
 
@@ -186,17 +234,6 @@ public class StatueWithSpotlight : NetworkBehaviour
                                         transform.position.y, 
                                         transform.position.z
                                     );
-    }
-
-    private void SwapAudio(AudioClip _audioClip)
-    {
-        if(_audioSource.clip != _audioClip)
-        {
-            _audioSource.Stop();
-            _audioSource.clip = _audioClip;
-            _audioSource.Play();
-        }
-        _audioSource.enabled = true;
     }
     
     //Used ChatGPT here

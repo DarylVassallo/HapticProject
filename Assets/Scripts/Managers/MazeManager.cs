@@ -81,8 +81,19 @@ public class MazeManager : NetworkBehaviour
 
     private bool isFunctioningWheelRotating;
 
+    [SerializeField] private AudioClip correctAudio;
+    [SerializeField] private AudioClip incorrectAudio;
+    [SerializeField] private AudioClip wheelAudio;
+    [SerializeField] private AudioClip switchOnLeverAudio;
+    [SerializeField] private AudioClip switchOffLeverAudio;
+    private AudioSource _audioSource;
+
+    private NetworkVariable<bool> _crookedBridgeToggle = new (false);
+
     void Awake()
     {        
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
+
         _isNewNavMeshAvailable = false;
 
         _closeSpawnPoints = new List<Transform>();
@@ -142,9 +153,12 @@ public class MazeManager : NetworkBehaviour
     {
         if(chancesOfAngel.Value > 0) PotentialAngelCreation();
 
-        CheckSquareWheel();
+        if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
 
-        if(!canPCFunction || (!isSquareWheelActive.Value)) return;
+        if(crookedBridge.activeSelf != _crookedBridgeToggle.Value)
+        {
+            crookedBridge.SetActive(_crookedBridgeToggle.Value);
+        }
 
         if(isSquareWheelActive.Value)
         {
@@ -153,17 +167,58 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    private void PlayAudioClientRpc(int _audioNum)
+    {
+        AudioClip _currentAudio = incorrectAudio;
+        switch (_audioNum)
+        {
+            case 0:
+                _currentAudio = incorrectAudio;
+                break;
+            case 1:
+                _currentAudio = correctAudio;
+                break;
+            case 2:
+                _currentAudio = wheelAudio;
+                break;
+            case 3:
+                _currentAudio = switchOnLeverAudio;
+                break;
+            case 4:
+                _currentAudio = switchOffLeverAudio;
+                break;
+        }
+
+        if(!_audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _currentAudio;
+            _audioSource.Play();
+            _audioSource.enabled = true; 
+        }
+    }
+
+    [ClientRpc]
+    private void StopAudioClientRpc()
+    {
+        _audioSource.Stop();
+    }
+
     private void CheckSquareWheel()
     {
         squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
 
         if(squareWheelKnobValueDiff != 0)
         {
+            PlayAudioClientRpc(2);
             _isNewNavMeshAvailable = true;
             AddChanceOfAngelsServerRpc(0.1f);
         }
         else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
         {
+            StopAudioClientRpc();
+
             _isNewNavMeshAvailable = false;
             levelGround.RemoveData();
             levelGround.BuildNavMesh();
@@ -174,6 +229,12 @@ public class MazeManager : NetworkBehaviour
         prevSquareWheelKnobValue = squareWheelKnob.value;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SetCrookedBridgeEnableServerRpc()
+    {
+        _crookedBridgeToggle.Value = !_crookedBridgeToggle.Value;
+    }
+    
     [ServerRpc(RequireOwnership = false)]
     private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
@@ -261,9 +322,12 @@ public class MazeManager : NetworkBehaviour
 
     public void EnableDrainFlashlightCharge()
     {
+        PlayAudioClientRpc(3);
+
         if(!isDiamondLeverActive.Value) return;
 
-        crookedBridge.SetActive(true);
+        if(_crookedBridgeToggle == false) SetCrookedBridgeEnableServerRpc();
+
         levelGround.RemoveData();
         levelGround.BuildNavMesh();
 
@@ -272,9 +336,12 @@ public class MazeManager : NetworkBehaviour
 
     public void DisableDrainFlashlightCharge()
     {
+        PlayAudioClientRpc(4);
+
         if(!isDiamondLeverActive.Value) return;
         
-        crookedBridge.SetActive(false);
+        if(_crookedBridgeToggle == true) SetCrookedBridgeEnableServerRpc();
+        
         levelGround.RemoveData();
         levelGround.BuildNavMesh();
 
@@ -283,12 +350,13 @@ public class MazeManager : NetworkBehaviour
 
     public void GivePCPlayerHealthByLever()
     {
+        PlayAudioClientRpc(3);
+
         GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(2f, -1);
     }
 
     private void PressedButton(ShapeType _shape, ButtonType _button)
     {
-        // crookedBridge.SetActive(true);
         InstantiateRandomAngelServerRpc();
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
@@ -326,6 +394,10 @@ public class MazeManager : NetworkBehaviour
                         currentShapeOrder = new ShapeType[5];
                         currentButtonOrder = new ButtonType[5];
                         entryNum = 0;
+
+                        Debug.Log("INCORRECT");
+                        PlayAudioClientRpc(0);
+
                         return;
                     }
                 }
@@ -334,6 +406,10 @@ public class MazeManager : NetworkBehaviour
                 currentButtonOrder = new ButtonType[5];
                 entryNum = 0;
                 hiddenSwitches[i].activateMethod.Invoke();
+
+                Debug.Log("CORRECT");
+                PlayAudioClientRpc(1);
+
                 return;
             }
         }

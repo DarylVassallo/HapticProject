@@ -201,17 +201,21 @@ MonoBehaviour:
   shakeSpeed: 64
   shakeAmount: 0.08
   damageToAngel: 0.5
-  damageToPlayer: 0.125
+  damageToPlayer: 3
   _tooCloseDistance: 2.2
   _tooFarDistance: 400
   burningAudio: {fileID: 8300000, guid: dc2b315f54c13764d8b5675a6f68eff7, type: 3}
   footstepAudio: {fileID: 8300000, guid: e5488bd69b917544fb71c5d71d47c874, type: 3}
+  attackingAudios:
+  - {fileID: 8300000, guid: 92295063e6bb2324fb660a40f39d3ba4, type: 3}
+  - {fileID: 8300000, guid: 3f44b78091aff984a85c2744b5360ba4, type: 3}
   whisperingAudios:
   - {fileID: 8300000, guid: 5c13de1789587624e90ecb6e8681d832, type: 3}
   - {fileID: 8300000, guid: baa0b2a3917b4ba499c7dc0725bae8af, type: 3}
   - {fileID: 8300000, guid: fd555e9054bf0e74fb3cfbf0a6c94810, type: 3}
   - {fileID: 8300000, guid: d1e48533b93a1d14fa310c6fd2417b6e, type: 3}
   - {fileID: 8300000, guid: 052f311c65be8fd428193d2e748a496a, type: 3}
+  maxAttackDelay: 50
 --- !u!114 &3128351026506914791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,7 +235,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4488053546621565365}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}

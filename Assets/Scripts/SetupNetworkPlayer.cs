@@ -16,30 +16,6 @@ public class SetupNetworkPlayer : NetworkBehaviour
     private GameObject vrPlayerMainCamera;
     private XRUIInputModule vrInput;
 
-    void Awake()
-    {
-        // if (!IsOwner) return;
-
-        // pcPlayerMainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        // Debug.Log("pcPlayerMainCamera: " + pcPlayerMainCamera);
-
-        // pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
-        // Debug.Log("pcInput: " + pcInput);
-
-        // foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
-        // {
-        //     if (child.CompareTag("MainCamera"))
-        //     {
-        //         vrPlayerMainCamera = child.gameObject;
-        //         break;
-        //     }
-        // }
-        // Debug.Log("vrPlayerMainCamera: " + vrPlayerMainCamera);
-
-        // vrInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<XRUIInputModule>();
-        // Debug.Log("vrInput: " + vrInput);
-    }
-
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;

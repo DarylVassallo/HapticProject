@@ -36,8 +36,16 @@ public class FlashlightCharge : NetworkBehaviour
 
     private bool _isNetworkSpawned = false;
 
+    private bool _shuttingDown = true;
+
+    [SerializeField] private AudioClip handCrankAudio;
+    [SerializeField] private AudioClip chargeStationAudio;
+    private AudioSource _audioSource;
+
     private void Awake()
     {
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
+
         _spotLight = this.GetComponentInChildren<Light>();
 
         _maxSpotLightIntensity = _spotLight.intensity;
@@ -82,6 +90,12 @@ public class FlashlightCharge : NetworkBehaviour
     {
         if (!IsOwner) return;
         _isNetworkSpawned = true;
+        _shuttingDown = false;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        _shuttingDown = true;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -89,6 +103,36 @@ public class FlashlightCharge : NetworkBehaviour
     {
         _decayMultiplier.Value = _newDecay;
     }
+
+    [ClientRpc]
+    private void PlayAudioClientRpc(int _audioNum)
+    {
+        AudioClip _currentAudio = handCrankAudio;
+        switch (_audioNum)
+        {
+            case 0:
+                _currentAudio = handCrankAudio;
+                break;
+            case 1:
+                _currentAudio = chargeStationAudio;
+                break;
+        }
+
+        if(!_audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _currentAudio;
+            _audioSource.Play();
+            _audioSource.enabled = true; 
+        }
+    }
+
+    [ClientRpc]
+    private void StopAudioClientRpc()
+    {
+        _audioSource.Stop();
+    }
+
 
     private void EnableDrainFlashlight()
     {
@@ -131,16 +175,26 @@ public class FlashlightCharge : NetworkBehaviour
             _spotLight.enabled = _spotLightToggle.Value;
         }
         
+        if(_charge.Value >= 100 && _isCharging.Value && !_shuttingDown) StopAudioClientRpc();
+
         if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && _spotLight.enabled)) return;
 
         if (_isCharging.Value && _charge.Value < 100)
         {
-
-            SetFlashlightEnableServerRpc();
+            if(!_spotLightToggle.Value) SetFlashlightEnableServerRpc();
             ChangeSpotLightStrength(chargeRate / _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
-            if(flashlightLever != null) flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+
+            if(flashlightLever != null)
+            {
+                flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+                if(!_shuttingDown) PlayAudioClientRpc(0);
+            }else if(canUseChargeStation)
+            {
+                if(!_shuttingDown) PlayAudioClientRpc(1);
+            }
         }else{
             ChangeSpotLightStrength(-decayRate * _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
+            if(!_shuttingDown) StopAudioClientRpc();
         }
     }
 
@@ -151,15 +205,15 @@ public class FlashlightCharge : NetworkBehaviour
     }
 
     private void ChangeSpotLightStrength(float _change, float _brightness)
-    {
-        if(_isNetworkSpawned) SetChargeServerRpc(_charge.Value + _change);
+    {        
+        if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(_charge.Value + _change);
 
         if(_charge.Value < 0)
         {
-            if(_isNetworkSpawned) SetChargeServerRpc(0f);
+            if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(0f);
         }else if(_charge.Value > 100)
         { 
-            if(_isNetworkSpawned) SetChargeServerRpc(100f);
+            if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(100f);
         }
 
         _spotLight.intensity = _maxSpotLightIntensity * (_charge.Value / 100f) * _brightness;

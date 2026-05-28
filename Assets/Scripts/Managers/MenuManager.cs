@@ -287,7 +287,6 @@ public class MenuManager : MonoBehaviour
     {
         // NetworkManager.Singleton.Shutdown();
         // SceneManager.LoadScene(_sceneName);
-        Debug.Log("New Scene: " + _sceneName);
         NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 

@@ -21,6 +21,14 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     private float _minDistance = 0.005f;
 
+    [SerializeField] private AudioClip buttonAudio;
+    private AudioSource _audioSource;
+
+    void Awake()
+    {
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
+    }
+
     public void TriggerInteraction()
     {
         if (_isInteractable)
@@ -34,6 +42,14 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                                     this.transform.localScale.x
                                 );            
             _moveDown = true;
+
+            if(!_audioSource.isPlaying)
+            {
+                _audioSource.Stop();
+                _audioSource.clip = buttonAudio;
+                _audioSource.Play();
+                _audioSource.enabled = true; 
+            }
         }
     }
 
