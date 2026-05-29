@@ -1,10 +1,13 @@
 using UnityEngine;
 using System;
+
+using Unity.Netcode;
+
 //This script has the health of the entity, and destroys it upon death.
-public class Health : MonoBehaviour
+public class Health : NetworkBehaviour
 {
     private float _maxHealth = 100;
-    private float _health;
+    private NetworkVariable<float> _health = new(100f);
 
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
@@ -14,16 +17,22 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
-        _health = _maxHealth;
+        SetHealthServerRpc(_maxHealth);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetHealthServerRpc(float _newHealth)
+    {
+        _health.Value = _newHealth;
     }
 
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
-        _health += _healthChange;
+        SetHealthServerRpc(_health.Value + _healthChange);
 
-        if(_health > _maxHealth) _health = _maxHealth;
+        if(_health.Value > _maxHealth) SetHealthServerRpc(_maxHealth);
 
-        if(_health <= 0)
+        if(_health.Value <= 0)
         {
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
@@ -39,14 +48,14 @@ public class Health : MonoBehaviour
         {
             if (this.CompareTag("PCPlayer"))
             {
-                OnChangeHealthBar?.Invoke(_health);
-                OnChangeHealthCamera?.Invoke(_health);
+                OnChangeHealthBar?.Invoke(_health.Value);
+                OnChangeHealthCamera?.Invoke(_health.Value);
             }
         }
     }
 
     public float GetHealth()
     {
-        return _health;
+        return _health.Value;
     }
 }

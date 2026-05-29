@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 using UnityEngine.XR.Interaction.Toolkit.UI;
 using UnityEngine.InputSystem.UI;
 
@@ -9,21 +10,25 @@ public class SetupNetworkPlayer : NetworkBehaviour
 {
     [SerializeField] private bool isPCPlayer;
     private GameObject pcPlayerMainCamera;
+    private Camera pcPlayerMainCameraCamera;
+    private AudioListener pcPlayerMainCameraAudioListener;
     private InputSystemUIInputModule pcInput;
 
     
     [SerializeField] private bool isVRPlayer;
     private GameObject vrPlayerMainCamera;
+    private Camera vrPlayerMainCameraCamera;
+    private AudioListener vrPlayerMainCameraAudioListener;
     private XRUIInputModule vrInput;
 
     public override void OnNetworkSpawn()
     {
         if (!IsOwner) return;
-        pcPlayerMainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        Debug.Log("pcPlayerMainCamera: " + pcPlayerMainCamera);
 
+        pcPlayerMainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        pcPlayerMainCameraCamera = pcPlayerMainCamera.GetComponent<Camera>();
+        pcPlayerMainCameraAudioListener = pcPlayerMainCamera.GetComponent<AudioListener>();
         pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
-        Debug.Log("pcInput: " + pcInput);
 
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
@@ -33,27 +38,45 @@ public class SetupNetworkPlayer : NetworkBehaviour
                 break;
             }
         }
-        Debug.Log("vrPlayerMainCamera: " + vrPlayerMainCamera);
-
+        vrPlayerMainCameraCamera = vrPlayerMainCamera.GetComponent<Camera>();
+        vrPlayerMainCameraAudioListener = vrPlayerMainCamera.GetComponent<AudioListener>();
         vrInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<XRUIInputModule>();
-        Debug.Log("vrInput: " + vrInput);
-
 
         if (isPCPlayer)
         {
-            pcPlayerMainCamera.SetActive(true);
-            pcInput.enabled = true;
+            SetPCPlayerCamera(true);
+            SetVRPlayerCamera(false);
 
-            vrPlayerMainCamera.SetActive(false);
-            vrInput.enabled = false;
+            DisableXRSockets();
         }
         else if(isVRPlayer)
         {
-            pcPlayerMainCamera.SetActive(false);
-            pcInput.enabled = false;
+            SetPCPlayerCamera(false);
+            SetVRPlayerCamera(true);
+        }
+    }
 
-            vrPlayerMainCamera.SetActive(true);
-            vrInput.enabled = true;
+    private void SetPCPlayerCamera(bool toggle)
+    {
+        pcPlayerMainCamera.SetActive(toggle);
+        pcPlayerMainCameraCamera.enabled = toggle;
+        pcPlayerMainCameraAudioListener.enabled = toggle;
+        pcInput.enabled = toggle;
+    }
+
+    private void SetVRPlayerCamera(bool toggle)
+    {
+        vrPlayerMainCamera.SetActive(toggle);
+        vrPlayerMainCameraCamera.enabled = toggle;
+        vrPlayerMainCameraAudioListener.enabled = toggle;
+        vrInput.enabled = toggle;
+    }
+
+    public void DisableXRSockets()
+    {
+        foreach (var socket in FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>())
+        {
+            socket.enabled = false;
         }
     }
 }

@@ -3,11 +3,12 @@ using UnityEngine.InputSystem;
 using System;
 
 using Unity.Netcode;
+using UnityEngine.XR.Interaction.Toolkit;
 
 //This script controls the flashlight's charge, as it runs out, the strength and range is also reduced. It can be charged, but the flash light is off during it.
 public class FlashlightCharge : NetworkBehaviour
 {
-    private Light _spotLight;
+    public Light spotLight;
 
     private NetworkVariable<bool> _spotLightToggle = new (true);
 
@@ -46,10 +47,8 @@ public class FlashlightCharge : NetworkBehaviour
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
-        _spotLight = this.GetComponentInChildren<Light>();
-
-        _maxSpotLightIntensity = _spotLight.intensity;
-        _maxSpotLightRange = _spotLight.range;
+        _maxSpotLightIntensity = spotLight.intensity;
+        _maxSpotLightRange = spotLight.range;
 
         _maxChargeBarLength = chargeBar.localScale.z;
     }
@@ -88,7 +87,6 @@ public class FlashlightCharge : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner) return;
         _isNetworkSpawned = true;
         _shuttingDown = false;
     }
@@ -133,6 +131,13 @@ public class FlashlightCharge : NetworkBehaviour
         _audioSource.Stop();
     }
 
+    public void socketRelease(SelectExitEventArgs args)
+    {
+        Debug.Log("Release");
+        var xr = args.interactableObject;
+
+        xr.transform.SetParent(null, true);
+    }
 
     private void EnableDrainFlashlight()
     {
@@ -170,14 +175,14 @@ public class FlashlightCharge : NetworkBehaviour
 
     private void FixedUpdate()
     {      
-        if(_spotLight.enabled != _spotLightToggle.Value)
+        if(spotLight.enabled != _spotLightToggle.Value)
         {
-            _spotLight.enabled = _spotLightToggle.Value;
+            spotLight.enabled = _spotLightToggle.Value;
         }
         
         if(_charge.Value >= 100 && _isCharging.Value && !_shuttingDown) StopAudioClientRpc();
 
-        if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && _spotLight.enabled)) return;
+        if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && spotLight.enabled)) return;
 
         if (_isCharging.Value && _charge.Value < 100)
         {
@@ -216,8 +221,8 @@ public class FlashlightCharge : NetworkBehaviour
             if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(100f);
         }
 
-        _spotLight.intensity = _maxSpotLightIntensity * (_charge.Value / 100f) * _brightness;
-        _spotLight.range = _maxSpotLightRange * (_charge.Value / 100f) * _brightness;
+        spotLight.intensity = _maxSpotLightIntensity * (_charge.Value / 100f) * _brightness;
+        spotLight.range = _maxSpotLightRange * (_charge.Value / 100f) * _brightness;
 
         chargeBar.localScale = new Vector3  (   chargeBar.localScale.x, 
                                                 chargeBar.localScale.y,

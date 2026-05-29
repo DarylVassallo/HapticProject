@@ -30,6 +30,8 @@ public class ConnectUIScript : MonoBehaviour
     private bool _isTestingPCPlayer = false;
 
     [SerializeField] private bool isUsingPlayMode;
+    [SerializeField] private bool isUsingOnlyPCPlayer;
+    [SerializeField] private bool isUsingOnlyVRPlayer;
 
     void Start()
     {
@@ -46,8 +48,8 @@ public class ConnectUIScript : MonoBehaviour
         Debug.Log("NetworkManager.Singleton: " + NetworkManager.Singleton);
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
 
-        // DebugStartVRPlayer();
-        // DebugStartPCPlayer();
+        if(isUsingOnlyVRPlayer) DebugStartVRPlayer();
+        if(isUsingOnlyPCPlayer) DebugStartPCPlayer();
     }
 
     private void OnDestroy()

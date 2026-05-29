@@ -90,6 +90,13 @@ public class MazeManager : NetworkBehaviour
 
     private NetworkVariable<bool> _crookedBridgeToggle = new (false);
 
+    [SerializeField] private int maxWheelCheckCount;
+    private int wheelCheckCount;
+
+    [SerializeField] private bool startWithActivatedSquareWheel;
+    [SerializeField] private bool startWithActivatedDiamondLever;
+    [SerializeField] private bool startWithActivatedTriangleLever;
+    [SerializeField] private bool startWithActivatedCircleButton;
     void Awake()
     {        
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -100,6 +107,8 @@ public class MazeManager : NetworkBehaviour
         squareWheelKnob = squareWheelObject.GetComponentInChildren<XRKnob>();
 
         isFunctioningWheelRotating = false;
+
+        wheelCheckCount = 0;
     }
 
     private void OnEnable()
@@ -147,11 +156,16 @@ public class MazeManager : NetworkBehaviour
         }
 
         base.OnNetworkSpawn();
+
+        if(startWithActivatedSquareWheel) ActivateSquareWheel();
+        if(startWithActivatedDiamondLever) ActivateDiamondLever();
+        if(startWithActivatedTriangleLever) ActivateTriangleLever();
+        if(startWithActivatedCircleButton) ActivateCircleButton();
     }
 
     void FixedUpdate()
     {
-        // if(chancesOfAngel.Value > 0) PotentialAngelCreation();
+        if(chancesOfAngel.Value > 0) PotentialAngelCreation();
 
         if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
 
@@ -208,25 +222,30 @@ public class MazeManager : NetworkBehaviour
     private void CheckSquareWheel()
     {
         squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
-
-        if(squareWheelKnobValueDiff != 0)
+        if(wheelCheckCount > 0) Debug.Log("wheelCheckCount: " + wheelCheckCount);
+        if(squareWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
         {
+            Debug.Log("WHEEL STARTED MOVING");
             PlayAudioClientRpc(2);
             _isNewNavMeshAvailable = true;
-            AddChanceOfAngelsServerRpc(0.1f);
+            SetChanceOfAngelsServerRpc(0.01f);
+
+            wheelCheckCount = maxWheelCheckCount;
         }
-        else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable)
+        else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
+            Debug.Log("WHEEL STOPPED");
             StopAudioClientRpc();
 
             _isNewNavMeshAvailable = false;
             levelGround.RemoveData();
             levelGround.BuildNavMesh();
 
-            AddChanceOfAngelsServerRpc(-0.1f);
+            SetChanceOfAngelsServerRpc(-0.01f);
         }
 
         prevSquareWheelKnobValue = squareWheelKnob.value;
+        if(wheelCheckCount > 0) wheelCheckCount--;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -259,9 +278,9 @@ public class MazeManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void AddChanceOfAngelsServerRpc(float _chance)
+    private void SetChanceOfAngelsServerRpc(float _chance)
     {
-        chancesOfAngel.Value = chancesOfAngel.Value + _chance;
+        chancesOfAngel.Value = _chance;
     }
     
     private void OnObjectChanged(InteractiveObject interactiveObject, bool previous, bool current)
@@ -430,17 +449,24 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
+    private void PotentialAngelCreation()
+    {
+        float ran = UnityEngine.Random.Range(0f, 1f);
+        if (ran <= chancesOfAngel.Value)
+        {
+            Debug.Log("ran: " + ran);
+            Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
+            InstantiateRandomAngelServerRpc();
+        }
+    }
+
     [ServerRpc(RequireOwnership = false)]
     private void InstantiateRandomAngelServerRpc()
     {
+        Debug.Log("ANGEL SPAWNED");
         int angelNum = UnityEngine.Random.Range(1, angelSpawnPoints.childCount) - 1;
         var newAngel = Instantiate(angel, angelSpawnPoints.GetChild(angelNum).position, Quaternion.identity);
         newAngel.GetComponent<NetworkObject>().Spawn();
-    }
-
-    private void PotentialAngelCreation()
-    {
-        if (UnityEngine.Random.Range(0f, 1f) <= chancesOfAngel.Value) InstantiateRandomAngelServerRpc();
     }
 
     private void InstantiateNearbyRandomAngel()

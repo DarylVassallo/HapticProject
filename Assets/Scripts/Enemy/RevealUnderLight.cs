@@ -33,7 +33,7 @@ public class RevealUnderLight : MonoBehaviour
     void Awake()
     {
         _hiddenMaterial = GetComponent<Renderer>().material;
-        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<FlashlightCharge>().spotLight;
 
         if (isReversed)
         {
@@ -60,7 +60,7 @@ public class RevealUnderLight : MonoBehaviour
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
+            _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<FlashlightCharge>().spotLight;
             _canPCFunction = true;
         }
     }
@@ -79,7 +79,7 @@ public class RevealUnderLight : MonoBehaviour
 
         if(_pcSpotLight == null && GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<Light>();
+            _pcSpotLight = GameObject.FindGameObjectWithTag("PCPlayer").GetComponentInChildren<FlashlightCharge>().spotLight;
         }
 
         if(!_canPCFunction && !_canVRFunction) return;

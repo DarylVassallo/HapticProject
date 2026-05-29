@@ -8,13 +8,10 @@ public class FallTrigger : MonoBehaviour
     [SerializeField] private bool isVRTrigger;
 
     private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("other: " + other.gameObject.name);
-        
+    {        
         if (isVRTrigger)
         {
             _entityRespawn = other.GetComponent<Respawn>();
-            Debug.Log("_entityRespawn: " + _entityRespawn);
 
             if(_entityRespawn != null)
             {
@@ -24,7 +21,6 @@ public class FallTrigger : MonoBehaviour
         else
         {
             _entityHealth = other.GetComponent<Health>();
-            Debug.Log("_entityHealth: " + _entityHealth);
 
             if (_entityHealth != null)
             {
@@ -32,7 +28,16 @@ public class FallTrigger : MonoBehaviour
             }
             else
             {
-                Destroy(other);
+                _entityRespawn = other.GetComponent<Respawn>();
+
+                if(_entityRespawn != null)
+                {
+                    _entityRespawn.ActivateRespawn();
+                }
+                else
+                {
+                    Destroy(other);
+                }
             }
         }
         
