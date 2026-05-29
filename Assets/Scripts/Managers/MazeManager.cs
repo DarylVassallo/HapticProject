@@ -151,7 +151,7 @@ public class MazeManager : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if(chancesOfAngel.Value > 0) PotentialAngelCreation();
+        // if(chancesOfAngel.Value > 0) PotentialAngelCreation();
 
         if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
 
@@ -326,7 +326,7 @@ public class MazeManager : NetworkBehaviour
 
         if(!isDiamondLeverActive.Value) return;
 
-        if(_crookedBridgeToggle == false) SetCrookedBridgeEnableServerRpc();
+        if(_crookedBridgeToggle.Value == false) SetCrookedBridgeEnableServerRpc();
 
         levelGround.RemoveData();
         levelGround.BuildNavMesh();
@@ -340,7 +340,7 @@ public class MazeManager : NetworkBehaviour
 
         if(!isDiamondLeverActive.Value) return;
         
-        if(_crookedBridgeToggle == true) SetCrookedBridgeEnableServerRpc();
+        if(_crookedBridgeToggle.Value == true) SetCrookedBridgeEnableServerRpc();
         
         levelGround.RemoveData();
         levelGround.BuildNavMesh();
@@ -352,12 +352,12 @@ public class MazeManager : NetworkBehaviour
     {
         PlayAudioClientRpc(3);
 
-        GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(2f, -1);
+        if(isTriangleLeverActive.Value) GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(2f, -1);
     }
 
     private void PressedButton(ShapeType _shape, ButtonType _button)
     {
-        InstantiateRandomAngelServerRpc();
+        // InstantiateRandomAngelServerRpc();
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
             if(currentShapeOrder[i] == ShapeType.None)

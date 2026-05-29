@@ -46,7 +46,7 @@ public class ConnectUIScript : MonoBehaviour
         Debug.Log("NetworkManager.Singleton: " + NetworkManager.Singleton);
         NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
 
-        DebugStartVRPlayer();
+        // DebugStartVRPlayer();
         // DebugStartPCPlayer();
     }
 

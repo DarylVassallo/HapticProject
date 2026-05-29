@@ -8371,9 +8371,9 @@ MonoBehaviour:
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
-  SyncScaleX: 1
-  SyncScaleY: 1
-  SyncScaleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
   PositionThreshold: 0.001
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
@@ -106134,7 +106134,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
+  - {fileID: 2100000, guid: 4455923e0d1fe6f4881a798b112a7f63, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -124389,7 +124389,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
+  - {fileID: 2100000, guid: 4455923e0d1fe6f4881a798b112a7f63, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -134471,7 +134471,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
+  - {fileID: 2100000, guid: 4455923e0d1fe6f4881a798b112a7f63, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -168271,7 +168271,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
+  - {fileID: 2100000, guid: 4455923e0d1fe6f4881a798b112a7f63, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -186619,6 +186619,10 @@ PrefabInstance:
       propertyPath: vrSpawnPoint
       value: 
       objectReference: {fileID: 1533949588}
+    - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
+      propertyPath: isUsingPlayMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
