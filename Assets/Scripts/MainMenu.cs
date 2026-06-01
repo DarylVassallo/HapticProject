@@ -3,19 +3,20 @@ using UnityEngine.SceneManagement;
 
 using System.Collections;
 using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 using UnityEngine.Localization.Settings;
 using UnityEngine.UI;
 
 using System.IO;
 using TMPro;
 
-using UnityEngine.Localization;
-using UnityEngine.Localization.Components;
-using UnityEngine.Localization.Settings;
+using Unity.Netcode;
 
 //This script controls all the options in the Main Menu
-public class MainMenu : MonoBehaviour
+public class MainMenu : NetworkBehaviour
 {
+    [SerializeField] private GameObject hostingOptionsMenu;
+    [SerializeField] private GameObject multiplayerHostingMenu;
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject settingsMenu;
     [SerializeField] private GameObject creditsMenu;
@@ -25,9 +26,13 @@ public class MainMenu : MonoBehaviour
 
     private bool isCreditsScrolling;
 
+    private NetworkVariable<int> nextScene = new (-1);
+
     private void Awake()
     {
-        mainMenu.SetActive(true);
+        hostingOptionsMenu.SetActive(true);
+        multiplayerHostingMenu.SetActive(false);
+        mainMenu.SetActive(false);
         settingsMenu.SetActive(false);
 
         foreach (Transform child in creditsMenu.transform)
@@ -41,6 +46,21 @@ public class MainMenu : MonoBehaviour
         creditsMenu.SetActive(false);
 
         isCreditsScrolling = false;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        nextScene.OnValueChanged += OnNextSceneChanged;
+    }
+
+    private void OnNetworkDespawn()
+    {
+        nextScene.OnValueChanged -= OnNextSceneChanged;
+    }
+
+    private void OnNextSceneChanged(int previousValue, int newValue)
+    {
+        PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
     }
 
     [System.Serializable]
@@ -111,10 +131,46 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Language saved: " + targetLocale.Identifier.Code);
     }
 
-    public void PlayLevel(string _sceneName)
+    private int GetSceneIndex(string sceneName)
     {
-        SceneManager.LoadScene(_sceneName);
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(i);
+            string name = Path.GetFileNameWithoutExtension(path);
+
+            if (name == sceneName) return i;
+        }
+
+        return -1;
     }
+    
+    public void PlayLevelClient(string _sceneName)
+    {
+        SetNextSceneServerRpc(GetSceneIndex(_sceneName));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetNextSceneServerRpc(int _newScene)
+    {
+        nextScene.Value = _newScene;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayLevelServerRpc(string _sceneName)
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        foreach (var netObj in FindObjectsOfType<NetworkObject>())
+        {
+            if (netObj.IsSpawned)
+            {
+                netObj.Despawn(true);
+            }
+        }
+
+        NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
+    }
+
 
     public void ShowCredits()
     {
@@ -182,25 +238,68 @@ public class MainMenu : MonoBehaviour
 
     public void ChangeMenu(int _menuNum)
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         if (_menuNum == 0)
         {
-            mainMenu.SetActive(true);
+            hostingOptionsMenu.SetActive(true);
+            multiplayerHostingMenu.SetActive(false);
+
+            mainMenu.SetActive(false);
+
             settingsMenu.SetActive(false);
+
             creditsMenu.SetActive(false);
             isCreditsScrolling = false;
-        }
-        else if (_menuNum == 1)
+        }else if (_menuNum == 1)
         {
+            hostingOptionsMenu.SetActive(false);
+            multiplayerHostingMenu.SetActive(true);
+
             mainMenu.SetActive(false);
-            settingsMenu.SetActive(true);
+
+            settingsMenu.SetActive(false);
+
             creditsMenu.SetActive(false);
             isCreditsScrolling = false;
         }else if (_menuNum == 2)
         {
-            mainMenu.SetActive(false);
+            hostingOptionsMenu.SetActive(false);
+            multiplayerHostingMenu.SetActive(false);
+
+            mainMenu.SetActive(true);
+
             settingsMenu.SetActive(false);
+
+            creditsMenu.SetActive(false);
+            isCreditsScrolling = false;
+        }
+        else if (_menuNum == 3)
+        {
+            hostingOptionsMenu.SetActive(false);
+            multiplayerHostingMenu.SetActive(false);
+
+            mainMenu.SetActive(false);
+
+            settingsMenu.SetActive(true);
+
+            creditsMenu.SetActive(false);
+            isCreditsScrolling = false;
+        }else if (_menuNum == 4)
+        {
+            hostingOptionsMenu.SetActive(false);
+            multiplayerHostingMenu.SetActive(false);
+
+            mainMenu.SetActive(false);
+
+            settingsMenu.SetActive(false);
+
             creditsMenu.SetActive(true);
             isCreditsScrolling = true;
         }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 }

@@ -222,10 +222,9 @@ public class MazeManager : NetworkBehaviour
     private void CheckSquareWheel()
     {
         squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
-        if(wheelCheckCount > 0) Debug.Log("wheelCheckCount: " + wheelCheckCount);
+
         if(squareWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
         {
-            Debug.Log("WHEEL STARTED MOVING");
             PlayAudioClientRpc(2);
             _isNewNavMeshAvailable = true;
             SetChanceOfAngelsServerRpc(0.01f);
@@ -234,7 +233,6 @@ public class MazeManager : NetworkBehaviour
         }
         else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
-            Debug.Log("WHEEL STOPPED");
             StopAudioClientRpc();
 
             _isNewNavMeshAvailable = false;
@@ -376,7 +374,7 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButton(ShapeType _shape, ButtonType _button)
     {
-        // InstantiateRandomAngelServerRpc();
+        InstantiateRandomAngelServerRpc();
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
             if(currentShapeOrder[i] == ShapeType.None)
@@ -414,7 +412,6 @@ public class MazeManager : NetworkBehaviour
                         currentButtonOrder = new ButtonType[5];
                         entryNum = 0;
 
-                        Debug.Log("INCORRECT");
                         PlayAudioClientRpc(0);
 
                         return;
@@ -426,7 +423,6 @@ public class MazeManager : NetworkBehaviour
                 entryNum = 0;
                 hiddenSwitches[i].activateMethod.Invoke();
 
-                Debug.Log("CORRECT");
                 PlayAudioClientRpc(1);
 
                 return;
@@ -454,8 +450,6 @@ public class MazeManager : NetworkBehaviour
         float ran = UnityEngine.Random.Range(0f, 1f);
         if (ran <= chancesOfAngel.Value)
         {
-            Debug.Log("ran: " + ran);
-            Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
             InstantiateRandomAngelServerRpc();
         }
     }
@@ -463,7 +457,6 @@ public class MazeManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void InstantiateRandomAngelServerRpc()
     {
-        Debug.Log("ANGEL SPAWNED");
         int angelNum = UnityEngine.Random.Range(1, angelSpawnPoints.childCount) - 1;
         var newAngel = Instantiate(angel, angelSpawnPoints.GetChild(angelNum).position, Quaternion.identity);
         newAngel.GetComponent<NetworkObject>().Spawn();

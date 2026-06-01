@@ -8,6 +8,7 @@ public class Health : NetworkBehaviour
 {
     private float _maxHealth = 100;
     private NetworkVariable<float> _health = new(100f);
+    private NetworkVariable<int> _currentAttackerType = new(0);
 
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
@@ -17,6 +18,12 @@ public class Health : NetworkBehaviour
 
     private void Awake()
     {
+        // SetHealthServerRpc(_maxHealth);
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        _health.OnValueChanged += OnHealthChanged;
         SetHealthServerRpc(_maxHealth);
     }
 
@@ -26,13 +33,23 @@ public class Health : NetworkBehaviour
         _health.Value = _newHealth;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SetAttackerTypeServerRpc(int _attackerType)
+    {
+        _currentAttackerType.Value = _attackerType;
+    }
+
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
         SetHealthServerRpc(_health.Value + _healthChange);
-
         if(_health.Value > _maxHealth) SetHealthServerRpc(_maxHealth);
 
-        if(_health.Value <= 0)
+        SetAttackerTypeServerRpc(_attackerType);
+    }
+
+    private void OnHealthChanged(float previousValue, float newValue)
+    {
+        if(newValue <= 0)
         {
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
@@ -40,7 +57,7 @@ public class Health : NetworkBehaviour
             }
             else if (this.CompareTag("Enemy"))
             {
-                OnKilledEnemy?.Invoke(1, _attackerType);
+                OnKilledEnemy?.Invoke(1, _currentAttackerType.Value);
                 Destroy(this.gameObject);
             }
         }
@@ -48,8 +65,8 @@ public class Health : NetworkBehaviour
         {
             if (this.CompareTag("PCPlayer"))
             {
-                OnChangeHealthBar?.Invoke(_health.Value);
-                OnChangeHealthCamera?.Invoke(_health.Value);
+                OnChangeHealthBar?.Invoke(newValue);
+                OnChangeHealthCamera?.Invoke(newValue);
             }
         }
     }

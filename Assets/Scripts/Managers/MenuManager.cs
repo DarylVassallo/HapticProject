@@ -13,8 +13,10 @@ using UnityEngine.InputSystem;
 
 using Unity.Netcode;
 
+using System.IO;
+
 //This script controls all the options in the Pause Menu
-public class MenuManager : MonoBehaviour
+public class MenuManager : NetworkBehaviour
 {
     [SerializeField] private GameObject pauseMenu;
     private bool _showPauseMenu;
@@ -36,6 +38,8 @@ public class MenuManager : MonoBehaviour
     private TMP_Text _scoreUI;
 
     public static event Action<bool> OnToggleAll;
+
+    private NetworkVariable<int> nextScene = new (-1);
 
     private void Awake()
     {
@@ -84,6 +88,22 @@ public class MenuManager : MonoBehaviour
         PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        nextScene.OnValueChanged += OnNextSceneChanged;
+    }
+
+    private void OnNetworkDespawn()
+    {
+        nextScene.OnValueChanged -= OnNextSceneChanged;
+    }
+
+    private void OnNextSceneChanged(int previousValue, int newValue)
+    {
+        PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
+    }
+
+
     [System.Serializable]
     public struct LanguageButton
     {
@@ -130,7 +150,6 @@ public class MenuManager : MonoBehaviour
         else
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
-            Debug.LogWarning("Using default language");
         }
     }
 
@@ -211,7 +230,7 @@ public class MenuManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            PlayLevel("GameOverScene");
+            PlayLevelServerRpc("GameOverScene");
         }
         else
         {
@@ -283,10 +302,43 @@ public class MenuManager : MonoBehaviour
         _scoreUI.text = $"{PlayerProfileManager.GetScore(0)}";
     }
     
-    public void PlayLevel(string _sceneName)
+    private int GetSceneIndex(string sceneName)
     {
-        // NetworkManager.Singleton.Shutdown();
-        // SceneManager.LoadScene(_sceneName);
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(i);
+            string name = Path.GetFileNameWithoutExtension(path);
+
+            if (name == sceneName) return i;
+        }
+
+        return -1;
+    }
+
+    public void PlayLevelClient(string _sceneName)
+    {
+        SetNextSceneServerRpc(GetSceneIndex(_sceneName));
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetNextSceneServerRpc(int _newScene)
+    {
+        nextScene.Value = _newScene;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayLevelServerRpc(string _sceneName)
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        foreach (var netObj in FindObjectsOfType<NetworkObject>())
+        {
+            if (netObj.IsSpawned)
+            {
+                netObj.Despawn(true);
+            }
+        }
+
         NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 

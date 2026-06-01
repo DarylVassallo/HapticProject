@@ -6,16 +6,19 @@ using UnityEngine.InputSystem.UI;
 
 using Unity.Netcode;
 
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+
+
 public class SetupNetworkPlayer : NetworkBehaviour
 {
-    [SerializeField] private bool isPCPlayer;
+    public bool isPCPlayer;
     private GameObject pcPlayerMainCamera;
     private Camera pcPlayerMainCameraCamera;
     private AudioListener pcPlayerMainCameraAudioListener;
     private InputSystemUIInputModule pcInput;
-
     
-    [SerializeField] private bool isVRPlayer;
+    public bool isVRPlayer;
     private GameObject vrPlayerMainCamera;
     private Camera vrPlayerMainCameraCamera;
     private AudioListener vrPlayerMainCameraAudioListener;
@@ -25,11 +28,29 @@ public class SetupNetworkPlayer : NetworkBehaviour
     {
         if (!IsOwner) return;
 
+        PCPlayerReferences();
+        VRPlayerReferences();
+
+        if (isPCPlayer)
+        {
+            PCPlayerSetup();
+        }
+        else if(isVRPlayer)
+        {
+            VRPlayerSetup();
+        }
+    }
+
+    private void PCPlayerReferences()
+    {
         pcPlayerMainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         pcPlayerMainCameraCamera = pcPlayerMainCamera.GetComponent<Camera>();
         pcPlayerMainCameraAudioListener = pcPlayerMainCamera.GetComponent<AudioListener>();
         pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
+    }
 
+    private void VRPlayerReferences()
+    {
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
             if (child.CompareTag("MainCamera"))
@@ -38,22 +59,24 @@ public class SetupNetworkPlayer : NetworkBehaviour
                 break;
             }
         }
+
         vrPlayerMainCameraCamera = vrPlayerMainCamera.GetComponent<Camera>();
         vrPlayerMainCameraAudioListener = vrPlayerMainCamera.GetComponent<AudioListener>();
         vrInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<XRUIInputModule>();
+    }
 
-        if (isPCPlayer)
-        {
-            SetPCPlayerCamera(true);
-            SetVRPlayerCamera(false);
+    private void PCPlayerSetup()
+    {
+        SetPCPlayerCamera(true);
+        SetVRPlayerCamera(false);
 
-            DisableXRSockets();
-        }
-        else if(isVRPlayer)
-        {
-            SetPCPlayerCamera(false);
-            SetVRPlayerCamera(true);
-        }
+        DisableXRSockets();
+    }
+
+    private void VRPlayerSetup()
+    {
+        SetPCPlayerCamera(false);
+        SetVRPlayerCamera(true);
     }
 
     private void SetPCPlayerCamera(bool toggle)

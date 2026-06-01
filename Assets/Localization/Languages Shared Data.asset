@@ -95,6 +95,34 @@ MonoBehaviour:
     m_Key: Tutorials Used
     m_Metadata:
       m_Items: []
+  - m_Id: 12415573499809792
+    m_Key: Hosting Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416120021815296
+    m_Key: Only PC Player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416276217696256
+    m_Key: Only VR Player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416378927812608
+    m_Key: VR And PC Players
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416563443634176
+    m_Key: Multiplayer Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416666694815744
+    m_Key: PC Player / Client
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416791445999616
+    m_Key: VR Player / Host
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

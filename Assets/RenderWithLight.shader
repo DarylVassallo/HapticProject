@@ -137,7 +137,7 @@ Shader "Custom/RevealingUnderLight_URP"
 			float range = saturate(1.0 - (dist * dist) / (_currLightRange * _currLightRange));
                 float strength = scale - threshold;
                 strength = saturate(strength * _currLightStrength) * range;
-
+                
 			return strength;
 		 }
 		 

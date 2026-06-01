@@ -165,7 +165,7 @@ public class PlayerMovement : NetworkBehaviour
     private void ChangeHealthCamera(float _currentHealth)
     {
         healthBobAmount = _currentHealth / 100f;
-        volume.weight = Mathf.Lerp(0f, 1f, 1f - healthBobAmount);
+        if(!UnityEngine.XR.XRSettings.isDeviceActive) volume.weight = Mathf.Lerp(0f, 1f, 1f - healthBobAmount);
     }
 
     private void HandleGravity()

@@ -100,6 +100,34 @@ MonoBehaviour:
     m_Localized: "Tutoriels Utilis\xE9s"
     m_Metadata:
       m_Items: []
+  - m_Id: 12415573499809792
+    m_Localized: "Options d'h\xE9bergement"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416120021815296
+    m_Localized: Joueur PC uniquement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416276217696256
+    m_Localized: Joueur VR uniquement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416378927812608
+    m_Localized: Joueurs VR et PC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416563443634176
+    m_Localized: Options multijoueurs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416666694815744
+    m_Localized: Joueur/Client PC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416791445999616
+    m_Localized: "Joueur/H\xF4te VR"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

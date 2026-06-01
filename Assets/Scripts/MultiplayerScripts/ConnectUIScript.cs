@@ -13,7 +13,6 @@ public class ConnectUIScript : MonoBehaviour
 {
     [SerializeField] private Button hostButton;
     [SerializeField] private Button clientButton;
-    [SerializeField] private Button serverButton;
 
     [SerializeField] private GameObject pcPlayerWithBody;
     [SerializeField] private GameObject pcPlayerWithoutBody;
@@ -39,7 +38,6 @@ public class ConnectUIScript : MonoBehaviour
 
         hostButton.onClick.AddListener(HostButtonClick);
         clientButton.onClick.AddListener(ClientButtonOnClick);
-        serverButton.onClick.AddListener(ServerButtonOnClick);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -187,7 +185,7 @@ public class ConnectUIScript : MonoBehaviour
         RegisterSceneEvents();
     }
 
-    private  void DebugStartVRPlayer()
+    public void DebugStartVRPlayer()
     {
         Debug.Log("DebugStartVRPlayer");
         _isTestingVRPlayer = true;
@@ -200,13 +198,17 @@ public class ConnectUIScript : MonoBehaviour
         hostButton.transform.parent.gameObject.SetActive(false);
     }
 
-    private  void DebugStartPCPlayer()
+    public void DebugStartPCPlayer()
     {
         Debug.Log("DebugStartPCPlayer");
         _isTestingPCPlayer = true;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+
+        if(currentPCPlayer == pcPlayerWithBody)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
 
         NetworkManager.Singleton.StartHost();
 
@@ -246,11 +248,5 @@ public class ConnectUIScript : MonoBehaviour
         NetworkManager.Singleton.StartClient();
 
         clientButton.transform.parent.gameObject.SetActive(false);
-    }
-
-    private void ServerButtonOnClick()
-    {
-        Debug.Log("ServerButtonOnClick");
-        NetworkManager.Singleton.StartServer();
     }
 }

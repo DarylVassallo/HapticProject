@@ -100,6 +100,34 @@ MonoBehaviour:
     m_Localized: Tutorials Used
     m_Metadata:
       m_Items: []
+  - m_Id: 12415573499809792
+    m_Localized: Hosting Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416120021815296
+    m_Localized: Only PC Player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416276217696256
+    m_Localized: Only VR Player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416378927812608
+    m_Localized: VR And PC Players
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416563443634176
+    m_Localized: Multiplayer Options
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416666694815744
+    m_Localized: PC Player / Client
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12416791445999616
+    m_Localized: VR Player / Host
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:
