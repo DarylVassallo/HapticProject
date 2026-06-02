@@ -128,6 +128,10 @@ MonoBehaviour:
     m_Localized: "Joueur/H\xF4te VR"
     m_Metadata:
       m_Items: []
+  - m_Id: 12654847683956736
+    m_Localized: "Menu Param\xE8tres"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

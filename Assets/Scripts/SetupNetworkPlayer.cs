@@ -43,7 +43,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void PCPlayerReferences()
     {
-        pcPlayerMainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        pcPlayerMainCamera = GameObject.FindGameObjectWithTag("PCCamera");
         pcPlayerMainCameraCamera = pcPlayerMainCamera.GetComponent<Camera>();
         pcPlayerMainCameraAudioListener = pcPlayerMainCamera.GetComponent<AudioListener>();
         pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
@@ -53,7 +53,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
     {
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
-            if (child.CompareTag("MainCamera"))
+            if (child.CompareTag("VRCamera"))
             {
                 vrPlayerMainCamera = child.gameObject;
                 break;

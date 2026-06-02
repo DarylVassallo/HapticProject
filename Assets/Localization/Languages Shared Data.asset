@@ -123,6 +123,10 @@ MonoBehaviour:
     m_Key: VR Player / Host
     m_Metadata:
       m_Items: []
+  - m_Id: 12654847683956736
+    m_Key: Settings Menu
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -9,7 +9,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-        _pcPlayerCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+        _pcPlayerCamera = GameObject.FindGameObjectWithTag("PCCamera").GetComponent<Camera>();
     }
 
     private void OnEnable()

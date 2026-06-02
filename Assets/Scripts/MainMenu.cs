@@ -15,52 +15,57 @@ using Unity.Netcode;
 //This script controls all the options in the Main Menu
 public class MainMenu : NetworkBehaviour
 {
-    [SerializeField] private GameObject hostingOptionsMenu;
-    [SerializeField] private GameObject multiplayerHostingMenu;
-    [SerializeField] private GameObject mainMenu;
-    [SerializeField] private GameObject settingsMenu;
-    [SerializeField] private GameObject creditsMenu;
-    private Transform creditsPage;
+    [SerializeField] private GameObject[] menuList;
+    [SerializeField] private GameObject[] vrMenuList;
+
+    [SerializeField] private Transform pcCreditsPage;
+    [SerializeField] private Transform vrCreditsPage;
 
     [SerializeField] private string creditsPath = "Assets/Credits.txt";
 
     private bool isCreditsScrolling;
 
     private NetworkVariable<int> nextScene = new (-1);
+    private NetworkVariable<int> menuValue = new (-1);
 
     private void Awake()
     {
-        hostingOptionsMenu.SetActive(true);
-        multiplayerHostingMenu.SetActive(false);
-        mainMenu.SetActive(false);
-        settingsMenu.SetActive(false);
-
-        foreach (Transform child in creditsMenu.transform)
+        for (int i = 0; i < menuList.Length; i++)
         {
-            if (child.GetComponent<Button>() == null)
+            if (i == 0)
             {
-                creditsPage = child;
-                break;
+                menuList[i].SetActive(true);
+                vrMenuList[i].SetActive(true);
+            }
+            else
+            {
+                menuList[i].SetActive(false);
+                vrMenuList[i].SetActive(false);
             }
         }
-        creditsMenu.SetActive(false);
-
-        isCreditsScrolling = false;
     }
 
     public override void OnNetworkSpawn()
     {
         nextScene.OnValueChanged += OnNextSceneChanged;
+        menuValue.OnValueChanged += OnMenuValueChanged;
     }
 
     private void OnNetworkDespawn()
     {
         nextScene.OnValueChanged -= OnNextSceneChanged;
+        menuValue.OnValueChanged -= OnMenuValueChanged;
     }
 
     private void OnNextSceneChanged(int previousValue, int newValue)
     {
         PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
+    }
+
+    private void OnMenuValueChanged(int previousValue, int newValue)
+    {
+        Debug.Log("OnMenuValueChanged");
+        SetCurrentMenuNumber(newValue);
     }
 
     [System.Serializable]
@@ -77,18 +82,22 @@ public class MainMenu : NetworkBehaviour
 
         LoadSavedLanguage();
 
-        foreach (var langBtn in languageButtons)
-        {
-            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
-        }
+        // foreach (var langBtn in languageButtons)
+        // {
+        //     langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
+        // }
     }
 
     private void FixedUpdate()
     {
         if (isCreditsScrolling)
         {
-            creditsPage.position = new Vector2( creditsPage.position.x,
-                                                creditsPage.position.y + 0.3f);  
+            pcCreditsPage.position = new Vector2(   pcCreditsPage.position.x,
+                                                    pcCreditsPage.position.y + 0.3f); 
+                                                
+            vrCreditsPage.position = new Vector3(   vrCreditsPage.position.x,
+                                                    vrCreditsPage.position.y + 0.01f,
+                                                    vrCreditsPage.position.z);  
         }
     }
     private void LoadSavedLanguage()
@@ -123,7 +132,7 @@ public class MainMenu : NetworkBehaviour
         }
     }
 
-    void ChangeLanguage(Locale targetLocale)
+    public void ChangeLanguage(Locale targetLocale)
     {
         LocalizationSettings.SelectedLocale = targetLocale;
         PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);
@@ -156,25 +165,30 @@ public class MainMenu : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void PlayLevelServerRpc(string _sceneName)
+    private void PlayLevelServerRpc(string _sceneName)
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
-        foreach (var netObj in FindObjectsOfType<NetworkObject>())
-        {
-            if (netObj.IsSpawned)
-            {
-                netObj.Despawn(true);
-            }
-        }
+        // foreach (var netObj in FindObjectsOfType<NetworkObject>())
+        // {
+        //     if (netObj.IsSpawned)
+        //     {
+        //         netObj.Despawn(true);
+        //     }
+        // }
 
         NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 
-
-    public void ShowCredits()
+    private void ShowCredits()
     {
-        creditsPage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        CreateCreditEntries(pcCreditsPage);
+        CreateVRCreditEntries(vrCreditsPage);
+    }
+
+    public void CreateCreditEntries(Transform currentCreditsPage)
+    {
+        currentCreditsPage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         StreamReader reader = new StreamReader(creditsPath); 
         int rowNum = 0;
@@ -194,18 +208,18 @@ public class MainMenu : NetworkBehaviour
             if(line[0] == '!')
             {
                 entry = line.Substring(1);
-                fontSize = 30;   
+                fontSize = 20;   
                 entryColor = Color.red;   
             }
             else
             {
                 entry = line;
-                fontSize = 20;  
+                fontSize = 15;  
                 entryColor = Color.white;  
             }
 
             newEntry = new GameObject("Entry_" + entry);
-            newEntry.transform.SetParent(creditsPage);
+            newEntry.transform.SetParent(currentCreditsPage);
 
             newEntryText = newEntry.AddComponent<TextMeshProUGUI>();
             newEntryText.text = entry;
@@ -231,75 +245,155 @@ public class MainMenu : NetworkBehaviour
         reader.Close();
     }
 
+    public void CreateVRCreditEntries(Transform currentCreditsPage)
+    {
+        currentCreditsPage.position = currentCreditsPage.parent.position;
+
+        StreamReader reader = new StreamReader(creditsPath); 
+        int rowNum = 0;
+
+        string line;
+        string entry;
+        GameObject newEntry;
+        TextMeshPro newEntryText;
+        LocalizeStringEvent newEntryLocalizeEvent;
+
+        int fontSize;
+        Color entryColor;
+        while(!reader.EndOfStream)
+        {
+            line = reader.ReadLine();
+
+            if(line[0] == '!')
+            {
+                entry = line.Substring(1);
+                fontSize = 20;   
+                entryColor = Color.red;   
+            }
+            else
+            {
+                entry = line;
+                fontSize = 15;  
+                entryColor = Color.white;  
+            }
+
+            newEntry = new GameObject("Entry_" + entry);
+            newEntry.transform.SetParent(currentCreditsPage);
+
+            newEntryText = newEntry.AddComponent<TextMeshPro>();
+            newEntryText.text = entry;
+            newEntryText.fontSize = fontSize; 
+            newEntryText.alignment = TextAlignmentOptions.Top;
+            newEntryText.color = entryColor; 
+
+            newEntryText.rectTransform.sizeDelta = new Vector3(100f, 5f);
+
+            newEntryLocalizeEvent = newEntry.AddComponent<LocalizeStringEvent>();
+            newEntryLocalizeEvent.OnUpdateString.AddListener(newText =>
+            {
+                if(!newText.Contains("No translation"))
+                {
+                    newEntryText.text = newText;
+                }
+            });
+            newEntryLocalizeEvent.StringReference.SetReference("Languages", entry);
+
+            newEntry.transform.localScale = Vector3.one;
+            newEntry.transform.localPosition = new Vector3(0f, -9 * rowNum, 0f);
+
+            // RectTransform rect = newEntryText.GetComponent<RectTransform>();
+            // rect.sizeDelta = new Vector2(600, 100);
+            // rect.position = new Vector2(0, 100 - (140 * rowNum)); 
+
+            rowNum++; 
+        }
+        reader.Close();
+    }
+
     public void Quit()
     {
         Application.Quit();
     }
 
-    public void ChangeMenu(int _menuNum)
+// public void ActivateCreditsMenu()
+// {
+//     SetNextSceneServerRpc(GetSceneIndex(_sceneName));
+// }
+
+    public void SetMenuNumber(int _newMenuValue)
+    {
+        Debug.Log("SetMenuNumber");
+        SetMenuNumberValueServerRpc(_newMenuValue);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetMenuNumberValueServerRpc(int _newMenuValue)
+    {
+        Debug.Log("SetMenuNumberValueServerRpc");
+        menuValue.Value = _newMenuValue;
+    }
+
+    private void SetCurrentMenuNumber(int _menuNum)
+    {
+        Debug.Log("SetCurrentMenuNumber");
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        for (int i = 0; i < menuList.Length; i++)
+        {
+            if (_menuNum == i)
+            {
+                menuList[i].SetActive(true);
+                vrMenuList[i].SetActive(true);
+
+                if(_menuNum == menuList.Length - 1)
+                {
+                    isCreditsScrolling = true;
+                    ShowCredits();
+                }
+            }
+            else
+            {
+                menuList[i].SetActive(false);
+                vrMenuList[i].SetActive(false);
+
+                if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
+            }
+        }
+
+        StartCoroutine(ReturnCursor());
+    }
+
+    public void SetMenuNumberWithoutNetwork(int _menuNum)
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        if (_menuNum == 0)
+        for (int i = 0; i < menuList.Length; i++)
         {
-            hostingOptionsMenu.SetActive(true);
-            multiplayerHostingMenu.SetActive(false);
+            if (_menuNum == i)
+            {
+                menuList[i].SetActive(true);
+                vrMenuList[i].SetActive(true);
 
-            mainMenu.SetActive(false);
+                if(_menuNum == menuList.Length - 1) isCreditsScrolling = true;
+            }
+            else
+            {
+                menuList[i].SetActive(false);
+                vrMenuList[i].SetActive(false);
 
-            settingsMenu.SetActive(false);
-
-            creditsMenu.SetActive(false);
-            isCreditsScrolling = false;
-        }else if (_menuNum == 1)
-        {
-            hostingOptionsMenu.SetActive(false);
-            multiplayerHostingMenu.SetActive(true);
-
-            mainMenu.SetActive(false);
-
-            settingsMenu.SetActive(false);
-
-            creditsMenu.SetActive(false);
-            isCreditsScrolling = false;
-        }else if (_menuNum == 2)
-        {
-            hostingOptionsMenu.SetActive(false);
-            multiplayerHostingMenu.SetActive(false);
-
-            mainMenu.SetActive(true);
-
-            settingsMenu.SetActive(false);
-
-            creditsMenu.SetActive(false);
-            isCreditsScrolling = false;
-        }
-        else if (_menuNum == 3)
-        {
-            hostingOptionsMenu.SetActive(false);
-            multiplayerHostingMenu.SetActive(false);
-
-            mainMenu.SetActive(false);
-
-            settingsMenu.SetActive(true);
-
-            creditsMenu.SetActive(false);
-            isCreditsScrolling = false;
-        }else if (_menuNum == 4)
-        {
-            hostingOptionsMenu.SetActive(false);
-            multiplayerHostingMenu.SetActive(false);
-
-            mainMenu.SetActive(false);
-
-            settingsMenu.SetActive(false);
-
-            creditsMenu.SetActive(true);
-            isCreditsScrolling = true;
+                if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
+            }
         }
 
+        StartCoroutine(ReturnCursor());
+    }
+
+    private IEnumerator ReturnCursor()
+    {
+        yield return new WaitForSeconds(1);
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.visible = true; 
     }
 }

@@ -16,6 +16,9 @@ TagManager:
   - LeftHandInteractor
   - RightHandInteractor
   - ActiveLight
+  - PCCamera
+  - VRCamera
+  - NetworkManager
   layers:
   - Default
   - TransparentFX

@@ -6662,7 +6662,7 @@ GameObject:
   - component: {fileID: 1540159040}
   m_Layer: 0
   m_Name: PC Camera
-  m_TagString: MainCamera
+  m_TagString: PCCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11618,8 +11618,8 @@ GameObject:
   - component: {fileID: 5937541760282489265}
   - component: {fileID: 4807814620806549539}
   m_Layer: 0
-  m_Name: Main Camera
-  m_TagString: MainCamera
+  m_Name: VR Camera
+  m_TagString: VRCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
