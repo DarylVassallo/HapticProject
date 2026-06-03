@@ -31,6 +31,7 @@ public class ConnectUIScript : MonoBehaviour
     private bool _isTestingPCPlayer = false;
 
     [SerializeField] private bool isUsingPlayMode;
+    [SerializeField] private bool isUsingOnEnable;
     [SerializeField] private bool isUsingOnlyPCPlayer;
     [SerializeField] private bool isUsingOnlyVRPlayer;
 
@@ -39,6 +40,8 @@ public class ConnectUIScript : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("ConnectUIScript Start");
+
         if (isSceneLoaded)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -62,6 +65,10 @@ public class ConnectUIScript : MonoBehaviour
 
     void OnEnable()
     {
+        Debug.Log("ConnectUIScript OnEnable");
+
+        if(!isUsingOnEnable) return;
+
         if(NetworkManager.Singleton != null)
         {
             if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
@@ -71,6 +78,8 @@ public class ConnectUIScript : MonoBehaviour
 
     IEnumerator SetupNetwork(float delay)
     {
+        Debug.Log("ConnectUIScript SetupNetwork");
+
         yield return new WaitForSeconds(delay);
 
         if(NetworkManager.Singleton.SceneManager != null) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
@@ -79,11 +88,13 @@ public class ConnectUIScript : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log("ConnectUIScript OnDestroy");
         if (NetworkManager.Singleton != null) NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
     }
 
     void OnDisable()
     {
+        Debug.Log("ConnectUIScript OnDisable");
         if (NetworkManager.Singleton != null)  NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
     }
 
@@ -92,6 +103,8 @@ public class ConnectUIScript : MonoBehaviour
                                 List<ulong> clientsCompleted, 
                                 List<ulong> clientsTimedOut)
     {
+        Debug.Log("ConnectUIScript SceneLoaded");
+
         isSceneLoaded = true;
 
         if(sceneName == "SauronLevelScene")
@@ -108,12 +121,16 @@ public class ConnectUIScript : MonoBehaviour
 
     private void CacheSpawnPoints()
     {
+        Debug.Log("ConnectUIScript CacheSpawnPoints");
+
         vrSpawnPoint = GameObject.Find("VRSpawnpoint")?.transform;
         pcSpawnPoint = GameObject.Find("PCSpawnpoint")?.transform;
     }
 
     private void LoadPlayers()
     {
+        Debug.Log("ConnectUIScript LoadPlayers");
+
         if (!NetworkManager.Singleton.IsServer) return;
 
         multiplayerData = GameObject.FindGameObjectWithTag("NetworkManager").GetComponent<MultiplayerData>();
@@ -160,6 +177,8 @@ public class ConnectUIScript : MonoBehaviour
 
     private void HandleClientConnected(ulong clientId)
     {
+        Debug.Log("ConnectUIScript HandleClientConnected");
+
         if (!NetworkManager.Singleton.IsServer) return;
        
         if (_isTestingPCPlayer)
@@ -197,6 +216,8 @@ public class ConnectUIScript : MonoBehaviour
 
     public void DebugStartVRPlayer()
     {
+        Debug.Log("ConnectUIScript DebugStartVRPlayer");
+
         _isTestingVRPlayer = true;
         
         Cursor.lockState = CursorLockMode.Locked;
@@ -208,6 +229,8 @@ public class ConnectUIScript : MonoBehaviour
 
     public void DebugStartPCPlayer()
     {
+        Debug.Log("ConnectUIScript DebugStartPCPlayer");
+
         _isTestingPCPlayer = true;
 
 
@@ -227,6 +250,8 @@ public class ConnectUIScript : MonoBehaviour
 
     private  void HostButtonClick()
     {
+        Debug.Log("ConnectUIScript HostButtonClick");
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -242,6 +267,8 @@ public class ConnectUIScript : MonoBehaviour
 
     private void ClientButtonOnClick()
     {
+        Debug.Log("ConnectUIScript ClientButtonOnClick");
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         

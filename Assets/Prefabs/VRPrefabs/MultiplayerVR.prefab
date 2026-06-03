@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6457250511907977048}
   - component: {fileID: 5422517438130497579}
   - component: {fileID: 7465672735552577360}
-  - component: {fileID: 2114383274781888403}
   - component: {fileID: 8370650983036688781}
   m_Layer: 0
   m_Name: SphereHead
@@ -8636,28 +8635,6 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 105236179900262827}
-  m_Mesh: {fileID: 0}
---- !u!64 &2114383274781888403
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 105236179900262827}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!114 &8370650983036688781
 MonoBehaviour:

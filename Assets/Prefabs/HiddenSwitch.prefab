@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 229282333879136056}
   - component: {fileID: 2304588680739319129}
   - component: {fileID: 5452483711805836371}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1449,7 +1449,7 @@ GameObject:
   - component: {fileID: 7721066027288302493}
   - component: {fileID: 8350973016356862590}
   - component: {fileID: 6219458290104095475}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1539,7 +1539,7 @@ GameObject:
   - component: {fileID: 2831768244395735908}
   - component: {fileID: 5068272735589263157}
   - component: {fileID: 8728349362025704548}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1632,7 +1632,7 @@ GameObject:
   - component: {fileID: 4775388094459353343}
   - component: {fileID: 5761968021435515257}
   - component: {fileID: 5352878931284193360}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Arch (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8716,6 +8716,37 @@ MonoBehaviour:
   isVRInteractable: 1
   isEffectedByLight: 1
   isReversed: 0
+--- !u!1 &2326898452717826974
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2724990633438684733}
+  m_Layer: 0
+  m_Name: SwitchSymbol
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2724990633438684733
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2326898452717826974}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.011441708, y: 3, z: -0.40460205}
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 8380448927293683374}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3060910472162892630
 GameObject:
   m_ObjectHideFlags: 0
@@ -8745,7 +8776,7 @@ Transform:
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 8451261157320728219}
+  m_Father: {fileID: 4577365922765130568}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3160840752100040794
 GameObject:
@@ -10432,7 +10463,7 @@ GameObject:
   - component: {fileID: 4047803129703620234}
   - component: {fileID: 4404977889211285421}
   - component: {fileID: 561003357874351181}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13427,7 +13458,7 @@ GameObject:
   - component: {fileID: 3974369573869772554}
   - component: {fileID: 3424114851874114491}
   - component: {fileID: 7013949561253676633}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13541,6 +13572,7 @@ Transform:
   - {fileID: 3003254830658463057}
   - {fileID: 7041137991270312356}
   - {fileID: 8788162497428276953}
+  - {fileID: 2724990633438684733}
   m_Father: {fileID: 8451261157320728219}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5716256860102409308
@@ -15029,7 +15061,6 @@ Transform:
   m_Children:
   - {fileID: 8380448927293683374}
   - {fileID: 4577365922765130568}
-  - {fileID: 8356912060248839688}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6532298180024259189
@@ -19146,7 +19177,7 @@ GameObject:
   - component: {fileID: 2556409911242315178}
   - component: {fileID: 8985510303302694842}
   - component: {fileID: 631775747489438585}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20579,7 +20610,7 @@ GameObject:
   - component: {fileID: 1584432691586284889}
   - component: {fileID: 1946853808700345524}
   - component: {fileID: 2088233854037753235}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20669,7 +20700,7 @@ GameObject:
   - component: {fileID: 4530649600858640839}
   - component: {fileID: 4601895941312803162}
   - component: {fileID: 3878364081972786945}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20764,7 +20795,7 @@ GameObject:
   - component: {fileID: 8883492610495337238}
   - component: {fileID: 8187966715568784409}
   - component: {fileID: 5043537519121472684}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22309,7 +22340,7 @@ GameObject:
   - component: {fileID: 6064595863274037330}
   - component: {fileID: 2074025947259443815}
   - component: {fileID: 1976591867444958854}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Button (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23766,5 +23797,6 @@ Transform:
   - {fileID: 1730653434193306649}
   - {fileID: 4260286775568814654}
   - {fileID: 7500082383647533603}
+  - {fileID: 8356912060248839688}
   m_Father: {fileID: 8451261157320728219}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
