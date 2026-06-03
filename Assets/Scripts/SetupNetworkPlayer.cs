@@ -9,7 +9,6 @@ using Unity.Netcode;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-
 public class SetupNetworkPlayer : NetworkBehaviour
 {
     public bool isPCPlayer;
@@ -26,16 +25,16 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner) return;
+        // if (!IsOwner) return;
 
         PCPlayerReferences();
         VRPlayerReferences();
 
-        if (isPCPlayer)
+        if (isPCPlayer && IsOwner)
         {
             PCPlayerSetup();
         }
-        else if(isVRPlayer)
+        else if(isVRPlayer && IsOwner)
         {
             VRPlayerSetup();
         }
@@ -67,6 +66,9 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void PCPlayerSetup()
     {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         SetPCPlayerCamera(true);
         SetVRPlayerCamera(false);
 
@@ -81,7 +83,6 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void SetPCPlayerCamera(bool toggle)
     {
-        pcPlayerMainCamera.SetActive(toggle);
         pcPlayerMainCameraCamera.enabled = toggle;
         pcPlayerMainCameraAudioListener.enabled = toggle;
         pcInput.enabled = toggle;
@@ -89,7 +90,6 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void SetVRPlayerCamera(bool toggle)
     {
-        vrPlayerMainCamera.SetActive(toggle);
         vrPlayerMainCameraCamera.enabled = toggle;
         vrPlayerMainCameraAudioListener.enabled = toggle;
         vrInput.enabled = toggle;

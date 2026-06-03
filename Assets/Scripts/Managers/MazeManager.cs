@@ -167,7 +167,7 @@ public class MazeManager : NetworkBehaviour
     {
         if(chancesOfAngel.Value > 0) PotentialAngelCreation();
 
-        if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
+        // if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
 
         if(crookedBridge.activeSelf != _crookedBridgeToggle.Value)
         {
