@@ -4,11 +4,17 @@ public class Platform : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        other.transform.SetParent(this.transform);
+        if (other.CompareTag("PCPlayer") || other.CompareTag("Enemy"))
+        {
+            other.transform.SetParent(this.transform);
+        }
     }
     
     private void OnTriggerExit(Collider other)
     {
-        other.transform.SetParent(null);
+        if (other.CompareTag("PCPlayer") || other.CompareTag("Enemy"))
+        {
+            other.transform.SetParent(null);
+        }
     }
 }

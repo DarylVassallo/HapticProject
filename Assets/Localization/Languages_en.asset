@@ -132,6 +132,10 @@ MonoBehaviour:
     m_Localized: Settings Menu
     m_Metadata:
       m_Items: []
+  - m_Id: 13395772815151104
+    m_Localized: Reset
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

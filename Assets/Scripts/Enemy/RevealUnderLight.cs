@@ -68,7 +68,10 @@ public class RevealUnderLight : MonoBehaviour
     private void GetVRPlayerData()
     {
         // _vrSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
-        _canVRFunction = true;
+        if(GameObject.FindGameObjectWithTag("VRPlayer") != null)
+        {
+            _canVRFunction = true;
+        }
     }
 
     void FixedUpdate()
@@ -168,8 +171,8 @@ public class RevealUnderLight : MonoBehaviour
     {
         _totalStrength = 0;
 
-        if(isPCInteractable) _totalStrength += CheckPlayerLightStrength(_pcSpotLight);
-        if(isVRInteractable) _totalStrength += CheckPlayerLightStrength(_vrSpotLight);
+        if(isPCInteractable && _pcSpotLight != null) _totalStrength += CheckPlayerLightStrength(_pcSpotLight);
+        if(isVRInteractable && _vrSpotLight != null) _totalStrength += CheckPlayerLightStrength(_vrSpotLight);
         _totalStrength = Mathf.Clamp01(_totalStrength);
 
         if(isReversed) _totalStrength = 1 - _totalStrength;

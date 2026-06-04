@@ -127,6 +127,10 @@ MonoBehaviour:
     m_Key: Settings Menu
     m_Metadata:
       m_Items: []
+  - m_Id: 13395772815151104
+    m_Key: Reset
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

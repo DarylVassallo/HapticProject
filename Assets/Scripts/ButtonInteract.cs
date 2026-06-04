@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+
 //This script controls is the button can be interacted with, and for what switch it is for
 public class ButtonInteract : MonoBehaviour, IInteractable
 {    
@@ -23,18 +24,47 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     [SerializeField] private AudioClip buttonAudio;
     private AudioSource _audioSource;
+    private Renderer _renderer;
+
+    [SerializeField] private Material deactiveMaterial;
+    [SerializeField] private Material inProgressMaterial;
+    [SerializeField] private Material completeMaterial;
+
+    [SerializeField] private bool isResetButton;
+    public static event Action OnActivateReset;
+
+    private bool _activeButton;
 
     void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+        _renderer = this.gameObject.GetComponent<Renderer>();
+        _renderer.material = deactiveMaterial;
+
+        _activeButton = false;
+    }
+
+    private void OnEnable()
+    {
+        MazeManager.OnResetHiddenButtons += ResetButton;
     }
 
     public void TriggerInteraction()
     {
-        if (_isInteractable)
+        if (_isInteractable && !_activeButton)
         {
+            if(isResetButton)
+            {
+                OnActivateReset?.Invoke();
+                return;
+            }
+
+
+            _activeButton = true;
+
             OnTriggerButton?.Invoke(shape, button);
             _isFullyPressed = false;
+
             //This line formed with ChatGPT
             pushedPosition =    this.transform.position + 
                                 (   -transform.up * 
@@ -51,6 +81,19 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                 _audioSource.enabled = true; 
             }
         }
+    }
+
+    private void ResetButton()
+    {
+        _activeButton = false;
+
+        pushedPosition =    this.transform.position + 
+                            (   transform.up * 
+                                pressedDistance * 
+                                this.transform.localScale.x
+                            );                  
+        
+        _moveUp = true;
     }
 
     public void EnableInteraction()
@@ -75,9 +118,20 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                 Time.deltaTime * _buttonSpeed
             );
 
+            _renderer.material.SetColor(
+                "_BaseColor",
+                Color.Lerp(
+                    _renderer.material.GetColor("_BaseColor"),
+                    inProgressMaterial.GetColor("_BaseColor"),
+                    Time.deltaTime * _buttonSpeed
+                )
+            );
+
             if (Vector3.Distance(this.transform.position, pushedPosition) <= _minDistance)
             {
                 this.transform.position = pushedPosition;
+                _renderer.material = inProgressMaterial;
+
                 pushedPosition =    this.transform.position + 
                                     (   transform.up * 
                                         pressedDistance * 
@@ -85,7 +139,7 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                                     );
                 _isFullyPressed = true;
                 _moveDown = false;
-                _moveUp = true;
+                // _moveUp = true;
             }
         }
         
@@ -97,9 +151,20 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                 Time.deltaTime * _buttonSpeed
             );
 
+            _renderer.material.SetColor(
+                "_BaseColor",
+                Color.Lerp(
+                    _renderer.material.GetColor("_BaseColor"),
+                    deactiveMaterial.GetColor("_BaseColor"),
+                    Time.deltaTime * _buttonSpeed
+                )
+            );
+
             if (Mathf.Abs(this.transform.position.y - pushedPosition.y) <= _minDistance)
             {
                 this.transform.position = pushedPosition;
+                _renderer.material = deactiveMaterial;
+
                 _isFullyPressed = false;
                 _moveDown = false;
                 _moveUp = false;
