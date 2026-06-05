@@ -196,32 +196,20 @@ public class MazeManager : NetworkBehaviour
 
         if (prevSecretBridgeToggle != _secretBridgeToggle.Value)
         {
-            Debug.Log("prevSecretBridgeToggle: " + prevSecretBridgeToggle);
-            Debug.Log("_secretBridgeToggle.Value: " + _secretBridgeToggle.Value);
             prevSecretBridgeToggle = _secretBridgeToggle.Value;
 
             for(int i = 0; i < secretBridges.Length; i++)
             {
-                Debug.Log("secretBridges[" + i + "] : " + secretBridges[i]);
                 foreach (Transform child in secretBridges[i].transform.GetComponentsInChildren<Transform>(true))
                 {
-                    Debug.Log("child : " + child);
-
                     MeshRenderer renderer = child.GetComponent<MeshRenderer>();
-                    Debug.Log("renderer : " + renderer);
-
-                    if (renderer != null)
-                    {
-                        renderer.enabled = _secretBridgeToggle.Value;
-                    }
+                    if (renderer != null) renderer.enabled = _secretBridgeToggle.Value;
 
                     MeshCollider collider = child.GetComponent<MeshCollider>();
-                    Debug.Log("collider : " + collider);
+                    if (collider != null) collider.enabled = _secretBridgeToggle.Value;
 
-                    if (collider != null)
-                    {
-                        collider.enabled = _secretBridgeToggle.Value;
-                    }
+                    RevealUnderLight reveal = child.GetComponent<RevealUnderLight>();
+                    if (reveal != null) reveal.enabled = _secretBridgeToggle.Value;
                 }
             }
         }
@@ -245,9 +233,7 @@ public class MazeManager : NetworkBehaviour
 
     private void PlayAudio(int previous, int current)
     {
-        Debug.Log("PlayAudio");
         AudioClip _currentAudio = incorrectAudio;
-        Debug.Log("currentAudio: " + current);
         switch (current)
         {
             case 0:
@@ -267,17 +253,12 @@ public class MazeManager : NetworkBehaviour
                 break;
         }
 
-        Debug.Log("_currentAudio: " + _currentAudio);
-        Debug.Log("_audioSource.isPlaying: " + _audioSource.isPlaying);
-
         if(!_audioSource.isPlaying)
         {
             _audioSource.Stop();
             _audioSource.clip = _currentAudio;
             _audioSource.Play();
             _audioSource.enabled = true; 
-
-            Debug.Log("_audioSource Played");
         }
     }
 
@@ -304,7 +285,7 @@ public class MazeManager : NetworkBehaviour
         }
         else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
-            StopAudioClientRpc();
+            // StopAudioClientRpc();
 
             _isNewNavMeshAvailable = false;
             levelGround.RemoveData();
@@ -355,8 +336,12 @@ public class MazeManager : NetworkBehaviour
 
     private void UpdateChancesOfAngel(bool previous, bool current)
     {
-        float newChances =  0.001f * (squareWheelAngelActive.Value ? 1 : 0) + 
-                            0.01f * (diamondLeverAngelActive.Value ? 1 : 0);
+        Debug.Log("UpdateChancesOfAngel");
+        Debug.Log("squareWheelAngelActive.Value: " + squareWheelAngelActive.Value);
+        Debug.Log("diamondLeverAngelActive.Value: " + diamondLeverAngelActive.Value);
+        float newChances =  0.01f * (squareWheelAngelActive.Value ? 1 : 0) + 
+                            0f * (diamondLeverAngelActive.Value ? 1 : 0);
+        Debug.Log("newChances : " + newChances);
 
         SetChanceOfAngelsServerRpc(newChances);
     }
@@ -456,6 +441,7 @@ public class MazeManager : NetworkBehaviour
 
         if(!isDiamondLeverActive.Value) return;
 
+        SetDiamondLeverAngelActiveServerRpc(true);
         if(_secretBridgeToggle.Value == false) SetSecretBridgeEnableServerRpc();
 
         levelGround.RemoveData();
@@ -471,6 +457,7 @@ public class MazeManager : NetworkBehaviour
 
         if(!isDiamondLeverActive.Value) return;
         
+        SetDiamondLeverAngelActiveServerRpc(false);
         if(_secretBridgeToggle.Value == true) SetSecretBridgeEnableServerRpc();
         
         levelGround.RemoveData();
@@ -527,11 +514,7 @@ public class MazeManager : NetworkBehaviour
             if(hiddenSwitches[i].shape == _shape)
             {
                 //Continue
-                if(currentButtonOrder[currentButtonOrder.Length - 1] == ButtonType.None)
-                {
-                    Debug.Log("Continue");
-                    return;
-                }
+                if(currentButtonOrder[currentButtonOrder.Length - 1] == ButtonType.None) return;
 
                 for (int j = 0; j < hiddenSwitches[i].buttonOrder.Length; j++)
                 {
@@ -543,7 +526,6 @@ public class MazeManager : NetworkBehaviour
 
                         OnResetHiddenButtons?.Invoke();
 
-                        Debug.Log("Wrong");
                         SetAudioNumServerRpc(0);
                         // PlayAudio(0);
 
@@ -558,7 +540,6 @@ public class MazeManager : NetworkBehaviour
                 hiddenSwitches[i].activateMethod.Invoke();
 
                 //Correct
-                Debug.Log("Correct");
                 SetAudioNumServerRpc(1);
                 // PlayAudio(1);
 
@@ -585,8 +566,11 @@ public class MazeManager : NetworkBehaviour
     private void PotentialAngelCreation()
     {
         float ran = UnityEngine.Random.Range(0f, 1f);
+        Debug.Log("ran: " + ran);
+        Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
         if (ran <= chancesOfAngel.Value)
         {
+            Debug.Log("Create Angel");
             InstantiateRandomAngelServerRpc();
         }
     }
@@ -594,9 +578,9 @@ public class MazeManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void InstantiateRandomAngelServerRpc()
     {
-        // int angelNum = UnityEngine.Random.Range(1, angelSpawnPoints.childCount) - 1;
-        // var newAngel = Instantiate(angel, angelSpawnPoints.GetChild(angelNum).position, Quaternion.identity);
-        // newAngel.GetComponent<NetworkObject>().Spawn();
+        int angelNum = UnityEngine.Random.Range(1, angelSpawnPoints.childCount) - 1;
+        var newAngel = Instantiate(angel, angelSpawnPoints.GetChild(angelNum).position, Quaternion.identity);
+        newAngel.GetComponent<NetworkObject>().Spawn();
     }
 
     private void InstantiateNearbyRandomAngel()
