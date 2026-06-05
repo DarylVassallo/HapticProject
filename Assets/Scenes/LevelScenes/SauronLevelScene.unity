@@ -51297,7 +51297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088401846630014291, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5514486629721543812, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_LocalPosition.x
@@ -57498,7 +57498,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088401846630014291, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5514486629721543812, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_LocalPosition.x
@@ -59732,9 +59732,6 @@ PrefabInstance:
       addedObject: {fileID: 1711089308}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4183408476943013574, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3721191324540058990, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
@@ -115844,7 +115841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088401846630014291, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5514486629721543812, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_LocalPosition.x
@@ -132861,9 +132858,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4183408476943013574, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3721191324540058990, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
 --- !u!4 &1403758756 stripped
 Transform:
@@ -135352,9 +135346,6 @@ PrefabInstance:
       addedObject: {fileID: 1546264350}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4183408476943013574, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3721191324540058990, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
@@ -185995,9 +185986,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4183408476943013574, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3721191324540058990, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
 --- !u!4 &2005250398 stripped
 Transform:
@@ -194989,9 +194977,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4183408476943013574, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3721191324540058990, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: e183abaf0b2f0c74a894d166e063fbbc, type: 3}
 --- !u!4 &473851242332233219 stripped
 Transform:
@@ -196742,7 +196727,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1088401846630014291, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5764587558149150195, guid: db3645a241aff5547986ec989dd2b8ba, type: 3}
       propertyPath: m_Layer
@@ -209104,11 +209089,11 @@ PrefabInstance:
       objectReference: {fileID: 1533949588}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: isUsingOnEnable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: isUsingPlayMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: isUsingOnlyPCPlayer
@@ -209619,10 +209604,10 @@ MonoBehaviour:
   switchOnLeverAudio: {fileID: 8300000, guid: 42a5f8440deeb774698e8414c9462097, type: 3}
   switchOffLeverAudio: {fileID: 8300000, guid: bec1ea583b44ec64ebdfdb11db8e01b3, type: 3}
   maxWheelCheckCount: 5
-  startWithActivatedSquareWheel: 1
-  startWithActivatedDiamondLever: 1
-  startWithActivatedTriangleLever: 1
-  startWithActivatedCircleButton: 1
+  startWithActivatedSquareWheel: 0
+  startWithActivatedDiamondLever: 0
+  startWithActivatedTriangleLever: 0
+  startWithActivatedCircleButton: 0
 --- !u!114 &8088880984196958615
 MonoBehaviour:
   m_ObjectHideFlags: 0

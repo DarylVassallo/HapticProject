@@ -22580,13 +22580,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3297056328194405524, guid: 671d34ee4712d274fbe89233361dc167, type: 3}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
-      propertyPath: isUsingPlayMode
+      propertyPath: isUsingOnEnable
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
+      propertyPath: isUsingPlayMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: pcPlayerWithBody
       value: 
       objectReference: {fileID: 3297056328194405524, guid: de6ff769be5ddce4aa84d0039581e685, type: 3}
+    - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
+      propertyPath: isUsingOnlyPCPlayer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: pcPlayerWithoutBody
       value: 

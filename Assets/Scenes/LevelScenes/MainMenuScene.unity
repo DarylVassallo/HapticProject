@@ -11920,6 +11920,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1005962439}
     - target: {fileID: 336591184031537968, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
+      propertyPath: isUsingOnEnable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 336591184031537968, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
+      propertyPath: isUsingPlayMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 336591184031537968, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
       propertyPath: isUsingOnlyPCPlayer
       value: 0
       objectReference: {fileID: 0}
