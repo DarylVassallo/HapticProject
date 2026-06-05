@@ -31,12 +31,13 @@ public class ConnectUIScript : MonoBehaviour
     private bool _isTestingPCPlayer = false;
 
     [SerializeField] private bool isUsingPlayMode;
-    [SerializeField] private bool isUsingOnEnable;
     [SerializeField] private bool isUsingOnlyPCPlayer;
     [SerializeField] private bool isUsingOnlyVRPlayer;
 
     private MultiplayerData multiplayerData;
     private bool isSceneLoaded = false;
+
+    private bool hasSceneLoaded = false;
 
     void Start()
     {
@@ -55,8 +56,12 @@ public class ConnectUIScript : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
-            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            if(!hasSceneLoaded)
+            {
+                hasSceneLoaded = true;
+                if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+                NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            }
 
             if(isUsingOnlyVRPlayer) DebugStartVRPlayer();
             if(isUsingOnlyPCPlayer) DebugStartPCPlayer();
@@ -67,12 +72,14 @@ public class ConnectUIScript : MonoBehaviour
     {
         Debug.Log("ConnectUIScript OnEnable");
 
-        if(!isUsingOnEnable) return;
-
         if(NetworkManager.Singleton != null)
         {
-            if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
-            NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            if(!hasSceneLoaded)
+            {
+                hasSceneLoaded = true;
+                if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+                NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+            }
         }
     }
 
