@@ -44,10 +44,14 @@ public class FlashlightCharge : NetworkBehaviour
     private AudioSource _audioSource;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor leftHandSocket;
-    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRGrabInteractable xrGrabInteractable;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor rightHandSocket;
+
+    private GrabbableLayerControl grabbableLayerControl;
 
     private void Awake()
     {
+        grabbableLayerControl = this.gameObject.GetComponent<GrabbableLayerControl>();
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _maxSpotLightIntensity = spotLight.intensity;
@@ -56,26 +60,61 @@ public class FlashlightCharge : NetworkBehaviour
         _maxChargeBarLength = chargeBar.localScale.z;
 
         leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        leftHandSocket.selectEntered.AddListener(OnInserted);
-        leftHandSocket.selectExited.AddListener(OnRemoved);
+        leftHandSocket.selectEntered.AddListener(OnLeftHandInserted);
+        leftHandSocket.selectExited.AddListener(OnLeftHandRemoved);
+
+        rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+        rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
+        rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
     }
 
     private void OnDestroy()
     {
-        leftHandSocket.selectEntered.RemoveListener(OnInserted);
-        leftHandSocket.selectExited.RemoveListener(OnRemoved);
+        leftHandSocket.selectEntered.RemoveListener(OnLeftHandInserted);
+        leftHandSocket.selectExited.RemoveListener(OnLeftHandRemoved);
+
+        rightHandSocket.selectEntered.RemoveListener(OnRightHandInserted);
+        rightHandSocket.selectExited.RemoveListener(OnRightHandRemoved);
     }
 
-    private void OnInserted(SelectEnterEventArgs args)
+    private void OnLeftHandInserted(SelectEnterEventArgs args)
     {
-        // this.GetComponent<>
+        Debug.Log("OnLeftHandInserted");
+
+        grabbableLayerControl.isLeftHandInteractable = true;
+        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
+
+        grabbableLayerControl.ChangeInteractionLayer(1);
+    }
+
+    private void OnLeftHandRemoved(SelectExitEventArgs args)
+    {
+        Debug.Log("OnLeftHandRemoved");
+
+        grabbableLayerControl.isLeftHandInteractable = false;
+        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
+
+        grabbableLayerControl.ChangeInteractionLayer(0);
+    }
+
+    private void OnRightHandInserted(SelectEnterEventArgs args)
+    {
+        Debug.Log("OnRightHandInserted");
+
+        grabbableLayerControl.isRightHandInteractable = true;
+        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
         
+        grabbableLayerControl.ChangeInteractionLayer(-1);
     }
 
-    private void OnRemoved(SelectExitEventArgs args)
+    private void OnRightHandRemoved(SelectExitEventArgs args)
     {
-        // Debug.Log("ONREMOVED");
-        // OnCharge?.Invoke(false);
+        Debug.Log("OnRightHandRemoved");
+
+        grabbableLayerControl.isRightHandInteractable = false;
+        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
+
+        grabbableLayerControl.ChangeInteractionLayer(0);
     }
 
     

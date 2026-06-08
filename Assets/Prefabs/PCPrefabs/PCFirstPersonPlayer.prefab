@@ -18415,6 +18415,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1509e31440c6454a8327ce99d0c38a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &8673969827659363446
 MonoBehaviour:
   m_ObjectHideFlags: 0

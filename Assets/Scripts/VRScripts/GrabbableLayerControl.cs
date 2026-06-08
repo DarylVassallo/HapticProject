@@ -6,8 +6,8 @@ public class GrabbableLayerControl : MonoBehaviour
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _xrGrabInteractable;
     private int _standardLayer;
     private GameObject _interactor;
-    private bool _isRightHandInteractable = false;
-    private bool _isLeftHandInteractable = false;
+    public bool isRightHandInteractable = false;
+    public bool isLeftHandInteractable = false;
 
     void Awake()
     {
@@ -30,12 +30,12 @@ public class GrabbableLayerControl : MonoBehaviour
         {
             Debug.Log(this.gameObject + " : LeftHandInteractor");
 
-            _isLeftHandInteractable = true;
+            isLeftHandInteractable = true;
 
-            if(_isLeftHandInteractable && _isRightHandInteractable)
+            if(isLeftHandInteractable && isRightHandInteractable)
             {
                 ChangeLayer(this.gameObject, -1);
-            }else if(_isLeftHandInteractable)
+            }else if(isLeftHandInteractable)
             {
                 ChangeLayer(this.gameObject, -1);
             }
@@ -43,12 +43,12 @@ public class GrabbableLayerControl : MonoBehaviour
         {
             Debug.Log(this.gameObject + " : RightHandInteractor");
 
-            _isRightHandInteractable = true;
+            isRightHandInteractable = true;
 
-            if(_isLeftHandInteractable && _isRightHandInteractable)
+            if(isLeftHandInteractable && isRightHandInteractable)
             {
                 ChangeLayer(this.gameObject, -1);
-            }else if(_isRightHandInteractable)
+            }else if(isRightHandInteractable)
             {
                 ChangeLayer(this.gameObject, -1);
             }
@@ -61,16 +61,16 @@ public class GrabbableLayerControl : MonoBehaviour
 
         if (_interactor.CompareTag("LeftHandInteractor"))
         {
-            _isLeftHandInteractable = false;             
+            isLeftHandInteractable = false;             
         }else if (_interactor.CompareTag("RightHandInteractor"))
         {
-            _isRightHandInteractable = false;
+            isRightHandInteractable = false;
         }
 
         ChangeLayer(this.gameObject, -1);
     }
 
-    private void ChangeLayer(GameObject currentObject, int layer)
+    public void ChangeLayer(GameObject currentObject, int layer)
     {
         Debug.Log(this.gameObject + " : ChangeLayer");
         Debug.Log(this.gameObject + " : currentObject : " + currentObject);
@@ -78,14 +78,17 @@ public class GrabbableLayerControl : MonoBehaviour
 
         if(layer == -1)
         {
-            if(_isLeftHandInteractable && _isRightHandInteractable)
+            if(isLeftHandInteractable && isRightHandInteractable)
             {
+                ChangeInteractionLayer(0);
                 layer = LayerMask.NameToLayer("BothHandInteractable");
-            }else if(_isLeftHandInteractable)
+            }else if(isLeftHandInteractable)
             {
+                ChangeInteractionLayer(-1);
                 layer = LayerMask.NameToLayer("LeftHandInteractable");
-            }else if(_isRightHandInteractable)
+            }else if(isRightHandInteractable)
             {
+                ChangeInteractionLayer(1);
                 layer = LayerMask.NameToLayer("RightHandInteractable");
             }
             else
@@ -102,5 +105,25 @@ public class GrabbableLayerControl : MonoBehaviour
         {
             ChangeLayer(child.gameObject, layer);
         }
+    }
+
+    public void ChangeInteractionLayer(int interactionLayer)
+    {
+        Debug.Log(this.gameObject + " : ChangeLayer");
+        Debug.Log(this.gameObject + " : this.gameObject : " + this.gameObject);
+        Debug.Log(this.gameObject + " : interactionLayer : " + interactionLayer);
+
+        if(interactionLayer == -1)
+        {
+            _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("LeftHandOnlyGrabbable");
+        }else if(interactionLayer == 0)
+        {
+            _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("Default");
+        }else if(interactionLayer == 1)
+        {
+            _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("RightHandOnlyGrabbable");
+        }
+
+        Debug.Log(this.gameObject + " : new interactionLayer : " + interactionLayer);
     }
 }
