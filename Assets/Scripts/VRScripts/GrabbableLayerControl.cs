@@ -18,11 +18,18 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
+        Debug.Log(this.gameObject + " : OnGrabbed");
+
         _interactor = args.interactorObject.transform.gameObject;
 
         _standardLayer = this.gameObject.layer;
+
+        Debug.Log(this.gameObject + " : _interactor : " + _interactor);
+
         if (_interactor.CompareTag("LeftHandInteractor"))
         {
+            Debug.Log(this.gameObject + " : LeftHandInteractor");
+
             _isLeftHandInteractable = true;
 
             if(_isLeftHandInteractable && _isRightHandInteractable)
@@ -34,6 +41,8 @@ public class GrabbableLayerControl : MonoBehaviour
             }
         }else if (_interactor.CompareTag("RightHandInteractor"))
         {
+            Debug.Log(this.gameObject + " : RightHandInteractor");
+
             _isRightHandInteractable = true;
 
             if(_isLeftHandInteractable && _isRightHandInteractable)
@@ -63,6 +72,10 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void ChangeLayer(GameObject currentObject, int layer)
     {
+        Debug.Log(this.gameObject + " : ChangeLayer");
+        Debug.Log(this.gameObject + " : currentObject : " + currentObject);
+        Debug.Log(this.gameObject + " : layer : " + layer);
+
         if(layer == -1)
         {
             if(_isLeftHandInteractable && _isRightHandInteractable)
@@ -77,9 +90,11 @@ public class GrabbableLayerControl : MonoBehaviour
             }
             else
             {
-                layer = 0;
+                layer = _standardLayer;
             }
         }
+
+        Debug.Log(this.gameObject + " : new layer : " + layer);
 
         currentObject.layer = layer;
 

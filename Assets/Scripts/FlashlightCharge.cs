@@ -43,6 +43,9 @@ public class FlashlightCharge : NetworkBehaviour
     [SerializeField] private AudioClip chargeStationAudio;
     private AudioSource _audioSource;
 
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor leftHandSocket;
+    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRGrabInteractable xrGrabInteractable;
+
     private void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -51,8 +54,31 @@ public class FlashlightCharge : NetworkBehaviour
         _maxSpotLightRange = spotLight.range;
 
         _maxChargeBarLength = chargeBar.localScale.z;
+
+        leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+        leftHandSocket.selectEntered.AddListener(OnInserted);
+        leftHandSocket.selectExited.AddListener(OnRemoved);
     }
 
+    private void OnDestroy()
+    {
+        leftHandSocket.selectEntered.RemoveListener(OnInserted);
+        leftHandSocket.selectExited.RemoveListener(OnRemoved);
+    }
+
+    private void OnInserted(SelectEnterEventArgs args)
+    {
+        // this.GetComponent<>
+        
+    }
+
+    private void OnRemoved(SelectExitEventArgs args)
+    {
+        // Debug.Log("ONREMOVED");
+        // OnCharge?.Invoke(false);
+    }
+
+    
     private void OnEnable()
     {
         MazeManager.EnableDrainFlashlight += EnableDrainFlashlight;
