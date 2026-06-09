@@ -43,80 +43,15 @@ public class FlashlightCharge : NetworkBehaviour
     [SerializeField] private AudioClip chargeStationAudio;
     private AudioSource _audioSource;
 
-    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor leftHandSocket;
-    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor rightHandSocket;
-
-    private GrabbableLayerControl grabbableLayerControl;
-
     private void Awake()
     {
-        grabbableLayerControl = this.gameObject.GetComponent<GrabbableLayerControl>();
-
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _maxSpotLightIntensity = spotLight.intensity;
         _maxSpotLightRange = spotLight.range;
 
         _maxChargeBarLength = chargeBar.localScale.z;
-
-        leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        leftHandSocket.selectEntered.AddListener(OnLeftHandInserted);
-        leftHandSocket.selectExited.AddListener(OnLeftHandRemoved);
-
-        rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
-        rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
     }
-
-    private void OnDestroy()
-    {
-        leftHandSocket.selectEntered.RemoveListener(OnLeftHandInserted);
-        leftHandSocket.selectExited.RemoveListener(OnLeftHandRemoved);
-
-        rightHandSocket.selectEntered.RemoveListener(OnRightHandInserted);
-        rightHandSocket.selectExited.RemoveListener(OnRightHandRemoved);
-    }
-
-    private void OnLeftHandInserted(SelectEnterEventArgs args)
-    {
-        Debug.Log("OnLeftHandInserted");
-
-        grabbableLayerControl.isLeftHandInteractable = true;
-        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
-
-        grabbableLayerControl.ChangeInteractionLayer(1);
-    }
-
-    private void OnLeftHandRemoved(SelectExitEventArgs args)
-    {
-        Debug.Log("OnLeftHandRemoved");
-
-        grabbableLayerControl.isLeftHandInteractable = false;
-        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
-
-        grabbableLayerControl.ChangeInteractionLayer(0);
-    }
-
-    private void OnRightHandInserted(SelectEnterEventArgs args)
-    {
-        Debug.Log("OnRightHandInserted");
-
-        grabbableLayerControl.isRightHandInteractable = true;
-        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
-        
-        grabbableLayerControl.ChangeInteractionLayer(-1);
-    }
-
-    private void OnRightHandRemoved(SelectExitEventArgs args)
-    {
-        Debug.Log("OnRightHandRemoved");
-
-        grabbableLayerControl.isRightHandInteractable = false;
-        grabbableLayerControl.ChangeLayer(this.gameObject, -1);
-
-        grabbableLayerControl.ChangeInteractionLayer(0);
-    }
-
     
     private void OnEnable()
     {
