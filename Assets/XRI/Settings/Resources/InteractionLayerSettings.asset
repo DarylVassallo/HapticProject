@@ -16,10 +16,10 @@ MonoBehaviour:
   - Default
   - Poke
   - Grab
-  - RightHandOnlyGrabbable
-  - LeftHandOnlyGrabbable
-  - 
-  - 
+  - LeftHandGrab
+  - RightHandGrab
+  - InLeftHandSocket
+  - InRightHandSocket
   - 
   - 
   - 

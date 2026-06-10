@@ -2936,7 +2936,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1729405545082508716}
   m_Layer: 0
-  m_Name: VR
+  m_Name: VRv1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
