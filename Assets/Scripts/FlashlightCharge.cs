@@ -8,9 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 //This script controls the flashlight's charge, as it runs out, the strength and range is also reduced. It can be charged, but the flash light is off during it.
 public class FlashlightCharge : NetworkBehaviour
 {
-    public Light spotLight;
-
-    private NetworkVariable<bool> _spotLightToggle = new (true);
+    private NetworkVariable<bool> _flashLightToggle = new (true);
 
     private NetworkVariable<float> _charge = new (100f);
     private NetworkVariable<bool> _isCharging = new (false);
@@ -19,8 +17,10 @@ public class FlashlightCharge : NetworkBehaviour
     [SerializeField] private float chargeRate;
     [SerializeField] private float flashLightRotationSpeed;
 
-    private float _maxSpotLightIntensity;
-    private float _maxSpotLightRange;
+    // [SerializeField] private float maxFlashLightIntensity;
+    // public float currentFlashLightIntensity;
+    [SerializeField] private float maxFlashLightRange;
+    public float currentFlashLightRange;
 
     [SerializeField] private float chargeIntensity;
 
@@ -46,9 +46,6 @@ public class FlashlightCharge : NetworkBehaviour
     private void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
-
-        _maxSpotLightIntensity = spotLight.intensity;
-        _maxSpotLightRange = spotLight.range;
 
         _maxChargeBarLength = chargeBar.localScale.z;
     }
@@ -158,36 +155,31 @@ public class FlashlightCharge : NetworkBehaviour
     private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
     {
         if(_isNetworkSpawned) SetIsChargingServerRpc(context.performed);
-        ChangeSpotLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
+        ChangeFlashLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
     }
 
     private void ChargeFlashlightWithStation(bool charge)
     {
         if(_isNetworkSpawned) SetIsChargingServerRpc(charge);
-        ChangeSpotLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
+        ChangeFlashLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SetFlashlightEnableServerRpc()
     {
-        _spotLightToggle.Value = !_spotLightToggle.Value;
+        _flashLightToggle.Value = !_flashLightToggle.Value;
     }
 
     private void FixedUpdate()
-    {      
-        if(spotLight.enabled != _spotLightToggle.Value)
-        {
-            spotLight.enabled = _spotLightToggle.Value;
-        }
-        
+    {              
         if(_charge.Value >= 100 && _isCharging.Value && !_shuttingDown) StopAudioClientRpc();
 
-        if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && spotLight.enabled)) return;
+        if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && _flashLightToggle.Value)) return;
 
         if (_isCharging.Value && _charge.Value < 100)
         {
-            if(!_spotLightToggle.Value) SetFlashlightEnableServerRpc();
-            ChangeSpotLightStrength(chargeRate / _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
+            if(!_flashLightToggle.Value) SetFlashlightEnableServerRpc();
+            ChangeFlashLightStrength(chargeRate / _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
 
             if(flashlightLever != null)
             {
@@ -198,7 +190,7 @@ public class FlashlightCharge : NetworkBehaviour
                 if(!_shuttingDown) PlayAudioClientRpc(1);
             }
         }else{
-            ChangeSpotLightStrength(-decayRate * _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
+            ChangeFlashLightStrength(-decayRate * _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
             if(!_shuttingDown) StopAudioClientRpc();
         }
     }
@@ -209,7 +201,7 @@ public class FlashlightCharge : NetworkBehaviour
         _charge.Value = _newCharge;
     }
 
-    private void ChangeSpotLightStrength(float _change, float _brightness)
+    private void ChangeFlashLightStrength(float _change, float _brightness)
     {        
         if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(_charge.Value + _change);
 
@@ -221,8 +213,8 @@ public class FlashlightCharge : NetworkBehaviour
             if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(100f);
         }
 
-        spotLight.intensity = _maxSpotLightIntensity * (_charge.Value / 100f) * _brightness;
-        spotLight.range = _maxSpotLightRange * (_charge.Value / 100f) * _brightness;
+        // currentFlashLightIntensity = maxFlashLightIntensity * (_charge.Value / 100f) * _brightness;
+        currentFlashLightRange = maxFlashLightRange * (_charge.Value / 100f) * _brightness;
 
         chargeBar.localScale = new Vector3  (   chargeBar.localScale.x, 
                                                 chargeBar.localScale.y,

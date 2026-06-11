@@ -4,7 +4,6 @@ using UnityEngine.Rendering.Universal;
 
 public class RenderManager : MonoBehaviour
 {
-    [SerializeField] private int targetFPS;
     public UniversalRenderPipelineAsset urpAsset;
 
     private float smoothedDeltaTime;
@@ -12,46 +11,78 @@ public class RenderManager : MonoBehaviour
     [SerializeField] private float timeBetweenChecks = 0.5f;
 
     private float currentFPS;
-    private float currentRenderScale;
+    // private float currentRenderScale;
 
-    [SerializeField] private float minRenderScale;
-    [SerializeField] private float maxRenderScale;
-    [SerializeField] private float renderScaleIncrement;
+    // [SerializeField] private float minRenderScale;
+    // [SerializeField] private float maxRenderScale;
+    // [SerializeField] private float renderScaleIncrement;
 
-    //Used ChatGPT to form FPS calculation and FPS adjustment
+    [SerializeField] private float fpsMinLimit;
+    private float fpsMinLimitCount;
 
+    [SerializeField] private float fpsMaxLimit;
+    private float fpsMaxLimitCount;
+
+    [SerializeField] private float fpsLimitCount;
+
+    void Awake()
+    {
+        XRSettings.eyeTextureResolutionScale = 1f;
+        urpAsset.renderScale = 1f;
+
+        fpsMinLimitCount = fpsLimitCount;
+        fpsMaxLimitCount = fpsLimitCount;
+    }
+
+    // Used ChatGPT to form FPS calculation and FPS adjustment
     void Update()
     {
         smoothedDeltaTime += (Time.unscaledDeltaTime - smoothedDeltaTime) * 0.1f;
-
-        // Debug.Log("smoothedDeltaTime: " + smoothedDeltaTime);
-
         timePassed += Time.unscaledDeltaTime;
 
         if(timePassed < timeBetweenChecks) return;
-        Debug.Log("=================");
-        Debug.Log("old urpAsset.renderScale: " + urpAsset.renderScale);
-
-        timePassed = 0;
 
         currentFPS = 1f / smoothedDeltaTime;
-        currentRenderScale = urpAsset.renderScale;
-
-        Debug.Log("currentFPS: " + currentFPS);
-        Debug.Log("currentRenderScale: " + currentRenderScale);
-        
-        if(currentFPS < (targetFPS - 5))
+        if(currentFPS < fpsMinLimit)
         {
-            Debug.Log("(currentRenderScale - renderScaleIncrement): " + (currentRenderScale - renderScaleIncrement));
-            currentFPS = Mathf.Max(minRenderScale, currentRenderScale - renderScaleIncrement);
-        }else if(currentFPS > (targetFPS + 5))
-        {
-            Debug.Log("(currentRenderScale + renderScaleIncrement): " + (currentRenderScale + renderScaleIncrement));
-            currentFPS = Mathf.Min(maxRenderScale, currentRenderScale + renderScaleIncrement);
+            fpsMinLimitCount--;
         }
-        
-        XRSettings.eyeTextureResolutionScale = currentFPS;
-        urpAsset.renderScale = currentFPS;
-        Debug.Log("new urpAsset.renderScale: " + urpAsset.renderScale);
+        else
+        {
+            fpsMinLimitCount = fpsLimitCount;
+        }
+
+        if(fpsMinLimitCount == 0)
+        {
+            fpsMinLimitCount = fpsLimitCount;
+
+            if(urpAsset.renderScale > 0.1)
+            {
+                XRSettings.eyeTextureResolutionScale = XRSettings.eyeTextureResolutionScale - 0.05f;
+                urpAsset.renderScale = urpAsset.renderScale - 0.05f;
+            }
+        }
+
+        if(currentFPS > fpsMaxLimit)
+        {
+            fpsMaxLimitCount--;
+        }
+        else
+        {
+            fpsMaxLimitCount = fpsLimitCount;
+        }
+
+        if(fpsMaxLimitCount == 0)
+        {
+            fpsMaxLimitCount = fpsLimitCount;
+
+            if(urpAsset.renderScale < 1)
+            {
+                XRSettings.eyeTextureResolutionScale = XRSettings.eyeTextureResolutionScale + 0.05f;
+                urpAsset.renderScale = urpAsset.renderScale + 0.05f;
+            }
+        }
+
+        timePassed = 0;
     }
 }
