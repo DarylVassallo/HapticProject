@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2087370695939315333}
   - component: {fileID: 81128988480929742}
   - component: {fileID: 4149323033961829145}
+  - component: {fileID: 2729445262414929967}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -248,7 +249,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -302,7 +303,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -356,6 +357,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &2729445262414929967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125549374702026861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &1458079310204281471
 GameObject:
   m_ObjectHideFlags: 0
@@ -370,6 +387,7 @@ GameObject:
   - component: {fileID: 2926411934046826118}
   - component: {fileID: 5896782603282578138}
   - component: {fileID: 5741178250498007902}
+  - component: {fileID: 225132056188451410}
   m_Layer: 0
   m_Name: DrawerHandle
   m_TagString: Untagged
@@ -660,7 +678,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -713,6 +731,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0.0000019073486}
+--- !u!114 &225132056188451410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458079310204281471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &1526258349838875709
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,6 +761,7 @@ GameObject:
   - component: {fileID: 4728299257602139604}
   - component: {fileID: 5233561775855120487}
   - component: {fileID: 7790486518964401828}
+  - component: {fileID: 1713756164448884203}
   m_Layer: 0
   m_Name: Cube (5)
   m_TagString: Untagged
@@ -961,7 +996,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1015,7 +1050,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1068,6 +1103,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: -0.000000029802322, y: 0, z: 0}
+--- !u!114 &1713756164448884203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526258349838875709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &1778150749310972362
 GameObject:
   m_ObjectHideFlags: 0
@@ -1451,6 +1502,7 @@ GameObject:
   - component: {fileID: 2494035229028620539}
   - component: {fileID: 1851303858013161785}
   - component: {fileID: 1930776918996841602}
+  - component: {fileID: 7957175276013469151}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -1685,7 +1737,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -1739,7 +1791,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1793,6 +1845,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &7957175276013469151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4168043408196456350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &4724690575428947937
 GameObject:
   m_ObjectHideFlags: 0
@@ -2230,6 +2298,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dbda2d6252ed944fb6447a902b83546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrabbableLayerControl
+  isAttachable: 0
 --- !u!1 &6120735090642538963
 GameObject:
   m_ObjectHideFlags: 0
@@ -2424,6 +2493,7 @@ GameObject:
   - component: {fileID: 2947105232839775974}
   - component: {fileID: 414133965483768002}
   - component: {fileID: 2823393440331607109}
+  - component: {fileID: 904978261585179977}
   m_Layer: 0
   m_Name: Cube (3)
   m_TagString: Untagged
@@ -2658,7 +2728,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2712,7 +2782,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2766,6 +2836,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &904978261585179977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6723209468551450482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &7080598473927750636
 GameObject:
   m_ObjectHideFlags: 0
@@ -2780,6 +2866,7 @@ GameObject:
   - component: {fileID: 6364446415420898415}
   - component: {fileID: 6315178124645938777}
   - component: {fileID: 5492087924495603187}
+  - component: {fileID: 7496340878439532547}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -3014,7 +3101,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3068,7 +3155,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3122,6 +3209,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &7496340878439532547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7080598473927750636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &7675643110111125541
 GameObject:
   m_ObjectHideFlags: 0
@@ -3136,6 +3239,7 @@ GameObject:
   - component: {fileID: 5904230347805235714}
   - component: {fileID: 1087175984700121698}
   - component: {fileID: 1806647810866563766}
+  - component: {fileID: 6832299102062875456}
   m_Layer: 0
   m_Name: Cube (6)
   m_TagString: Untagged
@@ -3370,7 +3474,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3424,7 +3528,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3477,6 +3581,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0.000000029802322, y: 0, z: 0}
+--- !u!114 &6832299102062875456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7675643110111125541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &8298182165961501612
 GameObject:
   m_ObjectHideFlags: 0
@@ -3581,6 +3701,7 @@ GameObject:
   - component: {fileID: 3284005143597699803}
   - component: {fileID: 3625574004990337912}
   - component: {fileID: 467078502178741234}
+  - component: {fileID: 6006956062908057816}
   m_Layer: 0
   m_Name: DrawerPipe
   m_TagString: Untagged
@@ -3869,7 +3990,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3922,6 +4043,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0.0000019073486}
+--- !u!114 &6006956062908057816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8469608556460377729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &8955510651605551395
 GameObject:
   m_ObjectHideFlags: 0
@@ -4026,6 +4163,7 @@ GameObject:
   - component: {fileID: 5111894646492221526}
   - component: {fileID: 7631600192356972108}
   - component: {fileID: 3155486405692493413}
+  - component: {fileID: 2401899058944127175}
   m_Layer: 0
   m_Name: Cube (4)
   m_TagString: Untagged
@@ -4042,8 +4180,8 @@ Transform:
   m_GameObject: {fileID: 9189474644908910298}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00000017881393, y: -0.000000029802322, z: 2.0000021}
-  m_LocalScale: {x: 3, y: 3, z: 0.3}
+  m_LocalPosition: {x: 0.00000018831342, y: -0.00000026822093, z: 1.9250009}
+  m_LocalScale: {x: 3, y: 3, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3687604303773751549}
@@ -4260,7 +4398,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 23
+  m_VersionIndex: 26
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4314,7 +4452,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4368,3 +4506,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &2401899058944127175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9189474644908910298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0

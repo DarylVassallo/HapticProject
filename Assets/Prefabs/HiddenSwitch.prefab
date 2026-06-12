@@ -7061,9 +7061,9 @@ MonoBehaviour:
   shape: 0
   button: 2
   buttonAudio: {fileID: 8300000, guid: 4916bb1c7e54ccc4883e941bf352c919, type: 3}
-  deactiveMaterial: {fileID: 0}
-  inProgressMaterial: {fileID: 0}
-  completeMaterial: {fileID: 0}
+  deactiveMaterial: {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  inProgressMaterial: {fileID: 2100000, guid: b4424a2c67252204db86d9e4faf87ddb, type: 2}
+  completeMaterial: {fileID: 2100000, guid: 202b8bd100b8b2948ba7b5bd54124a4f, type: 2}
   isResetButton: 0
 --- !u!82 &5852180758777542760
 AudioSource:
@@ -8520,9 +8520,9 @@ MonoBehaviour:
   shape: 0
   button: 5
   buttonAudio: {fileID: 8300000, guid: 4916bb1c7e54ccc4883e941bf352c919, type: 3}
-  deactiveMaterial: {fileID: 0}
-  inProgressMaterial: {fileID: 0}
-  completeMaterial: {fileID: 0}
+  deactiveMaterial: {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  inProgressMaterial: {fileID: 2100000, guid: b4424a2c67252204db86d9e4faf87ddb, type: 2}
+  completeMaterial: {fileID: 2100000, guid: 202b8bd100b8b2948ba7b5bd54124a4f, type: 2}
   isResetButton: 0
 --- !u!82 &4439634512575711382
 AudioSource:
@@ -10255,9 +10255,9 @@ MonoBehaviour:
   shape: 0
   button: 1
   buttonAudio: {fileID: 8300000, guid: 4916bb1c7e54ccc4883e941bf352c919, type: 3}
-  deactiveMaterial: {fileID: 0}
-  inProgressMaterial: {fileID: 0}
-  completeMaterial: {fileID: 0}
+  deactiveMaterial: {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  inProgressMaterial: {fileID: 2100000, guid: b4424a2c67252204db86d9e4faf87ddb, type: 2}
+  completeMaterial: {fileID: 2100000, guid: 202b8bd100b8b2948ba7b5bd54124a4f, type: 2}
   isResetButton: 0
 --- !u!82 &7011119417047361102
 AudioSource:
@@ -10643,7 +10643,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 964ddb6e48de3c94487e9fe2aef1eeb0, type: 2}
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13709,9 +13709,9 @@ MonoBehaviour:
   shape: 0
   button: 3
   buttonAudio: {fileID: 8300000, guid: 4916bb1c7e54ccc4883e941bf352c919, type: 3}
-  deactiveMaterial: {fileID: 0}
-  inProgressMaterial: {fileID: 0}
-  completeMaterial: {fileID: 0}
+  deactiveMaterial: {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  inProgressMaterial: {fileID: 2100000, guid: b4424a2c67252204db86d9e4faf87ddb, type: 2}
+  completeMaterial: {fileID: 2100000, guid: 202b8bd100b8b2948ba7b5bd54124a4f, type: 2}
   isResetButton: 0
 --- !u!82 &6520894881101562767
 AudioSource:
@@ -16846,9 +16846,9 @@ MonoBehaviour:
   shape: 0
   button: 4
   buttonAudio: {fileID: 8300000, guid: 4916bb1c7e54ccc4883e941bf352c919, type: 3}
-  deactiveMaterial: {fileID: 0}
-  inProgressMaterial: {fileID: 0}
-  completeMaterial: {fileID: 0}
+  deactiveMaterial: {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  inProgressMaterial: {fileID: 2100000, guid: b4424a2c67252204db86d9e4faf87ddb, type: 2}
+  completeMaterial: {fileID: 2100000, guid: 202b8bd100b8b2948ba7b5bd54124a4f, type: 2}
   isResetButton: 0
 --- !u!82 &3791251758000658784
 AudioSource:
