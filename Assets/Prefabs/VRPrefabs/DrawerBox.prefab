@@ -303,7 +303,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -387,6 +387,7 @@ GameObject:
   - component: {fileID: 2926411934046826118}
   - component: {fileID: 5896782603282578138}
   - component: {fileID: 5741178250498007902}
+  - component: {fileID: 225132056188451410}
   m_Layer: 0
   m_Name: DrawerHandle
   m_TagString: Untagged
@@ -677,7 +678,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -730,6 +731,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0.0000019073486}
+--- !u!114 &225132056188451410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1458079310204281471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &1526258349838875709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1033,7 +1050,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8a994863320f11541bf364cc75c03ea6, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1774,7 +1791,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2765,7 +2782,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3138,7 +3155,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3511,7 +3528,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8a994863320f11541bf364cc75c03ea6, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3684,6 +3701,7 @@ GameObject:
   - component: {fileID: 3284005143597699803}
   - component: {fileID: 3625574004990337912}
   - component: {fileID: 467078502178741234}
+  - component: {fileID: 6006956062908057816}
   m_Layer: 0
   m_Name: DrawerPipe
   m_TagString: Untagged
@@ -3972,7 +3990,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c22777d6e868e4f2fb421913386b154e, type: 2}
+  - {fileID: 2100000, guid: d3e3c5c8fd44cfa43a0b44fa71d7e86b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4025,6 +4043,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0.0000019073486}
+--- !u!114 &6006956062908057816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8469608556460377729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 1
+  isEffectedByLight: 0
+  isReversed: 0
 --- !u!1 &8955510651605551395
 GameObject:
   m_ObjectHideFlags: 0
@@ -4146,8 +4180,8 @@ Transform:
   m_GameObject: {fileID: 9189474644908910298}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.00000017881393, y: -0.000000029802322, z: 2.0000021}
-  m_LocalScale: {x: 3, y: 3, z: 0.3}
+  m_LocalPosition: {x: 0.00000018831342, y: -0.00000026822093, z: 1.9250009}
+  m_LocalScale: {x: 3, y: 3, z: 0.15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3687604303773751549}
@@ -4418,7 +4452,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 067b788ef9aecda4da2beaee97bd8fb1, type: 2}
+  - {fileID: 2100000, guid: c38c3e6e1168fa74e824d37fd28efc34, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

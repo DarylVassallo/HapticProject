@@ -164,6 +164,7 @@ Shader "Custom/RevealingUnderLight_URP"
             								_VRLightRange,
             								_VRStrengthScalor,
             								i.positionWS);
+            	float vrDirection = saturate(dot(normal, normalize(_VRLightDirection.xyz)));
             	
             	float strength = saturate(pcStrength + vrStrength);
             	strength = lerp(strength, 1.0 - strength, _ReverseStrength);
@@ -174,7 +175,7 @@ Shader "Custom/RevealingUnderLight_URP"
 
                 float alpha = strength * tex.a;
 
-                float3 emission = albedo * tex.a * strength;
+                float3 emission = albedo * tex.a * strength * vrDirection;
 
 			float3 litColor = albedo * lighting;
                 half4 col;
