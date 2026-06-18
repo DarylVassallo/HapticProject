@@ -12,6 +12,7 @@ public class Health : NetworkBehaviour
 
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
+    public static event Action<GameObject> OnRemoveHiddenObject;
 
     public static event Action<float> OnChangeHealthBar;
     public static event Action<float> OnChangeHealthCamera;
@@ -58,6 +59,7 @@ public class Health : NetworkBehaviour
             else if (this.CompareTag("Enemy"))
             {
                 OnKilledEnemy?.Invoke(1, _currentAttackerType.Value);
+                OnRemoveHiddenObject?.Invoke(this.gameObject);
                 Destroy(this.gameObject);
             }
         }

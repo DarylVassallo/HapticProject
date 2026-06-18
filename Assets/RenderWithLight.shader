@@ -145,11 +145,7 @@ Shader "Custom/RevealingUnderLight_URP"
             {
             	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
             	
-            	Light mainLight = GetMainLight();
             	float3 normal = normalize(i.normalWS);
-            	
-            	float NdotL = saturate(dot(normal, mainLight.direction));
-            	float3 lighting = mainLight.color * NdotL;
             	
             	float pcStrength = ComputeStrength(	_PCLightPosition.xyz,
             								_PCLightDirection.xyz,
@@ -157,14 +153,18 @@ Shader "Custom/RevealingUnderLight_URP"
             								_PCLightRange,
             								_PCStrengthScalor,
             								i.positionWS);
-
+            	float pcNdotL = saturate(dot(normal, normalize(_PCLightDirection.xyz)));
+            	
 			float vrStrength = ComputeStrength(	_VRLightPosition.xyz,
             								_VRLightDirection.xyz,
             								_VRLightAngle,
             								_VRLightRange,
             								_VRStrengthScalor,
             								i.positionWS);
-            	float vrDirection = saturate(dot(normal, normalize(_VRLightDirection.xyz)));
+            	float vrNdotL = saturate(dot(normal, normalize(_VRLightDirection.xyz)));
+            	            	
+            	float3 lighting = 	pcNdotL * pcStrength * float3(1,1,1) + 
+            					vrNdotL * vrStrength * float3(1,1,1);
             	
             	float strength = saturate(pcStrength + vrStrength);
             	strength = lerp(strength, 1.0 - strength, _ReverseStrength);
@@ -175,7 +175,7 @@ Shader "Custom/RevealingUnderLight_URP"
 
                 float alpha = strength * tex.a;
 
-                float3 emission = albedo * tex.a * strength * vrDirection;
+                float3 emission = albedo * tex.a * strength;
 
 			float3 litColor = albedo * lighting;
                 half4 col;

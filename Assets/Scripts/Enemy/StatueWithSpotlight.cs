@@ -11,12 +11,15 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private Transform _pcPlayerTransform;
     private Health _pcPlayerHealth;
-    private Light _pcPlayerSpotLight;
+    private FlashlightCharge _pcFlashlightCharge;
+    private FlashlightCharge _vrFlashlightCharge;
+
+    private Transform _pcPlayerSpotLight;
     private bool _isPCTooClose;
     private bool _isPCTooFar;
     private bool _isInsidePCSpotLight;
 
-    private Light _vrPlayerSpotLight;
+    private Transform _vrPlayerSpotLight;
     private bool _isInsideVRSpotLight;
 
     private float _spotLightDistance;
@@ -62,11 +65,7 @@ public class StatueWithSpotlight : NetworkBehaviour
         health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
-        _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-        _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
-        _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
-        
-        _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        GetPCPlayerData();
         
         _canPCFunction = true;
         _canVRFunction = true;
@@ -126,9 +125,11 @@ public class StatueWithSpotlight : NetworkBehaviour
         {
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
             _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
-            _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
+            _pcPlayerSpotLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
+            _pcFlashlightCharge = _pcPlayerSpotLight.GetComponent<FlashlightCharge>();
             
-            _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+            _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+            _vrFlashlightCharge = _vrPlayerSpotLight.GetComponent<FlashlightCharge>();
             
             _canPCFunction = true;
         }
@@ -150,7 +151,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         if(!IsServer) return;
 
-        if(!_canPCFunction && !_canVRFunction) return;
+        // if(!_canPCFunction && !_canVRFunction) return;
 
         if(attackCount > 0) attackCount--;
 
@@ -163,8 +164,8 @@ public class StatueWithSpotlight : NetworkBehaviour
 
             if (_isPCTooClose && attackCount <= 0) StopAndAttack(damageToPlayer);        
 
-            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight); 
-            _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
+            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
+            _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight, _vrFlashlightCharge);
 
             if (_isInsidePCSpotLight && _isInsideVRSpotLight)
             {
@@ -213,7 +214,6 @@ public class StatueWithSpotlight : NetworkBehaviour
         
         _agent.SetDestination(transform.position);
 
-        Debug.Log("Health: _pcPlayerHealth: " + _pcPlayerHealth);
         _pcPlayerHealth.ChangeHealth(-_damage, -1);
     }
 
@@ -237,22 +237,24 @@ public class StatueWithSpotlight : NetworkBehaviour
     }
     
     //Used ChatGPT here
-    bool IsInsideSpotLight(Light _playerSpotLight)
+    bool IsInsideSpotLight(Transform _playerSpotLight, FlashlightCharge _playerFlashlightCharge)
     {
         if (_playerSpotLight == null) return false;
-        if (!_playerSpotLight.enabled) return false;
+        if (!_playerSpotLight.gameObject.activeSelf) return false;
 
-        _positionDifference = transform.position - _playerSpotLight.transform.position;
+        _positionDifference = transform.position - _playerSpotLight.position;
         _spotLightDistance = _positionDifference.magnitude;
 
-        if (_spotLightDistance > (_playerSpotLight.range * 0.5f))
+        Debug.Log("_playerFlashlightCharge: " + _playerFlashlightCharge);
+        Debug.Log("_playerFlashlightCharge.currentFlashLightRange: " + _playerFlashlightCharge.currentFlashLightRange);
+        if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f))
         {
             return false;
         }
 
-        _spotLightAngle = Vector3.Angle(_playerSpotLight.transform.forward, _positionDifference);
+        _spotLightAngle = Vector3.Angle(_playerSpotLight.forward, _positionDifference);
 
-        if (_spotLightAngle > _playerSpotLight.spotAngle * 0.5f)
+        if (_spotLightAngle > 55 * 0.5f)
         {
             return false;
         }
@@ -263,6 +265,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     (bool _isTooClose, bool _isTooFar) IsCloseToPlayer(Transform _playerTransform)
     {
         float distance = (transform.position - _playerTransform.position).magnitude;
+
         if (distance <= _tooCloseDistance) return (true, false);
         if(distance > _tooFarDistance)  return (false, true);
         return (false, false);

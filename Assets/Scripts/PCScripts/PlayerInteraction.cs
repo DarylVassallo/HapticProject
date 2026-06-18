@@ -9,7 +9,14 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Awake()
     {
-        _pcPlayerCamera = GameObject.FindGameObjectWithTag("PCCamera").GetComponent<Camera>();
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("MainCamera"))
+        {
+            if (obj.layer == LayerMask.NameToLayer("PCCamera"))
+            {
+                _pcPlayerCamera = obj.GetComponent<Camera>();
+                break;
+            }
+        }        
     }
 
     private void OnEnable()
@@ -24,10 +31,12 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Interact()
     {
+        Debug.Log("Interact");
         _ray = _pcPlayerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
         if(Physics.Raycast(_ray, out _hit, interactionDistance))
         {
+            Debug.Log("_hit.collider: " + _hit.collider);
             if(_hit.collider.GetComponent<IInteractable>() != null)
             {
                 _hit.collider.GetComponent<IInteractable>().TriggerInteraction();

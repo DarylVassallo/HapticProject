@@ -11,7 +11,7 @@ public class ButtonInteract : MonoBehaviour, IInteractable
     [SerializeField] private MazeManager.ShapeType shape;
     [SerializeField] private MazeManager.ButtonType button;
 
-    private float pressedDistance = 0.2f;
+    private float pressedDistance = 0.1f;
     private bool _isFullyPressed = false;
     private Vector3 pushedPosition;
 
@@ -53,13 +53,6 @@ public class ButtonInteract : MonoBehaviour, IInteractable
     {
         if (_isInteractable && !_activeButton)
         {
-            if(isResetButton)
-            {
-                OnActivateReset?.Invoke();
-                return;
-            }
-
-
             _activeButton = true;
 
             OnTriggerButton?.Invoke(shape, button);
@@ -67,7 +60,7 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
             //This line formed with ChatGPT
             pushedPosition =    this.transform.position + 
-                                (   -transform.up * 
+                                (   -transform.forward * 
                                     pressedDistance * 
                                     this.transform.localScale.x
                                 );            
@@ -85,15 +78,18 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     private void ResetButton()
     {
-        _activeButton = false;
+        if(!_isFullyPressed)
+        {
+            _activeButton = false;
 
-        pushedPosition =    this.transform.position + 
-                            (   transform.up * 
-                                pressedDistance * 
-                                this.transform.localScale.x
-                            );                  
-        
-        _moveUp = true;
+            pushedPosition =    this.transform.position + 
+                                (   transform.forward * 
+                                    pressedDistance * 
+                                    this.transform.localScale.x
+                                );                  
+            
+            _moveUp = true;
+        }
     }
 
     public void EnableInteraction()
@@ -133,17 +129,20 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                 _renderer.material = inProgressMaterial;
 
                 pushedPosition =    this.transform.position + 
-                                    (   transform.up * 
+                                    (   transform.forward * 
                                         pressedDistance * 
                                         this.transform.localScale.x
                                     );
                 _isFullyPressed = true;
                 _moveDown = false;
                 // _moveUp = true;
+
+                if(isResetButton)
+                {
+                    OnActivateReset?.Invoke();
+                }
             }
-        }
-        
-        if(_moveUp)
+        }else if(_moveUp)
         {
             this.transform.position = Vector3.Lerp(
                 this.transform.position,
