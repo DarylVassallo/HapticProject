@@ -17,6 +17,8 @@ public class Health : NetworkBehaviour
     public static event Action<float> OnChangeHealthBar;
     public static event Action<float> OnChangeHealthCamera;
 
+    public static event Action<Renderer, float> OnChangeEnemyOxidization;
+
     private void Awake()
     {
         // SetHealthServerRpc(_maxHealth);
@@ -69,6 +71,14 @@ public class Health : NetworkBehaviour
             {
                 OnChangeHealthBar?.Invoke(newValue);
                 OnChangeHealthCamera?.Invoke(newValue);
+            }else if (this.CompareTag("Enemy"))
+            {
+                foreach (Renderer renderer in this.gameObject.GetComponentsInChildren<Renderer>())
+                {
+                    OnChangeEnemyOxidization?.Invoke(renderer, _health.Value / 100f);
+                }
+
+                // OnChangeEnemyOxidization?.Invoke(this.gameObject.GetComponent<Renderer>(), _health.Value / 100f);
             }
         }
     }

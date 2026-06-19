@@ -57,7 +57,9 @@ public class StatueWithSpotlight : NetworkBehaviour
     private bool _shuttingDown = false;
 
     [SerializeField] private int maxAttackDelay;
-    private int attackCount;
+    private int _attackCount;
+
+    private Animator _animator;
 
     void Awake()
     {
@@ -65,12 +67,14 @@ public class StatueWithSpotlight : NetworkBehaviour
         health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
+        _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+
         GetPCPlayerData();
         
         _canPCFunction = true;
         _canVRFunction = true;
 
-        attackCount = maxAttackDelay;
+        _attackCount = maxAttackDelay;
     }
 
     private void OnEnable()
@@ -153,7 +157,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         // if(!_canPCFunction && !_canVRFunction) return;
 
-        if(attackCount > 0) attackCount--;
+        if(_attackCount > 0) _attackCount--;
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
 
@@ -162,7 +166,7 @@ public class StatueWithSpotlight : NetworkBehaviour
             StandBy();
         }else{
 
-            if (_isPCTooClose && attackCount <= 0) StopAndAttack(damageToPlayer);        
+            if (_isPCTooClose && _attackCount <= 0) StopAndAttack(damageToPlayer);        
 
             _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
             _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight, _vrFlashlightCharge);
@@ -195,6 +199,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     private void Walk()
     {
         _agent.speed = agentSpeed;
+        _animator.speed = 1;
 
         PlayAudioClientRpc(1);
         _audioSource.volume = 1;
@@ -206,7 +211,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private void StopAndAttack(float _damage)
     {
-        attackCount = maxAttackDelay;
+        _attackCount = maxAttackDelay;
 
         _agent.speed = 0;
         
@@ -220,6 +225,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     private void DamageAndFreeze(int _playerType)
     {
         _agent.speed = 0;
+        _animator.speed = 0;
 
         PlayAudioClientRpc(0);
 
@@ -228,12 +234,13 @@ public class StatueWithSpotlight : NetworkBehaviour
         _agent.SetDestination(transform.position);
 
         health.ChangeHealth(-damageToAngel, _playerType);
-        transform.position = new Vector3(   
-                                        transform.position.x + 
-                                        Mathf.Sin(shakeSpeed * Time.time * (1 - (health.GetHealth() / 100))) * shakeAmount * (1 - (health.GetHealth() / 100)),
-                                        transform.position.y, 
-                                        transform.position.z
-                                    );
+
+        // transform.position = new Vector3(   
+        //                                 transform.position.x + 
+        //                                 Mathf.Sin(shakeSpeed * Time.time * (1 - (health.GetHealth() / 100))) * shakeAmount * (1 - (health.GetHealth() / 100)),
+        //                                 transform.position.y, 
+        //                                 transform.position.z
+        //                             );
     }
     
     //Used ChatGPT here

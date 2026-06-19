@@ -99,17 +99,17 @@ public class PlayerMovement : NetworkBehaviour
     }
     private void FixedUpdate()
     {
-        if (!IsOwner)
-        {
-            GetComponent<Renderer>().material.color = Color.blue;            
-            cameraTransform.GetComponent<CinemachineCamera>().enabled = false;
-            return;
-        }
-        else
-        {
-            GetComponent<Renderer>().material.color = Color.red;
-            cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
-        }
+        // if (!IsOwner)
+        // {
+        //     GetComponent<Renderer>().material.color = Color.blue;            
+        //     cameraTransform.GetComponent<CinemachineCamera>().enabled = false;
+        //     return;
+        // }
+        // else
+        // {
+        //     GetComponent<Renderer>().material.color = Color.red;
+        //     cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
+        // }
 
         _isGrounded = _characterController.isGrounded;
         HandleGravity();

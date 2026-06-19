@@ -68,6 +68,7 @@ public class RevealUnderLightManager : MonoBehaviour
 
         RevealUnderLight.OnAddNewHiddenObject += AddNewHiddenObject;
         Health.OnRemoveHiddenObject += RemoveHiddenObject;
+        Health.OnChangeEnemyOxidization += ChangeEnemyOxidization;
     }
 
     private void OnDisable()
@@ -77,6 +78,7 @@ public class RevealUnderLightManager : MonoBehaviour
 
         RevealUnderLight.OnAddNewHiddenObject -= AddNewHiddenObject;
         Health.OnRemoveHiddenObject -= RemoveHiddenObject;
+        Health.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
     }
 
     private void GetPCPlayerData()
@@ -119,7 +121,17 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
     {
-        hiddenObjects.RemoveAll(h => h.hiddenObject == oldHiddenObject);
+        hiddenObjects.RemoveAll(h => 
+                                h.hiddenObject != null && 
+                                h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
+    }
+
+    private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
+    {
+        Debug.Log("===================");
+        Debug.Log("_renderer: " + _renderer.gameObject);
+        Debug.Log("oxidization: " + oxidization);
+        _renderer.material.SetFloat("_MapBlend", 1 - oxidization);
     }
 
     private void Update()
