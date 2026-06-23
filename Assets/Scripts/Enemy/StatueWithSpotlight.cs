@@ -225,7 +225,8 @@ public class StatueWithSpotlight : NetworkBehaviour
     private void DamageAndFreeze(int _playerType)
     {
         _agent.speed = 0;
-        _animator.speed = 0;
+
+        if(!health.isDead) _animator.speed = 0;
 
         PlayAudioClientRpc(0);
 
@@ -252,8 +253,6 @@ public class StatueWithSpotlight : NetworkBehaviour
         _positionDifference = transform.position - _playerSpotLight.position;
         _spotLightDistance = _positionDifference.magnitude;
 
-        Debug.Log("_playerFlashlightCharge: " + _playerFlashlightCharge);
-        Debug.Log("_playerFlashlightCharge.currentFlashLightRange: " + _playerFlashlightCharge.currentFlashLightRange);
         if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f))
         {
             return false;

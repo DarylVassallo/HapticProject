@@ -19,9 +19,15 @@ public class Health : NetworkBehaviour
 
     public static event Action<Renderer, float> OnChangeEnemyOxidization;
 
+    private Animator _animator;
+
+    public bool isDead;
+
     private void Awake()
     {
         // SetHealthServerRpc(_maxHealth);
+        _animator = GetComponentInChildren<Animator>();
+        isDead = false;
     }
 
     public override void OnNetworkSpawn()
@@ -62,7 +68,12 @@ public class Health : NetworkBehaviour
             {
                 OnKilledEnemy?.Invoke(1, _currentAttackerType.Value);
                 OnRemoveHiddenObject?.Invoke(this.gameObject);
-                Destroy(this.gameObject);
+                // Destroy(this.gameObject);
+
+                Debug.Log("Animator IsDead True");
+                isDead = true;
+                _animator.speed = 1;
+                _animator.SetBool("IsDead", true);
             }
         }
         else

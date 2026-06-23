@@ -23,6 +23,7 @@ public class ShowFPS : MonoBehaviour
         fpsText = GetComponent<TextMeshPro>();
         Application.targetFrameRate = 90;
         QualitySettings.vSyncCount = 0;
+        XRSettings.eyeTextureResolutionScale = 0.55f;
         Application.runInBackground = true;
     }
 
@@ -38,7 +39,7 @@ public class ShowFPS : MonoBehaviour
 
         float fps = 1f / Time.unscaledDeltaTime;
         float refreshRate = XRDevice.refreshRate;
-        fpsText.text = $"FPS: {fps:F1}\nXR Hz: {refreshRate:F1}\nFrame: {Time.unscaledDeltaTime * 1000f:F2}ms";
+        fpsText.text = $"FPS: {fps:F1}";
 
         timePassed = 0;
     }

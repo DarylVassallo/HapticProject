@@ -18368,6 +18368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   ShowTopMostFoldoutHeaderGroup: 1
+  isDead: 0
 --- !u!114 &8673969827659363446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20848,7 +20849,19 @@ PrefabInstance:
     - target: {fileID: 2550935751187727211, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 473355c2606209f46b71b79b520e22a3, type: 2}
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981553585818097539, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4894762259405688390, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8172300059767236553, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8468617057500289297, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7
@@ -20908,6 +20921,10 @@ PrefabInstance:
     - target: {fileID: 9137032837993464747, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_Name
       value: URP - Giant01 - Golem
+      objectReference: {fileID: 0}
+    - target: {fileID: 9137032837993464747, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

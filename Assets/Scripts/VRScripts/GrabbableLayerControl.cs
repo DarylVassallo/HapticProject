@@ -75,6 +75,9 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
+        Transform attachPoint = args.interactorObject.GetAttachTransform(args.interactableObject);
+        Debug.Log("attachPoint: " + attachPoint);
+
         _interactor = args.interactorObject.transform.gameObject;
 
         // _standardLayer = this.gameObject.layer;
