@@ -105,14 +105,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2616153900
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 3585355807
+  InScenePlacedSourceGlobalObjectIdHash: 3520362744
   DeferredDespawnTick: 0
   Ownership: 1
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 1
+  SceneMigrationSynchronization: 0
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
@@ -138,8 +138,8 @@ MonoBehaviour:
   damageToPlayer: 3
   _tooCloseDistance: 2.2
   _tooFarDistance: 400
-  burningAudio: {fileID: 8300000, guid: dc2b315f54c13764d8b5675a6f68eff7, type: 3}
-  footstepAudio: {fileID: 8300000, guid: e5488bd69b917544fb71c5d71d47c874, type: 3}
+  burningAudio: {fileID: 8300000, guid: 5f8adeac1d99015468125defee2eb49c, type: 3}
+  footstepAudio: {fileID: 8300000, guid: cc93f02fd602d43498d49caaf2335fdd, type: 3}
   attackingAudios:
   - {fileID: 8300000, guid: 92295063e6bb2324fb660a40f39d3ba4, type: 3}
   - {fileID: 8300000, guid: 3f44b78091aff984a85c2744b5360ba4, type: 3}
@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   ShowTopMostFoldoutHeaderGroup: 1
+  isDead: 0
 --- !u!82 &4360777513105819023
 AudioSource:
   m_ObjectHideFlags: 0
@@ -174,7 +175,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: e5488bd69b917544fb71c5d71d47c874, type: 3}
+  m_Resource: {fileID: 8300000, guid: d561115c26c2b7f49a03107db8dc8505, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
