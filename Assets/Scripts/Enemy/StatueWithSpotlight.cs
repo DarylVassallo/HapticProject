@@ -47,6 +47,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     [Header("Audio")]
     [SerializeField] private AudioClip burningAudio;
     [SerializeField] private AudioClip footstepAudio;
+    [SerializeField] private AudioClip deathAudio;
     [SerializeField] private AudioClip[] attackingAudios;
     [SerializeField] private AudioClip[] whisperingAudios;
     private AudioSource _audioSource;
@@ -111,6 +112,9 @@ public class StatueWithSpotlight : NetworkBehaviour
                 break;
             case 3:
                 _currentAudio = whisperingAudios[Random.Range(0, whisperingAudios.Length)];
+                break;
+            case 4:
+                _currentAudio = deathAudio;
                 break;
         }
 
@@ -226,15 +230,24 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         _agent.speed = 0;
 
-        if(!health.isDead) _animator.speed = 0;
+        if(!health.isDead)
+        { 
+            _animator.speed = 0;
 
-        PlayAudioClientRpc(0);
+            PlayAudioClientRpc(0);
 
-        _audioSource.volume = 1 - (health.GetHealth() / 100);
+            _audioSource.volume = 1 - (health.GetHealth() / 100);
 
-        _agent.SetDestination(transform.position);
+            // _agent.SetDestination(transform.position);
 
-        health.ChangeHealth(-damageToAngel, _playerType);
+            health.ChangeHealth(-damageToAngel, _playerType);
+        }
+        else
+        {
+            _animator.speed = 1;
+            PlayAudioClientRpc(4);
+            _audioSource.volume = 1;
+        }
 
         // transform.position = new Vector3(   
         //                                 transform.position.x + 

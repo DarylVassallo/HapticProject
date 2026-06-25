@@ -1,13 +1,14 @@
 using UnityEngine;
 using Unity.Netcode;
 
-//This script keeps the head and hands of the vr player to match the real player in a multiplayer network (STILL IN DEVELOPMENT).
+//This script keeps the head and hands of the vr player to match the real player in a multiplayer network
 //Source: https://www.youtube.com/watch?v=6fZ7LT5AeTw
 public class NetworkPlayer : NetworkBehaviour
 {
     public Transform root;
     public Transform head;
     public Transform chest;
+    public Transform pelvis;
     public Transform leftHand;
     public Transform rightHand;
 
@@ -18,6 +19,9 @@ public class NetworkPlayer : NetworkBehaviour
 
     public Quaternion chestOffsetRotation;
     public Vector3 chestOffsetPosition;
+
+    public Quaternion pelvisOffsetRotation;
+    public Vector3 pelvisOffsetPosition;
 
     public override void OnNetworkSpawn()
     {
@@ -47,6 +51,13 @@ public class NetworkPlayer : NetworkBehaviour
             chest.rotation = Quaternion.Euler(   chest.rotation.x + chestOffsetRotation.eulerAngles.x, 
                                                  VRRigReferences.Singleton.head.rotation.eulerAngles.y + chestOffsetRotation.eulerAngles.y, 
                                                  chest.rotation.z + chestOffsetRotation.eulerAngles.z);
+
+            pelvis.position = new Vector3(   VRRigReferences.Singleton.head.position.x +  + pelvisOffsetPosition.x, 
+                                            VRRigReferences.Singleton.head.position.y +  + pelvisOffsetPosition.y, 
+                                            VRRigReferences.Singleton.head.position.z + pelvisOffsetPosition.z);
+            pelvis.rotation = Quaternion.Euler(   pelvis.rotation.x + pelvisOffsetRotation.eulerAngles.x, 
+                                                 VRRigReferences.Singleton.head.rotation.eulerAngles.y + pelvisOffsetRotation.eulerAngles.y, 
+                                                 pelvis.rotation.z + pelvisOffsetRotation.eulerAngles.z);
 
             leftHand.position = VRRigReferences.Singleton.leftHand.position;
             leftHand.rotation = VRRigReferences.Singleton.leftHand.rotation;

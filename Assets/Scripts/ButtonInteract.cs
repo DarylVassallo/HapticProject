@@ -78,18 +78,15 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     private void ResetButton()
     {
-        if(!_isFullyPressed)
-        {
-            _activeButton = false;
+        _activeButton = false;
 
-            pushedPosition =    this.transform.position + 
-                                (   transform.forward * 
-                                    pressedDistance * 
-                                    this.transform.localScale.x
-                                );                  
-            
-            _moveUp = true;
-        }
+        pushedPosition =    this.transform.position + 
+                            (   transform.forward * 
+                                pressedDistance * 
+                                this.transform.localScale.x
+                            );                  
+        
+        _moveUp = true;
     }
 
     public void EnableInteraction()
