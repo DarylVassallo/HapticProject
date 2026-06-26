@@ -99,6 +99,7 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
+            // _animator.gameObject.SetActive(true); 
             _animator.gameObject.SetActive(false); 
 
             if (pcFlashlight != null)

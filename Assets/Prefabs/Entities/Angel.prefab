@@ -134,12 +134,26 @@ MonoBehaviour:
   agentSpeed: 3
   shakeSpeed: 64
   shakeAmount: 0.08
-  damageToAngel: 0.5
+  damageToAngel: 5
   damageToPlayer: 3
   _tooCloseDistance: 2.2
   _tooFarDistance: 400
-  burningAudio: {fileID: 8300000, guid: 5f8adeac1d99015468125defee2eb49c, type: 3}
-  footstepAudio: {fileID: 8300000, guid: cc93f02fd602d43498d49caaf2335fdd, type: 3}
+  burningAudios:
+  - {fileID: 8300000, guid: c11134786aa805d41b4f1d4dea8911b7, type: 3}
+  - {fileID: 8300000, guid: 05ef6fe6d21cada4fb6bbbae917d65a5, type: 3}
+  - {fileID: 8300000, guid: 1ea6c61e5406e2047a46e96cb5cf898a, type: 3}
+  - {fileID: 8300000, guid: c83ec6f1d36bac54da7a81eb3ce4f515, type: 3}
+  - {fileID: 8300000, guid: 16ae8ed08b4e26a42ab8ac4f30f67c6b, type: 3}
+  - {fileID: 8300000, guid: 04d76e5825b64104093417e856c5a14d, type: 3}
+  - {fileID: 8300000, guid: 041f9fcb5da0d92409c694e6bd73969d, type: 3}
+  - {fileID: 8300000, guid: 1d592b15324522d41804aec245748fbb, type: 3}
+  - {fileID: 8300000, guid: 5d43473e71daa18429f0f3cd4774e761, type: 3}
+  footstepAudios:
+  - {fileID: 8300000, guid: 5f66b541060c76e4384f2d62a8447391, type: 3}
+  - {fileID: 8300000, guid: 6a7d3e96bfc69a3418345f6ad9761e44, type: 3}
+  - {fileID: 8300000, guid: c8e83c6a2eae35b4683c3431277ab872, type: 3}
+  - {fileID: 8300000, guid: d28f0b44cf5b0de42942847daa7ad07d, type: 3}
+  - {fileID: 8300000, guid: 7c04e3e9176235a43a401275cd46bd39, type: 3}
   deathAudio: {fileID: 8300000, guid: d561115c26c2b7f49a03107db8dc8505, type: 3}
   attackingAudios:
   - {fileID: 8300000, guid: 92295063e6bb2324fb660a40f39d3ba4, type: 3}
@@ -151,6 +165,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d1e48533b93a1d14fa310c6fd2417b6e, type: 3}
   - {fileID: 8300000, guid: 052f311c65be8fd428193d2e748a496a, type: 3}
   maxAttackDelay: 50
+  damageDelay: 0.2
 --- !u!114 &3128351026506914791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,7 +191,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: d561115c26c2b7f49a03107db8dc8505, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -323,11 +338,11 @@ PrefabInstance:
     - target: {fileID: 5391011836006163916, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 858f0d626ad414948aa54b463e03519a, type: 2}
+      objectReference: {fileID: 2100000, guid: b1eba6a83ab54bd46a12a206972b5bb2, type: 2}
     - target: {fileID: 6401258778785991962, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 858f0d626ad414948aa54b463e03519a, type: 2}
+      objectReference: {fileID: 2100000, guid: b1eba6a83ab54bd46a12a206972b5bb2, type: 2}
     - target: {fileID: 8468617057500289297, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.7
@@ -387,7 +402,7 @@ PrefabInstance:
     - target: {fileID: 9066576789631251579, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 858f0d626ad414948aa54b463e03519a, type: 2}
+      objectReference: {fileID: 2100000, guid: b1eba6a83ab54bd46a12a206972b5bb2, type: 2}
     - target: {fileID: 9137032837993464747, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_Name
       value: URP - Giant01 - Golem

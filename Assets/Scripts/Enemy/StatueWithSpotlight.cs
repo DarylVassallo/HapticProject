@@ -3,6 +3,8 @@ using UnityEngine.AI;
 
 using Unity.Netcode;
 
+using System.Collections;
+
 //This script detects if the statue is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
 //Source: https://www.youtube.com/watch?v=_e57zSZSOS8
 public class StatueWithSpotlight : NetworkBehaviour
@@ -45,8 +47,8 @@ public class StatueWithSpotlight : NetworkBehaviour
 
 
     [Header("Audio")]
-    [SerializeField] private AudioClip burningAudio;
-    [SerializeField] private AudioClip footstepAudio;
+    [SerializeField] private AudioClip[] burningAudios;
+    [SerializeField] private AudioClip[] footstepAudios;
     [SerializeField] private AudioClip deathAudio;
     [SerializeField] private AudioClip[] attackingAudios;
     [SerializeField] private AudioClip[] whisperingAudios;
@@ -61,6 +63,11 @@ public class StatueWithSpotlight : NetworkBehaviour
     private int _attackCount;
 
     private Animator _animator;
+
+    [SerializeField] private float damageDelay;
+    private bool canBeDamaged = true;
+
+    private int currentAudioNum = -1;
 
     void Awake()
     {
@@ -96,35 +103,24 @@ public class StatueWithSpotlight : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void PlayAudioClientRpc(int _audioNum)
+    private void PlayAudioClientRpc(int _audioNum, int _randomNum)
     {
-        AudioClip _currentAudio = burningAudio;
-        switch (_audioNum)
+        AudioClip _currentAudio = _audioNum switch
         {
-            case 0:
-                _currentAudio = burningAudio;
-                break;
-            case 1:
-                _currentAudio = footstepAudio;
-                break;
-            case 2:
-                _currentAudio = attackingAudios[Random.Range(0, attackingAudios.Length)];
-                break;
-            case 3:
-                _currentAudio = whisperingAudios[Random.Range(0, whisperingAudios.Length)];
-                break;
-            case 4:
-                _currentAudio = deathAudio;
-                break;
-        }
+            0 => burningAudios[_randomNum],
+            1 => footstepAudios[_randomNum],
+            2 => attackingAudios[_randomNum],
+            3 => whisperingAudios[_randomNum],
+            4 => deathAudio,
+        };
 
-        if(!_audioSource.isPlaying || _audioSource.clip != _currentAudio)
-        {
-            _audioSource.Stop();
-            _audioSource.clip = _currentAudio;
-            _audioSource.Play();
-            _audioSource.enabled = true; 
-        }
+        currentAudioNum = _audioNum;
+        if(_audioSource.isPlaying && currentAudioNum == _audioNum) return;
+
+        _audioSource.Stop();
+        _audioSource.clip = _currentAudio;
+        _audioSource.Play();
+        _audioSource.enabled = true; 
     }
 
     private void GetPCPlayerData()
@@ -175,6 +171,14 @@ public class StatueWithSpotlight : NetworkBehaviour
             _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
             _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight, _vrFlashlightCharge);
 
+            if(!_isInsidePCSpotLight && !_isInsideVRSpotLight)
+            {
+                if(health.isDead)
+                {
+                    Destroy(this.gameObject);
+                }
+            }
+            
             if (_isInsidePCSpotLight && _isInsideVRSpotLight)
             {
                 DamageAndFreeze(2);
@@ -205,7 +209,7 @@ public class StatueWithSpotlight : NetworkBehaviour
         _agent.speed = agentSpeed;
         _animator.speed = 1;
 
-        PlayAudioClientRpc(1);
+        PlayAudioClientRpc(1, Random.Range(0, footstepAudios.Length));
         _audioSource.volume = 1;
 
         _destination = _pcPlayerTransform.position;
@@ -219,7 +223,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         _agent.speed = 0;
         
-        if(!_shuttingDown) PlayAudioClientRpc(2);
+        if(!_shuttingDown) PlayAudioClientRpc(2, Random.Range(0, attackingAudios.Length));
         
         _agent.SetDestination(transform.position);
 
@@ -234,18 +238,23 @@ public class StatueWithSpotlight : NetworkBehaviour
         { 
             _animator.speed = 0;
 
-            PlayAudioClientRpc(0);
+            PlayAudioClientRpc(0, Random.Range(0, burningAudios.Length));
 
             _audioSource.volume = 1 - (health.GetHealth() / 100);
 
             // _agent.SetDestination(transform.position);
 
-            health.ChangeHealth(-damageToAngel, _playerType);
+            if(canBeDamaged)
+            {
+                canBeDamaged = false;
+                health.ChangeHealth(-damageToAngel, _playerType);
+                StartCoroutine(DelayDamage());
+            }
         }
         else
         {
             _animator.speed = 1;
-            PlayAudioClientRpc(4);
+            PlayAudioClientRpc(4, Random.Range(0, burningAudios.Length));
             _audioSource.volume = 1;
         }
 
@@ -255,6 +264,12 @@ public class StatueWithSpotlight : NetworkBehaviour
         //                                 transform.position.y, 
         //                                 transform.position.z
         //                             );
+    }
+
+    IEnumerator DelayDamage()
+    {
+        yield return new WaitForSeconds(damageDelay);
+        canBeDamaged = true;
     }
     
     //Used ChatGPT here

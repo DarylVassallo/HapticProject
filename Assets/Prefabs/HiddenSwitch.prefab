@@ -14,7 +14,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4245947499797201958
 Transform:
@@ -48,7 +48,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!224 &5824727054881920741
 RectTransform:
@@ -229,7 +229,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2318116701851120633
 Transform:
@@ -319,7 +319,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4709163105240967152
 Transform:
@@ -409,7 +409,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2394726443402884041
 Transform:
@@ -536,7 +536,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &2560328182736085910
 Transform:
@@ -624,7 +624,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5514347434253877042
 Transform:
@@ -665,7 +665,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &8451261157320728219
 Transform:
@@ -699,7 +699,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4131266734435436353
 Transform:
@@ -789,7 +789,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6124554233367670103
 Transform:
@@ -916,7 +916,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &4886296731624617087
 Transform:
@@ -1148,6 +1148,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwitchSecret_Base
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1233,6 +1237,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwitchSecret_Base (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -1261,6 +1269,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: fe2e85b4d6271d84797599c39656320c, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: fe2e85b4d6271d84797599c39656320c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: fe2e85b4d6271d84797599c39656320c, type: 3}
       propertyPath: m_LocalScale.x
@@ -1402,6 +1414,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       propertyPath: m_Name
       value: SwitchSecret_Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3451118302482216456, guid: b3ac41660e62c834b85393751870f565, type: 3}
@@ -1639,6 +1655,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       propertyPath: m_Name
       value: SwitchSecret_Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3451118302482216456, guid: b3ac41660e62c834b85393751870f565, type: 3}
@@ -2012,6 +2032,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwitchSecret_Base (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2096,6 +2120,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       propertyPath: m_Name
       value: SwitchSecret_Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3451118302482216456, guid: b3ac41660e62c834b85393751870f565, type: 3}
@@ -2334,6 +2362,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwitchSecret_Button
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3451118302482216456, guid: b3ac41660e62c834b85393751870f565, type: 3}
     m_RemovedGameObjects: []
@@ -2571,6 +2603,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwitchSecret_Base (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2655,6 +2691,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
       propertyPath: m_Name
       value: SwitchSecret_Base (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2741,6 +2781,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SwitchSecret_Base (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 9f6ae5a83821cdc4c8c2c0a1a5d7081e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -2769,6 +2813,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: fe2e85b4d6271d84797599c39656320c, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: fe2e85b4d6271d84797599c39656320c, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: fe2e85b4d6271d84797599c39656320c, type: 3}
       propertyPath: m_LocalScale.x
@@ -2910,6 +2958,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       propertyPath: m_Name
       value: SwitchSecret_Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3451118302482216456, guid: b3ac41660e62c834b85393751870f565, type: 3}
@@ -3147,6 +3199,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       propertyPath: m_Name
       value: SwitchSecret_Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3451118302482216456, guid: b3ac41660e62c834b85393751870f565, type: 3}

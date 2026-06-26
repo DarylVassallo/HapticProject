@@ -50,6 +50,7 @@ public class Health : NetworkBehaviour
 
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
+        Debug.Log("ChangeHealth");
         SetHealthServerRpc(_health.Value + _healthChange);
         if(_health.Value > _maxHealth) SetHealthServerRpc(_maxHealth);
 
@@ -58,10 +59,14 @@ public class Health : NetworkBehaviour
 
     private void OnHealthChanged(float previousValue, float newValue)
     {
+        Debug.Log("OnHealthChanged");
+        Debug.Log("newValue: " + newValue);
         if(newValue <= 0)
         {
+            Debug.Log("this.gameObject.tag: " + this.gameObject.tag);
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
+                Debug.Log("OnGameOver: " + OnGameOver);
                 OnGameOver?.Invoke();
             }
             else if (this.CompareTag("Enemy"))

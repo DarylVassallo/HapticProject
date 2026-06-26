@@ -18,15 +18,12 @@ public class RevealUnderLight : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Start()
     {
-        Debug.Log(this.gameObject + " : Awake : " + this.gameObject + " , " + isPCInteractable + " , " + isVRInteractable + " , " + isEffectedByLight + " , " + isReversed);
         StartCoroutine(RequestNewHiddenObject());
     }
 
     IEnumerator RequestNewHiddenObject()
     {
         yield return new WaitForSeconds(0.5f);
-
-        Debug.Log(this.gameObject + " : RequestNewHiddenObject : " + this.gameObject + " , " + isPCInteractable + " , " + isVRInteractable + " , " + isEffectedByLight + " , " + isReversed);
         OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
     }
 }

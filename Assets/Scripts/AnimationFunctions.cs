@@ -5,7 +5,7 @@ public class AnimationFunctions : MonoBehaviour
 {
     public void OnDestroyEntity()
     {
-        StartCoroutine(DelayDeath());
+        // StartCoroutine(DelayDeath());
     }
 
     IEnumerator DelayDeath()
