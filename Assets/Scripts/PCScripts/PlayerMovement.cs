@@ -50,6 +50,9 @@ public class PlayerMovement : NetworkBehaviour
     private Animator _animator;
     private Transform pcFlashlight;
 
+    private NetworkVariable<bool> isWalking = new(false);
+    private NetworkVariable<float> bodyYRotation = new(0f);
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -84,7 +87,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         if (!IsOwner)
         {
-            _animator.gameObject.SetActive(true);    
+            // _animator.gameObject.SetActive(true);    
             
             if (pcFlashlight != null)
             {
@@ -100,7 +103,7 @@ public class PlayerMovement : NetworkBehaviour
         else
         {
             // _animator.gameObject.SetActive(true); 
-            _animator.gameObject.SetActive(false); 
+            // _animator.gameObject.SetActive(false); 
 
             if (pcFlashlight != null)
             {
@@ -134,6 +137,9 @@ public class PlayerMovement : NetworkBehaviour
         PCPlayerInputManager.OnSprint += Sprint;
 
         Health.OnChangeHealthCamera += ChangeHealthCamera;
+
+        isWalking.OnValueChanged += ChangeWalkingAnimation;
+        bodyYRotation.OnValueChanged += SetBodyYRotation;
     }
 
     private void OnDisable()
@@ -144,6 +150,31 @@ public class PlayerMovement : NetworkBehaviour
         PCPlayerInputManager.OnSprint -= Sprint;
 
         Health.OnChangeHealthCamera -= ChangeHealthCamera;
+
+        isWalking.OnValueChanged -= ChangeWalkingAnimation;
+        bodyYRotation.OnValueChanged -= SetBodyYRotation;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsWalkingServerRpc(bool _walk)
+    {
+        isWalking.Value = _walk;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetBodyYRotationServerRpc(float _newYRotation)
+    {
+        bodyYRotation.Value = _newYRotation;
+    }
+
+    private void ChangeWalkingAnimation(bool previous, bool current)
+    {
+        _animator.SetBool("IsWalking", current);
+    }
+
+    private void SetBodyYRotation(float previous, float current)
+    {
+        bodyTransform.rotation = Quaternion.Euler(0, current, 0);
     }
 
     private void ChangeMotion(Vector2 input)
@@ -226,11 +257,13 @@ public class PlayerMovement : NetworkBehaviour
     private void HandleMovement()
     {
         var move = cameraTransform.TransformDirection(new Vector3(_moveInput.x, 0, _moveInput.y)).normalized;
-        bodyTransform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
+        SetBodyYRotationServerRpc(cameraTransform.eulerAngles.y);
+        // bodyTransform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
         
         if(move != new Vector3(0, 0, 0))
         {
-            _animator.SetBool("IsWalking", true);
+            // _animator.SetBool("IsWalking", true);
+            SetIsWalkingServerRpc(true);
 
             //Used ChatGPT to generate initial bobbing logic
             totalBobTimer += Time.deltaTime * bobSpeed;
@@ -240,7 +273,8 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            _animator.SetBool("IsWalking", false);
+            // _animator.SetBool("IsWalking", false);
+            SetIsWalkingServerRpc(false);
         }
         
         var currentSpeed = _isCrouching ? crouchSpeed : _isRunning ? runSpeed : walkSpeed;
