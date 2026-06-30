@@ -305,6 +305,7 @@ public class ConnectUIScript : MonoBehaviour
 
             // var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             // transport.SetConnectionData("192.168.1.10", 7777);
+            // NetworkManager.Singleton.StartClient();
         }
         else
         {
