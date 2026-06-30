@@ -3,6 +3,8 @@ using UnityEngine.AI;
 
 using Unity.Netcode;
 
+using System.Collections;
+
 //This script detects if the statue is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
 //Source: https://www.youtube.com/watch?v=_e57zSZSOS8
 public class StatueWithSpotlight : NetworkBehaviour
@@ -11,12 +13,15 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private Transform _pcPlayerTransform;
     private Health _pcPlayerHealth;
-    private Light _pcPlayerSpotLight;
+    private FlashlightCharge _pcFlashlightCharge;
+    private FlashlightCharge _vrFlashlightCharge;
+
+    private Transform _pcPlayerSpotLight;
     private bool _isPCTooClose;
     private bool _isPCTooFar;
     private bool _isInsidePCSpotLight;
 
-    private Light _vrPlayerSpotLight;
+    private Transform _vrPlayerSpotLight;
     private bool _isInsideVRSpotLight;
 
     private float _spotLightDistance;
@@ -42,8 +47,9 @@ public class StatueWithSpotlight : NetworkBehaviour
 
 
     [Header("Audio")]
-    [SerializeField] private AudioClip burningAudio;
-    [SerializeField] private AudioClip footstepAudio;
+    [SerializeField] private AudioClip[] burningAudios;
+    [SerializeField] private AudioClip[] footstepAudios;
+    [SerializeField] private AudioClip deathAudio;
     [SerializeField] private AudioClip[] attackingAudios;
     [SerializeField] private AudioClip[] whisperingAudios;
     private AudioSource _audioSource;
@@ -54,7 +60,19 @@ public class StatueWithSpotlight : NetworkBehaviour
     private bool _shuttingDown = false;
 
     [SerializeField] private int maxAttackDelay;
-    private int attackCount;
+    private int _attackCount;
+
+    private Animator _animator;
+
+    [SerializeField] private float damageDelay;
+    private bool canBeDamaged = true;
+
+    private int currentAudioNum = -1;
+
+    private StatueManager statueManager;
+
+    private AudioClip _currentAudio;
+    private int _currentAudioNum;
 
     void Awake()
     {
@@ -62,16 +80,16 @@ public class StatueWithSpotlight : NetworkBehaviour
         health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
-        _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-        _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
-        _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
-        
-        _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+        _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+
+        GetPCPlayerData();
         
         _canPCFunction = true;
         _canVRFunction = true;
 
-        attackCount = maxAttackDelay;
+        _attackCount = maxAttackDelay;
+
+        statueManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<StatueManager>();
     }
 
     private void OnEnable()
@@ -92,33 +110,35 @@ public class StatueWithSpotlight : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void PlayAudioClientRpc(int _audioNum)
+    private void PlayAudioClientRpc()
     {
-        AudioClip _currentAudio = burningAudio;
-        switch (_audioNum)
-        {
-            case 0:
-                _currentAudio = burningAudio;
-                break;
-            case 1:
-                _currentAudio = footstepAudio;
-                break;
-            case 2:
-                _currentAudio = attackingAudios[Random.Range(0, attackingAudios.Length)];
-                break;
-            case 3:
-                _currentAudio = whisperingAudios[Random.Range(0, whisperingAudios.Length)];
-                break;
-        }
+        if(_audioSource.isPlaying) return;
 
-        if(!_audioSource.isPlaying || _audioSource.clip != _currentAudio)
-        {
-            _audioSource.Stop();
-            _audioSource.clip = _currentAudio;
-            _audioSource.Play();
-            _audioSource.enabled = true; 
-        }
+        _audioSource.Stop();
+        _audioSource.clip = _currentAudio;
+        _audioSource.Play();
+        _audioSource.enabled = true; 
     }
+
+    // private void PlayAudioClientRpc(int _audioNum, int _randomNum)
+    // {
+    //     AudioClip _currentAudio = _audioNum switch
+    //     {
+    //         0 => burningAudios[_randomNum],
+    //         1 => footstepAudios[_randomNum],
+    //         2 => attackingAudios[_randomNum],
+    //         3 => whisperingAudios[_randomNum],
+    //         4 => deathAudio,
+    //     };
+
+    //     currentAudioNum = _audioNum;
+    //     if(_audioSource.isPlaying && currentAudioNum == _audioNum) return;
+
+    //     _audioSource.Stop();
+    //     _audioSource.clip = _currentAudio;
+    //     _audioSource.Play();
+    //     _audioSource.enabled = true; 
+    // }
 
     private void GetPCPlayerData()
     {
@@ -126,9 +146,11 @@ public class StatueWithSpotlight : NetworkBehaviour
         {
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
             _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
-            _pcPlayerSpotLight = _pcPlayerTransform.GetComponentInChildren<Light>();
+            _pcPlayerSpotLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
+            _pcFlashlightCharge = _pcPlayerSpotLight.GetComponent<FlashlightCharge>();
             
-            _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
+            _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+            _vrFlashlightCharge = _vrPlayerSpotLight.GetComponent<FlashlightCharge>();
             
             _canPCFunction = true;
         }
@@ -150,9 +172,9 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         if(!IsServer) return;
 
-        if(!_canPCFunction && !_canVRFunction) return;
+        // if(!_canPCFunction && !_canVRFunction) return;
 
-        if(attackCount > 0) attackCount--;
+        if(_attackCount > 0) _attackCount--;
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
 
@@ -161,11 +183,19 @@ public class StatueWithSpotlight : NetworkBehaviour
             StandBy();
         }else{
 
-            if (_isPCTooClose && attackCount <= 0) StopAndAttack(damageToPlayer);        
+            if (_isPCTooClose && _attackCount <= 0) StopAndAttack(damageToPlayer);        
 
-            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight); 
-            _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight);
+            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
+            _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight, _vrFlashlightCharge);
 
+            if(!_isInsidePCSpotLight && !_isInsideVRSpotLight)
+            {
+                if(health.isDead)
+                {
+                    Destroy(this.gameObject);
+                }
+            }
+            
             if (_isInsidePCSpotLight && _isInsideVRSpotLight)
             {
                 DamageAndFreeze(2);
@@ -194,9 +224,15 @@ public class StatueWithSpotlight : NetworkBehaviour
     private void Walk()
     {
         _agent.speed = agentSpeed;
+        _animator.speed = 1;
 
-        PlayAudioClientRpc(1);
-        _audioSource.volume = 1;
+        if (_currentAudioNum != 1 || !_audioSource.isPlaying)
+        {
+            _currentAudio = statueManager.GetAppropriateAudio(1);
+            PlayAudioClientRpc();
+            _audioSource.volume = 0.5f;
+        }
+        _currentAudioNum = 1;
 
         _destination = _pcPlayerTransform.position;
         // _agent.destination = _destination;
@@ -205,15 +241,22 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private void StopAndAttack(float _damage)
     {
-        attackCount = maxAttackDelay;
+        _attackCount = maxAttackDelay;
 
         _agent.speed = 0;
         
-        if(!_shuttingDown) PlayAudioClientRpc(2);
+        if(!_shuttingDown)
+        {
+            if (_currentAudioNum != 3 || !_audioSource.isPlaying)
+            {
+                _currentAudio = statueManager.GetAppropriateAudio(3);
+                PlayAudioClientRpc();
+            }
+            _currentAudioNum = 3;
+        }
         
         _agent.SetDestination(transform.position);
 
-        Debug.Log("Health: _pcPlayerHealth: " + _pcPlayerHealth);
         _pcPlayerHealth.ChangeHealth(-_damage, -1);
     }
 
@@ -221,38 +264,73 @@ public class StatueWithSpotlight : NetworkBehaviour
     {
         _agent.speed = 0;
 
-        PlayAudioClientRpc(0);
+        if(!health.isDead)
+        { 
+            _animator.speed = 0;
 
-        _audioSource.volume = 1 - (health.GetHealth() / 100);
+            if (_currentAudioNum != 0 || !_audioSource.isPlaying)
+            {
+                _currentAudio = statueManager.GetAppropriateAudio(0);
+                PlayAudioClientRpc();
+            }
+            _currentAudioNum = 0;
+            
+            _audioSource.volume = 1 - (health.GetHealth() / 100);
 
-        _agent.SetDestination(transform.position);
+            // _agent.SetDestination(transform.position);
 
-        health.ChangeHealth(-damageToAngel, _playerType);
-        transform.position = new Vector3(   
-                                        transform.position.x + 
-                                        Mathf.Sin(shakeSpeed * Time.time * (1 - (health.GetHealth() / 100))) * shakeAmount * (1 - (health.GetHealth() / 100)),
-                                        transform.position.y, 
-                                        transform.position.z
-                                    );
+            if(canBeDamaged)
+            {
+                canBeDamaged = false;
+                health.ChangeHealth(-damageToAngel, _playerType);
+                StartCoroutine(DelayDamage());
+            }
+        }
+        else
+        {
+            _animator.speed = 1;
+
+            if (_currentAudioNum != 2)
+            {
+                _currentAudio = statueManager.GetAppropriateAudio(2);
+            }
+            _currentAudioNum = 2;
+
+            PlayAudioClientRpc();
+            _audioSource.volume = 1;
+        }
+
+        // transform.position = new Vector3(   
+        //                                 transform.position.x + 
+        //                                 Mathf.Sin(shakeSpeed * Time.time * (1 - (health.GetHealth() / 100))) * shakeAmount * (1 - (health.GetHealth() / 100)),
+        //                                 transform.position.y, 
+        //                                 transform.position.z
+        //                             );
+    }
+
+    IEnumerator DelayDamage()
+    {
+        yield return new WaitForSeconds(damageDelay);
+        canBeDamaged = true;
     }
     
     //Used ChatGPT here
-    bool IsInsideSpotLight(Light _playerSpotLight)
+    bool IsInsideSpotLight(Transform _playerSpotLight, FlashlightCharge _playerFlashlightCharge)
     {
         if (_playerSpotLight == null) return false;
-        if (!_playerSpotLight.enabled) return false;
+        if (!_playerSpotLight.gameObject.activeSelf) return false;
 
-        _positionDifference = transform.position - _playerSpotLight.transform.position;
+        _positionDifference = transform.position - _playerSpotLight.position;
         _spotLightDistance = _positionDifference.magnitude;
 
-        if (_spotLightDistance > (_playerSpotLight.range * 0.5f))
+        if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f))
         {
             return false;
         }
 
-        _spotLightAngle = Vector3.Angle(_playerSpotLight.transform.forward, _positionDifference);
+        _spotLightAngle = Vector3.Angle(_playerSpotLight.forward, _positionDifference);
 
-        if (_spotLightAngle > _playerSpotLight.spotAngle * 0.5f)
+        if (_spotLightAngle > 55 * 0.5f)
         {
             return false;
         }
@@ -263,6 +341,7 @@ public class StatueWithSpotlight : NetworkBehaviour
     (bool _isTooClose, bool _isTooFar) IsCloseToPlayer(Transform _playerTransform)
     {
         float distance = (transform.position - _playerTransform.position).magnitude;
+
         if (distance <= _tooCloseDistance) return (true, false);
         if(distance > _tooFarDistance)  return (false, true);
         return (false, false);

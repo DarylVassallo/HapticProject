@@ -12,13 +12,22 @@ public class Health : NetworkBehaviour
 
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
+    public static event Action<GameObject> OnRemoveHiddenObject;
 
     public static event Action<float> OnChangeHealthBar;
     public static event Action<float> OnChangeHealthCamera;
 
+    public static event Action<Renderer, float> OnChangeEnemyOxidization;
+
+    private Animator _animator;
+
+    public bool isDead;
+
     private void Awake()
     {
         // SetHealthServerRpc(_maxHealth);
+        _animator = GetComponentInChildren<Animator>();
+        isDead = false;
     }
 
     public override void OnNetworkSpawn()
@@ -41,6 +50,7 @@ public class Health : NetworkBehaviour
 
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
+        Debug.Log("ChangeHealth");
         SetHealthServerRpc(_health.Value + _healthChange);
         if(_health.Value > _maxHealth) SetHealthServerRpc(_maxHealth);
 
@@ -49,16 +59,26 @@ public class Health : NetworkBehaviour
 
     private void OnHealthChanged(float previousValue, float newValue)
     {
+        Debug.Log("OnHealthChanged");
+        Debug.Log("newValue: " + newValue);
         if(newValue <= 0)
         {
+            Debug.Log("this.gameObject.tag: " + this.gameObject.tag);
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
+                Debug.Log("OnGameOver: " + OnGameOver);
                 OnGameOver?.Invoke();
             }
             else if (this.CompareTag("Enemy"))
             {
                 OnKilledEnemy?.Invoke(1, _currentAttackerType.Value);
-                Destroy(this.gameObject);
+                OnRemoveHiddenObject?.Invoke(this.gameObject);
+                // Destroy(this.gameObject);
+
+                Debug.Log("Animator IsDead True");
+                isDead = true;
+                _animator.speed = 1;
+                _animator.SetBool("IsDead", true);
             }
         }
         else
@@ -67,6 +87,14 @@ public class Health : NetworkBehaviour
             {
                 OnChangeHealthBar?.Invoke(newValue);
                 OnChangeHealthCamera?.Invoke(newValue);
+            }else if (this.CompareTag("Enemy"))
+            {
+                foreach (Renderer renderer in this.gameObject.GetComponentsInChildren<Renderer>())
+                {
+                    OnChangeEnemyOxidization?.Invoke(renderer, _health.Value / 100f);
+                }
+
+                // OnChangeEnemyOxidization?.Invoke(this.gameObject.GetComponent<Renderer>(), _health.Value / 100f);
             }
         }
     }

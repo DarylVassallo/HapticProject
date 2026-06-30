@@ -42,7 +42,15 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void PCPlayerReferences()
     {
-        pcPlayerMainCamera = GameObject.FindGameObjectWithTag("PCCamera");
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("MainCamera"))
+        {
+            if (obj.layer == LayerMask.NameToLayer("PCCamera"))
+            {
+                pcPlayerMainCamera = obj;
+                break;
+            }
+        }
+
         pcPlayerMainCameraCamera = pcPlayerMainCamera.GetComponent<Camera>();
         pcPlayerMainCameraAudioListener = pcPlayerMainCamera.GetComponent<AudioListener>();
         pcInput = GameObject.FindGameObjectWithTag("EventSystem").GetComponent<InputSystemUIInputModule>();
@@ -52,7 +60,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
     {
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
-            if (child.CompareTag("VRCamera"))
+            if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))
             {
                 vrPlayerMainCamera = child.gameObject;
                 break;

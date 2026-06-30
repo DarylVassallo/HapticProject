@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6647626456711267737}
   - component: {fileID: 8673969827659363446}
   - component: {fileID: -4895403478804694551}
+  - component: {fileID: 627883765023950680}
   m_Layer: 0
   m_Name: PCNoBodyPlayer
   m_TagString: PCPlayer
@@ -129,3 +130,30 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   isPCPlayer: 1
   isVRPlayer: 0
+--- !u!54 &627883765023950680
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3297056328194405524}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0

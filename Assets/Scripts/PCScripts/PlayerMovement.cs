@@ -29,6 +29,7 @@ public class PlayerMovement : NetworkBehaviour
 
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Transform bodyTransform;
     private CinemachineInputAxisController _inputAxisController;
 
     private CharacterController _characterController;
@@ -46,6 +47,12 @@ public class PlayerMovement : NetworkBehaviour
     private float healthBobAmount = 1;
     private float totalBobTimer = 0f;
 
+    private Animator _animator;
+    private Transform pcFlashlight;
+
+    private NetworkVariable<bool> isWalking = new(false);
+    private NetworkVariable<float> bodyYRotation = new(0f);
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -57,6 +64,57 @@ public class PlayerMovement : NetworkBehaviour
 
         volume = GameObject.FindGameObjectWithTag("GlobalVolume").GetComponent<Volume>();
         volume.weight = 0f;
+
+        _animator = GetComponentInChildren<Animator>();
+
+        foreach (Transform child in this.gameObject.transform)
+        {
+            foreach (Transform grandChild in child)
+            {
+                foreach (Transform greatGrandChild in grandChild)
+                {
+                    if (greatGrandChild.CompareTag("PCFlashLight"))
+                    {
+                        pcFlashlight = greatGrandChild;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner)
+        {
+            // _animator.gameObject.SetActive(true);    
+            
+            if (pcFlashlight != null)
+            {
+                foreach (MeshRenderer mesh in pcFlashlight.GetComponentsInChildren<MeshRenderer>())
+                {
+                    mesh.enabled = false;
+                }
+            }
+
+            cameraTransform.GetComponent<CinemachineCamera>().enabled = false;
+            return;
+        }
+        else
+        {
+            // _animator.gameObject.SetActive(true); 
+            // _animator.gameObject.SetActive(false); 
+
+            if (pcFlashlight != null)
+            {
+                foreach (MeshRenderer mesh in pcFlashlight.GetComponentsInChildren<MeshRenderer>())
+                {
+                    mesh.enabled = true;
+                }
+            }
+
+            cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
+        }
     }
 
     private float HandleAxisInput(string axisName)
@@ -79,6 +137,9 @@ public class PlayerMovement : NetworkBehaviour
         PCPlayerInputManager.OnSprint += Sprint;
 
         Health.OnChangeHealthCamera += ChangeHealthCamera;
+
+        isWalking.OnValueChanged += ChangeWalkingAnimation;
+        bodyYRotation.OnValueChanged += SetBodyYRotation;
     }
 
     private void OnDisable()
@@ -88,7 +149,32 @@ public class PlayerMovement : NetworkBehaviour
         PCPlayerInputManager.OnCrouch -= Crouch;
         PCPlayerInputManager.OnSprint -= Sprint;
 
-        Health.OnChangeHealthCamera += ChangeHealthCamera;
+        Health.OnChangeHealthCamera -= ChangeHealthCamera;
+
+        isWalking.OnValueChanged -= ChangeWalkingAnimation;
+        bodyYRotation.OnValueChanged -= SetBodyYRotation;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsWalkingServerRpc(bool _walk)
+    {
+        isWalking.Value = _walk;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetBodyYRotationServerRpc(float _newYRotation)
+    {
+        bodyYRotation.Value = _newYRotation;
+    }
+
+    private void ChangeWalkingAnimation(bool previous, bool current)
+    {
+        _animator.SetBool("IsWalking", current);
+    }
+
+    private void SetBodyYRotation(float previous, float current)
+    {
+        bodyTransform.rotation = Quaternion.Euler(0, current, 0);
     }
 
     private void ChangeMotion(Vector2 input)
@@ -99,17 +185,7 @@ public class PlayerMovement : NetworkBehaviour
     }
     private void FixedUpdate()
     {
-        if (!IsOwner)
-        {
-            GetComponent<Renderer>().material.color = Color.blue;            
-            cameraTransform.GetComponent<CinemachineCamera>().enabled = false;
-            return;
-        }
-        else
-        {
-            GetComponent<Renderer>().material.color = Color.red;
-            cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
-        }
+        if (!IsOwner)   return;
 
         _isGrounded = _characterController.isGrounded;
         HandleGravity();
@@ -181,14 +257,24 @@ public class PlayerMovement : NetworkBehaviour
     private void HandleMovement()
     {
         var move = cameraTransform.TransformDirection(new Vector3(_moveInput.x, 0, _moveInput.y)).normalized;
+        SetBodyYRotationServerRpc(cameraTransform.eulerAngles.y);
+        // bodyTransform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
         
         if(move != new Vector3(0, 0, 0))
         {
+            // _animator.SetBool("IsWalking", true);
+            SetIsWalkingServerRpc(true);
+
             //Used ChatGPT to generate initial bobbing logic
             totalBobTimer += Time.deltaTime * bobSpeed;
             cameraTransform.parent.transform.localPosition = new Vector3(   cameraTransform.parent.transform.localPosition.x, 
                                                                             Mathf.Sin(totalBobTimer) * (bobAmount * (1f - healthBobAmount)), 
                                                                             cameraTransform.parent.transform.localPosition.z);
+        }
+        else
+        {
+            // _animator.SetBool("IsWalking", false);
+            SetIsWalkingServerRpc(false);
         }
         
         var currentSpeed = _isCrouching ? crouchSpeed : _isRunning ? runSpeed : walkSpeed;

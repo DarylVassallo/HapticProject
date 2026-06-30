@@ -4,11 +4,21 @@ Shader "Custom/RevealingUnderLight_URP"
     {
         _ReverseStrength("Reverse Strength", Integer) = 0
         
+        _MapBlend("Blend", Range(0,1)) = 0
         [MainTexture] _BaseMap("Base Map", 2D) = "white" {}
         [MainColor] _BaseColor("Base Color", Color) = (1,1,1,1)
-        
+	   [MainTexture] _AlternateBaseMap("Alternate Base Map", 2D) = "white" {}
+        [MainColor] _AlternateBaseColor("Alternate Base Color", Color) = (1,1,1,1)
+
+                
         _Smoothness("Smoothness", Range(0,1)) = 0.5
         _Metallic("Metallic", Range(0,1)) = 0.0
+        
+        [NoScaleOffset] _MetallicGlossMap("Metallic Map", 2D) = "white" {}
+	   [NoScaleOffset][Normal] _BumpMap("Normal Map", 2D) = "bump" {}
+	   _BumpScale("Normal Scale", Float) = 1.0
+	   [NoScaleOffset] _OcclusionMap("Occlusion Map", 2D) = "white" {}
+	   _OcclusionStrength("Occlusion Strength", Range(0,1)) = 1.0
 
 	   _PCLightRange("Light Range", Float) = 5
         _PCLightDirection("Light Direction", Vector) = (0,0,1,0)
@@ -57,15 +67,31 @@ Shader "Custom/RevealingUnderLight_URP"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
+		 TEXTURE2D(_AlternateBaseMap);
+            SAMPLER(sampler_AlternateBaseMap);
+
+	            
+            TEXTURE2D(_MetallicGlossMap);
+		 SAMPLER(sampler_MetallicGlossMap);
+		
+		 TEXTURE2D(_BumpMap);
+		 SAMPLER(sampler_BumpMap);
+		
+		 TEXTURE2D(_OcclusionMap);
+		 SAMPLER(sampler_OcclusionMap);
 
             CBUFFER_START(UnityPerMaterial)
                 int _ReverseStrength;
                 
+                float _MapBlend;
                 float4 _BaseColor;
+                float4 _AlternateBaseColor;
                 float4 _BaseMap_ST;
 
                 float _Smoothness;
                 float _Metallic;
+                float _BumpScale;
+			float _OcclusionStrength;
 
 			float _PCLightRange;
                 float4 _PCLightDirection;
@@ -88,6 +114,7 @@ Shader "Custom/RevealingUnderLight_URP"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
+                float4 tangentOS  : TANGENT;
                 float2 uv         : TEXCOORD0;
                 
                 UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -99,6 +126,7 @@ Shader "Custom/RevealingUnderLight_URP"
                 float2 uv          : TEXCOORD0;
                 float3 positionWS  : TEXCOORD1;
                 float3 normalWS    : TEXCOORD2;
+                float4 tangentWS   : TEXCOORD3;
                 
                 UNITY_VERTEX_OUTPUT_STEREO
             };
@@ -114,6 +142,8 @@ Shader "Custom/RevealingUnderLight_URP"
                 o.positionHCS = TransformWorldToHClip(o.positionWS);
                 o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
                 o.normalWS = TransformObjectToWorldNormal(v.normalOS);
+                float3 tangentWS = TransformObjectToWorldDir(v.tangentOS.xyz);
+			o.tangentWS = float4(tangentWS, v.tangentOS.w * GetOddNegativeScale());
                 
                 return o;
             }
@@ -145,11 +175,21 @@ Shader "Custom/RevealingUnderLight_URP"
             {
             	UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
             	
-            	Light mainLight = GetMainLight();
-            	float3 normal = normalize(i.normalWS);
-            	
-            	float NdotL = saturate(dot(normal, mainLight.direction));
-            	float3 lighting = mainLight.color * NdotL;
+            	float3 geomNormal = normalize(i.normalWS);
+		     float3 tangentWS = normalize(i.tangentWS.xyz);
+		     float3 bitangentWS = cross(geomNormal, tangentWS) * i.tangentWS.w;
+		     float3x3 TBN = float3x3(tangentWS, bitangentWS, geomNormal);
+		
+		     half4 normalSample = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, i.uv);
+		     float3 normalTS = UnpackNormalScale(normalSample, _BumpScale);
+		     float3 normal = normalize(mul(normalTS, TBN));
+		
+		     half4 metallicGloss = SAMPLE_TEXTURE2D(_MetallicGlossMap, sampler_MetallicGlossMap, i.uv);
+		     float metallic = metallicGloss.r * _Metallic;
+		     float smoothness = metallicGloss.a * _Smoothness;
+		
+		     half occlusionSample = SAMPLE_TEXTURE2D(_OcclusionMap, sampler_OcclusionMap, i.uv).g;
+		     float occlusion = lerp(1.0, occlusionSample, _OcclusionStrength);
             	
             	float pcStrength = ComputeStrength(	_PCLightPosition.xyz,
             								_PCLightDirection.xyz,
@@ -157,26 +197,38 @@ Shader "Custom/RevealingUnderLight_URP"
             								_PCLightRange,
             								_PCStrengthScalor,
             								i.positionWS);
-
+            	float pcNdotL = saturate(dot(normal, normalize(_PCLightDirection.xyz)));
+            	
 			float vrStrength = ComputeStrength(	_VRLightPosition.xyz,
             								_VRLightDirection.xyz,
             								_VRLightAngle,
             								_VRLightRange,
             								_VRStrengthScalor,
             								i.positionWS);
+            	float vrNdotL = saturate(dot(normal, normalize(_VRLightDirection.xyz)));
+            	            	
+            	float3 lighting = 	pcNdotL * pcStrength * float3(1,1,1) + 
+            					vrNdotL * vrStrength * float3(1,1,1);
             	
             	float strength = saturate(pcStrength + vrStrength);
             	strength = lerp(strength, 1.0 - strength, _ReverseStrength);
             	
-                half4 tex = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv) * _BaseColor;
+                half4 texOriginal = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv) * _BaseColor;
+                half4 texAlternate = SAMPLE_TEXTURE2D(_AlternateBaseMap, sampler_AlternateBaseMap, i.uv) * _AlternateBaseColor;
+                half4 tex = lerp(texOriginal, texAlternate, _MapBlend);
 
                 float3 albedo = tex.rgb;
-
+                
+			float3 diffuseAlbedo = albedo * (1.0 - metallic);
+			
                 float alpha = strength * tex.a;
+                float3 emission = diffuseAlbedo * tex.a * strength;
 
-                float3 emission = albedo * tex.a * strength;
-
-			float3 litColor = albedo * lighting;
+			float3 litColor = diffuseAlbedo * lighting;
+			
+			litColor *= occlusion;
+			emission *= occlusion;
+			
                 half4 col;
                 col.rgb = litColor + emission;
                 col.a = alpha;

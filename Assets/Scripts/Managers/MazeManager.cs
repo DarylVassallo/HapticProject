@@ -190,7 +190,9 @@ public class MazeManager : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if(chancesOfAngel.Value > 0) PotentialAngelCreation();
+        if(!_audioSource.isPlaying && _networkAudioNum.Value != -1) SetAudioNumServerRpc(-1);
+        
+        // if(chancesOfAngel.Value > 0) PotentialAngelCreation();
 
         // if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
 
@@ -233,6 +235,15 @@ public class MazeManager : NetworkBehaviour
 
     private void PlayAudio(int previous, int current)
     {
+        Debug.Log("previous: " + previous);
+        Debug.Log("current: " + current);
+
+        if(current == -1)
+        {
+            _audioSource.Stop();
+            return;
+        }
+        
         AudioClip _currentAudio = incorrectAudio;
         switch (current)
         {
@@ -274,6 +285,7 @@ public class MazeManager : NetworkBehaviour
 
         if(squareWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
         {
+            Debug.Log("Play Wheel Audio");
             SetAudioNumServerRpc(2);
             // PlayAudio(2);
 
@@ -285,11 +297,13 @@ public class MazeManager : NetworkBehaviour
         }
         else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
+            Debug.Log("Stop Wheel Audio");
             // StopAudioClientRpc();
+            SetAudioNumServerRpc(-1);
 
             _isNewNavMeshAvailable = false;
-            levelGround.RemoveData();
-            levelGround.BuildNavMesh();
+            // levelGround.RemoveData();
+            // levelGround.BuildNavMesh();
 
             SetSquareWheelAngelActiveServerRpc(false);
             // SetChanceOfAngelsServerRpc(-0.01f);

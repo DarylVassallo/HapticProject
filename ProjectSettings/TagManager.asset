@@ -19,6 +19,9 @@ TagManager:
   - PCCamera
   - VRCamera
   - NetworkManager
+  - LeftHandSocket
+  - RightHandSocket
+  - Manager
   layers:
   - Default
   - TransparentFX
@@ -34,9 +37,9 @@ TagManager:
   - BothHandInteractable
   - InvisibleToVRPlayer
   - InvisibleToPCPlayer
-  - 
-  - 
-  - 
+  - PCCamera
+  - VRCamera
+  - VisualModel
   - 
   - 
   - 
