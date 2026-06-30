@@ -39,8 +39,11 @@ public class ConnectUIScript : MonoBehaviour
 
     private bool hasSceneLoaded = false;
 
+    private NetworkDiscovery networkDiscovery;
+
     void Start()
     {
+        networkDiscovery = this.GetComponent<NetworkDiscovery>();
         Debug.Log("ConnectUIScript Start");
 
         if (isSceneLoaded)
@@ -269,6 +272,7 @@ public class ConnectUIScript : MonoBehaviour
         multiplayerData.isFirstPlayerPCPlayer = true;
     }
 
+    //NetworkManager aspect created using Claude
     private  void HostButtonClick()
     {
         Debug.Log("ConnectUIScript HostButtonClick");
@@ -280,6 +284,7 @@ public class ConnectUIScript : MonoBehaviour
         {
             var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
             transport.SetConnectionData("0.0.0.0", 7777);
+            networkDiscovery.StartBroadcasting();
         }
         NetworkManager.Singleton.StartHost();
 
@@ -295,11 +300,27 @@ public class ConnectUIScript : MonoBehaviour
         
         if(!isUsingPlayMode)
         {
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetConnectionData("192.168.1.10", 7777);
+            networkDiscovery.OnHostFound += OnHostFoundHandler;
+            networkDiscovery.StartListening();
+
+            // var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+            // transport.SetConnectionData("192.168.1.10", 7777);
         }
-        NetworkManager.Singleton.StartClient();
+        else
+        {
+            NetworkManager.Singleton.StartClient();
+        }
 
         clientButton.transform.parent.gameObject.SetActive(false);
+    }
+
+    private void OnHostFoundHandler(string hostIp)
+    {
+        networkDiscovery.OnHostFound -= OnHostFoundHandler;
+
+        var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+        transport.SetConnectionData("192.168.1.10", 7777);
+
+        NetworkManager.Singleton.StartClient();
     }
 }

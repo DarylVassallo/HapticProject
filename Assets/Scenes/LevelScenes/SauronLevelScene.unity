@@ -135594,7 +135594,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1427728336
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -184307,11 +184307,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: isUsingPlayMode
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: isUsingOnlyPCPlayer
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8886497973134998129, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
       propertyPath: isUsingOnlyVRPlayer
@@ -184320,8 +184320,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6667321200601220357, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7857299507992304039}
   m_SourcePrefab: {fileID: 100100000, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
+--- !u!1 &7857299507992304038 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6667321200601220357, guid: 51238f2060b91694893487e57cbe9fa4, type: 3}
+  m_PrefabInstance: {fileID: 7857299507992304037}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7857299507992304039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7857299507992304038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a35f139e6a30cd4282df01964ce68b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkDiscovery
+  discoveryPort: 47777
+  broadcastKey: MY_GAME_DISCOVERY
 --- !u!4 &8042734652982775758
 Transform:
   m_ObjectHideFlags: 0
@@ -184352,6 +184374,10 @@ PrefabInstance:
     - target: {fileID: 905547057151570038, guid: 35fdddd8994d6c64db9a8e1e99be4110, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 905547057151570038, guid: 35fdddd8994d6c64db9a8e1e99be4110, type: 3}
+      propertyPath: m_TagString
+      value: Manager
       objectReference: {fileID: 0}
     - target: {fileID: 3256877678761278405, guid: 35fdddd8994d6c64db9a8e1e99be4110, type: 3}
       propertyPath: m_Enabled
@@ -184465,6 +184491,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 905547057151570038, guid: 35fdddd8994d6c64db9a8e1e99be4110, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8088880984196958635}
+    - targetCorrespondingSourceObject: {fileID: 905547057151570038, guid: 35fdddd8994d6c64db9a8e1e99be4110, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8088880984196958636}
   m_SourcePrefab: {fileID: 100100000, guid: 35fdddd8994d6c64db9a8e1e99be4110, type: 3}
 --- !u!1 &8088880984196958608 stripped
 GameObject:
@@ -184721,6 +184750,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLightManager
   hiddenObjects: []
+--- !u!114 &8088880984196958636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8088880984196958608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e563641fa458c74ea79e7f5ace36030, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatueManager
+  damageAudios:
+  - {fileID: 8300000, guid: c11134786aa805d41b4f1d4dea8911b7, type: 3}
+  - {fileID: 8300000, guid: 05ef6fe6d21cada4fb6bbbae917d65a5, type: 3}
+  - {fileID: 8300000, guid: 1ea6c61e5406e2047a46e96cb5cf898a, type: 3}
+  - {fileID: 8300000, guid: c83ec6f1d36bac54da7a81eb3ce4f515, type: 3}
+  - {fileID: 8300000, guid: 16ae8ed08b4e26a42ab8ac4f30f67c6b, type: 3}
+  - {fileID: 8300000, guid: 04d76e5825b64104093417e856c5a14d, type: 3}
+  - {fileID: 8300000, guid: 041f9fcb5da0d92409c694e6bd73969d, type: 3}
+  - {fileID: 8300000, guid: 1d592b15324522d41804aec245748fbb, type: 3}
+  - {fileID: 8300000, guid: 5d43473e71daa18429f0f3cd4774e761, type: 3}
+  footstepAudios:
+  - {fileID: 8300000, guid: 5f66b541060c76e4384f2d62a8447391, type: 3}
+  - {fileID: 8300000, guid: 6a7d3e96bfc69a3418345f6ad9761e44, type: 3}
+  - {fileID: 8300000, guid: c8e83c6a2eae35b4683c3431277ab872, type: 3}
+  - {fileID: 8300000, guid: d28f0b44cf5b0de42942847daa7ad07d, type: 3}
+  - {fileID: 8300000, guid: 7c04e3e9176235a43a401275cd46bd39, type: 3}
+  deathAudio:
+  - {fileID: 8300000, guid: d561115c26c2b7f49a03107db8dc8505, type: 3}
+  attackingAudios:
+  - {fileID: 8300000, guid: 3f44b78091aff984a85c2744b5360ba4, type: 3}
+  - {fileID: 8300000, guid: 92295063e6bb2324fb660a40f39d3ba4, type: 3}
+  audioBreak: 2
 --- !u!4 &8120708353001855681
 Transform:
   m_ObjectHideFlags: 0

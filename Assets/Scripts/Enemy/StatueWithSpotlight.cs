@@ -69,6 +69,11 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private int currentAudioNum = -1;
 
+    private StatueManager statueManager;
+
+    private AudioClip _currentAudio;
+    private int _currentAudioNum;
+
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -83,6 +88,8 @@ public class StatueWithSpotlight : NetworkBehaviour
         _canVRFunction = true;
 
         _attackCount = maxAttackDelay;
+
+        statueManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<StatueManager>();
     }
 
     private void OnEnable()
@@ -103,25 +110,35 @@ public class StatueWithSpotlight : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void PlayAudioClientRpc(int _audioNum, int _randomNum)
+    private void PlayAudioClientRpc()
     {
-        AudioClip _currentAudio = _audioNum switch
-        {
-            0 => burningAudios[_randomNum],
-            1 => footstepAudios[_randomNum],
-            2 => attackingAudios[_randomNum],
-            3 => whisperingAudios[_randomNum],
-            4 => deathAudio,
-        };
-
-        currentAudioNum = _audioNum;
-        if(_audioSource.isPlaying && currentAudioNum == _audioNum) return;
+        if(_audioSource.isPlaying) return;
 
         _audioSource.Stop();
         _audioSource.clip = _currentAudio;
         _audioSource.Play();
         _audioSource.enabled = true; 
     }
+
+    // private void PlayAudioClientRpc(int _audioNum, int _randomNum)
+    // {
+    //     AudioClip _currentAudio = _audioNum switch
+    //     {
+    //         0 => burningAudios[_randomNum],
+    //         1 => footstepAudios[_randomNum],
+    //         2 => attackingAudios[_randomNum],
+    //         3 => whisperingAudios[_randomNum],
+    //         4 => deathAudio,
+    //     };
+
+    //     currentAudioNum = _audioNum;
+    //     if(_audioSource.isPlaying && currentAudioNum == _audioNum) return;
+
+    //     _audioSource.Stop();
+    //     _audioSource.clip = _currentAudio;
+    //     _audioSource.Play();
+    //     _audioSource.enabled = true; 
+    // }
 
     private void GetPCPlayerData()
     {
@@ -209,8 +226,13 @@ public class StatueWithSpotlight : NetworkBehaviour
         _agent.speed = agentSpeed;
         _animator.speed = 1;
 
-        PlayAudioClientRpc(1, Random.Range(0, footstepAudios.Length));
-        _audioSource.volume = 1;
+        if (_currentAudioNum != 1 || !_audioSource.isPlaying)
+        {
+            _currentAudio = statueManager.GetAppropriateAudio(1);
+            PlayAudioClientRpc();
+            _audioSource.volume = 0.5f;
+        }
+        _currentAudioNum = 1;
 
         _destination = _pcPlayerTransform.position;
         // _agent.destination = _destination;
@@ -223,7 +245,15 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         _agent.speed = 0;
         
-        if(!_shuttingDown) PlayAudioClientRpc(2, Random.Range(0, attackingAudios.Length));
+        if(!_shuttingDown)
+        {
+            if (_currentAudioNum != 3 || !_audioSource.isPlaying)
+            {
+                _currentAudio = statueManager.GetAppropriateAudio(3);
+                PlayAudioClientRpc();
+            }
+            _currentAudioNum = 3;
+        }
         
         _agent.SetDestination(transform.position);
 
@@ -238,8 +268,13 @@ public class StatueWithSpotlight : NetworkBehaviour
         { 
             _animator.speed = 0;
 
-            PlayAudioClientRpc(0, Random.Range(0, burningAudios.Length));
-
+            if (_currentAudioNum != 0 || !_audioSource.isPlaying)
+            {
+                _currentAudio = statueManager.GetAppropriateAudio(0);
+                PlayAudioClientRpc();
+            }
+            _currentAudioNum = 0;
+            
             _audioSource.volume = 1 - (health.GetHealth() / 100);
 
             // _agent.SetDestination(transform.position);
@@ -254,7 +289,14 @@ public class StatueWithSpotlight : NetworkBehaviour
         else
         {
             _animator.speed = 1;
-            PlayAudioClientRpc(4, Random.Range(0, burningAudios.Length));
+
+            if (_currentAudioNum != 2)
+            {
+                _currentAudio = statueManager.GetAppropriateAudio(2);
+            }
+            _currentAudioNum = 2;
+
+            PlayAudioClientRpc();
             _audioSource.volume = 1;
         }
 

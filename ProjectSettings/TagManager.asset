@@ -21,6 +21,7 @@ TagManager:
   - NetworkManager
   - LeftHandSocket
   - RightHandSocket
+  - Manager
   layers:
   - Default
   - TransparentFX

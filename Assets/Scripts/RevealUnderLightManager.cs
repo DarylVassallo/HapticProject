@@ -128,9 +128,6 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
     {
-        Debug.Log("===================");
-        Debug.Log("_renderer: " + _renderer.gameObject);
-        Debug.Log("oxidization: " + oxidization);
         _renderer.material.SetFloat("_MapBlend", 1 - oxidization);
     }
 
