@@ -45,6 +45,31 @@ public class GrabbableLayerControl : MonoBehaviour
         rightHandSocket.selectExited.RemoveListener(OnRightHandRemoved);
     }
 
+    private void OnEnable()
+    {
+        SwitchPhysicsControllers.OnChangedControllers += ChangeHandSockets;
+    }
+
+    private void OnDisable()
+    {
+        SwitchPhysicsControllers.OnChangedControllers -= ChangeHandSockets;
+    }
+
+    private void ChangeHandSockets()
+    {
+        OnDestroy();
+
+        this.gameObject.layer = _standardLayer;
+
+        leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+        leftHandSocket.selectEntered.AddListener(OnLeftHandInserted);
+        leftHandSocket.selectExited.AddListener(OnLeftHandRemoved);
+
+        rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
+        rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
+        rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
+    }
+
     private void OnLeftHandInserted(SelectEnterEventArgs args)
     {
         if (args.interactableObject != _xrGrabInteractable) return;
@@ -75,6 +100,9 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
+        Transform attachPoint = args.interactorObject.GetAttachTransform(args.interactableObject);
+        Debug.Log("attachPoint: " + attachPoint);
+
         _interactor = args.interactorObject.transform.gameObject;
 
         // _standardLayer = this.gameObject.layer;

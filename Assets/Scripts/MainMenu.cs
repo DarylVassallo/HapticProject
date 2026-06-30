@@ -15,6 +15,7 @@ using Unity.Netcode;
 //This script controls all the options in the Main Menu
 public class MainMenu : NetworkBehaviour
 {
+    [SerializeField] private TextMeshProUGUI ipText;
     [SerializeField] private GameObject[] menuList;
     [SerializeField] private GameObject[] vrMenuList;
 
