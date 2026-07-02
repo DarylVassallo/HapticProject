@@ -2,27 +2,40 @@ using UnityEngine;
 using TMPro;
 
 using Unity.Netcode;
-
+using System;
+using System.Collections;
 
 public class TeleportPad : NetworkBehaviour
 {
-    [SerializeField] private Transform exitPad;
+    public NetworkVariable<Vector3> exitPad = new (new Vector3(0, 0, 0));
 
-    private Vector3 positionDifference;
+    private Vector3 _positionDifference;
 
-    public bool isPadReady = true;
-
-    private TMP_Text codeText;
-    private NetworkVariable<int> secretCode = new (0);
-    private NetworkVariable<bool> generatedSecretCode = new (false);
+    private TMP_Text _codeText;
+    private NetworkVariable<int> _secretCode = new (0);
     [SerializeField] private int numLimit;
 
-    private bool isPlayerOnPad = false;
-    private Transform pcPlayerTransform;
+    private bool _isPlayerOnPad = false;
+    private Transform _pcPlayerTransform;
+
+    private TeleportManager _teleportManager;
+
+    [SerializeField] private Transform bar;
+
+    public static event Action<Transform> OnAddNewBar;
 
     void Awake()
     {
-        codeText = this.GetComponentInChildren<TMP_Text>();
+        _codeText = this.GetComponentInChildren<TMP_Text>();
+        _codeText.text = "";
+
+        _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
+    }
+
+    void Start()
+    {
+        Debug.Log(this.gameObject + ": OnAddNewBar");
+        OnAddNewBar?.Invoke(bar);
     }
 
     private void OnEnable()
@@ -35,20 +48,14 @@ public class TeleportPad : NetworkBehaviour
         TeleportNumPad.OnSendCode -= CheckInputtedCode;
     }
 
-    public override void OnNetworkSpawn()
-    {
-        SecretCodeServerRpc(Random.Range(0, numLimit));
-        codeText.text = "" + secretCode.Value + "";
-    }
-
     [ServerRpc(RequireOwnership = false)]
-    public void SecretCodeServerRpc(int newSecretCode)
+    public void ExitPadServerRpc(Vector3 newExitPad)
     {
-        if(!generatedSecretCode.Value)
-        {
-            secretCode.Value = newSecretCode;
-            generatedSecretCode.Value = true;
-        }
+        exitPad.Value = newExitPad;
+        _secretCode.Value = UnityEngine.Random.Range(0, numLimit);
+        _codeText.text = "" + _secretCode.Value + "";
+
+        Debug.Log(this.gameObject + ": exitPad.Value: " + exitPad.Value);
     }
 
     private void CheckInputtedCode(int inputtedCode)
@@ -56,10 +63,10 @@ public class TeleportPad : NetworkBehaviour
         Debug.Log("=======");
         Debug.Log("CheckInputtedCode");
         Debug.Log("inputtedCode: " + inputtedCode);
-        Debug.Log("secretCode.Value: " + secretCode.Value);
-        Debug.Log("isPlayerOnPad: " + isPlayerOnPad);
+        Debug.Log("_secretCode.Value: " + _secretCode.Value);
+        Debug.Log("_isPlayerOnPad: " + _isPlayerOnPad);
 
-        if(inputtedCode == secretCode.Value && isPlayerOnPad)
+        if(inputtedCode == _secretCode.Value && _isPlayerOnPad)
         {
             Debug.Log("Teleport");
             TeleportPCPlayerClientRpc();
@@ -71,24 +78,27 @@ public class TeleportPad : NetworkBehaviour
     {
         Debug.Log("--------");
         Debug.Log("TeleportPCPlayerClientRpc");
-        exitPad.GetComponent<TeleportPad>().isPadReady = false;
-        positionDifference = exitPad.position - this.transform.position;
-        Debug.Log("positionDifference: " + positionDifference);
-        Debug.Log("old pcPlayerTransform.position: " + pcPlayerTransform.position);
-        pcPlayerTransform.position = pcPlayerTransform.position + positionDifference;
-        Debug.Log("new pcPlayerTransform.position: " + pcPlayerTransform.position);
+
+        _teleportManager.arePadsReady = false;
+        _positionDifference = exitPad.Value - this.transform.position;
+        Debug.Log("_positionDifference: " + _positionDifference);
+        Debug.Log("old _pcPlayerTransform.position: " + _pcPlayerTransform.position);
+
+        _pcPlayerTransform.position = _pcPlayerTransform.position + _positionDifference;
+        Debug.Log("new _pcPlayerTransform.position: " + _pcPlayerTransform.position);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("PCPlayer") && isPadReady)
+        if (other.CompareTag("PCPlayer") && _teleportManager.arePadsReady)
         {
-            isPlayerOnPad = true;
-            pcPlayerTransform = other.transform;
+            _isPlayerOnPad = true;
+            _pcPlayerTransform = other.transform;
 
-            // exitPad.GetComponent<TeleportPad>().isPadReady = false;
-            // positionDifference = exitPad.position - this.transform.position;
-            // pcPlayerTransform.position = pcPlayerTransform.position + positionDifference;
+            _teleportManager.arePadsReady = false;
+            StartCoroutine(TeleportPause());
+            _positionDifference = exitPad.Value - this.transform.position;
+            _pcPlayerTransform.position = _pcPlayerTransform.position + _positionDifference;
         }
     }
 
@@ -96,10 +106,16 @@ public class TeleportPad : NetworkBehaviour
     {
         if (other.CompareTag("PCPlayer"))
         {
-            isPlayerOnPad = false;
-            pcPlayerTransform = null;
+            _isPlayerOnPad = false;
+            _pcPlayerTransform = null;
 
-            isPadReady = true;
+            
         }
+    }
+
+    IEnumerator TeleportPause()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _teleportManager.arePadsReady = true;
     }
 }

@@ -2,8 +2,16 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class StatueManager : MonoBehaviour
+using Unity.Netcode;
+
+public class EnemyManager : NetworkBehaviour
 {
+    [Header("Enemy")]
+    [SerializeField] private GameObject enemy;
+    [SerializeField] private Transform enemySpawnPoints;
+    [SerializeField] private float spawnTooFarRange;
+    [SerializeField] private float spawnTooCloseRange;
+
     [Header("Audio")]
     [SerializeField] private List<AudioClip> damageAudios;
     private List<AudioClip> goodDamageAudios = new List<AudioClip>();
@@ -74,4 +82,22 @@ public class StatueManager : MonoBehaviour
         Debug.Log("after usedAudio: " + usedAudio);
         Debug.Log("after usedAudioNum: " + usedAudioNum);
     }
+
+    // private void UpdateChancesOfEnemy(bool previous, bool current)
+    // {
+    //     Debug.Log("UpdateChancesOfEnemy");
+    //     Debug.Log("squareWheelEnemyActive.Value: " + squareWheelEnemyActive.Value);
+    //     Debug.Log("diamondLeverEnemyActive.Value: " + diamondLeverEnemyActive.Value);
+    //     float newChances =  0.01f * (squareWheelEnemyActive.Value ? 1 : 0) + 
+    //                         0f * (diamondLeverEnemyActive.Value ? 1 : 0);
+    //     Debug.Log("newChances : " + newChances);
+
+    //     SetChanceOfEnemysServerRpc(newChances);
+    // }
+
+    // [ServerRpc(RequireOwnership = false)]
+    // private void SetChanceOfEnemysServerRpc(float _chance)
+    // {
+    //     chancesOfEnemy.Value = _chance;
+    // }
 }

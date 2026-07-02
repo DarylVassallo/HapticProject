@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 using System.Collections;
 
-//This script detects if the statue is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
+//This script detects if the enemy is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
 //Source: https://www.youtube.com/watch?v=_e57zSZSOS8
 public class StatueWithSpotlight : NetworkBehaviour
 {
@@ -69,7 +69,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private int currentAudioNum = -1;
 
-    private StatueManager statueManager;
+    private EnemyManager enemyManager;
 
     private AudioClip _currentAudio;
     private int _currentAudioNum;
@@ -89,7 +89,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         _attackCount = maxAttackDelay;
 
-        statueManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<StatueManager>();
+        enemyManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<EnemyManager>();
     }
 
     private void OnEnable()
@@ -228,7 +228,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
         if (_currentAudioNum != 1 || !_audioSource.isPlaying)
         {
-            _currentAudio = statueManager.GetAppropriateAudio(1);
+            _currentAudio = enemyManager.GetAppropriateAudio(1);
             PlayAudioClientRpc();
             _audioSource.volume = 0.5f;
         }
@@ -249,7 +249,7 @@ public class StatueWithSpotlight : NetworkBehaviour
         {
             if (_currentAudioNum != 3 || !_audioSource.isPlaying)
             {
-                _currentAudio = statueManager.GetAppropriateAudio(3);
+                _currentAudio = enemyManager.GetAppropriateAudio(3);
                 PlayAudioClientRpc();
             }
             _currentAudioNum = 3;
@@ -270,7 +270,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
             if (_currentAudioNum != 0 || !_audioSource.isPlaying)
             {
-                _currentAudio = statueManager.GetAppropriateAudio(0);
+                _currentAudio = enemyManager.GetAppropriateAudio(0);
                 PlayAudioClientRpc();
             }
             _currentAudioNum = 0;
@@ -292,7 +292,7 @@ public class StatueWithSpotlight : NetworkBehaviour
 
             if (_currentAudioNum != 2)
             {
-                _currentAudio = statueManager.GetAppropriateAudio(2);
+                _currentAudio = enemyManager.GetAppropriateAudio(2);
             }
             _currentAudioNum = 2;
 
