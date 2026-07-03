@@ -2,12 +2,12 @@ using UnityEngine;
 using UnityEngine.AI;
 
 using Unity.Netcode;
-
+using System;
 using System.Collections;
 
 //This script detects if the enemy is within the spotlight, and allows it to move if it is not (modified to use a spotlight instead of the player's camera)(modified to shake the angel when in the light, and damages it).
 //Source: https://www.youtube.com/watch?v=_e57zSZSOS8
-public class StatueWithSpotlight : NetworkBehaviour
+public class EnemyWithSpotlight : NetworkBehaviour
 {
     private NavMeshAgent _agent;
 
@@ -73,6 +73,10 @@ public class StatueWithSpotlight : NetworkBehaviour
 
     private AudioClip _currentAudio;
     private int _currentAudioNum;
+
+    public static event Action<GameObject> OnRemoveEnemy;
+
+    private float damageMultiplier = 0f;
 
     void Awake()
     {
@@ -181,10 +185,7 @@ public class StatueWithSpotlight : NetworkBehaviour
         if (_isPCTooFar)
         {
             StandBy();
-        }else{
-
-            if (_isPCTooClose && _attackCount <= 0) StopAndAttack(damageToPlayer);        
-
+        }else{    
             _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
             _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight, _vrFlashlightCharge);
 
@@ -192,25 +193,42 @@ public class StatueWithSpotlight : NetworkBehaviour
             {
                 if(health.isDead)
                 {
-                    Destroy(this.gameObject);
+                    OnRemoveEnemy?.Invoke(this.gameObject);
+                    // Destroy(this.gameObject);
                 }
             }
             
-            if (_isInsidePCSpotLight && _isInsideVRSpotLight)
-            {
-                DamageAndFreeze(2);
-            }
-            else if (_isInsidePCSpotLight)
+            // if(_isInsidePCSpotLight || _isInsideVRSpotLight)
+            // {
+            //     if (_isInsidePCSpotLight && _isInsideVRSpotLight)
+            //     {
+            //         DamageAndFreeze(2);
+            //     }
+            //     else if (_isInsidePCSpotLight)
+            //     {
+            //         DamageAndFreeze(0);
+            //     }
+            //     else if (_isInsideVRSpotLight)
+            //     {
+            //         DamageAndFreeze(1);
+            //     }
+            // }
+
+            if (_isInsidePCSpotLight)
             {
                 DamageAndFreeze(0);
             }
-            else if (_isInsideVRSpotLight)
+
+            if(!_isInsidePCSpotLight && !_isInsideVRSpotLight)
             {
-                DamageAndFreeze(1);
-            }
-            else if(!_isPCTooClose)
-            {
-                Walk();
+                if (_isPCTooClose && _attackCount <= 0)
+                {
+                    StopAndAttack(damageToPlayer);  
+                }
+                else if(!_isPCTooClose)
+                {
+                    Walk();
+                }
             }
         }
     }
@@ -282,7 +300,7 @@ public class StatueWithSpotlight : NetworkBehaviour
             if(canBeDamaged)
             {
                 canBeDamaged = false;
-                health.ChangeHealth(-damageToAngel, _playerType);
+                health.ChangeHealth(-damageToAngel * damageMultiplier, _playerType);
                 StartCoroutine(DelayDamage());
             }
         }
@@ -335,6 +353,7 @@ public class StatueWithSpotlight : NetworkBehaviour
             return false;
         }
 
+        damageMultiplier = 1 - (_spotLightDistance / (_playerFlashlightCharge.currentFlashLightRange * 0.5f));
         return true;
     }
 

@@ -15,18 +15,7 @@ public class MazeManager : NetworkBehaviour
 
     private bool _isMovingObject;
     private Transform movingObject;
-
-
     [SerializeField] private float bridgeRotateSpeed;
-
-    [Header("Angel")]
-    [SerializeField] private GameObject angel;
-    [SerializeField] private Transform angelSpawnPoints;
-    [SerializeField] private float spawnTooFarRange;
-    [SerializeField] private float spawnTooCloseRange;
-    private Transform _pcPlayer;
-
-    private List<Transform> _closeSpawnPoints;
 
     [System.Serializable]
     public struct HiddenSwitches
@@ -51,6 +40,8 @@ public class MazeManager : NetworkBehaviour
 
     public static event Action OnResetHiddenButtons;
 
+    public static event Action<int> OnCreateRandomEnemy;
+
     [SerializeField] private Transform[] rotateBridges;
     [SerializeField] private Transform[] reverseRotateBridges;
 
@@ -68,9 +59,6 @@ public class MazeManager : NetworkBehaviour
 
     [SerializeField] private Transform circleButtonObject;
     private NetworkVariable<bool> isCircleButtonActive = new (false);
-
-    private bool canPCFunction = false;
-
     
     [SerializeField] private Material activeMaterial;
 
@@ -100,14 +88,6 @@ public class MazeManager : NetworkBehaviour
     [SerializeField] private bool startWithActivatedTriangleLever;
     [SerializeField] private bool startWithActivatedCircleButton;
 
-    private NetworkVariable<float> chancesOfAngel = new(0f);
-    private NetworkVariable<bool> squareWheelAngelActive = new(false);
-    private NetworkVariable<bool> diamondLeverAngelActive = new(false);
-    private NetworkVariable<bool> triangleLeverAngelActive = new(false);
-    private NetworkVariable<bool> circleButtonAngelActive = new(false);
-
-
-
     private NetworkVariable<int> _networkAudioNum = new (-1);
 
     void Awake()
@@ -116,7 +96,6 @@ public class MazeManager : NetworkBehaviour
 
         _isNewNavMeshAvailable = false;
 
-        _closeSpawnPoints = new List<Transform>();
         squareWheelKnob = squareWheelObject.GetComponentInChildren<XRKnob>();
 
         isFunctioningWheelRotating = false;
@@ -129,13 +108,7 @@ public class MazeManager : NetworkBehaviour
         ButtonInteract.OnTriggerButton += PressedButton;
         ButtonInteract.OnActivateReset += ResetButtons;
 
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-
         _networkAudioNum.OnValueChanged += PlayAudio;
-        squareWheelAngelActive.OnValueChanged += UpdateChancesOfAngel;
-        diamondLeverAngelActive.OnValueChanged += UpdateChancesOfAngel;
-        triangleLeverAngelActive.OnValueChanged += UpdateChancesOfAngel;
-        circleButtonAngelActive.OnValueChanged += UpdateChancesOfAngel;
     }
 
     private void OnDisable()
@@ -143,15 +116,7 @@ public class MazeManager : NetworkBehaviour
         ButtonInteract.OnTriggerButton -= PressedButton;
         ButtonInteract.OnActivateReset -= ResetButtons;
 
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-
         _networkAudioNum.OnValueChanged -= PlayAudio;
-    }
-
-    private void GetPCPlayerData()
-    {
-        _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-        canPCFunction = true;
     }
 
     public override void OnNetworkSpawn()
@@ -192,10 +157,6 @@ public class MazeManager : NetworkBehaviour
     {
         if(!_audioSource.isPlaying && _networkAudioNum.Value != -1) SetAudioNumServerRpc(-1);
         
-        // if(chancesOfAngel.Value > 0) PotentialAngelCreation();
-
-        // if(!canPCFunction || (!isSquareWheelActive.Value && !isDiamondLeverActive.Value)) return;
-
         if (prevSecretBridgeToggle != _secretBridgeToggle.Value)
         {
             prevSecretBridgeToggle = _secretBridgeToggle.Value;
@@ -235,9 +196,6 @@ public class MazeManager : NetworkBehaviour
 
     private void PlayAudio(int previous, int current)
     {
-        Debug.Log("previous: " + previous);
-        Debug.Log("current: " + current);
-
         if(current == -1)
         {
             _audioSource.Stop();
@@ -285,19 +243,17 @@ public class MazeManager : NetworkBehaviour
 
         if(squareWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
         {
-            Debug.Log("Play Wheel Audio");
             SetAudioNumServerRpc(2);
             // PlayAudio(2);
 
             _isNewNavMeshAvailable = true;
-            SetSquareWheelAngelActiveServerRpc(true);
-            // SetChanceOfAngelsServerRpc(0.01f);
+            // SetSquareWheelEnemyActiveServerRpc(true);
+            // SetChanceOfEnemysServerRpc(0.01f);
 
             wheelCheckCount = maxWheelCheckCount;
         }
         else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
-            Debug.Log("Stop Wheel Audio");
             // StopAudioClientRpc();
             SetAudioNumServerRpc(-1);
 
@@ -305,8 +261,8 @@ public class MazeManager : NetworkBehaviour
             // levelGround.RemoveData();
             // levelGround.BuildNavMesh();
 
-            SetSquareWheelAngelActiveServerRpc(false);
-            // SetChanceOfAngelsServerRpc(-0.01f);
+            // SetSquareWheelEnemyActiveServerRpc(false);
+            // SetChanceOfEnemysServerRpc(-0.01f);
         }
 
         prevSquareWheelKnobValue = squareWheelKnob.value;
@@ -348,47 +304,43 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
-    private void UpdateChancesOfAngel(bool previous, bool current)
-    {
-        Debug.Log("UpdateChancesOfAngel");
-        Debug.Log("squareWheelAngelActive.Value: " + squareWheelAngelActive.Value);
-        Debug.Log("diamondLeverAngelActive.Value: " + diamondLeverAngelActive.Value);
-        float newChances =  0.01f * (squareWheelAngelActive.Value ? 1 : 0) + 
-                            0f * (diamondLeverAngelActive.Value ? 1 : 0);
-        Debug.Log("newChances : " + newChances);
+    // private void UpdateChancesOfEnemy(bool previous, bool current)
+    // {
+    //     float newChances =  0.01f * (squareWheelEnemyActive.Value ? 1 : 0) + 
+    //                         0f * (diamondLeverEnemyActive.Value ? 1 : 0);
 
-        SetChanceOfAngelsServerRpc(newChances);
-    }
+    //     SetChanceOfEnemysServerRpc(newChances);
+    // }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetChanceOfAngelsServerRpc(float _chance)
-    {
-        chancesOfAngel.Value = _chance;
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // private void SetChanceOfEnemysServerRpc(float _chance)
+    // {
+    //     chancesOfEnemy.Value = _chance;
+    // }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetSquareWheelAngelActiveServerRpc(bool _isAngelActive)
-    {
-        squareWheelAngelActive.Value = _isAngelActive;
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // private void SetSquareWheelEnemyActiveServerRpc(bool _isEnemyActive)
+    // {
+    //     squareWheelEnemyActive.Value = _isEnemyActive;
+    // }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetDiamondLeverAngelActiveServerRpc(bool _isAngelActive)
-    {
-        diamondLeverAngelActive.Value = _isAngelActive;
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // private void SetDiamondLeverEnemyActiveServerRpc(bool _isEnemyActive)
+    // {
+    //     diamondLeverEnemyActive.Value = _isEnemyActive;
+    // }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetTriangleLeverAngelActiveServerRpc(bool _isAngelActive)
-    {
-        triangleLeverAngelActive.Value = _isAngelActive;
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // private void SetTriangleLeverEnemyActiveServerRpc(bool _isEnemyActive)
+    // {
+    //     triangleLeverEnemyActive.Value = _isEnemyActive;
+    // }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetCircleButtonAngelActiveServerRpc(bool _isAngelActive)
-    {
-        circleButtonAngelActive.Value = _isAngelActive;
-    }
+    // [ServerRpc(RequireOwnership = false)]
+    // private void SetCircleButtonEnemyActiveServerRpc(bool _isEnemyActive)
+    // {
+    //     circleButtonEnemyActive.Value = _isEnemyActive;
+    // }
 
 
     
@@ -455,7 +407,7 @@ public class MazeManager : NetworkBehaviour
 
         if(!isDiamondLeverActive.Value) return;
 
-        SetDiamondLeverAngelActiveServerRpc(true);
+        // SetDiamondLeverEnemyActiveServerRpc(true);
         if(_secretBridgeToggle.Value == false) SetSecretBridgeEnableServerRpc();
 
         levelGround.RemoveData();
@@ -471,7 +423,7 @@ public class MazeManager : NetworkBehaviour
 
         if(!isDiamondLeverActive.Value) return;
         
-        SetDiamondLeverAngelActiveServerRpc(false);
+        // SetDiamondLeverEnemyActiveServerRpc(false);
         if(_secretBridgeToggle.Value == true) SetSecretBridgeEnableServerRpc();
         
         levelGround.RemoveData();
@@ -502,7 +454,8 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButton(ShapeType _shape, ButtonType _button)
     {
-        InstantiateRandomAngelServerRpc();
+        // InstantiateRandomEnemyServerRpc();
+        OnCreateRandomEnemy?.Invoke(1);
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
             if(currentShapeOrder[i] == ShapeType.None)
@@ -565,52 +518,5 @@ public class MazeManager : NetworkBehaviour
     private void DisableMotion()
     {
         PCPlayerInputManager.ToggleRestriction("Move", false);
-    }
-
-    public void AngelCreation(int maxAngels)
-    {
-        int _numberOfAngels = UnityEngine.Random.Range(1, maxAngels);
-
-        for (int i = 0; i < _numberOfAngels; i++)
-        {
-            InstantiateRandomAngelServerRpc();
-        }
-    }
-
-    private void PotentialAngelCreation()
-    {
-        float ran = UnityEngine.Random.Range(0f, 1f);
-        Debug.Log("ran: " + ran);
-        Debug.Log("chancesOfAngel.Value: " + chancesOfAngel.Value);
-        if (ran <= chancesOfAngel.Value)
-        {
-            Debug.Log("Create Angel");
-            InstantiateRandomAngelServerRpc();
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void InstantiateRandomAngelServerRpc()
-    {
-        int angelNum = UnityEngine.Random.Range(1, angelSpawnPoints.childCount) - 1;
-        var newAngel = Instantiate(angel, angelSpawnPoints.GetChild(angelNum).position, Quaternion.identity);
-        newAngel.GetComponent<NetworkObject>().Spawn();
-    }
-
-    private void InstantiateNearbyRandomAngel()
-    {
-        float distance = 0;
-        for (int i = 0; i < angelSpawnPoints.childCount; i++)
-        {
-            distance = (angelSpawnPoints.GetChild(i).position - _pcPlayer.position).magnitude;
-
-            if (distance > spawnTooCloseRange && distance <= spawnTooFarRange)
-            {
-                _closeSpawnPoints.Add(angelSpawnPoints.GetChild(i));
-            }
-        }
-
-        int angelNum = UnityEngine.Random.Range(1, _closeSpawnPoints.Count) - 1;
-        Instantiate(angel, _closeSpawnPoints[angelNum].position, Quaternion.identity);
     }
 }

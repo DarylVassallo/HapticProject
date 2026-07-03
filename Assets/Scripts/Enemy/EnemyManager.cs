@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -11,6 +12,20 @@ public class EnemyManager : NetworkBehaviour
     [SerializeField] private Transform enemySpawnPoints;
     [SerializeField] private float spawnTooFarRange;
     [SerializeField] private float spawnTooCloseRange;
+    [SerializeField] private int enemyNumLimit;
+    // private int enemyCount;
+    private List<GameObject> enemyList;
+
+    private NetworkVariable<float> chancesOfEnemy = new(0f);
+
+    private List<Transform> _closeSpawnPoints;
+
+    private Transform _pcPlayer;
+    private bool canPCFunction = false;
+
+    public static event Action<GameObject> OnRemoveHiddenObject;
+    
+    
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> damageAudios;
@@ -43,26 +58,66 @@ public class EnemyManager : NetworkBehaviour
 
         _goodAudio = new List<List<AudioClip>> {goodDamageAudios, goodFootstepAudios, goodDeathAudio, goodAttackingAudios};
         _badAudio = new List<List<AudioClip>> {badDamageAudios, badFootstepAudios, badDeathAudio, badAttackingAudios};
+
+        enemyList = new List<GameObject>();
+        _closeSpawnPoints = new List<Transform>();
+    }
+
+    private void OnEnable()
+    {
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        MazeManager.OnCreateRandomEnemy += EnemyCreation;
+        TeleportPad.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
+        EnemyWithSpotlight.OnRemoveEnemy += RemoveEnemy;
+    }
+
+    private void OnDisable()
+    {
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        MazeManager.OnCreateRandomEnemy -= EnemyCreation;
+        TeleportPad.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
+        EnemyWithSpotlight.OnRemoveEnemy -= RemoveEnemy;
+    }
+
+    private void GetPCPlayerData()
+    {
+        _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+        canPCFunction = true;
+    }
+
+    void FixedUpdate()
+    {       
+        if(chancesOfEnemy.Value <= 0) return;
+        PotentialEnemyCreation();
+    }
+
+    private void RemoveEnemy(GameObject removedEnemy)
+    {
+        // enemyCount--;
+
+        Debug.Log("removedEnemy: " + removedEnemy);
+
+        enemyList.Remove(removedEnemy);
+        RevealUnderLight[] revealUnderLightObjects = removedEnemy.GetComponentsInChildren<RevealUnderLight>(true);
+        foreach (RevealUnderLight revealUnderLight in revealUnderLightObjects)
+        {
+            Debug.Log("revealUnderLight: " + revealUnderLight);
+            OnRemoveHiddenObject?.Invoke(revealUnderLight.gameObject);
+        }
+        Destroy(removedEnemy);
     }
 
     public AudioClip GetAppropriateAudio(int _audioNum)
     {
-        Debug.Log("---------------");
-        Debug.Log("_goodAudio: " + _goodAudio);
-        Debug.Log("_goodAudio[_audioNum]: " + _goodAudio[_audioNum]);
-        Debug.Log("_goodAudio[_audioNum].Count: " + _goodAudio[_audioNum].Count);
-
         int _length = _goodAudio[_audioNum].Count;
         if(_length != 0)
         {
-            int _currentNum = Random.Range(0, _length);
+            int _currentNum = UnityEngine.Random.Range(0, _length);
             AudioClip currentAudio = _goodAudio[_audioNum][_currentNum];
 
             _badAudio[_audioNum].Add(currentAudio);
             _goodAudio[_audioNum].Remove(currentAudio);
 
-            Debug.Log("before usedAudio: " + currentAudio);
-            Debug.Log("before usedAudioNum: " + _audioNum);
             StartCoroutine(AudioBreak(currentAudio, _audioNum));
 
             return currentAudio; 
@@ -77,27 +132,95 @@ public class EnemyManager : NetworkBehaviour
         yield return new WaitForSeconds(audioBreak);
         _badAudio[usedAudioNum].Remove(usedAudio);
         _goodAudio[usedAudioNum].Add(usedAudio);
-
-        Debug.Log("===============");
-        Debug.Log("after usedAudio: " + usedAudio);
-        Debug.Log("after usedAudioNum: " + usedAudioNum);
     }
 
     // private void UpdateChancesOfEnemy(bool previous, bool current)
     // {
-    //     Debug.Log("UpdateChancesOfEnemy");
-    //     Debug.Log("squareWheelEnemyActive.Value: " + squareWheelEnemyActive.Value);
-    //     Debug.Log("diamondLeverEnemyActive.Value: " + diamondLeverEnemyActive.Value);
     //     float newChances =  0.01f * (squareWheelEnemyActive.Value ? 1 : 0) + 
     //                         0f * (diamondLeverEnemyActive.Value ? 1 : 0);
-    //     Debug.Log("newChances : " + newChances);
-
     //     SetChanceOfEnemysServerRpc(newChances);
     // }
 
-    // [ServerRpc(RequireOwnership = false)]
-    // private void SetChanceOfEnemysServerRpc(float _chance)
-    // {
-    //     chancesOfEnemy.Value = _chance;
-    // }
+    private void PotentialEnemyCreation()
+    {
+        if (UnityEngine.Random.Range(0f, 1f) <= chancesOfEnemy.Value)
+        {
+            // InstantiateRandomEnemyServerRpc();
+            InstantiateNearbyRandomEnemyServerRpc();
+        }
+    }
+
+    private void EnemyCreation(int maxEnemies)
+    {
+        int _numberOfEnemies = UnityEngine.Random.Range(1, maxEnemies);
+
+        for (int i = 0; i < _numberOfEnemies; i++)
+        {
+            // InstantiateRandomEnemyServerRpc();
+            InstantiateNearbyRandomEnemyServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetChanceOfEnemysServerRpc(float _chance)
+    {
+        chancesOfEnemy.Value = _chance;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddChanceOfEnemysServerRpc(float _chance)
+    {
+        chancesOfEnemy.Value = chancesOfEnemy.Value + _chance;
+        Debug.Log("chancesOfEnemy.Value: " + chancesOfEnemy.Value);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InstantiateRandomEnemyServerRpc()
+    {
+        int enemyNum = UnityEngine.Random.Range(1, enemySpawnPoints.childCount) - 1;
+        // enemyCount++;
+        var newEnemy = Instantiate(enemy, enemySpawnPoints.GetChild(enemyNum).position, Quaternion.identity);
+        newEnemy.GetComponent<NetworkObject>().Spawn();
+        enemyList.Add(newEnemy);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InstantiateNearbyRandomEnemyServerRpc()
+    {
+        if(enemyList.Count >= enemyNumLimit)
+        {
+            float maxEnemyDistance = 0f;
+            float currentEnemyDistance = 0f;
+            GameObject maxEnemy = null;
+
+            for(int i = 0; i < enemyList.Count; i++)
+            {
+                currentEnemyDistance = Vector3.Distance(enemyList[i].transform.position, _pcPlayer.position);
+                if(currentEnemyDistance > maxEnemyDistance)
+                {
+                    maxEnemy = enemyList[i];
+                    maxEnemyDistance = currentEnemyDistance;
+                }
+            }
+
+            if(maxEnemy != null) RemoveEnemy(maxEnemy);
+        }else{
+            float distance = 0;
+            for (int i = 0; i < enemySpawnPoints.childCount; i++)
+            {
+                distance = (enemySpawnPoints.GetChild(i).position - _pcPlayer.position).magnitude;
+
+                if (distance > spawnTooCloseRange && distance <= spawnTooFarRange)
+                {
+                    _closeSpawnPoints.Add(enemySpawnPoints.GetChild(i));
+                }
+            }
+
+            int enemyNum = UnityEngine.Random.Range(1, _closeSpawnPoints.Count) - 1;
+            // enemyCount++;
+            var newEnemy = Instantiate(enemy, _closeSpawnPoints[enemyNum].position, Quaternion.identity);
+            newEnemy.GetComponent<NetworkObject>().Spawn();
+            enemyList.Add(newEnemy);
+        }
+    }
 }

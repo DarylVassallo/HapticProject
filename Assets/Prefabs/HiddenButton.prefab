@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 118207713674803291}
   - component: {fileID: 2098942673146253837}
   - component: {fileID: 5323117931202034244}
+  - component: {fileID: 6560456558279134169}
   m_Layer: 0
   m_Name: HiddenButton
   m_TagString: Untagged
@@ -69,7 +70,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
+  - {fileID: 2100000, guid: f30418645c0bcf94ca52cbd1c57450a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -225,3 +226,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6560456558279134169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6733151647301550882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  isPCInteractable: 1
+  isVRInteractable: 0
+  isEffectedByLight: 1
+  isReversed: 0

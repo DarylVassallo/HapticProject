@@ -48,7 +48,6 @@ public class TeleportManager : NetworkBehaviour
         HiddenTeleportButtonInteract.OnTriggerHiddenButton += GainHiddenButton;
         _currentMap.OnValueChanged += ChangeMap;
 
-        Debug.Log("OnEnable TeleportPad.AddNewBar");
         TeleportPad.OnAddNewBar += AddNewBar;
     }
 
@@ -68,10 +67,8 @@ public class TeleportManager : NetworkBehaviour
 
     private void AddNewBar(Transform newBar)
     {
-        Debug.Log("AddNewBar: " + newBar);
         _barList.Add(newBar);
     }
-
 
     [ServerRpc(RequireOwnership = false)]
     public void CurrentMapServerRpc()

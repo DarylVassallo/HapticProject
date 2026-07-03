@@ -20,7 +20,7 @@ GameObject:
   - component: {fileID: 4360777513105819023}
   - component: {fileID: 304806855208054045}
   m_Layer: 0
-  m_Name: Angel BasicShape
+  m_Name: Enemy BasicShape
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

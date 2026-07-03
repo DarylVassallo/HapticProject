@@ -12,7 +12,7 @@ public class Health : NetworkBehaviour
 
     public static event Action OnGameOver;
     public static event Action<int, int> OnKilledEnemy;
-    public static event Action<GameObject> OnRemoveHiddenObject;
+    // public static event Action<GameObject> OnRemoveHiddenObject;
 
     public static event Action<float> OnChangeHealthBar;
     public static event Action<float> OnChangeHealthCamera;
@@ -50,7 +50,6 @@ public class Health : NetworkBehaviour
 
     public void ChangeHealth(float _healthChange, int _attackerType)
     {
-        Debug.Log("ChangeHealth");
         SetHealthServerRpc(_health.Value + _healthChange);
         if(_health.Value > _maxHealth) SetHealthServerRpc(_maxHealth);
 
@@ -59,23 +58,18 @@ public class Health : NetworkBehaviour
 
     private void OnHealthChanged(float previousValue, float newValue)
     {
-        Debug.Log("OnHealthChanged");
-        Debug.Log("newValue: " + newValue);
         if(newValue <= 0)
         {
-            Debug.Log("this.gameObject.tag: " + this.gameObject.tag);
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
-                Debug.Log("OnGameOver: " + OnGameOver);
                 OnGameOver?.Invoke();
             }
             else if (this.CompareTag("Enemy"))
             {
                 OnKilledEnemy?.Invoke(1, _currentAttackerType.Value);
-                OnRemoveHiddenObject?.Invoke(this.gameObject);
+                // OnRemoveHiddenObject?.Invoke(this.gameObject);
                 // Destroy(this.gameObject);
 
-                Debug.Log("Animator IsDead True");
                 isDead = true;
                 _animator.speed = 1;
                 _animator.SetBool("IsDead", true);

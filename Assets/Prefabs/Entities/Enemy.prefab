@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 4360777513105819023}
   - component: {fileID: 304806855208054045}
   m_Layer: 0
-  m_Name: Angel
+  m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,10 +134,10 @@ MonoBehaviour:
   agentSpeed: 3
   shakeSpeed: 64
   shakeAmount: 0.08
-  damageToAngel: 5
+  damageToAngel: 10
   damageToPlayer: 3
   _tooCloseDistance: 2.2
-  _tooFarDistance: 400
+  _tooFarDistance: 800
   burningAudios:
   - {fileID: 8300000, guid: c11134786aa805d41b4f1d4dea8911b7, type: 3}
   - {fileID: 8300000, guid: 05ef6fe6d21cada4fb6bbbae917d65a5, type: 3}

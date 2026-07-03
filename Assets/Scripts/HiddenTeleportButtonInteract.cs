@@ -15,6 +15,8 @@ public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
 
     [SerializeField] private float destroyDelay;
 
+    public static event Action<GameObject> OnRemoveHiddenObject;
+
     void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -51,6 +53,8 @@ public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
     IEnumerator DestroyHiddenButton()
     {
         yield return new WaitForSeconds(destroyDelay);
+
+        OnRemoveHiddenObject?.Invoke(this.gameObject);
         Destroy(this.gameObject);
     }
 }

@@ -67,7 +67,10 @@ public class RevealUnderLightManager : MonoBehaviour
         ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
 
         RevealUnderLight.OnAddNewHiddenObject += AddNewHiddenObject;
-        Health.OnRemoveHiddenObject += RemoveHiddenObject;
+
+        HiddenTeleportButtonInteract.OnRemoveHiddenObject += RemoveHiddenObject;
+        EnemyManager.OnRemoveHiddenObject += RemoveHiddenObject;
+
         Health.OnChangeEnemyOxidization += ChangeEnemyOxidization;
     }
 
@@ -77,7 +80,10 @@ public class RevealUnderLightManager : MonoBehaviour
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
 
         RevealUnderLight.OnAddNewHiddenObject -= AddNewHiddenObject;
-        Health.OnRemoveHiddenObject -= RemoveHiddenObject;
+
+        HiddenTeleportButtonInteract.OnRemoveHiddenObject -= RemoveHiddenObject;
+        EnemyManager.OnRemoveHiddenObject -= RemoveHiddenObject;
+
         Health.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
     }
 
@@ -121,6 +127,7 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
     {
+        Debug.Log("oldHiddenObject: " + oldHiddenObject);
         hiddenObjects.RemoveAll(h => 
                                 h.hiddenObject != null && 
                                 h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
