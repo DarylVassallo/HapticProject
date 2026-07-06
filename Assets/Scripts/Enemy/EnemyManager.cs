@@ -93,15 +93,10 @@ public class EnemyManager : NetworkBehaviour
 
     private void RemoveEnemy(GameObject removedEnemy)
     {
-        // enemyCount--;
-
-        Debug.Log("removedEnemy: " + removedEnemy);
-
         enemyList.Remove(removedEnemy);
         RevealUnderLight[] revealUnderLightObjects = removedEnemy.GetComponentsInChildren<RevealUnderLight>(true);
         foreach (RevealUnderLight revealUnderLight in revealUnderLightObjects)
         {
-            Debug.Log("revealUnderLight: " + revealUnderLight);
             OnRemoveHiddenObject?.Invoke(revealUnderLight.gameObject);
         }
         Destroy(removedEnemy);
@@ -171,7 +166,6 @@ public class EnemyManager : NetworkBehaviour
     private void AddChanceOfEnemysServerRpc(float _chance)
     {
         chancesOfEnemy.Value = chancesOfEnemy.Value + _chance;
-        Debug.Log("chancesOfEnemy.Value: " + chancesOfEnemy.Value);
     }
 
     [ServerRpc(RequireOwnership = false)]

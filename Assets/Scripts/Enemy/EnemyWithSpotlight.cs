@@ -254,7 +254,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         _destination = _pcPlayerTransform.position;
         // _agent.destination = _destination;
-        _agent.SetDestination(_destination);
+
+        if(_agent.isOnNavMesh) _agent.SetDestination(_destination);
     }
 
     private void StopAndAttack(float _damage)

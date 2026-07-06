@@ -9,10 +9,13 @@ public class TeleportManager : NetworkBehaviour
 {
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
+    private bool _isEverythingCollected;
 
     [SerializeField] private Material collectedMaterial;
 
     [SerializeField] private Material[] maps;
+    [SerializeField] private Material finalMap;
+
     [SerializeField] private Renderer mapRenderer;
     private NetworkVariable<int> _currentMap = new (-1);
     private NetworkVariable<bool> _canChangeMap = new (true);
@@ -35,11 +38,14 @@ public class TeleportManager : NetworkBehaviour
         public TeleportPairs[] teleportPairs;
     }
     [SerializeField] private TeleportConnections[] teleportConnections;
+    [SerializeField] private TeleportConnections finalTeleportConnections;
 
     private List<Transform> _barList;
 
     private float _timeLimit;
     private float _timePassed;
+
+    public static event Action OnEveythingCollected;
     
     private void OnEnable()
     {
@@ -61,7 +67,7 @@ public class TeleportManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        CurrentMapServerRpc();
+        CurrentMapServerRpc(false);
         mapRenderer.material = maps[_currentMap.Value];
     }
 
@@ -71,23 +77,41 @@ public class TeleportManager : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void CurrentMapServerRpc()
+    public void CurrentMapServerRpc(bool _foundAllCollectables)
     {
-        if(_canChangeMap.Value)
+        Debug.Log("CurrentMapServerRpc: " + _foundAllCollectables);
+        if(_foundAllCollectables)
         {
-            _currentMap.Value = UnityEngine.Random.Range(0, maps.Length);
+            Debug.Log("Set To Final Map");
+            mapRenderer.material = finalMap;
             _canChangeMap.Value = false;
 
-            for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
+            for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
             {
-                teleportConnections[_currentMap.Value].teleportPairs[i].
+                finalTeleportConnections.teleportPairs[i].
                     entrancePad.GetComponent<TeleportPad>().
-                    ExitPadServerRpc(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad.position);
+                    ExitPadServerRpc(finalTeleportConnections.teleportPairs[i].exitPad.position);
             }
-            
-            _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
-            _timePassed = 0;
-            StartCoroutine(ChangeMapDelay(_timeLimit));
+        }
+
+        if(_canChangeMap.Value)
+        {
+            if(!_foundAllCollectables)
+            {
+                _currentMap.Value = UnityEngine.Random.Range(0, maps.Length);
+                _canChangeMap.Value = false;
+
+                for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
+                {
+                    teleportConnections[_currentMap.Value].teleportPairs[i].
+                        entrancePad.GetComponent<TeleportPad>().
+                        ExitPadServerRpc(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad.position);
+                }
+                
+                _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
+                _timePassed = 0;
+                StartCoroutine(ChangeMapDelay(_timeLimit));
+            }
         }
     }
 
@@ -104,6 +128,8 @@ public class TeleportManager : NetworkBehaviour
 
     IEnumerator ChangeMapDelay(float delay)
     {
+        // if(_isEverythingCollected) return;
+
         float elapsed = 0f;
 
         while (elapsed < delay)
@@ -111,18 +137,21 @@ public class TeleportManager : NetworkBehaviour
             elapsed += Time.deltaTime;
             float t = elapsed / delay;
 
-            for(int i = 0; i < _barList.Count; i++)
+            if(!_isEverythingCollected)
             {
-                _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
-                                                    _barList[i].localScale.y, 
-                                                    Mathf.Lerp(0.95f, 0f, t));
+                for(int i = 0; i < _barList.Count; i++)
+                {
+                    _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+                                                        _barList[i].localScale.y, 
+                                                        Mathf.Lerp(0.95f, 0f, t));
+                }
             }
 
             yield return null;
         }
 
         CanChangeMapServerRpc(true);
-        CurrentMapServerRpc();
+        CurrentMapServerRpc(false);
 
         for(int i = 0; i < _barList.Count; i++)
         {
@@ -136,5 +165,14 @@ public class TeleportManager : NetworkBehaviour
     {
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", collectedMaterial.GetColor("_BaseColor"));
         _collectablePoints++;
+
+        // if(collectableIndicators.Length <= _collectablePoints)
+        // {
+        Debug.Log("GainHiddenButton");
+        _barList = null;
+        _isEverythingCollected = true;
+        OnEveythingCollected?.Invoke();
+        CurrentMapServerRpc(true);
+        // }
     }
 }

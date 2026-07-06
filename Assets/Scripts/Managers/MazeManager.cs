@@ -90,6 +90,8 @@ public class MazeManager : NetworkBehaviour
 
     private NetworkVariable<int> _networkAudioNum = new (-1);
 
+    public float testSpeed;
+
     void Awake()
     {        
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -109,6 +111,8 @@ public class MazeManager : NetworkBehaviour
         ButtonInteract.OnActivateReset += ResetButtons;
 
         _networkAudioNum.OnValueChanged += PlayAudio;
+
+        // TeleportManager.OnEveythingCollected += ActivateCrookedBridges
     }
 
     private void OnDisable()
@@ -192,6 +196,16 @@ public class MazeManager : NetworkBehaviour
                 reverseRotateBridges[i].Rotate(0.0f, -squareWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
             }
         }
+
+        // for(int i = 0; i < rotateBridges.Length; i++)
+        // {
+        //     rotateBridges[i].Rotate(0.0f, testSpeed * bridgeRotateSpeed, 0.0f, Space.Self);
+        // }
+
+        // for(int i = 0; i < reverseRotateBridges.Length; i++)
+        // {
+        //     reverseRotateBridges[i].Rotate(0.0f, -testSpeed * bridgeRotateSpeed, 0.0f, Space.Self);
+        // }
     }
 
     private void PlayAudio(int previous, int current)

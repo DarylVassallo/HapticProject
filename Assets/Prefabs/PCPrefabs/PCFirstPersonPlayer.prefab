@@ -27962,7 +27962,7 @@ MonoBehaviour:
   walkSpeed: 5
   runSpeed: 8
   crouchSpeed: 2
-  jumpForce: 5
+  jumpForce: 8
   gravity: -24
   initialFallVelocity: -4
   standingHeight: 2

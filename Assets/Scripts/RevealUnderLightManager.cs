@@ -127,7 +127,6 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
     {
-        Debug.Log("oldHiddenObject: " + oldHiddenObject);
         hiddenObjects.RemoveAll(h => 
                                 h.hiddenObject != null && 
                                 h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));

@@ -7,6 +7,7 @@ using System.Collections;
 
 public class TeleportPad : NetworkBehaviour
 {
+    [SerializeField] private Transform exitTeleportPad;
     public NetworkVariable<Vector3> exitPad = new (new Vector3(0, 0, 0));
 
     private Vector3 _positionDifference;
@@ -30,6 +31,8 @@ public class TeleportPad : NetworkBehaviour
 
     private bool hasBeenUsed = false;
 
+    private bool instantTeleport;
+
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
@@ -43,21 +46,41 @@ public class TeleportPad : NetworkBehaviour
         OnAddNewBar?.Invoke(bar);
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if(exitTeleportPad != null)
+        {
+            Debug.Log("Start exitTeleportPad.position: " + exitTeleportPad.position);
+            ExitPadServerRpc(exitTeleportPad.position);
+        }
+    }
+
     private void OnEnable()
     {
         TeleportNumPad.OnSendCode += CheckInputtedCode;
         // OnSetPadsReady += SetPadsReady;
+
+        TeleportManager.OnEveythingCollected += ActivateInstantTeleport;
     }
 
     private void OnDisable()
     {
         TeleportNumPad.OnSendCode -= CheckInputtedCode;
         // OnSetPadsReady -= SetPadsReady;
+
+        TeleportManager.OnEveythingCollected -= ActivateInstantTeleport;
+    }
+
+    private void ActivateInstantTeleport()
+    {
+        bar.parent.gameObject.SetActive(false);
+        instantTeleport = true;
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void ExitPadServerRpc(Vector3 newExitPad)
     {
+        Debug.Log("ExitPadServerRpc: " + newExitPad);
         exitPad.Value = newExitPad;
         _secretCode.Value = UnityEngine.Random.Range(0, numLimit);
         _codeText.text = "" + _secretCode.Value + "";
@@ -92,7 +115,8 @@ public class TeleportPad : NetworkBehaviour
             hasBeenUsed = true;
             OnIncreaseChanceOfSpawningEnemy?.Invoke(0.001f);
         }
-        if (other.CompareTag("PCPlayer") && _teleportManager.arePadsReady)
+
+        if (other.CompareTag("PCPlayer") && _teleportManager.arePadsReady && instantTeleport)
         {
             _isPlayerOnPad = true;
             _pcPlayerTransform = other.transform;
@@ -111,8 +135,6 @@ public class TeleportPad : NetworkBehaviour
         {
             _isPlayerOnPad = false;
             _pcPlayerTransform = null;
-
-            
         }
     }
 
