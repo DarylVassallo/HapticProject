@@ -46,7 +46,7 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     private void OnEnable()
     {
-        MazeManager.OnResetHiddenButtons += ResetButton;
+        MazeManager.OnResetButtons += ResetButton;
     }
 
     public void TriggerInteraction()

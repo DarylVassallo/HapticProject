@@ -8,6 +8,7 @@ using System.Collections;
 public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
 {    
     public static event Action OnTriggerHiddenButton;
+    public static event Action OnResetHiddenButton;
     private bool _isInteractable = true;    
 
     [SerializeField] private AudioClip buttonAudio;
@@ -17,9 +18,24 @@ public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
 
     public static event Action<GameObject> OnRemoveHiddenObject;
 
+    private MeshRenderer renderer;
+    private RevealUnderLight revealUnderLight;
+
     void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+        renderer = GetComponent<MeshRenderer>();
+        revealUnderLight = GetComponent<RevealUnderLight>();
+    }
+
+    private void OnEnable()
+    {
+        CheckpointManager.OnResetHiddenButtons += ResetHiddenButton;
+    }
+
+    private void OnDisable()
+    {
+        CheckpointManager.OnResetHiddenButtons -= ResetHiddenButton;
     }
 
     public void TriggerInteraction()
@@ -54,7 +70,25 @@ public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
     {
         yield return new WaitForSeconds(destroyDelay);
 
-        OnRemoveHiddenObject?.Invoke(this.gameObject);
-        Destroy(this.gameObject);
+        if(_isInteractable)
+        {
+            OnRemoveHiddenObject?.Invoke(this.gameObject);
+            renderer.enabled = false;
+            DisableInteraction();
+            // Destroy(this.gameObject);
+        }
+    }
+
+    private void ResetHiddenButton()
+    {
+        Debug.Log("ResetHiddenButton");
+        if(!_isInteractable)
+        {
+            Debug.Log("ResetHiddenButton _isInteractable");
+            revealUnderLight.AddObject();
+            OnResetHiddenButton?.Invoke();
+            renderer.enabled = true;
+            EnableInteraction();
+        }
     }
 }

@@ -1,10 +1,13 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections;
+
+using Unity.Netcode;
 
 //This script updates the hidden object's shader to render correctly based on the spotlights position, direction, and angle (modified to include range) (modifications to the shader used chatgpt).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
-public class RevealUnderLightManager : MonoBehaviour
+public class RevealUnderLightManager : NetworkBehaviour
 {
     private Material _hiddenMaterial;
     
@@ -46,6 +49,8 @@ public class RevealUnderLightManager : MonoBehaviour
     [SerializeField] private List<HiddenObject> hiddenObjects;
     
     public static event Action<bool> OnToggleAll;
+
+    public NetworkVariable<int> storedOldHiddenObject = new(-1);
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Awake()
@@ -111,6 +116,9 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void AddNewHiddenObject(GameObject newHiddenObject, bool newIsPCInteractable, bool newIsVRInteractable, bool newIsEffectedByLight, bool newIsReversed)
     {
+        // if(!IsOwner) return;
+
+        Debug.Log("AddNewHiddenObject: " + newHiddenObject);
         hiddenObjects.Add(new HiddenObject
                         {
                             hiddenObject = newHiddenObject,
@@ -123,13 +131,44 @@ public class RevealUnderLightManager : MonoBehaviour
                             isReversed = newIsReversed,
                             _isInteractable = false
                         });
+        Debug.Log("Add New Count: " + hiddenObjects.Count);
     }
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
     {
-        hiddenObjects.RemoveAll(h => 
-                                h.hiddenObject != null && 
-                                h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
+        Debug.Log("RemoveHiddenObject");
+        for (int i = 0; i < hiddenObjects.Count; i++)
+        {
+            if (hiddenObjects[i].hiddenObject == oldHiddenObject)
+            {
+                Debug.Log("StoredOldHiddenObjectServerRpc: " + i);
+                // storedOldHiddenObject = oldHiddenObject;
+                StoredOldHiddenObjectServerRpc(i);
+                
+                Debug.Log("RemoveHiddenObjectDelay");
+                RemoveHiddenObjectClientRpc();
+            }
+        }
+    }
+
+    [ClientRpc]
+    public void RemoveHiddenObjectClientRpc()
+    {
+        // if(!IsOwner) return;
+
+        Debug.Log("RemoveHiddenObject: " + storedOldHiddenObject.Value);
+        hiddenObjects.Remove(hiddenObjects[storedOldHiddenObject.Value]);
+        // hiddenObjects.RemoveAll(h => 
+        //                         h.hiddenObject != null && 
+        //                         h.hiddenObject.transform.IsChildOf(storedOldHiddenObject.transform));
+        Debug.Log("Remove New Count: " + hiddenObjects.Count);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StoredOldHiddenObjectServerRpc(int oldIndex)
+    {
+        Debug.Log("require StoredOldHiddenObjectServerRpc: " + oldIndex);
+        storedOldHiddenObject.Value = oldIndex;
     }
 
     private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
@@ -139,10 +178,14 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void Update()
     {
+        // if(!IsOwner) return;
+
         if(!_canPCFunction) GetPCPlayerData();
         if(!_canVRFunction) GetVRPlayerData();
 
         // if(!_canVRFunction) return;
+
+        // Debug.Log("update storedOldHiddenObject.Value: " + storedOldHiddenObject.Value);
 
         for(int i = 0; i < hiddenObjects.Count; i++)
         {
@@ -168,6 +211,12 @@ public class RevealUnderLightManager : MonoBehaviour
                 }
             }
             
+            Debug.Log("i: " + i);
+            Debug.Log("hiddenObjects[i]: " + hiddenObjects[i]);
+            Debug.Log("hiddenObjects[i].hiddenRenderer: " + hiddenObjects[i].hiddenRenderer);
+            Debug.Log("hiddenObjects[i].hiddenRenderer.material: " + hiddenObjects[i].hiddenRenderer.material);
+            Debug.Log("==========");
+
             if(hiddenObjects[i].hiddenRenderer.material)
             {
                 if (_pcFlashLight == null)

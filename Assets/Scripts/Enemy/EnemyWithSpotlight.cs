@@ -100,12 +100,14 @@ public class EnemyWithSpotlight : NetworkBehaviour
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
         ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+        CheckpointManager.OnDestroyAllEnemies += DestroyEnemy;
     }
 
     private void OnDisable()
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+        CheckpointManager.OnDestroyAllEnemies -= DestroyEnemy;
     }
 
     public override void OnNetworkDespawn()
@@ -231,6 +233,11 @@ public class EnemyWithSpotlight : NetworkBehaviour
                 }
             }
         }
+    }
+
+    private void DestroyEnemy()
+    {
+        OnRemoveEnemy?.Invoke(this.gameObject);
     }
 
     private void StandBy()

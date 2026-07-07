@@ -11,7 +11,8 @@ public class TeleportManager : NetworkBehaviour
     private int _collectablePoints = 0;
     private bool _isEverythingCollected;
 
-    [SerializeField] private Material collectedMaterial;
+    [SerializeField] private Material activeMaterial;
+    [SerializeField] private Material deactiveMaterial;
 
     [SerializeField] private Material[] maps;
     [SerializeField] private Material finalMap;
@@ -52,6 +53,7 @@ public class TeleportManager : NetworkBehaviour
         _barList = new List<Transform>();
 
         HiddenTeleportButtonInteract.OnTriggerHiddenButton += GainHiddenButton;
+        HiddenTeleportButtonInteract.OnResetHiddenButton += RemoveHiddenButton;
         _currentMap.OnValueChanged += ChangeMap;
 
         TeleportPad.OnAddNewBar += AddNewBar;
@@ -60,6 +62,7 @@ public class TeleportManager : NetworkBehaviour
     private void OnDisable()
     {
         HiddenTeleportButtonInteract.OnTriggerHiddenButton -= GainHiddenButton;
+        HiddenTeleportButtonInteract.OnResetHiddenButton -= RemoveHiddenButton;
         _currentMap.OnValueChanged -= ChangeMap;
 
         TeleportPad.OnAddNewBar -= AddNewBar;
@@ -79,10 +82,8 @@ public class TeleportManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void CurrentMapServerRpc(bool _foundAllCollectables)
     {
-        Debug.Log("CurrentMapServerRpc: " + _foundAllCollectables);
         if(_foundAllCollectables)
         {
-            Debug.Log("Set To Final Map");
             mapRenderer.material = finalMap;
             _canChangeMap.Value = false;
 
@@ -163,16 +164,21 @@ public class TeleportManager : NetworkBehaviour
 
     private void GainHiddenButton()
     {
-        collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", collectedMaterial.GetColor("_BaseColor"));
+        collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
         _collectablePoints++;
 
-        // if(collectableIndicators.Length <= _collectablePoints)
-        // {
-        Debug.Log("GainHiddenButton");
-        _barList = null;
-        _isEverythingCollected = true;
-        OnEveythingCollected?.Invoke();
-        CurrentMapServerRpc(true);
-        // }
+        if(collectableIndicators.Length <= _collectablePoints)
+        {
+            _barList = null;
+            _isEverythingCollected = true;
+            OnEveythingCollected?.Invoke();
+            CurrentMapServerRpc(true);
+        }
+    }
+
+    private void RemoveHiddenButton()
+    {
+        _collectablePoints--;
+        collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
     }
 }

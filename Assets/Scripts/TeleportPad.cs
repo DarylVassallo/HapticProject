@@ -29,9 +29,9 @@ public class TeleportPad : NetworkBehaviour
 
     public bool arePadsReady = true;
 
-    private bool hasBeenUsed = false;
+    private bool _hasBeenUsed = false;
 
-    private bool instantTeleport;
+    private bool _instantTeleport;
 
     void Awake()
     {
@@ -39,6 +39,8 @@ public class TeleportPad : NetworkBehaviour
         _codeText.text = "";
 
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
+
+        _instantTeleport = true;
     }
 
     void Start()
@@ -50,7 +52,6 @@ public class TeleportPad : NetworkBehaviour
     {
         if(exitTeleportPad != null)
         {
-            Debug.Log("Start exitTeleportPad.position: " + exitTeleportPad.position);
             ExitPadServerRpc(exitTeleportPad.position);
         }
     }
@@ -59,28 +60,32 @@ public class TeleportPad : NetworkBehaviour
     {
         TeleportNumPad.OnSendCode += CheckInputtedCode;
         // OnSetPadsReady += SetPadsReady;
-
         TeleportManager.OnEveythingCollected += ActivateInstantTeleport;
+        CheckpointManager.OnResetTeleportPads += ResetTeleportPad;
     }
 
     private void OnDisable()
     {
         TeleportNumPad.OnSendCode -= CheckInputtedCode;
         // OnSetPadsReady -= SetPadsReady;
-
         TeleportManager.OnEveythingCollected -= ActivateInstantTeleport;
+        CheckpointManager.OnResetTeleportPads -= ResetTeleportPad;
+    }
+
+    private void ResetTeleportPad()
+    {
+        _hasBeenUsed = false;
     }
 
     private void ActivateInstantTeleport()
     {
         bar.parent.gameObject.SetActive(false);
-        instantTeleport = true;
+        _instantTeleport = true;
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void ExitPadServerRpc(Vector3 newExitPad)
     {
-        Debug.Log("ExitPadServerRpc: " + newExitPad);
         exitPad.Value = newExitPad;
         _secretCode.Value = UnityEngine.Random.Range(0, numLimit);
         _codeText.text = "" + _secretCode.Value + "";
@@ -110,13 +115,13 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!hasBeenUsed)
+        if (!_hasBeenUsed)
         {
-            hasBeenUsed = true;
+            _hasBeenUsed = true;
             OnIncreaseChanceOfSpawningEnemy?.Invoke(0.001f);
         }
 
-        if (other.CompareTag("PCPlayer") && _teleportManager.arePadsReady && instantTeleport)
+        if (other.CompareTag("PCPlayer") && _teleportManager.arePadsReady && _instantTeleport)
         {
             _isPlayerOnPad = true;
             _pcPlayerTransform = other.transform;

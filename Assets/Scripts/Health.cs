@@ -56,6 +56,11 @@ public class Health : NetworkBehaviour
         SetAttackerTypeServerRpc(_attackerType);
     }
 
+    public void ResetHealth()
+    {
+        SetHealthServerRpc(_maxHealth);
+    }
+
     private void OnHealthChanged(float previousValue, float newValue)
     {
         if(newValue <= 0)

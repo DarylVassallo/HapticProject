@@ -38,7 +38,7 @@ public class MazeManager : NetworkBehaviour
     public static event Action DisableDrainFlashlight;
     public static event Action GivePCPlayerHealth;
 
-    public static event Action OnResetHiddenButtons;
+    public static event Action OnResetButtons;
 
     public static event Action<int> OnCreateRandomEnemy;
 
@@ -61,6 +61,7 @@ public class MazeManager : NetworkBehaviour
     private NetworkVariable<bool> isCircleButtonActive = new (false);
     
     [SerializeField] private Material activeMaterial;
+    [SerializeField] private Material deactiveMaterial;
 
     [SerializeField] private GameObject[] secretBridges;
 
@@ -112,6 +113,8 @@ public class MazeManager : NetworkBehaviour
 
         _networkAudioNum.OnValueChanged += PlayAudio;
 
+        CheckpointManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
+
         // TeleportManager.OnEveythingCollected += ActivateCrookedBridges
     }
 
@@ -121,6 +124,8 @@ public class MazeManager : NetworkBehaviour
         ButtonInteract.OnActivateReset -= ResetButtons;
 
         _networkAudioNum.OnValueChanged -= PlayAudio;
+
+        CheckpointManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
     }
 
     public override void OnNetworkSpawn()
@@ -318,6 +323,24 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void DeactivateAllServerRpc()
+    {
+        isSquareWheelActive.Value = false;
+        DeactivateObjectLight(squareWheelObject);
+
+        isDiamondLeverActive.Value = false;
+        DeactivateObjectLight(diamondLeverObject);
+
+        isTriangleLeverActive.Value = false;
+        DeactivateObjectLight(triangleLeverObject);
+
+        isCircleButtonActive.Value = false;
+        DeactivateObjectLight(circleButtonObject);
+
+        ResetButtons();
+    }
+
     // private void UpdateChancesOfEnemy(bool previous, bool current)
     // {
     //     float newChances =  0.01f * (squareWheelEnemyActive.Value ? 1 : 0) + 
@@ -414,6 +437,18 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
+    private void DeactivateObjectLight(Transform interactiveObject)
+    {
+        foreach (Renderer rend in interactiveObject.GetComponentsInChildren<Renderer>(true))
+        {
+            if (rend.CompareTag("ActiveLight"))
+            {
+                rend.material = deactiveMaterial;
+                break;
+            }
+        }
+    }
+
     public void EnableDrainFlashlightCharge()
     {
         SetAudioNumServerRpc(3);
@@ -460,7 +495,7 @@ public class MazeManager : NetworkBehaviour
         currentButtonOrder = new ButtonType[5];
         entryNum = 0;
 
-        OnResetHiddenButtons?.Invoke();
+        OnResetButtons?.Invoke();
 
         //Wrong
         return;
@@ -505,7 +540,7 @@ public class MazeManager : NetworkBehaviour
                         currentButtonOrder = new ButtonType[5];
                         entryNum = 0;
 
-                        OnResetHiddenButtons?.Invoke();
+                        OnResetButtons?.Invoke();
 
                         SetAudioNumServerRpc(0);
                         // PlayAudio(0);

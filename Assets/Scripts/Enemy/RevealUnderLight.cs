@@ -24,6 +24,12 @@ public class RevealUnderLight : MonoBehaviour
     IEnumerator RequestNewHiddenObject()
     {
         yield return new WaitForSeconds(0.5f);
+        AddObject();
+    }
+
+    public void AddObject()
+    {
+        Debug.Log("AddObject");
         OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
     }
 }
