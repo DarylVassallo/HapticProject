@@ -50,8 +50,6 @@ public class RevealUnderLightManager : NetworkBehaviour
     
     public static event Action<bool> OnToggleAll;
 
-    public NetworkVariable<int> storedOldHiddenObject = new(-1);
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Awake()
     {
@@ -116,9 +114,6 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     private void AddNewHiddenObject(GameObject newHiddenObject, bool newIsPCInteractable, bool newIsVRInteractable, bool newIsEffectedByLight, bool newIsReversed)
     {
-        // if(!IsOwner) return;
-
-        Debug.Log("AddNewHiddenObject: " + newHiddenObject);
         hiddenObjects.Add(new HiddenObject
                         {
                             hiddenObject = newHiddenObject,
@@ -131,44 +126,13 @@ public class RevealUnderLightManager : NetworkBehaviour
                             isReversed = newIsReversed,
                             _isInteractable = false
                         });
-        Debug.Log("Add New Count: " + hiddenObjects.Count);
     }
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
     {
-        Debug.Log("RemoveHiddenObject");
-        for (int i = 0; i < hiddenObjects.Count; i++)
-        {
-            if (hiddenObjects[i].hiddenObject == oldHiddenObject)
-            {
-                Debug.Log("StoredOldHiddenObjectServerRpc: " + i);
-                // storedOldHiddenObject = oldHiddenObject;
-                StoredOldHiddenObjectServerRpc(i);
-                
-                Debug.Log("RemoveHiddenObjectDelay");
-                RemoveHiddenObjectClientRpc();
-            }
-        }
-    }
-
-    [ClientRpc]
-    public void RemoveHiddenObjectClientRpc()
-    {
-        // if(!IsOwner) return;
-
-        Debug.Log("RemoveHiddenObject: " + storedOldHiddenObject.Value);
-        hiddenObjects.Remove(hiddenObjects[storedOldHiddenObject.Value]);
-        // hiddenObjects.RemoveAll(h => 
-        //                         h.hiddenObject != null && 
-        //                         h.hiddenObject.transform.IsChildOf(storedOldHiddenObject.transform));
-        Debug.Log("Remove New Count: " + hiddenObjects.Count);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void StoredOldHiddenObjectServerRpc(int oldIndex)
-    {
-        Debug.Log("require StoredOldHiddenObjectServerRpc: " + oldIndex);
-        storedOldHiddenObject.Value = oldIndex;
+        hiddenObjects.RemoveAll(h => 
+                                h.hiddenObject != null && 
+                                h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
     }
 
     private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
@@ -184,8 +148,6 @@ public class RevealUnderLightManager : NetworkBehaviour
         if(!_canVRFunction) GetVRPlayerData();
 
         // if(!_canVRFunction) return;
-
-        // Debug.Log("update storedOldHiddenObject.Value: " + storedOldHiddenObject.Value);
 
         for(int i = 0; i < hiddenObjects.Count; i++)
         {
@@ -210,12 +172,6 @@ public class RevealUnderLightManager : NetworkBehaviour
                     }
                 }
             }
-            
-            Debug.Log("i: " + i);
-            Debug.Log("hiddenObjects[i]: " + hiddenObjects[i]);
-            Debug.Log("hiddenObjects[i].hiddenRenderer: " + hiddenObjects[i].hiddenRenderer);
-            Debug.Log("hiddenObjects[i].hiddenRenderer.material: " + hiddenObjects[i].hiddenRenderer.material);
-            Debug.Log("==========");
 
             if(hiddenObjects[i].hiddenRenderer.material)
             {

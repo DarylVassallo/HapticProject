@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections;
 
+using Unity.Netcode;
+
 //This script updates the hidden object's shader to render correctly based on the spotlights position, direction, and angle (modified to include range) (modifications to the shader used chatgpt).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
-public class RevealUnderLight : MonoBehaviour
+public class RevealUnderLight : NetworkBehaviour
 {
     [SerializeField] private bool isPCInteractable;
     [SerializeField] private bool isVRInteractable;
@@ -29,7 +31,12 @@ public class RevealUnderLight : MonoBehaviour
 
     public void AddObject()
     {
-        Debug.Log("AddObject");
+        AddHiddenObjectClientRpc();
+    }
+
+    [ClientRpc]
+    public void AddHiddenObjectClientRpc()
+    {
         OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
     }
 }

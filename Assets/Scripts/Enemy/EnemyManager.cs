@@ -93,7 +93,6 @@ public class EnemyManager : NetworkBehaviour
 
     private void RemoveEnemy(GameObject removedEnemy)
     {
-        Debug.Log("RemoveEnemy");
         enemyList.Remove(removedEnemy);
         RevealUnderLight[] revealUnderLightObjects = removedEnemy.GetComponentsInChildren<RevealUnderLight>(true);
         foreach (RevealUnderLight revealUnderLight in revealUnderLightObjects)
@@ -188,24 +187,8 @@ public class EnemyManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void InstantiateNearbyRandomEnemyServerRpc()
     {
-        if(enemyList.Count >= enemyNumLimit)
+        if(enemyList.Count < enemyNumLimit)
         {
-            float maxEnemyDistance = 0f;
-            float currentEnemyDistance = 0f;
-            GameObject maxEnemy = null;
-
-            for(int i = 0; i < enemyList.Count; i++)
-            {
-                currentEnemyDistance = Vector3.Distance(enemyList[i].transform.position, _pcPlayer.position);
-                if(currentEnemyDistance > maxEnemyDistance)
-                {
-                    maxEnemy = enemyList[i];
-                    maxEnemyDistance = currentEnemyDistance;
-                }
-            }
-
-            if(maxEnemy != null) RemoveEnemy(maxEnemy);
-        }else{
             float distance = 0;
             for (int i = 0; i < enemySpawnPoints.childCount; i++)
             {
@@ -224,4 +207,25 @@ public class EnemyManager : NetworkBehaviour
             enemyList.Add(newEnemy);
         }
     }
+
+    // [ClientRpc]
+    // public void RemoveEnemyClientRpc()
+    // {
+    //     float maxEnemyDistance = 0f;
+    //     float currentEnemyDistance = 0f;
+    //     GameObject maxEnemy = null;
+
+    //     for(int i = 0; i < enemyList.Count; i++)
+    //     {
+    //         currentEnemyDistance = Vector3.Distance(enemyList[i].transform.position, _pcPlayer.position);
+    //         if(currentEnemyDistance > maxEnemyDistance)
+    //         {
+    //             maxEnemy = enemyList[i];
+    //             maxEnemyDistance = currentEnemyDistance;
+    //         }
+    //     }
+
+    //     if(maxEnemy != null) RemoveEnemy(maxEnemy);
+    // }
+
 }

@@ -81,10 +81,8 @@ public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
 
     private void ResetHiddenButton()
     {
-        Debug.Log("ResetHiddenButton");
         if(!_isInteractable)
         {
-            Debug.Log("ResetHiddenButton _isInteractable");
             revealUnderLight.AddObject();
             OnResetHiddenButton?.Invoke();
             renderer.enabled = true;

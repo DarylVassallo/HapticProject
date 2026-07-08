@@ -116,35 +116,88 @@ public class EnemyWithSpotlight : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void PlayAudioClientRpc()
+    private void PlayWalkAudioClientRpc()
     {
+        PlayAudio(enemyManager.GetAppropriateAudio(1));
+    }
+
+    [ClientRpc]
+    private void PlayAttackAudioClientRpc()
+    {
+        PlayAudio(enemyManager.GetAppropriateAudio(3));
+    }
+
+    [ClientRpc]
+    private void PlayDamageAudioClientRpc()
+    {
+        PlayAudio(enemyManager.GetAppropriateAudio(0));
+    }
+
+    [ClientRpc]
+    private void PlayDeathAudioClientRpc()
+    {
+        PlayAudio(enemyManager.GetAppropriateAudio(2));
+    }
+
+    private void PlayAudio(AudioClip _newAudio)
+    {
+        Debug.Log("PlayAudioClientRpc");
         if(_audioSource.isPlaying) return;
 
         _audioSource.Stop();
-        _audioSource.clip = _currentAudio;
+        _audioSource.clip = _newAudio;
         _audioSource.Play();
         _audioSource.enabled = true; 
     }
 
-    // private void PlayAudioClientRpc(int _audioNum, int _randomNum)
-    // {
-    //     AudioClip _currentAudio = _audioNum switch
-    //     {
-    //         0 => burningAudios[_randomNum],
-    //         1 => footstepAudios[_randomNum],
-    //         2 => attackingAudios[_randomNum],
-    //         3 => whisperingAudios[_randomNum],
-    //         4 => deathAudio,
-    //     };
+    [ClientRpc]
+    public void RemoveEnemyClientRpc()
+    {
+        Debug.Log("RemoveEnemyClientRpc");
+        OnRemoveEnemy?.Invoke(this.gameObject);
+    }
 
-    //     currentAudioNum = _audioNum;
-    //     if(_audioSource.isPlaying && currentAudioNum == _audioNum) return;
+    [ClientRpc]
+    public void DisableAudioSourceClientRpc()
+    {
+        Debug.Log("DisableAudioSourceClientRpc");
+        _audioSource.enabled = false;
+    }
 
-    //     _audioSource.Stop();
-    //     _audioSource.clip = _currentAudio;
-    //     _audioSource.Play();
-    //     _audioSource.enabled = true; 
-    // }
+    [ClientRpc]
+    public void MoveAnimationClientRpc()
+    {
+        Debug.Log("MoveAnimationClientRpc");
+        _animator.speed = 1;
+    }
+
+    [ClientRpc]
+    public void FreezeAnimationClientRpc()
+    {
+        Debug.Log("FreezeAnimationClientRpc");
+        _animator.speed = 0;
+    }
+
+    [ClientRpc]
+    public void WalkAudioVolumeClientRpc()
+    {
+        Debug.Log("WalkAudioVolumeClientRpc");
+        _audioSource.volume = 0.5f;
+    }
+
+    [ClientRpc]
+    public void DamageAudioClientRpc()
+    {
+        Debug.Log("DamageAudioClientRpc");
+        _audioSource.volume = 1 - (health.GetHealth() / 100);
+    }
+
+    [ClientRpc]
+    public void DeathAudioVolumeClientRpc()
+    {
+        Debug.Log("DeathAudioVolumeClientRpc");
+        _audioSource.volume = 1;
+    }
 
     private void GetPCPlayerData()
     {
@@ -195,8 +248,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
             {
                 if(health.isDead)
                 {
-                    OnRemoveEnemy?.Invoke(this.gameObject);
-                    // Destroy(this.gameObject);
+                    RemoveEnemyClientRpc();
                 }
             }
             
@@ -237,25 +289,29 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private void DestroyEnemy()
     {
-        OnRemoveEnemy?.Invoke(this.gameObject);
+        RemoveEnemyClientRpc();
     }
 
     private void StandBy()
     {
         _agent.speed = 0;
-        _audioSource.enabled = false;
+        DisableAudioSourceClientRpc();
         _agent.SetDestination(transform.position);
     }
+
     private void Walk()
     {
         _agent.speed = agentSpeed;
-        _animator.speed = 1;
+        Debug.Log("Walk");
+
+        if(_animator.speed != 1) MoveAnimationClientRpc();
+        // _animator.speed = 1;
 
         if (_currentAudioNum != 1 || !_audioSource.isPlaying)
         {
-            _currentAudio = enemyManager.GetAppropriateAudio(1);
-            PlayAudioClientRpc();
-            _audioSource.volume = 0.5f;
+            // _currentAudio = enemyManager.GetAppropriateAudio(1);
+            PlayWalkAudioClientRpc();
+            WalkAudioVolumeClientRpc();
         }
         _currentAudioNum = 1;
 
@@ -275,8 +331,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
         {
             if (_currentAudioNum != 3 || !_audioSource.isPlaying)
             {
-                _currentAudio = enemyManager.GetAppropriateAudio(3);
-                PlayAudioClientRpc();
+                // _currentAudio = enemyManager.GetAppropriateAudio(3);
+                PlayAttackAudioClientRpc();
             }
             _currentAudioNum = 3;
         }
@@ -292,16 +348,19 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         if(!health.isDead)
         { 
-            _animator.speed = 0;
+            Debug.Log("Frozen");
+            
+            if(_animator.speed != 0) FreezeAnimationClientRpc();
+            // _animator.speed = 0;
 
             if (_currentAudioNum != 0 || !_audioSource.isPlaying)
             {
-                _currentAudio = enemyManager.GetAppropriateAudio(0);
-                PlayAudioClientRpc();
+                // _currentAudio = enemyManager.GetAppropriateAudio(0);
+                PlayDamageAudioClientRpc();
             }
             _currentAudioNum = 0;
             
-            _audioSource.volume = 1 - (health.GetHealth() / 100);
+            if(IsServer) DamageAudioClientRpc();
 
             // _agent.SetDestination(transform.position);
 
@@ -314,16 +373,18 @@ public class EnemyWithSpotlight : NetworkBehaviour
         }
         else
         {
-            _animator.speed = 1;
+            Debug.Log("Dead");
+            if(_animator.speed != 1) MoveAnimationClientRpc();
+            // _animator.speed = 1;
 
-            if (_currentAudioNum != 2)
-            {
-                _currentAudio = enemyManager.GetAppropriateAudio(2);
-            }
+            // if (_currentAudioNum != 2)
+            // {
+            //     _currentAudio = enemyManager.GetAppropriateAudio(2);
+            // }
             _currentAudioNum = 2;
 
-            PlayAudioClientRpc();
-            _audioSource.volume = 1;
+            PlayDeathAudioClientRpc();
+            DeathAudioVolumeClientRpc();
         }
 
         // transform.position = new Vector3(   
