@@ -141,7 +141,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private void PlayAudio(AudioClip _newAudio)
     {
-        Debug.Log("PlayAudioClientRpc");
         if(_audioSource.isPlaying) return;
 
         _audioSource.Stop();
@@ -153,49 +152,42 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [ClientRpc]
     public void RemoveEnemyClientRpc()
     {
-        Debug.Log("RemoveEnemyClientRpc");
         OnRemoveEnemy?.Invoke(this.gameObject);
     }
 
     [ClientRpc]
     public void DisableAudioSourceClientRpc()
     {
-        Debug.Log("DisableAudioSourceClientRpc");
         _audioSource.enabled = false;
     }
 
     [ClientRpc]
     public void MoveAnimationClientRpc()
     {
-        Debug.Log("MoveAnimationClientRpc");
         _animator.speed = 1;
     }
 
     [ClientRpc]
     public void FreezeAnimationClientRpc()
     {
-        Debug.Log("FreezeAnimationClientRpc");
         _animator.speed = 0;
     }
 
     [ClientRpc]
     public void WalkAudioVolumeClientRpc()
     {
-        Debug.Log("WalkAudioVolumeClientRpc");
         _audioSource.volume = 0.5f;
     }
 
     [ClientRpc]
     public void DamageAudioClientRpc()
     {
-        Debug.Log("DamageAudioClientRpc");
         _audioSource.volume = 1 - (health.GetHealth() / 100);
     }
 
     [ClientRpc]
     public void DeathAudioVolumeClientRpc()
     {
-        Debug.Log("DeathAudioVolumeClientRpc");
         _audioSource.volume = 1;
     }
 
@@ -302,7 +294,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private void Walk()
     {
         _agent.speed = agentSpeed;
-        Debug.Log("Walk");
+        _agent.isStopped = false;
 
         if(_animator.speed != 1) MoveAnimationClientRpc();
         // _animator.speed = 1;
@@ -347,9 +339,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _agent.speed = 0;
 
         if(!health.isDead)
-        { 
-            Debug.Log("Frozen");
-            
+        {             
             if(_animator.speed != 0) FreezeAnimationClientRpc();
             // _animator.speed = 0;
 
@@ -373,7 +363,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
         }
         else
         {
-            Debug.Log("Dead");
             if(_animator.speed != 1) MoveAnimationClientRpc();
             // _animator.speed = 1;
 

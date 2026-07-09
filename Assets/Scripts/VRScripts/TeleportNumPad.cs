@@ -26,7 +26,10 @@ public class TeleportNumPad : MonoBehaviour
 
     public void InputCode()
     {
-        OnSendCode?.Invoke(int.Parse(codeText.text));
+        Debug.Log("InputCode");
+        Debug.Log("codeText.text: " + codeText.text);
+        // Debug.Log("int.Parse(codeText.text): " + int.Parse(codeText.text));
+        if(codeText.text != "") OnSendCode?.Invoke(int.Parse(codeText.text));
         codeText.text = "";
     }
 }

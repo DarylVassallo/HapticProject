@@ -103,7 +103,7 @@ public class EnemyManager : NetworkBehaviour
     }
 
     public AudioClip GetAppropriateAudio(int _audioNum)
-    {
+    {        
         int _length = _goodAudio[_audioNum].Count;
         if(_length != 0)
         {

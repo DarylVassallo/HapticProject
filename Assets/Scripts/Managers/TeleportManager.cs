@@ -47,6 +47,15 @@ public class TeleportManager : NetworkBehaviour
     private float _timePassed;
 
     public static event Action OnEveythingCollected;
+
+    private bool _canPCFunction = false;
+    private bool _canVRFunction = false;
+
+    void Awake()
+    {
+        _canPCFunction = false;
+        _canVRFunction = false;
+    }
     
     private void OnEnable()
     {
@@ -57,6 +66,9 @@ public class TeleportManager : NetworkBehaviour
         _currentMap.OnValueChanged += ChangeMap;
 
         TeleportPad.OnAddNewBar += AddNewBar;
+
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
     }
 
     private void OnDisable()
@@ -66,12 +78,42 @@ public class TeleportManager : NetworkBehaviour
         _currentMap.OnValueChanged -= ChangeMap;
 
         TeleportPad.OnAddNewBar -= AddNewBar;
+
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
     }
 
-    public override void OnNetworkSpawn()
+    // public override void OnNetworkSpawn()
+    // {
+    //     CurrentMapServerRpc(false);
+    //     mapRenderer.material = maps[_currentMap.Value];
+    // }
+
+    private void GetPCPlayerData()
     {
-        CurrentMapServerRpc(false);
-        mapRenderer.material = maps[_currentMap.Value];
+        if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
+        {
+            _canPCFunction = true;
+            InitialMap();
+        }
+    }
+
+    private void GetVRPlayerData()
+    {
+        if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
+        {
+            _canVRFunction = true;
+            InitialMap();
+        }
+    }
+
+    private void InitialMap()
+    {
+        if(_canPCFunction && _canVRFunction)
+        {
+            CurrentMapServerRpc(false);
+            mapRenderer.material = maps[_currentMap.Value];
+        }
     }
 
     private void AddNewBar(Transform newBar)
@@ -164,11 +206,20 @@ public class TeleportManager : NetworkBehaviour
 
     private void GainHiddenButton()
     {
+        // GainHiddenButtonClientRpc();
+
+        Debug.Log("=================");
+        Debug.Log("GainHiddenButton");
+        Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+        Debug.Log("before _collectablePoints: " + _collectablePoints);
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
         _collectablePoints++;
+        Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+        Debug.Log("after _collectablePoints: " + _collectablePoints);
 
         if(collectableIndicators.Length <= _collectablePoints)
         {
+            Debug.Log("Eveything Is Collected");
             _barList = null;
             _isEverythingCollected = true;
             OnEveythingCollected?.Invoke();
@@ -176,9 +227,52 @@ public class TeleportManager : NetworkBehaviour
         }
     }
 
+    // [ClientRpc]
+    // public void GainHiddenButtonClientRpc()
+    // {
+    //     Debug.Log("=================");
+    //     Debug.Log("GainHiddenButtonClientRpc");
+    //     Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+    //     Debug.Log("before _collectablePoints: " + _collectablePoints);
+    //     collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+    //     _collectablePoints++;
+    //     Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+    //     Debug.Log("after _collectablePoints: " + _collectablePoints);
+
+    //     if(collectableIndicators.Length <= _collectablePoints)
+    //     {
+    //         Debug.Log("Eveything Is Collected");
+    //         _barList = null;
+    //         _isEverythingCollected = true;
+    //         OnEveythingCollected?.Invoke();
+    //         CurrentMapServerRpc(true);
+    //     }
+    // }
+
     private void RemoveHiddenButton()
     {
+        // RemoveHiddenButtonClientRpc();
+
+        Debug.Log("=================");
+        Debug.Log("RemoveHiddenButton");
+        Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+        Debug.Log("before _collectablePoints: " + _collectablePoints);
         _collectablePoints--;
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
+        Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+        Debug.Log("after _collectablePoints: " + _collectablePoints);
     }
+
+    // [ClientRpc]
+    // private void RemoveHiddenButtonClientRpc()
+    // {
+    //     Debug.Log("=================");
+    //     Debug.Log("RemoveHiddenButtonClientRpc");
+    //     Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+    //     Debug.Log("before _collectablePoints: " + _collectablePoints);
+    //     _collectablePoints--;
+    //     collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
+    //     Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
+    //     Debug.Log("after _collectablePoints: " + _collectablePoints);
+    // }
 }

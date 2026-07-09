@@ -16,11 +16,31 @@ public class RevealUnderLight : NetworkBehaviour
 
     public static event Action<GameObject, bool, bool, bool, bool> OnAddNewHiddenObject;
     
-    
+    [SerializeField] private bool isImmediatelyNeeded;
+    [SerializeField] private bool isForSecondCheckpoint;
+    [SerializeField] private bool isForThirdCheckpoint;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Start()
     {
-        StartCoroutine(RequestNewHiddenObject());
+        if(isImmediatelyNeeded) StartCoroutine(RequestNewHiddenObject());
+    }
+
+    private void OnEnable()
+    {
+        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects += AddObject;
+        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects += AddObject;
+    }
+
+    private void OnDisable()
+    {
+        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects -= AddObject;
+        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects -= AddObject;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if(!isImmediatelyNeeded) this.gameObject.SetActive(false);
     }
 
     IEnumerator RequestNewHiddenObject()

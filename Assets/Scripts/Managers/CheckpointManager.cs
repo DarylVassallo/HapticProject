@@ -1,9 +1,10 @@
 using UnityEngine;
 
 using System;
+using System.Collections;
 using Unity.Netcode;
 
-public class CheckpointManager : MonoBehaviour
+public class CheckpointManager : NetworkBehaviour
 {
     [SerializeField] private Transform firstCheckpoint;
     [SerializeField] private Transform secondCheckpoint;
@@ -21,6 +22,12 @@ public class CheckpointManager : MonoBehaviour
     public static event Action OnResetHiddenButtons;
     public static event Action OnResetTeleportPads;
     public static event Action OnDestroyAllEnemies;
+
+    public static event Action OnActivateSecondCheckpointHiddenObjects;
+    public static event Action OnActivateThirdCheckpointHiddenObjects;
+
+    [SerializeField] private Transform hiddenButtons;
+    [SerializeField] private Transform hiddenArrows;
 
     private void OnEnable()
     {
@@ -50,8 +57,7 @@ public class CheckpointManager : MonoBehaviour
     {
         if(!_hasUsedTeleporter)
         {
-            _hasUsedTeleporter = true;
-            currentCheckpoint = secondCheckpoint;
+            ActivateSecondCheckpointClientRpc();
         }
     }
 
@@ -59,23 +65,61 @@ public class CheckpointManager : MonoBehaviour
     {
         if(!_hasCollectedEverything)
         {
-            _hasCollectedEverything = true;
-            currentCheckpoint = thirdCheckpoint;
+            ActivateThirdCheckpointClientRpc();
         }
+    }
+
+    [ClientRpc]
+    public void ActivateSecondCheckpointClientRpc()
+    {
+        _hasUsedTeleporter = true;
+        currentCheckpoint = secondCheckpoint;
+
+        for (int i = 0; i < hiddenButtons.childCount; i++)
+        {
+            hiddenButtons.GetChild(i).gameObject.SetActive(true);
+        }
+
+        for (int i = 0; i < hiddenArrows.childCount; i++)
+        {
+            hiddenArrows.GetChild(i).gameObject.SetActive(true);
+        }
+        
+        StartCoroutine(ActivateCheckpoint(2));
+    }
+
+    [ClientRpc]
+    public void ActivateThirdCheckpointClientRpc()
+    {
+        _hasCollectedEverything = true;
+        currentCheckpoint = thirdCheckpoint;
+
+        StartCoroutine(ActivateCheckpoint(3));
+    }
+
+    IEnumerator ActivateCheckpoint(int checkpointNum)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        switch(checkpointNum)
+        {
+            case 2:
+                OnActivateSecondCheckpointHiddenObjects?.Invoke();
+                break;
+            case 3:
+                OnActivateThirdCheckpointHiddenObjects?.Invoke();
+                break;
+            
+        }        
     }
 
     [ClientRpc]
     public void RespawnPCPlayerClientRpc()
     {
-        Debug.Log("RespawnPCPlayerClientRpc");
         if(!_canPCFunction) GetPCPlayerData();
 
         if(_canPCFunction) 
         {
-            Debug.Log("_canPCFunction: " + _canPCFunction);
-            Debug.Log("_hasUsedTeleporter: " + _hasUsedTeleporter);
-            Debug.Log("_hasCollectedEverything: " + _hasCollectedEverything);
-
             OnDestroyAllEnemies?.Invoke();
 
             if(!_hasUsedTeleporter)

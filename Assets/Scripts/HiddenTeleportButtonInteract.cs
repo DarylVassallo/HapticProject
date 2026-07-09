@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 using System.Collections;
 
+using Unity.Netcode;
+
 //This script controls is the button can be interacted with, and for what switch it is for
-public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
+public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
 {    
     public static event Action OnTriggerHiddenButton;
     public static event Action OnResetHiddenButton;
@@ -40,19 +42,34 @@ public class HiddenTeleportButtonInteract : MonoBehaviour, IInteractable
 
     public void TriggerInteraction()
     {
+        Debug.Log("TriggerInteraction");
+        Debug.Log("_isInteractable: " + _isInteractable);
         if (_isInteractable)
         {
-            OnTriggerHiddenButton?.Invoke();
+            TriggerInteractionServerRpc();
+        }
+    }
 
-            if(!_audioSource.isPlaying)
-            {
-                _audioSource.Stop();
-                _audioSource.clip = buttonAudio;
-                _audioSource.Play();
-                _audioSource.enabled = true; 
+    [ServerRpc(RequireOwnership = false)]
+    public void TriggerInteractionServerRpc()
+    {
+        TriggerInteractionClientRpc();
+    }
 
-                StartCoroutine(DestroyHiddenButton());
-            }
+    [ClientRpc]
+    public void TriggerInteractionClientRpc()
+    {
+        Debug.Log("On Trigger HiddenButton");
+        OnTriggerHiddenButton?.Invoke();
+
+        if(!_audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = buttonAudio;
+            _audioSource.Play();
+            _audioSource.enabled = true; 
+
+            StartCoroutine(DestroyHiddenButton());
         }
     }
 

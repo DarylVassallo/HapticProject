@@ -441,10 +441,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  ShowTopMostFoldoutHeaderGroup: 1
   isPCInteractable: 1
   isVRInteractable: 0
   isEffectedByLight: 0
   isReversed: 0
+  isImmediatelyNeeded: 1
+  isForSecondCheckpoint: 0
+  isForThirdCheckpoint: 0
 --- !u!1 &4866577766470901337 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4894762259405688390, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
@@ -462,10 +466,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  ShowTopMostFoldoutHeaderGroup: 1
   isPCInteractable: 1
   isVRInteractable: 0
   isEffectedByLight: 0
   isReversed: 0
+  isImmediatelyNeeded: 1
+  isForSecondCheckpoint: 0
+  isForThirdCheckpoint: 0
 --- !u!1 &8146424026978777046 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8172300059767236553, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
@@ -483,10 +491,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f7b3905a46dcb94ca34644c507eac88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RevealUnderLight
+  ShowTopMostFoldoutHeaderGroup: 1
   isPCInteractable: 1
   isVRInteractable: 0
   isEffectedByLight: 0
   isReversed: 0
+  isImmediatelyNeeded: 1
+  isForSecondCheckpoint: 0
+  isForThirdCheckpoint: 0
 --- !u!4 &8494541783421470990 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8468617057500289297, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
