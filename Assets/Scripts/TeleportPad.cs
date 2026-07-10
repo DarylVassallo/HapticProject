@@ -8,7 +8,6 @@ using System.Collections;
 public class TeleportPad : NetworkBehaviour
 {
     [SerializeField] private Transform exitTeleportPad;
-    public NetworkVariable<Vector3> exitPad = new (new Vector3(0, 0, 0));
 
     private Vector3 _positionDifference;
 
@@ -33,6 +32,19 @@ public class TeleportPad : NetworkBehaviour
 
     private bool _instantTeleport;
 
+    public bool rotateRings = false;
+
+    [SerializeField] private Transform ring;
+    [SerializeField] private Transform reverseRing;
+    private float rotateSpeed = 1f;
+    [SerializeField] private float rotateIncrement = 1f;
+    
+    [SerializeField] private float minRotateSpeed;
+    [SerializeField] private float maxRotateSpeed;
+
+    private Quaternion restRotation;
+    [SerializeField] private float rotationRange;
+
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
@@ -41,6 +53,8 @@ public class TeleportPad : NetworkBehaviour
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
 
         _instantTeleport = true;
+
+        restRotation = ring.rotation;
     }
 
     void Start()
@@ -52,7 +66,7 @@ public class TeleportPad : NetworkBehaviour
     {
         TeleportNumPad.OnSendCode += CheckInputtedCode;
         // OnSetPadsReady += SetPadsReady;
-        TeleportManager.OnEveythingCollected += ActivateInstantTeleport;
+        TeleportManager.OnEverythingCollected += ActivateInstantTeleport;
         CheckpointManager.OnResetTeleportPads += ResetTeleportPad;
 
         _secretCode.OnValueChanged += ChangeCodeText;
@@ -62,7 +76,7 @@ public class TeleportPad : NetworkBehaviour
     {
         TeleportNumPad.OnSendCode -= CheckInputtedCode;
         // OnSetPadsReady -= SetPadsReady;
-        TeleportManager.OnEveythingCollected -= ActivateInstantTeleport;
+        TeleportManager.OnEverythingCollected -= ActivateInstantTeleport;
         CheckpointManager.OnResetTeleportPads -= ResetTeleportPad;
 
         _secretCode.OnValueChanged -= ChangeCodeText;
@@ -79,10 +93,15 @@ public class TeleportPad : NetworkBehaviour
         _instantTeleport = true;
     }
 
+    public void SetExitPadTransform(Transform _newExitPadTransform)
+    {
+        exitTeleportPad = _newExitPadTransform;
+        ChangeSecretCodePadServerRpc();
+    }
+
     [ServerRpc(RequireOwnership = false)]
-    public void ExitPadServerRpc(Vector3 _newExitPad)
-    {        
-        exitPad.Value = _newExitPad;
+    public void  ChangeSecretCodePadServerRpc()
+    {
         _secretCode.Value = UnityEngine.Random.Range(0, numLimit);
     }
 
@@ -113,12 +132,15 @@ public class TeleportPad : NetworkBehaviour
     [ClientRpc]
     public void TeleportPCPlayerClientRpc()
     {
-        _teleportManager.arePadsReady = false;
-        // OnSetPadsReady?.Invoke(false);
-        _positionDifference = exitPad.Value - this.transform.position;
+        Debug.Log(this.gameObject + " : TeleportPCPlayerClientRpc");
+        Teleport();
 
-        if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
-        _pcPlayerTransform.position = _pcPlayerTransform.position + _positionDifference;
+        // _teleportManager.arePadsReady = false;
+        // // OnSetPadsReady?.Invoke(false);
+        // _positionDifference = exitTeleportPad.position - this.transform.position;
+
+        // if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
+        // _pcPlayerTransform.position = _pcPlayerTransform.position + _positionDifference;
     }
 
     private void OnTriggerEnter(Collider _other)
@@ -133,17 +155,70 @@ public class TeleportPad : NetworkBehaviour
         {
             ChangeIsPlayerOnPadServerRpc(true);
             // _pcPlayerTransform = _other.transform;
-
             if(_instantTeleport)
             {
-                _teleportManager.arePadsReady = false;
-                // OnSetPadsReady?.Invoke(false);
-                StartCoroutine(TeleportPause());
-                _positionDifference = exitPad.Value - this.transform.position;
-
-                if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
-                _pcPlayerTransform.position = _pcPlayerTransform.position + _positionDifference;
+                exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
+                rotateRings = true;
+                // Teleport();
             }
+        }
+    }
+
+    private void Teleport()
+    {
+        Debug.Log(this.gameObject + " : Teleport");
+        if(!_teleportManager.arePadsReady) return;
+        Debug.Log(this.gameObject + " : Teleport Will Occur");
+        _teleportManager.arePadsReady = false;
+        // OnSetPadsReady?.Invoke(false);
+        StartCoroutine(TeleportPause());
+
+        if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
+
+        Vector3 localPos = this.transform.InverseTransformPoint(_pcPlayerTransform.position);
+        Quaternion localRot = Quaternion.Inverse(this.transform.rotation) * _pcPlayerTransform.rotation;
+
+        // _positionDifference = exitTeleportPad.position - this.transform.position;
+
+        _pcPlayerTransform.position = exitTeleportPad.TransformPoint(localPos);
+        _pcPlayerTransform.rotation = exitTeleportPad.rotation * localRot;
+    }
+
+    private void FixedUpdate()
+    {
+        if(!rotateRings) return;
+        
+        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || ring.rotation != restRotation)
+        {
+            ring.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
+        }
+        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || reverseRing.rotation != restRotation)
+        {
+            reverseRing.Rotate(Vector3.up * -rotateSpeed * Time.deltaTime);
+        }
+
+        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed) rotateSpeed += rotateIncrement;
+
+        if(rotateSpeed >= maxRotateSpeed)
+        {
+            rotateIncrement *= -1f;   
+            if(_isPlayerOnPad.Value)
+            {
+                Debug.Log(this.gameObject + " : FixedUpdate");
+                Teleport();     
+            }
+        }
+
+        if( rotateIncrement < 0 && 
+            rotateSpeed <= minRotateSpeed && 
+            Quaternion.Angle(ring.rotation, restRotation) < rotationRange && 
+            Quaternion.Angle(reverseRing.rotation, restRotation) < rotationRange)
+        {
+            rotateIncrement *= -1f;  
+            rotateRings = false;
+
+            ring.rotation = restRotation;
+            reverseRing.rotation = restRotation;
         }
     }
 
@@ -158,7 +233,7 @@ public class TeleportPad : NetworkBehaviour
 
     IEnumerator TeleportPause()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
         _teleportManager.arePadsReady = true;
         // OnSetPadsReady?.Invoke(true);
     }

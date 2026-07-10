@@ -46,7 +46,7 @@ public class TeleportManager : NetworkBehaviour
     private float _timeLimit;
     private float _timePassed;
 
-    public static event Action OnEveythingCollected;
+    public static event Action OnEverythingCollected;
 
     private bool _canPCFunction = false;
     private bool _canVRFunction = false;
@@ -126,15 +126,7 @@ public class TeleportManager : NetworkBehaviour
     {
         if(_foundAllCollectables)
         {
-            mapRenderer.material = finalMap;
-            _canChangeMap.Value = false;
-
-            for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
-            {
-                finalTeleportConnections.teleportPairs[i].
-                    entrancePad.GetComponent<TeleportPad>().
-                    ExitPadServerRpc(finalTeleportConnections.teleportPairs[i].exitPad.position);
-            }
+            _currentMap.Value = 999;
         }
 
         if(_canChangeMap.Value)
@@ -142,18 +134,6 @@ public class TeleportManager : NetworkBehaviour
             if(!_foundAllCollectables)
             {
                 _currentMap.Value = UnityEngine.Random.Range(0, maps.Length);
-                _canChangeMap.Value = false;
-
-                for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
-                {
-                    teleportConnections[_currentMap.Value].teleportPairs[i].
-                        entrancePad.GetComponent<TeleportPad>().
-                        ExitPadServerRpc(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad.position);
-                }
-                
-                _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
-                _timePassed = 0;
-                StartCoroutine(ChangeMapDelay(_timeLimit));
             }
         }
     }
@@ -166,7 +146,34 @@ public class TeleportManager : NetworkBehaviour
 
     private void ChangeMap(int previous, int current)
     {
-        mapRenderer.material = maps[current];
+        if(current == 999)
+        {
+            mapRenderer.material = finalMap;
+            CanChangeMapServerRpc(false);
+
+            for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
+            {
+                finalTeleportConnections.teleportPairs[i].
+                    entrancePad.GetComponent<TeleportPad>().
+                    SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
+            }
+        }
+        else
+        {
+            mapRenderer.material = maps[current];
+            CanChangeMapServerRpc(false);
+
+            for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
+            {
+                teleportConnections[_currentMap.Value].teleportPairs[i].
+                    entrancePad.GetComponent<TeleportPad>().
+                    SetExitPadTransform(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
+            }
+            
+            _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
+            _timePassed = 0;
+            StartCoroutine(ChangeMapDelay(_timeLimit));
+        }
     }
 
     IEnumerator ChangeMapDelay(float delay)
@@ -208,21 +215,18 @@ public class TeleportManager : NetworkBehaviour
     {
         // GainHiddenButtonClientRpc();
 
-        Debug.Log("=================");
-        Debug.Log("GainHiddenButton");
-        Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-        Debug.Log("before _collectablePoints: " + _collectablePoints);
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
         _collectablePoints++;
-        Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-        Debug.Log("after _collectablePoints: " + _collectablePoints);
 
-        if(collectableIndicators.Length <= _collectablePoints)
+        Debug.Log("=================");
+        Debug.Log("collectableIndicators.Length: " + collectableIndicators.Length);
+        Debug.Log("_collectablePoints: " + _collectablePoints);
+        if(1 <= _collectablePoints)
         {
             Debug.Log("Eveything Is Collected");
             _barList = null;
             _isEverythingCollected = true;
-            OnEveythingCollected?.Invoke();
+            OnEverythingCollected?.Invoke();
             CurrentMapServerRpc(true);
         }
     }
@@ -244,7 +248,7 @@ public class TeleportManager : NetworkBehaviour
     //         Debug.Log("Eveything Is Collected");
     //         _barList = null;
     //         _isEverythingCollected = true;
-    //         OnEveythingCollected?.Invoke();
+    //         OnEverythingCollected?.Invoke();
     //         CurrentMapServerRpc(true);
     //     }
     // }
@@ -253,14 +257,8 @@ public class TeleportManager : NetworkBehaviour
     {
         // RemoveHiddenButtonClientRpc();
 
-        Debug.Log("=================");
-        Debug.Log("RemoveHiddenButton");
-        Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-        Debug.Log("before _collectablePoints: " + _collectablePoints);
         _collectablePoints--;
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
-        Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-        Debug.Log("after _collectablePoints: " + _collectablePoints);
     }
 
     // [ClientRpc]

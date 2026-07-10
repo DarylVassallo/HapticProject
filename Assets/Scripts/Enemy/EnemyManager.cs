@@ -87,7 +87,7 @@ public class EnemyManager : NetworkBehaviour
 
     void FixedUpdate()
     {       
-        if(chancesOfEnemy.Value <= 0) return;
+        if(chancesOfEnemy.Value <= 0 || !IsOwner) return;
         PotentialEnemyCreation();
     }
 

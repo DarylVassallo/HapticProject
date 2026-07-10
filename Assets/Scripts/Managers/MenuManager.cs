@@ -221,6 +221,12 @@ public class MenuManager : NetworkBehaviour
         _bar.localScale = new Vector3(_maxBarLength * _newValue, _bar.localScale.y, _bar.localScale.z);
     }
     
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ToggleGameOverMenuRpc()
+    {
+        ToggleGameOverMenu();
+    }
+
     public void ToggleGameOverMenu()
     {
         _showGameOverMenu = !_showGameOverMenu;

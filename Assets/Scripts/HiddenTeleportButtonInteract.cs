@@ -42,24 +42,15 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
 
     public void TriggerInteraction()
     {
-        Debug.Log("TriggerInteraction");
-        Debug.Log("_isInteractable: " + _isInteractable);
         if (_isInteractable)
         {
-            TriggerInteractionServerRpc();
+            TriggerInteractionRpc();
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void TriggerInteractionServerRpc()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void TriggerInteractionRpc()
     {
-        TriggerInteractionClientRpc();
-    }
-
-    [ClientRpc]
-    public void TriggerInteractionClientRpc()
-    {
-        Debug.Log("On Trigger HiddenButton");
         OnTriggerHiddenButton?.Invoke();
 
         if(!_audioSource.isPlaying)
@@ -69,7 +60,11 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
             _audioSource.Play();
             _audioSource.enabled = true; 
 
-            StartCoroutine(DestroyHiddenButton());
+            // StartCoroutine(DestroyHiddenButton());
+
+            OnRemoveHiddenObject?.Invoke(this.gameObject);
+            renderer.enabled = false;
+            DisableInteraction();
         }
     }
 

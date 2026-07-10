@@ -34,13 +34,13 @@ public class CheckpointManager : NetworkBehaviour
         currentCheckpoint = firstCheckpoint;
 
         TeleportPad.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
-        TeleportManager.OnEveythingCollected += EverythingCollected;
+        TeleportManager.OnEverythingCollected += EverythingCollected;
     }
 
     private void OnDisable()
     {
         TeleportPad.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
-        TeleportManager.OnEveythingCollected -= EverythingCollected;
+        TeleportManager.OnEverythingCollected -= EverythingCollected;
     }
 
     private void GetPCPlayerData()
@@ -113,8 +113,8 @@ public class CheckpointManager : NetworkBehaviour
         }        
     }
 
-    [ClientRpc]
-    public void RespawnPCPlayerClientRpc()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void RespawnPCPlayerRpc()
     {
         if(!_canPCFunction) GetPCPlayerData();
 
