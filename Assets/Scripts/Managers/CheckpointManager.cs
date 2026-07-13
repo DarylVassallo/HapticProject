@@ -9,6 +9,7 @@ public class CheckpointManager : NetworkBehaviour
     [SerializeField] private Transform firstCheckpoint;
     [SerializeField] private Transform secondCheckpoint;
     [SerializeField] private Transform thirdCheckpoint;
+    [SerializeField] private Transform fourthCheckpoint;
     private Transform currentCheckpoint;
 
     private Transform _pcPlayerTransform;
@@ -17,30 +18,36 @@ public class CheckpointManager : NetworkBehaviour
 
     private bool _hasUsedTeleporter;
     private bool _hasCollectedEverything;
+    private bool _hasCrossedCrookedBridges;
 
     public static event Action OnResetHiddenSwitches;
     public static event Action OnResetHiddenButtons;
     public static event Action OnResetTeleportPads;
     public static event Action OnDestroyAllEnemies;
+    public static event Action OnDisableEnemySpawning;
 
     public static event Action OnActivateSecondCheckpointHiddenObjects;
     public static event Action OnActivateThirdCheckpointHiddenObjects;
 
     [SerializeField] private Transform hiddenButtons;
     [SerializeField] private Transform hiddenArrows;
+    [SerializeField] private Transform hiddenCrookedBridgePieces;
 
     private void OnEnable()
     {
         currentCheckpoint = firstCheckpoint;
+        Debug.Log("1 currentCheckpoint : " + currentCheckpoint);
 
         TeleportPad.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
         TeleportManager.OnEverythingCollected += EverythingCollected;
+        TeleportPad.OnCrossedCrookedBridges += CrossedCrookedBridges;
     }
 
     private void OnDisable()
     {
         TeleportPad.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
         TeleportManager.OnEverythingCollected -= EverythingCollected;
+        TeleportPad.OnCrossedCrookedBridges -= CrossedCrookedBridges;
     }
 
     private void GetPCPlayerData()
@@ -69,11 +76,20 @@ public class CheckpointManager : NetworkBehaviour
         }
     }
 
+    private void CrossedCrookedBridges()
+    {
+        if(!_hasCrossedCrookedBridges)
+        {
+            ActivateFourthCheckpointClientRpc();
+        }
+    }
+
     [ClientRpc]
     public void ActivateSecondCheckpointClientRpc()
     {
         _hasUsedTeleporter = true;
         currentCheckpoint = secondCheckpoint;
+        Debug.Log("2 currentCheckpoint : " + currentCheckpoint);
 
         for (int i = 0; i < hiddenButtons.childCount; i++)
         {
@@ -93,13 +109,32 @@ public class CheckpointManager : NetworkBehaviour
     {
         _hasCollectedEverything = true;
         currentCheckpoint = thirdCheckpoint;
+        Debug.Log("3 currentCheckpoint : " + currentCheckpoint);
+
+        for (int i = 0; i < hiddenCrookedBridgePieces.childCount; i++)
+        {
+            hiddenCrookedBridgePieces.GetChild(i).gameObject.SetActive(true);
+        }
+
+        OnDestroyAllEnemies?.Invoke();
+        OnDisableEnemySpawning?.Invoke();
 
         StartCoroutine(ActivateCheckpoint(3));
+    }
+
+    [ClientRpc]
+    public void ActivateFourthCheckpointClientRpc()
+    {
+        _hasCrossedCrookedBridges = true;
+        currentCheckpoint = fourthCheckpoint;
+        Debug.Log("4 currentCheckpoint : " + currentCheckpoint);
     }
 
     IEnumerator ActivateCheckpoint(int checkpointNum)
     {
         yield return new WaitForSeconds(0.5f);
+
+        Debug.Log("checkpointNum: " + checkpointNum);
 
         switch(checkpointNum)
         {

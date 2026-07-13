@@ -9,6 +9,7 @@ public class FallTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {        
+        Debug.Log(this.gameObject + " : OnTriggerEnter");
         if (isVRTrigger)
         {
             _entityRespawn = other.GetComponent<Respawn>();

@@ -221,7 +221,8 @@ public class TeleportManager : NetworkBehaviour
         Debug.Log("=================");
         Debug.Log("collectableIndicators.Length: " + collectableIndicators.Length);
         Debug.Log("_collectablePoints: " + _collectablePoints);
-        if(1 <= _collectablePoints)
+        // if(1 <= _collectablePoints)
+        if(collectableIndicators.Length <= _collectablePoints)
         {
             Debug.Log("Eveything Is Collected");
             _barList = null;

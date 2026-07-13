@@ -81,6 +81,8 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        hiddenObjects = new List<HiddenObject>();
+        
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
 

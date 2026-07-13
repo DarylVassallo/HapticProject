@@ -229,6 +229,7 @@ public class MenuManager : NetworkBehaviour
 
     public void ToggleGameOverMenu()
     {
+        Debug.Log("ToggleGameOverMenu _showGameOverMenu: " + _showGameOverMenu);
         _showGameOverMenu = !_showGameOverMenu;
 
         if(_showGameOverMenu)

@@ -25,6 +25,7 @@ public class TeleportPad : NetworkBehaviour
     public static event Action<Transform> OnAddNewBar;
     // public static event Action<bool> OnSetPadsReady;
     public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
+    public static event Action OnCrossedCrookedBridges;
 
     public bool arePadsReady = true;
 
@@ -45,6 +46,8 @@ public class TeleportPad : NetworkBehaviour
     private Quaternion restRotation;
     [SerializeField] private float rotationRange;
 
+    [SerializeField] private bool _isFinalPad;
+
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
@@ -52,7 +55,7 @@ public class TeleportPad : NetworkBehaviour
 
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
 
-        _instantTeleport = true;
+        _instantTeleport = false;
 
         restRotation = ring.rotation;
     }
@@ -132,7 +135,6 @@ public class TeleportPad : NetworkBehaviour
     [ClientRpc]
     public void TeleportPCPlayerClientRpc()
     {
-        Debug.Log(this.gameObject + " : TeleportPCPlayerClientRpc");
         Teleport();
 
         // _teleportManager.arePadsReady = false;
@@ -145,16 +147,23 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnTriggerEnter(Collider _other)
     {
+        Debug.Log(this.gameObject + " : OnTriggerEnter");
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
             OnIncreaseChanceOfSpawningEnemy?.Invoke(0.0002f);
+
+            if(_isFinalPad)
+            {
+                OnCrossedCrookedBridges?.Invoke();
+            }
         }
 
         if (_other.CompareTag("PCPlayer") && _teleportManager.arePadsReady)
         {
             ChangeIsPlayerOnPadServerRpc(true);
             // _pcPlayerTransform = _other.transform;
+
             if(_instantTeleport)
             {
                 exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
@@ -166,9 +175,7 @@ public class TeleportPad : NetworkBehaviour
 
     private void Teleport()
     {
-        Debug.Log(this.gameObject + " : Teleport");
         if(!_teleportManager.arePadsReady) return;
-        Debug.Log(this.gameObject + " : Teleport Will Occur");
         _teleportManager.arePadsReady = false;
         // OnSetPadsReady?.Invoke(false);
         StartCoroutine(TeleportPause());
@@ -204,7 +211,6 @@ public class TeleportPad : NetworkBehaviour
             rotateIncrement *= -1f;   
             if(_isPlayerOnPad.Value)
             {
-                Debug.Log(this.gameObject + " : FixedUpdate");
                 Teleport();     
             }
         }

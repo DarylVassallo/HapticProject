@@ -49,6 +49,8 @@ public class EnemyManager : NetworkBehaviour
 
     [SerializeField] private float audioBreak;
 
+    private bool _isEnemySpawningDisabled = false;
+
     void Awake()
     {
         goodDamageAudios = damageAudios;
@@ -67,16 +69,22 @@ public class EnemyManager : NetworkBehaviour
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
         MazeManager.OnCreateRandomEnemy += EnemyCreation;
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
+
         EnemyWithSpotlight.OnRemoveEnemy += RemoveEnemy;
+
+        TeleportPad.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
+        CheckpointManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
     }
 
     private void OnDisable()
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
         MazeManager.OnCreateRandomEnemy -= EnemyCreation;
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
+
         EnemyWithSpotlight.OnRemoveEnemy -= RemoveEnemy;
+
+        TeleportPad.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
+        CheckpointManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
     }
 
     private void GetPCPlayerData()
@@ -159,19 +167,20 @@ public class EnemyManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetChanceOfEnemysServerRpc(float _chance)
     {
-        chancesOfEnemy.Value = _chance;
+        if(!_isEnemySpawningDisabled) chancesOfEnemy.Value = _chance;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void AddChanceOfEnemysServerRpc(float _chance)
     {
-        chancesOfEnemy.Value = chancesOfEnemy.Value + _chance;
+        if(!_isEnemySpawningDisabled) chancesOfEnemy.Value = chancesOfEnemy.Value + _chance;
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void ResetChanceOfEnemysServerRpc(float _chance)
+    private void DisableEnemySpawningServerRpc()
     {
         chancesOfEnemy.Value = 0;
+        _isEnemySpawningDisabled = true;
     }
 
     [ServerRpc(RequireOwnership = false)]
