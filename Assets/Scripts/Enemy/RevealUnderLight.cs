@@ -20,12 +20,6 @@ public class RevealUnderLight : NetworkBehaviour
     [SerializeField] private bool isForSecondCheckpoint;
     [SerializeField] private bool isForThirdCheckpoint;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created.
-    void Start()
-    {
-        if(isImmediatelyNeeded) StartCoroutine(RequestNewHiddenObject());
-    }
-
     private void OnEnable()
     {
         if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects += AddObject;
@@ -40,6 +34,7 @@ public class RevealUnderLight : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        if(isImmediatelyNeeded) StartCoroutine(RequestNewHiddenObject());
         if(!isImmediatelyNeeded) this.gameObject.SetActive(false);
     }
 

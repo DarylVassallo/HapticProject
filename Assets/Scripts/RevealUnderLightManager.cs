@@ -155,10 +155,17 @@ public class RevealUnderLightManager : NetworkBehaviour
 
         for(int i = 0; i < hiddenObjects.Count; i++)
         {
-            _positionDifference = hiddenObjects[i].hiddenObject.transform.position - _pcFlashLight.position;
-            _positionDistance = _positionDifference.magnitude;
+            if(_canPCFunction)
+            {
+                _positionDifference = hiddenObjects[i].hiddenObject.transform.position - _pcFlashLight.position;
+                _positionDistance = _positionDifference.magnitude;
+            }
+            else
+            {
+                _positionDistance = 999;
+            }
 
-            if(_positionDistance < maxDistance)
+            if(_positionDistance < maxDistance || hiddenObjects[i].isVRInteractable)
             {
                 if (hiddenObjects[i].isEffectedByLight)
                 {

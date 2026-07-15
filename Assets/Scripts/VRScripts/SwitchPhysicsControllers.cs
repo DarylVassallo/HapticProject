@@ -56,6 +56,7 @@ public class SwitchPhysicsControllers : MonoBehaviour
         if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
             _canVRFunction = true;
+            TogglePhysicsControllers(true);
         }
     }
 
@@ -70,7 +71,7 @@ public class SwitchPhysicsControllers : MonoBehaviour
     
     public void TogglePhysicsControllers(bool newIsUsingVirtualHands)
     {
-        if(_canPCFunction && _canVRFunction)
+        if(_canVRFunction)
         {
             rightHandPhysics.SetActive(newIsUsingVirtualHands);
             leftHandPhysics.SetActive(newIsUsingVirtualHands);

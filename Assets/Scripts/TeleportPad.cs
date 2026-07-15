@@ -123,31 +123,12 @@ public class TeleportPad : NetworkBehaviour
     {
         if(_inputtedCode == _secretCode.Value && _isPlayerOnPad.Value)
         {
-            TeleportPCPlayerClientRpc();
+            StartRingRotationRpc();
         }
-    }
-
-    // private void SetPadsReady(bool _newArePadsReady)
-    // {
-    //     arePadsReady = _newArePadsReady;
-    // }
-
-    [ClientRpc]
-    public void TeleportPCPlayerClientRpc()
-    {
-        Teleport();
-
-        // _teleportManager.arePadsReady = false;
-        // // OnSetPadsReady?.Invoke(false);
-        // _positionDifference = exitTeleportPad.position - this.transform.position;
-
-        // if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
-        // _pcPlayerTransform.position = _pcPlayerTransform.position + _positionDifference;
     }
 
     private void OnTriggerEnter(Collider _other)
     {
-        Debug.Log(this.gameObject + " : OnTriggerEnter");
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
@@ -159,33 +140,38 @@ public class TeleportPad : NetworkBehaviour
             }
         }
 
-        if (_other.CompareTag("PCPlayer") && _teleportManager.arePadsReady)
+        if (_other.CompareTag("PCPlayer"))
         {
             ChangeIsPlayerOnPadServerRpc(true);
-            // _pcPlayerTransform = _other.transform;
 
             if(_instantTeleport)
             {
-                exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
-                rotateRings = true;
-                // Teleport();
+                StartRingRotationRpc();
             }
         }
     }
 
-    private void Teleport()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void StartRingRotationRpc()
     {
         if(!_teleportManager.arePadsReady) return;
+
+        exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
+        rotateRings = true;
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void TeleportRpc()
+    {
+        if(!_teleportManager.arePadsReady) return;
+        
         _teleportManager.arePadsReady = false;
-        // OnSetPadsReady?.Invoke(false);
         StartCoroutine(TeleportPause());
 
         if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
 
         Vector3 localPos = this.transform.InverseTransformPoint(_pcPlayerTransform.position);
         Quaternion localRot = Quaternion.Inverse(this.transform.rotation) * _pcPlayerTransform.rotation;
-
-        // _positionDifference = exitTeleportPad.position - this.transform.position;
 
         _pcPlayerTransform.position = exitTeleportPad.TransformPoint(localPos);
         _pcPlayerTransform.rotation = exitTeleportPad.rotation * localRot;
@@ -211,7 +197,7 @@ public class TeleportPad : NetworkBehaviour
             rotateIncrement *= -1f;   
             if(_isPlayerOnPad.Value)
             {
-                Teleport();     
+                TeleportRpc();     
             }
         }
 
@@ -233,7 +219,6 @@ public class TeleportPad : NetworkBehaviour
         if (_other.CompareTag("PCPlayer"))
         {
             ChangeIsPlayerOnPadServerRpc(false);
-            // _pcPlayerTransform = null;
         }
     }
 
@@ -241,6 +226,5 @@ public class TeleportPad : NetworkBehaviour
     {
         yield return new WaitForSeconds(1f);
         _teleportManager.arePadsReady = true;
-        // OnSetPadsReady?.Invoke(true);
     }
 }

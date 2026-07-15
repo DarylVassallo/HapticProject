@@ -12685,6 +12685,7 @@ GameObject:
   - component: {fileID: 3373126569453723744}
   - component: {fileID: 904514965557771746}
   - component: {fileID: 451120997578003692}
+  - component: {fileID: 7559035749889809452}
   m_Layer: 0
   m_Name: TeleportPad
   m_TagString: Untagged
@@ -12839,6 +12840,19 @@ MonoBehaviour:
   maxRotateSpeed: 1000
   rotationRange: 2
   _isFinalPad: 0
+--- !u!114 &7559035749889809452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6887934718295024515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644debc0b7d33d043af3caab53baa000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.GPUDriven.Runtime::UnityEngine.Rendering.DisallowGPUDrivenRendering
+  m_applyToChildrenRecursively: 1
 --- !u!1 &7049605430298265974
 GameObject:
   m_ObjectHideFlags: 0

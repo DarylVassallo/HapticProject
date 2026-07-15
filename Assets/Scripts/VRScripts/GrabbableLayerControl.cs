@@ -101,7 +101,6 @@ public class GrabbableLayerControl : MonoBehaviour
     private void OnGrabbed(SelectEnterEventArgs args)
     {
         Transform attachPoint = args.interactorObject.GetAttachTransform(args.interactableObject);
-        Debug.Log("attachPoint: " + attachPoint);
 
         _interactor = args.interactorObject.transform.gameObject;
 
@@ -183,7 +182,7 @@ public class GrabbableLayerControl : MonoBehaviour
     }
 
      private void ChangeInteractionLayer(int interactionLayer)
-    {
+    {        
         if(!isAttachable) return;
 
         if(interactionLayer == -2)

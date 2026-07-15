@@ -12500,9 +12500,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   rightHandPhysics: {fileID: 8726251925843060254}
+  rightHandRenderer: {fileID: 0}
   leftHandPhysics: {fileID: 4336382886760728654}
+  leftHandRenderer: {fileID: 0}
   rightControllerPhysics: {fileID: 8871825701458128100}
+  rightControllerRenderer: {fileID: 0}
   leftControllerPhysics: {fileID: 5430598173370977210}
+  leftControllerRenderer: {fileID: 0}
 --- !u!1 &5135014692067607203
 GameObject:
   m_ObjectHideFlags: 0
