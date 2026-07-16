@@ -132,7 +132,7 @@ public class TeleportPad : NetworkBehaviour
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
-            OnIncreaseChanceOfSpawningEnemy?.Invoke(0.0002f);
+            OnIncreaseChanceOfSpawningEnemy?.Invoke(0.0001f);
 
             if(_isFinalPad)
             {
@@ -175,6 +175,10 @@ public class TeleportPad : NetworkBehaviour
 
         _pcPlayerTransform.position = exitTeleportPad.TransformPoint(localPos);
         _pcPlayerTransform.rotation = exitTeleportPad.rotation * localRot;
+
+        Debug.Log("=======");
+        Debug.Log("new _pcPlayerTransform.position: " + _pcPlayerTransform.position);
+        Debug.Log("new _pcPlayerTransform.rotation: " + _pcPlayerTransform.rotation);
     }
 
     private void FixedUpdate()
@@ -225,6 +229,14 @@ public class TeleportPad : NetworkBehaviour
     IEnumerator TeleportPause()
     {
         yield return new WaitForSeconds(1f);
-        _teleportManager.arePadsReady = true;
+
+        if(rotateRings)
+        {
+            StartCoroutine(TeleportPause());
+        }
+        else
+        {
+            _teleportManager.arePadsReady = true;
+        }
     }
 }

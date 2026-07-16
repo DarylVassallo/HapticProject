@@ -317,10 +317,11 @@ public class ConnectUIScript : MonoBehaviour
 
     private void OnHostFoundHandler(string hostIp)
     {
+        Debug.Log("ConnectUIScript OnHostFoundHandler");
         networkDiscovery.OnHostFound -= OnHostFoundHandler;
 
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-        transport.SetConnectionData("192.168.1.10", 7777);
+        transport.SetConnectionData(hostIp, 7777);
 
         NetworkManager.Singleton.StartClient();
     }

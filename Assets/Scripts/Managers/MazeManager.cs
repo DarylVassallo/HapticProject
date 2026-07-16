@@ -486,7 +486,7 @@ public class MazeManager : NetworkBehaviour
         SetAudioNumServerRpc(3);
         // PlayAudio(3);
 
-        if(isTriangleLeverActive.Value) GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(2f, -1);
+        if(isTriangleLeverActive.Value) GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(6f, -1);
     }
 
     private void ResetButtons()

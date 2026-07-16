@@ -62,6 +62,7 @@ public class SwitchPhysicsControllers : MonoBehaviour
 
     private void ToggleHands(bool toggle)
     {
+        Debug.Log("SwitchPhysicsControllers ToggleHands : " + toggle);
         rightHandRenderer.SetActive(toggle);
         leftHandRenderer.SetActive(toggle);
 
@@ -69,10 +70,23 @@ public class SwitchPhysicsControllers : MonoBehaviour
         leftControllerRenderer.SetActive(toggle);
     }
     
-    public void TogglePhysicsControllers(bool newIsUsingVirtualHands)
+    public void StartTrackedHands()
+    {
+        Debug.Log("SwitchPhysicsControllers StartTrackedHands");
+        TogglePhysicsControllers(true);
+    }
+
+    public void StartTrackedControllers()
+    {
+        Debug.Log("SwitchPhysicsControllers StartTrackedControllers");
+        TogglePhysicsControllers(false);
+    }
+
+    private void TogglePhysicsControllers(bool newIsUsingVirtualHands)
     {
         if(_canVRFunction)
         {
+            Debug.Log("SwitchPhysicsControllers TogglePhysicsControllers : " + newIsUsingVirtualHands);
             rightHandPhysics.SetActive(newIsUsingVirtualHands);
             leftHandPhysics.SetActive(newIsUsingVirtualHands);
 

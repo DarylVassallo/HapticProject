@@ -21,6 +21,7 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
     public static event Action<GameObject> OnRemoveHiddenObject;
 
     private MeshRenderer renderer;
+    [SerializeField] private MeshRenderer imageRenderer;
     private RevealUnderLight revealUnderLight;
 
     void Awake()
@@ -64,6 +65,7 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
 
             OnRemoveHiddenObject?.Invoke(this.gameObject);
             renderer.enabled = false;
+            imageRenderer.enabled = false;
             DisableInteraction();
         }
     }
@@ -86,6 +88,7 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
         {
             OnRemoveHiddenObject?.Invoke(this.gameObject);
             renderer.enabled = false;
+            imageRenderer.enabled = false;
             DisableInteraction();
             // Destroy(this.gameObject);
         }
@@ -98,6 +101,7 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
             revealUnderLight.AddObject();
             OnResetHiddenButton?.Invoke();
             renderer.enabled = true;
+            imageRenderer.enabled = true;
             EnableInteraction();
         }
     }

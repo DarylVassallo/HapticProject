@@ -21,12 +21,14 @@ public class NetworkDiscovery : MonoBehaviour
 
     private void OnDestroy()
     {
+        Debug.Log("NetworkDiscovery OnDestroy");
         StopBroadcasting();
         StopListening();
     }
 
     public void StartBroadcasting()
     {
+        Debug.Log("NetworkDiscovery StartBroadcasting");
         if(isBroadcasting) return;
         isBroadcasting = true;
 
@@ -38,6 +40,7 @@ public class NetworkDiscovery : MonoBehaviour
 
     public void StopBroadcasting()
     {
+        Debug.Log("NetworkDiscovery StopBroadcasting");
         isBroadcasting = false;
         serverUdp?.Close();
         serverUdp = null;
@@ -45,11 +48,15 @@ public class NetworkDiscovery : MonoBehaviour
 
     private async Task BroadcastLoop()
     {
+        Debug.Log("NetworkDiscovery BroadcastLoop");
         var endPoint = new IPEndPoint(IPAddress.Broadcast, discoveryPort);
         byte[] data = Encoding.UTF8.GetBytes(broadcastKey);
 
         while (isBroadcasting)
         {
+            Debug.Log("NetworkDiscovery BroadcastLoop data : " + data);
+            Debug.Log("NetworkDiscovery BroadcastLoop data.Length : " + data.Length);
+            Debug.Log("NetworkDiscovery BroadcastLoop endPoint : " + endPoint);
             serverUdp.Send(data, data.Length, endPoint);
             await Task.Delay(1000);
         }
@@ -60,6 +67,7 @@ public class NetworkDiscovery : MonoBehaviour
 
     public void StartListening()
     {
+        Debug.Log("NetworkDiscovery StartListening");
         if(isListening) return;
         isListening = true;
 
@@ -69,6 +77,7 @@ public class NetworkDiscovery : MonoBehaviour
 
     public void StopListening()
     {
+        Debug.Log("NetworkDiscovery StopListening");
         isListening = false;
         clientUdp?.Close();
         clientUdp = null;
@@ -76,18 +85,43 @@ public class NetworkDiscovery : MonoBehaviour
 
     private async Task ListenLoop()
     {
+        Debug.Log("NetworkDiscovery ListenLoop");
+        Debug.Log("NetworkDiscovery ListenLoop isListening : " + isListening);
         while(isListening)
         {
-            var result = await clientUdp.ReceiveAsync();
-            string message = Encoding.UTF8.GetString(result.Buffer);
-
-            if(message == broadcastKey)
+            Debug.Log("NetworkDiscovery ListenLoop loop");
+            try
             {
-                string hostIp = result.RemoteEndPoint.Address.ToString();
-                Debug.Log("Found Host IP: " + hostIp);
-                OnHostFound?.Invoke(hostIp);
-                StopListening();
+                var result = await clientUdp.ReceiveAsync();
+                Debug.Log("NetworkDiscovery ListenLoop result : " + result);
+                string message = Encoding.UTF8.GetString(result.Buffer);
+                Debug.Log("NetworkDiscovery ListenLoop message : " + message);
+                Debug.Log("NetworkDiscovery ListenLoop broadcastKey : " + broadcastKey);
+
+                if(message == broadcastKey)
+                {
+                    string hostIp = result.RemoteEndPoint.Address.ToString();
+                    Debug.Log("Found Host IP: " + hostIp);
+                    OnHostFound?.Invoke(hostIp);
+                    StopListening();
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                Debug.LogError("NetworkDiscovery ObjectDisposedException");
+                break;
+            }
+            catch(SocketException se)
+            {
+                Debug.LogError("NetworkDiscovery SocketException: " + se.SocketErrorCode + " " + se.Message);
+                break;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("NetworkDiscovery ListenLoop exception: " + e);
+                break;
             }
         }
+        Debug.Log("NetworkDiscovery ListenLoop exited");
     }
 }

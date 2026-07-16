@@ -51,6 +51,8 @@ public class EnemyManager : NetworkBehaviour
 
     private bool _isEnemySpawningDisabled = false;
 
+    [SerializeField] private bool disableEnemies;
+
     void Awake()
     {
         goodDamageAudios = damageAudios;
@@ -196,6 +198,8 @@ public class EnemyManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void InstantiateNearbyRandomEnemyServerRpc()
     {
+        if(disableEnemies) return;
+
         if(enemyList.Count < enemyNumLimit)
         {
             float distance = 0;
