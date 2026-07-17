@@ -64,8 +64,8 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
             // StartCoroutine(DestroyHiddenButton());
 
             OnRemoveHiddenObject?.Invoke(this.gameObject);
-            renderer.enabled = false;
-            imageRenderer.enabled = false;
+            
+            ToggleRenderer(false);
             DisableInteraction();
         }
     }
@@ -87,8 +87,8 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
         if(_isInteractable)
         {
             OnRemoveHiddenObject?.Invoke(this.gameObject);
-            renderer.enabled = false;
-            imageRenderer.enabled = false;
+            
+            ToggleRenderer(false);
             DisableInteraction();
             // Destroy(this.gameObject);
         }
@@ -100,9 +100,20 @@ public class HiddenTeleportButtonInteract : NetworkBehaviour, IInteractable
         {
             revealUnderLight.AddObject();
             OnResetHiddenButton?.Invoke();
-            renderer.enabled = true;
-            imageRenderer.enabled = true;
+
+            ToggleRenderer(true);
             EnableInteraction();
         }
+    }
+
+    private void ToggleRenderer(bool toggle)
+    {
+        renderer.enabled = toggle;
+        foreach (Transform child in this.transform)
+        {
+            child.GetComponent<MeshRenderer>().enabled = toggle;
+        }
+
+        imageRenderer.enabled = toggle;
     }
 }

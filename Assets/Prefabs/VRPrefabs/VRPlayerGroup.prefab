@@ -79,13 +79,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 124444356139173399}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6084562080205694051}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &294228015977194930
 GameObject:
   m_ObjectHideFlags: 0
@@ -1169,6 +1169,7 @@ GameObject:
   - component: {fileID: 1108918549251130898}
   - component: {fileID: 7801124159163040532}
   - component: {fileID: 2381358672849178429}
+  - component: {fileID: 7598631272741467945}
   m_Layer: 0
   m_Name: Right Controller
   m_TagString: Untagged
@@ -1339,6 +1340,20 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+--- !u!114 &7598631272741467945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 971651528957708507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  controllerPhysics: {fileID: 8871825701458128100}
+  controllerRenderer: {fileID: 1197825969843019776}
 --- !u!1 &996415335972745225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1396,7 +1411,7 @@ GameObject:
   - component: {fileID: 8867661466136754330}
   m_Layer: 0
   m_Name: Near-Far Interactor
-  m_TagString: Untagged
+  m_TagString: LeftHandInteractor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4150,6 +4165,7 @@ GameObject:
   - component: {fileID: 5816673895126765891}
   - component: {fileID: 8709368977244919315}
   - component: {fileID: 6738138209021654138}
+  - component: {fileID: 6743920296318842181}
   m_Layer: 0
   m_Name: Left Hand
   m_TagString: Untagged
@@ -4308,36 +4324,10 @@ MonoBehaviour:
   m_Handedness: 1
   m_PokeGestureStarted:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4932790804451360370}
-        m_TargetAssemblyTypeName: UnityEngine.XR.Interaction.Toolkit.MultiCastInteractor.NearFarInteractor,
-          Unity.XR.Interaction.Toolkit
-        m_MethodName: set_enableFarCasting
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_PokeGestureEnded:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 4932790804451360370}
-        m_TargetAssemblyTypeName: UnityEngine.XR.Interaction.Toolkit.MultiCastInteractor.NearFarInteractor,
-          Unity.XR.Interaction.Toolkit
-        m_MethodName: set_enableFarCasting
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!82 &6738138209021654138
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4435,6 +4425,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6743920296318842181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164960818006827639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  controllerPhysics: {fileID: 4336382886760728654}
+  controllerRenderer: {fileID: 412925962486966613}
 --- !u!1 &2182688562150306386
 GameObject:
   m_ObjectHideFlags: 0
@@ -5419,7 +5423,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6433331826659126570
 Transform:
   m_ObjectHideFlags: 0
@@ -6277,6 +6281,7 @@ GameObject:
   - component: {fileID: 1614216567479572902}
   - component: {fileID: 5179491807856860393}
   - component: {fileID: 5501065039664833284}
+  - component: {fileID: 4517025530030103941}
   m_Layer: 0
   m_Name: Left Controller
   m_TagString: Untagged
@@ -6447,6 +6452,20 @@ MonoBehaviour:
     m_Interactions: 
     m_SingletonActionBindings: []
     m_Flags: 0
+--- !u!114 &4517025530030103941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2721873339769875651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  controllerPhysics: {fileID: 5430598173370977210}
+  controllerRenderer: {fileID: 4600263308161309566}
 --- !u!1 &2732898974753159613
 GameObject:
   m_ObjectHideFlags: 0
@@ -8903,7 +8922,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2401510373599361450
 Transform:
   m_ObjectHideFlags: 0
@@ -9001,7 +9020,7 @@ GameObject:
   - component: {fileID: 1578122327961259039}
   m_Layer: 0
   m_Name: Near-Far Interactor
-  m_TagString: Untagged
+  m_TagString: RightHandInteractor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9442,7 +9461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 4294967295
   m_Handedness: 1
   m_AttachTransform: {fileID: 2690585515388938800}
   m_KeepSelectedTargetValid: 1
@@ -10475,7 +10494,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3099737048
+  GlobalObjectIdHash: 4216742613
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -12304,12 +12323,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8264034804708418950}
   - component: {fileID: 6325197618643750491}
-  - component: {fileID: 5059312491728041138}
   - component: {fileID: 1036988942839546610}
   - component: {fileID: 8212466592634036403}
   - component: {fileID: 1262110919379917281}
   - component: {fileID: 4177737128676250780}
-  - component: {fileID: 830742091014566238}
   m_Layer: 2
   m_Name: XR Origin Hands (XR Rig)
   m_TagString: VRPlayer
@@ -12352,31 +12369,6 @@ MonoBehaviour:
   m_CameraFloorOffsetObject: {fileID: 996415335972745225}
   m_RequestedTrackingOriginMode: 0
   m_CameraYOffset: 1.36144
---- !u!143 &5059312491728041138
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5114530701331820787}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Height: 1.36144
-  m_Radius: 0.1
-  m_SlopeLimit: 45
-  m_StepOffset: 0.5
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.76072, z: 0}
 --- !u!114 &1036988942839546610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12409,37 +12401,13 @@ MonoBehaviour:
   m_RightController: {fileID: 971651528957708507}
   m_TrackedHandModeStarted:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 830742091014566238}
-        m_TargetAssemblyTypeName: SwitchPhysicsControllers, Assembly-CSharp
-        m_MethodName: TogglePhysicsControllers
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
   m_TrackedHandModeEnded:
     m_PersistentCalls:
       m_Calls: []
   m_MotionControllerModeStarted:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 830742091014566238}
-        m_TargetAssemblyTypeName: SwitchPhysicsControllers, Assembly-CSharp
-        m_MethodName: TogglePhysicsControllers
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_MotionControllerModeEnded:
     m_PersistentCalls:
       m_Calls: []
@@ -12487,26 +12455,6 @@ MonoBehaviour:
   head: {fileID: 5359820599906424667}
   leftHand: {fileID: 7638016608752864631}
   rightHand: {fileID: 3058822504107505140}
---- !u!114 &830742091014566238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5114530701331820787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9610a17062207f48be0dc4eee547cff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  rightHandPhysics: {fileID: 8726251925843060254}
-  rightHandRenderer: {fileID: 0}
-  leftHandPhysics: {fileID: 4336382886760728654}
-  leftHandRenderer: {fileID: 0}
-  rightControllerPhysics: {fileID: 8871825701458128100}
-  rightControllerRenderer: {fileID: 0}
-  leftControllerPhysics: {fileID: 5430598173370977210}
-  leftControllerRenderer: {fileID: 0}
 --- !u!1 &5135014692067607203
 GameObject:
   m_ObjectHideFlags: 0
@@ -12728,7 +12676,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3001802475
+  GlobalObjectIdHash: 66032075
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -12878,6 +12826,7 @@ GameObject:
   - component: {fileID: 2706145244926843475}
   - component: {fileID: 946156181834808779}
   - component: {fileID: 347163312063735162}
+  - component: {fileID: 2319927211212666385}
   m_Layer: 0
   m_Name: Right Hand
   m_TagString: Untagged
@@ -13036,36 +12985,10 @@ MonoBehaviour:
   m_Handedness: 2
   m_PokeGestureStarted:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554793705644365140}
-        m_TargetAssemblyTypeName: UnityEngine.XR.Interaction.Toolkit.MultiCastInteractor.NearFarInteractor,
-          Unity.XR.Interaction.Toolkit
-        m_MethodName: set_enableFarCasting
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_PokeGestureEnded:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 554793705644365140}
-        m_TargetAssemblyTypeName: UnityEngine.XR.Interaction.Toolkit.MultiCastInteractor.NearFarInteractor,
-          Unity.XR.Interaction.Toolkit
-        m_MethodName: set_enableFarCasting
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
+      m_Calls: []
 --- !u!82 &347163312063735162
 AudioSource:
   m_ObjectHideFlags: 0
@@ -13163,6 +13086,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &2319927211212666385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5459494083396361037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  controllerPhysics: {fileID: 8726251925843060254}
+  controllerRenderer: {fileID: 9164146376865140710}
 --- !u!1 &5462183358455158065
 GameObject:
   m_ObjectHideFlags: 0
@@ -14241,13 +14178,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5932801640141344714}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 856347487451303241}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &5966550952987168837
 GameObject:
   m_ObjectHideFlags: 0
@@ -14709,7 +14646,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8718366513695447564
 Transform:
   m_ObjectHideFlags: 0
@@ -16487,7 +16424,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 61439
+    m_Bits: 258047
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -16921,7 +16858,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
   m_InteractionLayers:
-    m_Bits: 1
+    m_Bits: 4294967295
   m_Handedness: 2
   m_AttachTransform: {fileID: 4165340470135201013}
   m_KeepSelectedTargetValid: 1
@@ -18487,7 +18424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1684302518068221761
 Transform:
   m_ObjectHideFlags: 0
@@ -21244,7 +21181,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2043632182
+  GlobalObjectIdHash: 2215823534
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -22126,7 +22063,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3401530623
+  GlobalObjectIdHash: 2182649972
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -22233,7 +22170,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2193826131719228132
 Transform:
   m_ObjectHideFlags: 0
@@ -23221,19 +23158,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6763752
+      value: 0.78355104
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.20619556
+      value: -0.23886782
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.20619549
+      value: 0.16725703
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.6763752
+      value: 0.5486483
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -23245,7 +23182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 70
       objectReference: {fileID: 0}
     - target: {fileID: 992896250728694134, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Layer
@@ -23419,19 +23356,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.70644534
+      value: 0.5730399
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.030579206
+      value: -0.024804026
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.030579176
+      value: 0.035423823
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.7064452
+      value: 0.8183858
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -23443,7 +23380,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 734996079564348568, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 90
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 992896250728694134, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Layer

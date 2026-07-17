@@ -130,6 +130,9 @@ public class RevealUnderLightManager : NetworkBehaviour
                             isReversed = newIsReversed,
                             _isInteractable = false
                         });
+
+        Debug.Log("Hidden Object Added : " + newHiddenObject);
+        Debug.Log("Hidden Object A Count: " + hiddenObjects.Count);
     }
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
@@ -137,6 +140,9 @@ public class RevealUnderLightManager : NetworkBehaviour
         hiddenObjects.RemoveAll(h => 
                                 h.hiddenObject != null && 
                                 h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
+
+        Debug.Log("Hidden Object Removed : " + oldHiddenObject);
+        Debug.Log("Hidden Object R Count: " + hiddenObjects.Count);
     }
 
     private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
