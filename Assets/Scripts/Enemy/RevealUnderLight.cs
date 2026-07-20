@@ -34,28 +34,23 @@ public class RevealUnderLight : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log(this.gameObject + " : RevealUnderLight OnNetworkSpawn: ");
-        Debug.Log(this.gameObject + " : RevealUnderLight isImmediatelyNeeded: " + isImmediatelyNeeded);
         if(isImmediatelyNeeded) StartCoroutine(RequestNewHiddenObject());
         if(!isImmediatelyNeeded) this.gameObject.SetActive(false);
     }
 
     IEnumerator RequestNewHiddenObject()
     {
-        Debug.Log(this.gameObject + " : RevealUnderLight RequestNewHiddenObject");
         yield return new WaitForSeconds(0.5f);
         AddObject();
     }
 
     public void AddObject()
     {
-        Debug.Log(this.gameObject + " : RevealUnderLight AddObject");
         AddHiddenObject();
     }
 
     public void AddHiddenObject()
     {
-        Debug.Log(this.gameObject + " : RevealUnderLight AddHiddenObject");
         OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
     }
 }

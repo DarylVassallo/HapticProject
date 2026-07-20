@@ -14,15 +14,11 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private Transform _pcPlayerTransform;
     private Health _pcPlayerHealth;
     private FlashlightCharge _pcFlashlightCharge;
-    private FlashlightCharge _vrFlashlightCharge;
 
     private Transform _pcPlayerSpotLight;
     private bool _isPCTooClose;
     private bool _isPCTooFar;
     private bool _isInsidePCSpotLight;
-
-    private Transform _vrPlayerSpotLight;
-    private bool _isInsideVRSpotLight;
 
     private float _spotLightDistance;
     private float _spotLightAngle;
@@ -54,9 +50,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [SerializeField] private AudioClip[] whisperingAudios;
     private AudioSource _audioSource;
 
-    private bool _canPCFunction = false;
-    private bool _canVRFunction = false;
-
     private bool _shuttingDown = false;
 
     [SerializeField] private int maxAttackDelay;
@@ -87,9 +80,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
 
         GetPCPlayerData();
-        
-        _canPCFunction = true;
-        _canVRFunction = true;
 
         _attackCount = maxAttackDelay;
 
@@ -99,14 +89,12 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private void OnEnable()
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
         CheckpointManager.OnDestroyAllEnemies += DestroyEnemy;
     }
 
     private void OnDisable()
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
         CheckpointManager.OnDestroyAllEnemies -= DestroyEnemy;
     }
 
@@ -199,31 +187,12 @@ public class EnemyWithSpotlight : NetworkBehaviour
             _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
             _pcPlayerSpotLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
             _pcFlashlightCharge = _pcPlayerSpotLight.GetComponent<FlashlightCharge>();
-            
-            _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
-            _vrFlashlightCharge = _vrPlayerSpotLight.GetComponent<FlashlightCharge>();
-            
-            _canPCFunction = true;
-        }
-    }
-
-    private void GetVRPlayerData()
-    {
-        if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
-        {
-            // _vrPlayerSpotLight = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponentInChildren<Light>();
-            _canVRFunction = true;
         }
     }
 
     void FixedUpdate()
     {
-        if(!_canPCFunction) GetPCPlayerData();
-        if(!_canVRFunction) GetVRPlayerData();
-
-        if(!IsServer) return;
-
-        // if(!_canPCFunction && !_canVRFunction) return;
+        if(!IsOwner) return;
 
         if(_attackCount > 0) _attackCount--;
 
@@ -234,40 +203,17 @@ public class EnemyWithSpotlight : NetworkBehaviour
             StandBy();
         }else{    
             _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
-            _isInsideVRSpotLight = IsInsideSpotLight(_vrPlayerSpotLight, _vrFlashlightCharge);
-
-            if(!_isInsidePCSpotLight && !_isInsideVRSpotLight)
-            {
-                if(health.isDead)
-                {
-                    RemoveEnemyClientRpc();
-                }
-            }
-            
-            // if(_isInsidePCSpotLight || _isInsideVRSpotLight)
-            // {
-            //     if (_isInsidePCSpotLight && _isInsideVRSpotLight)
-            //     {
-            //         DamageAndFreeze(2);
-            //     }
-            //     else if (_isInsidePCSpotLight)
-            //     {
-            //         DamageAndFreeze(0);
-            //     }
-            //     else if (_isInsideVRSpotLight)
-            //     {
-            //         DamageAndFreeze(1);
-            //     }
-            // }
 
             if (_isInsidePCSpotLight)
             {
                 DamageAndFreeze(0);
             }
-
-            if(!_isInsidePCSpotLight && !_isInsideVRSpotLight)
+            else
             {
-                if (_isPCTooClose && _attackCount <= 0)
+                if(health.isDead)
+                {
+                    RemoveEnemyClientRpc();
+                }else if (_isPCTooClose && _attackCount <= 0)
                 {
                     StopAndAttack(damageToPlayer);  
                 }

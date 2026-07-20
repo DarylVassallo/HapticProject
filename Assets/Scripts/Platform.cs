@@ -7,7 +7,8 @@ public class Platform : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // if(!IsOwner) return;
+        if(!IsOwner) return;
+        Debug.Log("On Platform");
 
         if (other.CompareTag("PCPlayer") || other.CompareTag("Enemy"))
         {
@@ -21,7 +22,7 @@ public class Platform : NetworkBehaviour
     
     private void OnTriggerExit(Collider other)
     {
-        // if(!IsOwner) return;
+        if(!IsOwner) return;
         
         if (other.CompareTag("PCPlayer") || other.CompareTag("Enemy"))
         {

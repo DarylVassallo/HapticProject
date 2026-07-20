@@ -11,34 +11,31 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log(this.gameObject + " : TogglePhysicsControllers : OnEnable");
         MenuManager.OnToggleAll += ToggleHands;
 
         isActive = true;
         controllerPhysics.SetActive(true);
         controllerRenderer.SetActive(true);
 
+
+        Debug.Log(this.gameObject + ": Enable");
         OnChangedControllers?.Invoke();
     }
 
     private void OnDisable()
     {
-        Debug.Log(this.gameObject + " : TogglePhysicsControllers : OnDisable");
         MenuManager.OnToggleAll -= ToggleHands;
 
         isActive = false;
         controllerPhysics.SetActive(false);
         controllerRenderer.SetActive(false);
-
-        // OnChangedControllers?.Invoke();
+        
+        Debug.Log(this.gameObject + ": Disable");
+        OnChangedControllers?.Invoke();
     }
 
      private void ToggleHands(bool toggle)
     {
-        if (isActive)
-        {
-            Debug.Log(this.gameObject + " : TogglePhysicsControllers ToggleHands : " + toggle);
-            controllerRenderer.SetActive(toggle);
-        }
+        if (isActive) controllerRenderer.SetActive(toggle);
     }
 }

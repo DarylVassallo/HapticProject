@@ -67,8 +67,8 @@ public class TeleportManager : NetworkBehaviour
 
         TeleportPad.OnAddNewBar += AddNewBar;
 
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataRpc;
     }
 
     private void OnDisable()
@@ -79,8 +79,8 @@ public class TeleportManager : NetworkBehaviour
 
         TeleportPad.OnAddNewBar -= AddNewBar;
 
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
     }
 
     // public override void OnNetworkSpawn()
@@ -89,16 +89,20 @@ public class TeleportManager : NetworkBehaviour
     //     mapRenderer.material = maps[_currentMap.Value];
     // }
 
-    private void GetPCPlayerData()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void GetPCPlayerDataRpc()
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
             _canPCFunction = true;
             InitialMap();
         }
+
+        if(!IsOwner) GetVRPlayerDataRpc();
     }
 
-    private void GetVRPlayerData()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void GetVRPlayerDataRpc()
     {
         if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
@@ -109,10 +113,9 @@ public class TeleportManager : NetworkBehaviour
 
     private void InitialMap()
     {
-        if(_canPCFunction && _canVRFunction)
+        if(_canPCFunction)
         {
             CurrentMapServerRpc(false);
-            mapRenderer.material = maps[_currentMap.Value];
         }
     }
 
@@ -134,6 +137,7 @@ public class TeleportManager : NetworkBehaviour
             if(!_foundAllCollectables)
             {
                 _currentMap.Value = UnityEngine.Random.Range(0, maps.Length);
+                mapRenderer.material = maps[_currentMap.Value];
             }
         }
     }
@@ -218,9 +222,6 @@ public class TeleportManager : NetworkBehaviour
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
         _collectablePoints++;
 
-        Debug.Log("=================");
-        Debug.Log("collectableIndicators.Length: " + collectableIndicators.Length);
-        Debug.Log("_collectablePoints: " + _collectablePoints);
         // if(1 <= _collectablePoints)
         if(collectableIndicators.Length <= _collectablePoints)
         {

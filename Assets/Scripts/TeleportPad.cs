@@ -168,17 +168,13 @@ public class TeleportPad : NetworkBehaviour
         _teleportManager.arePadsReady = false;
         StartCoroutine(TeleportPause());
 
-        if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Transform>();
+        if(_pcPlayerTransform == null) _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
 
         Vector3 localPos = this.transform.InverseTransformPoint(_pcPlayerTransform.position);
-        Quaternion localRot = Quaternion.Inverse(this.transform.rotation) * _pcPlayerTransform.rotation;
+        Quaternion localRot = Quaternion.Inverse(this.transform.rotation) * _pcPlayerTransform.GetChild(0).rotation;
 
         _pcPlayerTransform.position = exitTeleportPad.TransformPoint(localPos);
-        _pcPlayerTransform.rotation = exitTeleportPad.rotation * localRot;
-
-        Debug.Log("=======");
-        Debug.Log("new _pcPlayerTransform.position: " + _pcPlayerTransform.position);
-        Debug.Log("new _pcPlayerTransform.rotation: " + _pcPlayerTransform.rotation);
+        _pcPlayerTransform.GetChild(0).rotation = exitTeleportPad.rotation * localRot;
     }
 
     private void FixedUpdate()

@@ -66,24 +66,28 @@ public class GrabbableLayerControl : MonoBehaviour
         OnDestroy();
 
         this.gameObject.layer = _standardLayer;
-
-        leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        if(leftHandSocket != null)
+        
+        if(GameObject.FindWithTag("LeftHandSocket") != null)
         {
+            leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
             leftHandSocket.selectEntered.AddListener(OnLeftHandInserted);
             leftHandSocket.selectExited.AddListener(OnLeftHandRemoved);
         }
-
-        rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        if(rightHandSocket != null)
+        
+        if(GameObject.FindWithTag("RightHandSocket") != null)
         {
+            rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
             rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
             rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
         }
+
+        Debug.Log("leftHandSocket: " + leftHandSocket);
+        Debug.Log("rightHandSocket: " + rightHandSocket);
     }
 
     private void OnLeftHandInserted(SelectEnterEventArgs args)
     {
+        Debug.Log("OnLeftHandInserted");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInLeftHandSocket = true;
         ChangeLayer(this.gameObject, -1);
@@ -91,6 +95,7 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnLeftHandRemoved(SelectExitEventArgs args)
     {
+        Debug.Log("OnLeftHandRemoved");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInLeftHandSocket = false;
         ChangeLayer(this.gameObject, -1);
@@ -98,6 +103,7 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnRightHandInserted(SelectEnterEventArgs args)
     {
+        Debug.Log("OnRightHandInserted");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInRightHandSocket = true;
         ChangeLayer(this.gameObject, -1);
@@ -105,6 +111,7 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnRightHandRemoved(SelectExitEventArgs args)
     {
+        Debug.Log("OnRightHandRemoved");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInRightHandSocket = false;
         ChangeLayer(this.gameObject, -1);

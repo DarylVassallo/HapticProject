@@ -68,8 +68,8 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataRpc;
 
         RevealUnderLight.OnAddNewHiddenObject += AddNewHiddenObject;
 
@@ -83,8 +83,8 @@ public class RevealUnderLightManager : NetworkBehaviour
     {
         hiddenObjects = new List<HiddenObject>();
         
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
 
         RevealUnderLight.OnAddNewHiddenObject -= AddNewHiddenObject;
 
@@ -94,7 +94,8 @@ public class RevealUnderLightManager : NetworkBehaviour
         Health.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
     }
 
-    private void GetPCPlayerData()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void GetPCPlayerDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
@@ -103,9 +104,12 @@ public class RevealUnderLightManager : NetworkBehaviour
             _pcFlashLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
             _pcFlashLightCharge = GameObject.FindGameObjectWithTag("PCFlashLight").GetComponent<FlashlightCharge>();
         }
+
+        if(!IsOwner) GetVRPlayerDataRpc();
     }
     
-    private void GetVRPlayerData()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void GetVRPlayerDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
@@ -129,10 +133,7 @@ public class RevealUnderLightManager : NetworkBehaviour
                             isEffectedByLight = newIsEffectedByLight,
                             isReversed = newIsReversed,
                             _isInteractable = false
-                        });
-
-        Debug.Log("Hidden Object Added : " + newHiddenObject);
-        Debug.Log("Hidden Object A Count: " + hiddenObjects.Count);
+                        });;
     }
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
@@ -140,9 +141,6 @@ public class RevealUnderLightManager : NetworkBehaviour
         hiddenObjects.RemoveAll(h => 
                                 h.hiddenObject != null && 
                                 h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
-
-        Debug.Log("Hidden Object Removed : " + oldHiddenObject);
-        Debug.Log("Hidden Object R Count: " + hiddenObjects.Count);
     }
 
     private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
@@ -153,9 +151,6 @@ public class RevealUnderLightManager : NetworkBehaviour
     private void Update()
     {
         // if(!IsOwner) return;
-
-        if(!_canPCFunction) GetPCPlayerData();
-        if(!_canVRFunction) GetVRPlayerData();
 
         // if(!_canVRFunction) return;
 
