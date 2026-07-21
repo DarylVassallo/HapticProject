@@ -48,6 +48,11 @@ public class TeleportPad : NetworkBehaviour
 
     [SerializeField] private bool _isFinalPad;
 
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _teleportAudio;
+
+    public static event Action<float, float> OnChangeTeleportRotateSpeed;
+
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
@@ -58,6 +63,8 @@ public class TeleportPad : NetworkBehaviour
         _instantTeleport = false;
 
         restRotation = ring.rotation;
+
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
     void Start()
@@ -158,6 +165,18 @@ public class TeleportPad : NetworkBehaviour
 
         exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
         rotateRings = true;
+
+        _audioSource.Stop();
+        _audioSource.clip = _teleportAudio;
+        _audioSource.pitch = 3f;
+        _audioSource.Play();
+        _audioSource.enabled = true; 
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    private void StopAudioRpc()
+    {
+        _audioSource.Stop();
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -190,7 +209,12 @@ public class TeleportPad : NetworkBehaviour
             reverseRing.Rotate(Vector3.up * -rotateSpeed * Time.deltaTime);
         }
 
-        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed) rotateSpeed += rotateIncrement;
+        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
+        {
+            rotateSpeed += rotateIncrement;
+            Debug.Log(this.gameObject + " : Change Rotate Speed");
+            OnChangeTeleportRotateSpeed?.Invoke(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
+        }
 
         if(rotateSpeed >= maxRotateSpeed)
         {
@@ -211,6 +235,11 @@ public class TeleportPad : NetworkBehaviour
 
             ring.rotation = restRotation;
             reverseRing.rotation = restRotation;
+
+            Debug.Log(this.gameObject + " : Stop Rotating");
+            OnChangeTeleportRotateSpeed?.Invoke(0, maxRotateSpeed);
+            
+            StopAudioRpc();
         }
     }
 
