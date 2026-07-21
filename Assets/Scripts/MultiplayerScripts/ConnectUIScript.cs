@@ -46,6 +46,7 @@ public class ConnectUIScript : MonoBehaviour
         networkDiscovery = this.GetComponent<NetworkDiscovery>();
         Debug.Log("ConnectUIScript Start");
 
+        Debug.Log("ConnectUIScript Start isSceneLoaded: " + isSceneLoaded);
         if (isSceneLoaded)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -59,6 +60,7 @@ public class ConnectUIScript : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
+            Debug.Log("ConnectUIScript Start hasSceneLoaded: " + hasSceneLoaded);
             if(!hasSceneLoaded)
             {
                 hasSceneLoaded = true;
@@ -185,7 +187,16 @@ public class ConnectUIScript : MonoBehaviour
                     OnCreatedPCPlayer?.Invoke();
                 }
             }
+
+            StartCoroutine(DisableHostButtonsDelay(5f));
         }
+    }
+
+    IEnumerator DisableHostButtonsDelay(float delay)
+    {
+        Debug.Log("ConnectUIScript DisableHostButtonsDelay");
+
+        yield return new WaitForSeconds(delay);
 
         DisableHostButtonsaRpc();
     }
@@ -193,6 +204,8 @@ public class ConnectUIScript : MonoBehaviour
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void DisableHostButtonsaRpc()
     {
+        Debug.Log("ConnectUIScript DisableHostButtonsaRpc");
+        
         Debug.Log("hostButton: " + hostButton);
         Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
         hostButton.transform.parent.gameObject.SetActive(false);
