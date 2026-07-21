@@ -180,6 +180,7 @@ public class ConnectUIScript : NetworkBehaviour
                 else
                 {
                     Debug.Log("Create PCPlayer 2");
+                    Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
                     GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                     NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
                     _pcNetObj.SpawnAsPlayerObject(clientId, true);
@@ -188,7 +189,8 @@ public class ConnectUIScript : NetworkBehaviour
                 }
             }
 
-            StartCoroutine(DisableHostButtonsDelay(5f));
+            // StartCoroutine(DisableHostButtonsDelay(1f));
+            DisableHostButtonsaRpc();
         }
     }
 
@@ -253,6 +255,7 @@ public class ConnectUIScript : NetworkBehaviour
                 Debug.Log("ConnectUIScript HandleClientConnected 5");
 
                 Debug.Log("Create PCPlayer 4");
+                Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
                 GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
