@@ -745,6 +745,7 @@ MonoBehaviour:
   canUseChargeStation: 1
   handCrankAudio: {fileID: 8300000, guid: 973d410f76d6f094ca598a5e082f2584, type: 3}
   chargeStationAudio: {fileID: 8300000, guid: 89213e0e6166f1741a191dc6211a9745, type: 3}
+  _initialPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &6371589794256679876
 MonoBehaviour:
   m_ObjectHideFlags: 0
