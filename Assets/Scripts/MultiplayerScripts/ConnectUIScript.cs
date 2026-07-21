@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 //This script uses UI buttons to create the host, client, and server for the multiplayer network.
-public class ConnectUIScript : MonoBehaviour
+public class ConnectUIScript : NetworkBehaviour
 {
     [SerializeField] private Button hostButton;
     [SerializeField] private Button clientButton;
@@ -205,7 +205,7 @@ public class ConnectUIScript : MonoBehaviour
     public void DisableHostButtonsaRpc()
     {
         Debug.Log("ConnectUIScript DisableHostButtonsaRpc");
-        
+
         Debug.Log("hostButton: " + hostButton);
         Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
         hostButton.transform.parent.gameObject.SetActive(false);
