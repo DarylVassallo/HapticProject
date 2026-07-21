@@ -15,11 +15,11 @@ GameObject:
   - component: {fileID: 1932836132316264250}
   - component: {fileID: 7225188405137407249}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: BanisterColumn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &8661063495786005419
 Transform:
@@ -1338,11 +1338,11 @@ GameObject:
   - component: {fileID: 9188788388715891029}
   - component: {fileID: 3895804625847695363}
   m_Layer: 0
-  m_Name: Cylinder (1)
+  m_Name: BanisterColumn (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &8079540916223526607
 Transform:
@@ -2665,7 +2665,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &4241939968261941731
 Transform:
@@ -3054,11 +3054,11 @@ GameObject:
   - component: {fileID: 7648498490960056254}
   - component: {fileID: 2650094261699090029}
   m_Layer: 0
-  m_Name: Cylinder (2)
+  m_Name: BanisterColumn (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &6497948884691883497
 Transform:
@@ -4486,11 +4486,11 @@ GameObject:
   - component: {fileID: 4118472562866038132}
   - component: {fileID: 9042804346275723812}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Banister (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &2472071212783240085
 Transform:
@@ -4842,11 +4842,11 @@ GameObject:
   - component: {fileID: 4026717646353378485}
   - component: {fileID: 8230048404461650732}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Banister
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &8946426028895784875
 Transform:
@@ -5198,11 +5198,11 @@ GameObject:
   - component: {fileID: 1658210242160286478}
   - component: {fileID: 3858379119026170968}
   m_Layer: 0
-  m_Name: Cylinder (3)
+  m_Name: BanisterColumn (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 1
   m_IsActive: 1
 --- !u!4 &783446613249843395
 Transform:

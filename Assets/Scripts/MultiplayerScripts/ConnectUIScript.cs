@@ -171,7 +171,7 @@ public class ConnectUIScript : MonoBehaviour
                     Debug.Log("Create VRPlayer 1");
                     GameObject _newVRPlayer = Instantiate(vrPlayer, vrSpawnPoint.position, Quaternion.identity);
                     NetworkObject _vrNetObj = _newVRPlayer.GetComponent<NetworkObject>();
-                    _vrNetObj.SpawnAsPlayerObject(0, true);
+                    _vrNetObj.SpawnAsPlayerObject(clientId, true);
 
                     OnCreatedVRPlayer?.Invoke();
                 }
@@ -180,12 +180,22 @@ public class ConnectUIScript : MonoBehaviour
                     Debug.Log("Create PCPlayer 2");
                     GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                     NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
-                    _pcNetObj.SpawnAsPlayerObject(1, true);
+                    _pcNetObj.SpawnAsPlayerObject(clientId, true);
 
                     OnCreatedPCPlayer?.Invoke();
                 }
             }
         }
+
+        DisableHostButtonsaRpc();
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void DisableHostButtonsaRpc()
+    {
+        Debug.Log("hostButton: " + hostButton);
+        Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
+        hostButton.transform.parent.gameObject.SetActive(false);
     }
 
     private void HandleClientConnected(ulong clientId)
