@@ -24,6 +24,11 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private GameObject vrPlayer;
     [SerializeField] private Transform vrSpawnPoint;
 
+    [SerializeField] private GameObject vrLeftHand;
+    [SerializeField] private SkinnedMeshRenderer vrLeftHandMesh;
+    [SerializeField] private GameObject vrRightHand;
+    [SerializeField] private SkinnedMeshRenderer vrRightHandMesh;
+
     public static event Action OnCreatedPCPlayer;
     public static event Action OnCreatedVRPlayer;
 
@@ -177,6 +182,12 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 1");
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             _newPCPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(0, true);
+
+            vrLeftHand.SetActive(true);
+            vrLeftHandMesh.enabled = true;
+
+            vrRightHand.SetActive(true);
+            vrRightHandMesh.enabled = true;
 
             OnCreatedPCPlayer?.Invoke();
         }
