@@ -183,11 +183,7 @@ public class ConnectUIScript : NetworkBehaviour
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             _newPCPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(0, true);
 
-            vrLeftHand.SetActive(true);
-            vrLeftHandMesh.enabled = true;
-
-            vrRightHand.SetActive(true);
-            vrRightHandMesh.enabled = true;
+            ActivateVRHandsRpc();
 
             OnCreatedPCPlayer?.Invoke();
         }
@@ -213,11 +209,7 @@ public class ConnectUIScript : NetworkBehaviour
                     GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                     NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
 
-                    vrLeftHand.SetActive(true);
-                    vrLeftHandMesh.enabled = true;
-
-                    vrRightHand.SetActive(true);
-                    vrRightHandMesh.enabled = true;
+                    ActivateVRHandsRpc();
                     
                     _pcNetObj.SpawnAsPlayerObject(clientId, true);
 
@@ -263,11 +255,7 @@ public class ConnectUIScript : NetworkBehaviour
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
 
-            vrLeftHand.SetActive(true);
-            vrLeftHandMesh.enabled = true;
-
-            vrRightHand.SetActive(true);
-            vrRightHandMesh.enabled = true;
+            ActivateVRHandsRpc();
 
             _pcNetObj.SpawnAsPlayerObject(clientId, true);
             OnCreatedPCPlayer?.Invoke();
@@ -302,16 +290,22 @@ public class ConnectUIScript : NetworkBehaviour
                 GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
 
-                vrLeftHand.SetActive(true);
-                vrLeftHandMesh.enabled = true;
-
-                vrRightHand.SetActive(true);
-                vrRightHandMesh.enabled = true;
+                ActivateVRHandsRpc();
                 
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
                 OnCreatedPCPlayer?.Invoke();
             }
         }
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ActivateVRHandsRpc()
+    {
+        vrLeftHand.SetActive(true);
+        vrLeftHandMesh.enabled = true;
+
+        vrRightHand.SetActive(true);
+        vrRightHandMesh.enabled = true;
     }
 
     public void DebugStartVRPlayer()

@@ -28,7 +28,9 @@ public class TogglePhysicsControllers : NetworkBehaviour
     }
     private void GetPCPlayerData()
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData");
         isInNetwork = true;
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData isActive: " + isActive);
         if(isActive) ActivateControllerRpc();
     }
 
@@ -67,6 +69,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void ActivateControllerRpc()
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateControllerRpc");
         ActivateController();
     }
 
