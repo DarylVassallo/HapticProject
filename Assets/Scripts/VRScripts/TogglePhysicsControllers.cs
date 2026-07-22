@@ -19,7 +19,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkSpawn");
 
         hasNetworkSpawned = true;
-        if(hasBeenEnabled) ActivateController();
+        if(hasBeenEnabled) ActivateControllerRpc();
     }
 
     private void OnNetworkDespawn()
@@ -27,7 +27,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkDespawn");
 
         hasNetworkSpawned = false;
-        if(hasBeenEnabled) DeactivateController();
+        if(hasBeenEnabled) DeactivateControllerRpc();
     }
 
     private void OnEnable()
@@ -36,7 +36,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = true;
 
-        if(hasNetworkSpawned) ActivateController();
+        if(hasNetworkSpawned) ActivateControllerRpc();
     }
 
     private void OnDisable()
@@ -45,12 +45,13 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = false;
 
-        if(hasNetworkSpawned) DeactivateController();
+        if(hasNetworkSpawned) DeactivateControllerRpc();
     }
 
-    private void ActivateController()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ActivateControllerRpc()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateControllerRpc");
         
         MenuManager.OnToggleAll += ToggleHands;
 
@@ -61,9 +62,10 @@ public class TogglePhysicsControllers : NetworkBehaviour
         OnChangedControllers?.Invoke();
     }
 
-    private void DeactivateController()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void DeactivateControllerRpc()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateControllerRpc");
 
         MenuManager.OnToggleAll -= ToggleHands;
 

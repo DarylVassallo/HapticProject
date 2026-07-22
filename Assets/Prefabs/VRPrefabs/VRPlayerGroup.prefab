@@ -1352,6 +1352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  ShowTopMostFoldoutHeaderGroup: 1
   controllerPhysics: {fileID: 8871825701458128100}
   controllerRenderer: {fileID: 1197825969843019776}
 --- !u!1 &996415335972745225
@@ -4437,6 +4438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  ShowTopMostFoldoutHeaderGroup: 1
   controllerPhysics: {fileID: 4336382886760728654}
   controllerRenderer: {fileID: 412925962486966613}
 --- !u!1 &2182688562150306386
@@ -6464,6 +6466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  ShowTopMostFoldoutHeaderGroup: 1
   controllerPhysics: {fileID: 5430598173370977210}
   controllerRenderer: {fileID: 4600263308161309566}
 --- !u!1 &2732898974753159613
@@ -10494,7 +10497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3099737048
+  GlobalObjectIdHash: 4216742613
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -12676,7 +12679,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3001802475
+  GlobalObjectIdHash: 66032075
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -13098,6 +13101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbed2cf5d2f371947b88355728ec5ef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
+  ShowTopMostFoldoutHeaderGroup: 1
   controllerPhysics: {fileID: 8726251925843060254}
   controllerRenderer: {fileID: 9164146376865140710}
 --- !u!1 &5462183358455158065
@@ -21181,7 +21185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2043632182
+  GlobalObjectIdHash: 2215823534
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -22063,7 +22067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3401530623
+  GlobalObjectIdHash: 2182649972
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -22860,7 +22864,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Name
-      value: SimpleSocket
+      value: RightHandSocket
       objectReference: {fileID: 0}
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Layer
@@ -23078,7 +23082,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Name
-      value: SimpleSocket
+      value: LeftControllerSocket
       objectReference: {fileID: 0}
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Layer
@@ -23276,7 +23280,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Name
-      value: SimpleSocket
+      value: RightControllerSocket
       objectReference: {fileID: 0}
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Layer
@@ -23494,7 +23498,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Name
-      value: SimpleSocket
+      value: LeftHandSocket
       objectReference: {fileID: 0}
     - target: {fileID: 106093692981118498, guid: aec71f91a8da27d418aa44bd0c543f9b, type: 3}
       propertyPath: m_Layer

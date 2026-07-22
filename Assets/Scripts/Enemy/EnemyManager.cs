@@ -120,10 +120,14 @@ public class EnemyManager : NetworkBehaviour
             int _currentNum = UnityEngine.Random.Range(0, _length);
             AudioClip currentAudio = _goodAudio[_audioNum][_currentNum];
 
-            _badAudio[_audioNum].Add(currentAudio);
-            _goodAudio[_audioNum].Remove(currentAudio);
 
-            StartCoroutine(AudioBreak(currentAudio, _audioNum));
+            if(_audioNum != 2)
+            {
+                _badAudio[_audioNum].Add(currentAudio);
+                _goodAudio[_audioNum].Remove(currentAudio);
+
+                StartCoroutine(AudioBreak(currentAudio, _audioNum));
+            }
 
             return currentAudio; 
         }
