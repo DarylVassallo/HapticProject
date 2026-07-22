@@ -301,11 +301,11 @@ public class ConnectUIScript : NetworkBehaviour
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void ActivateVRHandsRpc()
     {
-        vrLeftHand.SetActive(true);
-        vrLeftHandMesh.enabled = true;
+        // vrLeftHand.SetActive(true);
+        // vrLeftHandMesh.enabled = true;
 
-        vrRightHand.SetActive(true);
-        vrRightHandMesh.enabled = true;
+        // vrRightHand.SetActive(true);
+        // vrRightHandMesh.enabled = true;
     }
 
     public void DebugStartVRPlayer()

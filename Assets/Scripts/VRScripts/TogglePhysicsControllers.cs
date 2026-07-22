@@ -5,8 +5,8 @@ using Unity.Netcode;
 
 public class TogglePhysicsControllers : NetworkBehaviour
 {
-    private bool isActive = false;
-    private bool isInNetwork = false;
+    // private bool isActive = false;
+    // private bool isInNetwork = false;
 
     [SerializeField] private GameObject controllerPhysics;
     [SerializeField] private GameObject controllerRenderer;
@@ -15,24 +15,28 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
     private bool hasBeenEnabled = false;
     
-    public override void OnNetworkSpawn()
-    {
-        isInNetwork = true;
-        if(isActive) ActivateControllerRpc();
-    }
+    // public override void OnNetworkSpawn()
+    // {
+    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkSpawn");
 
-    private void OnNetworkDespawn()
-    {
-        isInNetwork = false;
-        if(!isActive) DeactivateControllerRpc();
-    }
-    private void GetPCPlayerData()
-    {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData");
-        isInNetwork = true;
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData isActive: " + isActive);
-        if(isActive) ActivateControllerRpc();
-    }
+    //     isInNetwork = true;
+    //     if(isActive) ActivateControllerRpc();
+    // }
+
+    // private void OnNetworkDespawn()
+    // {
+    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkDespawn");
+
+    //     isInNetwork = false;
+    //     if(!isActive) DeactivateControllerRpc();
+    // }
+    // private void GetPCPlayerData()
+    // {
+    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData");
+    //     isInNetwork = true;
+    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData isActive: " + isActive);
+    //     if(isActive) ActivateControllerRpc();
+    // }
 
     private void OnEnable()
     {
@@ -41,13 +45,14 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = true;
 
-        if(isInNetwork)
-        {
-            ActivateControllerRpc();
-        }
-        else{
-            ActivateController();
-        }
+        ActivateController();
+        // if(isInNetwork)
+        // {
+        //     ActivateControllerRpc();
+        // }
+        // else{
+        //     ActivateController();
+        // }
     }
 
     private void OnDisable()
@@ -57,21 +62,22 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = false;
 
-        if(isInNetwork)
-        {
-            DeactivateControllerRpc();
-        }
-        else{
-            DeactivateController();
-        }
+        DeactivateController();
+        // if(isInNetwork)
+        // {
+        //     DeactivateControllerRpc();
+        // }
+        // else{
+        //     DeactivateController();
+        // }
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void ActivateControllerRpc()
-    {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateControllerRpc");
-        ActivateController();
-    }
+    // [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    // public void ActivateControllerRpc()
+    // {
+    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateControllerRpc");
+    //     ActivateController();
+    // }
 
     public void ActivateController()
     {
@@ -86,11 +92,11 @@ public class TogglePhysicsControllers : NetworkBehaviour
         OnChangedControllers?.Invoke();
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void DeactivateControllerRpc()
-    {
-        DeactivateController();
-    }
+    // [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    // public void DeactivateControllerRpc()
+    // {
+    //     DeactivateController();
+    // }
 
     public void DeactivateController()
     {
