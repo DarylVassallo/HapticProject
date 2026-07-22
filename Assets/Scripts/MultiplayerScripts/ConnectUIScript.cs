@@ -64,7 +64,15 @@ public class ConnectUIScript : NetworkBehaviour
             if(!hasSceneLoaded)
             {
                 hasSceneLoaded = true;
-                if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+
+                Debug.Log("ConnectUIScript Start NetworkManager.Singleton.SceneManager: " + NetworkManager.Singleton.SceneManager);
+                Debug.Log("ConnectUIScript Start NetworkManager.Singleton.IsServer: " + NetworkManager.Singleton.IsServer);
+
+                if(NetworkManager.Singleton.SceneManager != null && NetworkManager.Singleton.IsServer)
+                {
+                    Debug.Log("ConnectUIScript Start Add SceneLoaded");
+                    NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
+                } 
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
 

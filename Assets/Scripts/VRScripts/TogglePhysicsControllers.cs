@@ -17,8 +17,6 @@ public class TogglePhysicsControllers : MonoBehaviour
         controllerPhysics.SetActive(true);
         controllerRenderer.SetActive(true);
 
-
-        Debug.Log(this.gameObject + ": Enable");
         OnChangedControllers?.Invoke();
     }
 
@@ -30,7 +28,6 @@ public class TogglePhysicsControllers : MonoBehaviour
         controllerPhysics.SetActive(false);
         controllerRenderer.SetActive(false);
         
-        Debug.Log(this.gameObject + ": Disable");
         OnChangedControllers?.Invoke();
     }
 

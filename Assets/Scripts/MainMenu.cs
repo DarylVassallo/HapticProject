@@ -433,7 +433,7 @@ public class MainMenu : NetworkBehaviour
     {
         Debug.Log("MainMenu ReturnCursor");
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
     }

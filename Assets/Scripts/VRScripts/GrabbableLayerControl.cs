@@ -80,14 +80,10 @@ public class GrabbableLayerControl : MonoBehaviour
             rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
             rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
         }
-
-        Debug.Log("leftHandSocket: " + leftHandSocket);
-        Debug.Log("rightHandSocket: " + rightHandSocket);
     }
 
     private void OnLeftHandInserted(SelectEnterEventArgs args)
     {
-        Debug.Log("OnLeftHandInserted");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInLeftHandSocket = true;
         ChangeLayer(this.gameObject, -1);
@@ -95,7 +91,6 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnLeftHandRemoved(SelectExitEventArgs args)
     {
-        Debug.Log("OnLeftHandRemoved");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInLeftHandSocket = false;
         ChangeLayer(this.gameObject, -1);
@@ -103,7 +98,6 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnRightHandInserted(SelectEnterEventArgs args)
     {
-        Debug.Log("OnRightHandInserted");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInRightHandSocket = true;
         ChangeLayer(this.gameObject, -1);
@@ -111,7 +105,6 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnRightHandRemoved(SelectExitEventArgs args)
     {
-        Debug.Log("OnRightHandRemoved");
         if (args.interactableObject != _xrGrabInteractable) return;
         isInRightHandSocket = false;
         ChangeLayer(this.gameObject, -1);
