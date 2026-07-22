@@ -212,6 +212,13 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
                     GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                     NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
+
+                    vrLeftHand.SetActive(true);
+                    vrLeftHandMesh.enabled = true;
+
+                    vrRightHand.SetActive(true);
+                    vrRightHandMesh.enabled = true;
+                    
                     _pcNetObj.SpawnAsPlayerObject(clientId, true);
 
                     OnCreatedPCPlayer?.Invoke();
@@ -255,6 +262,13 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 3");
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
+
+            vrLeftHand.SetActive(true);
+            vrLeftHandMesh.enabled = true;
+
+            vrRightHand.SetActive(true);
+            vrRightHandMesh.enabled = true;
+
             _pcNetObj.SpawnAsPlayerObject(clientId, true);
             OnCreatedPCPlayer?.Invoke();
         }else if (_isTestingVRPlayer)
@@ -287,6 +301,13 @@ public class ConnectUIScript : NetworkBehaviour
                 Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
                 GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
+
+                vrLeftHand.SetActive(true);
+                vrLeftHandMesh.enabled = true;
+
+                vrRightHand.SetActive(true);
+                vrRightHandMesh.enabled = true;
+                
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
                 OnCreatedPCPlayer?.Invoke();
             }

@@ -26,10 +26,16 @@ public class TogglePhysicsControllers : NetworkBehaviour
         isInNetwork = false;
         if(!isActive) DeactivateControllerRpc();
     }
+    private void GetPCPlayerData()
+    {
+        isInNetwork = true;
+        if(isActive) ActivateControllerRpc();
+    }
 
     private void OnEnable()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnEnable");
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
 
         hasBeenEnabled = true;
 
@@ -45,6 +51,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
     private void OnDisable()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnDisable");
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
 
         hasBeenEnabled = false;
 
