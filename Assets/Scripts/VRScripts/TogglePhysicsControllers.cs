@@ -6,12 +6,26 @@ using Unity.Netcode;
 public class TogglePhysicsControllers : NetworkBehaviour
 {
     private bool isActive = false;
+    private bool isInNetwork = false;
+
     [SerializeField] private GameObject controllerPhysics;
     [SerializeField] private GameObject controllerRenderer;
 
     public static event Action OnChangedControllers;
 
     private bool hasBeenEnabled = false;
+    
+    public override void OnNetworkSpawn()
+    {
+        isInNetwork = true;
+        if(isActive) ActivateControllerRpc();
+    }
+
+    private void OnNetworkDespawn()
+    {
+        isInNetwork = false;
+        if(!isActive) DeactivateControllerRpc();
+    }
 
     private void OnEnable()
     {
@@ -19,7 +33,13 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = true;
 
-        ActivateController();
+        if(isInNetwork)
+        {
+            ActivateControllerRpc();
+        }
+        else{
+            ActivateController();
+        }
     }
 
     private void OnDisable()
@@ -28,7 +48,19 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = false;
 
-        DeactivateController();
+        if(isInNetwork)
+        {
+            DeactivateControllerRpc();
+        }
+        else{
+            DeactivateController();
+        }
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ActivateControllerRpc()
+    {
+        ActivateController();
     }
 
     public void ActivateController()
@@ -42,6 +74,12 @@ public class TogglePhysicsControllers : NetworkBehaviour
         controllerRenderer.SetActive(true);
 
         OnChangedControllers?.Invoke();
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void DeactivateControllerRpc()
+    {
+        DeactivateController();
     }
 
     public void DeactivateController()
