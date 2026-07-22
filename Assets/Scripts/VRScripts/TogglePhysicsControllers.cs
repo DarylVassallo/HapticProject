@@ -11,24 +11,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
     public static event Action OnChangedControllers;
 
-    private bool hasNetworkSpawned = false;
     private bool hasBeenEnabled = false;
-
-    public override void OnNetworkSpawn()
-    {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkSpawn");
-
-        hasNetworkSpawned = true;
-        if(hasBeenEnabled) ActivateControllerRpc();
-    }
-
-    private void OnNetworkDespawn()
-    {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkDespawn");
-
-        hasNetworkSpawned = false;
-        if(hasBeenEnabled) DeactivateControllerRpc();
-    }
 
     private void OnEnable()
     {
@@ -36,7 +19,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = true;
 
-        if(hasNetworkSpawned) ActivateControllerRpc();
+        ActivateController();
     }
 
     private void OnDisable()
@@ -45,13 +28,12 @@ public class TogglePhysicsControllers : NetworkBehaviour
 
         hasBeenEnabled = false;
 
-        if(hasNetworkSpawned) DeactivateControllerRpc();
+        DeactivateController();
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void ActivateControllerRpc()
+    public void ActivateController()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateControllerRpc");
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
         
         MenuManager.OnToggleAll += ToggleHands;
 
@@ -62,10 +44,9 @@ public class TogglePhysicsControllers : NetworkBehaviour
         OnChangedControllers?.Invoke();
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void DeactivateControllerRpc()
+    public void DeactivateController()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateControllerRpc");
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
 
         MenuManager.OnToggleAll -= ToggleHands;
 
