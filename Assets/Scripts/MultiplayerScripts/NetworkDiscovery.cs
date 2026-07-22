@@ -78,15 +78,30 @@ public class NetworkDiscovery : MonoBehaviour
     {
         while(isListening)
         {
-            var result = await clientUdp.ReceiveAsync();
-            string message = Encoding.UTF8.GetString(result.Buffer);
-
-            if(message == broadcastKey)
+            Debug.Log("NetworkDiscovery ListenLoop loop");
+            try
             {
-                string hostIp = result.RemoteEndPoint.Address.ToString();
-                Debug.Log("Found Host IP: " + hostIp);
-                OnHostFound?.Invoke(hostIp);
-                StopListening();
+                var result = await clientUdp.ReceiveAsync();
+                string message = Encoding.UTF8.GetString(result.Buffer);
+
+                if(message == broadcastKey)
+                {
+                    string hostIp = result.RemoteEndPoint.Address.ToString();
+                    OnHostFound?.Invoke(hostIp);
+                    StopListening();
+                }
+            }
+            catch (ObjectDisposedException)
+            {
+                break;
+            }
+            catch(SocketException se)
+            {
+                break;
+            }
+            catch (Exception e)
+            {
+                break;
             }
         }
     }

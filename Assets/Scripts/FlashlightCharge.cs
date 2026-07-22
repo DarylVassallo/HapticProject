@@ -43,8 +43,12 @@ public class FlashlightCharge : NetworkBehaviour
     [SerializeField] private AudioClip chargeStationAudio;
     private AudioSource _audioSource;
 
+    [SerializeField] private Vector3 _initialPosition;
+
     private void Awake()
     {
+        // _initialPosition = this.transform.position;
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _maxChargeBarLength = chargeBar.localScale.z;
@@ -58,6 +62,7 @@ public class FlashlightCharge : NetworkBehaviour
         if(canUseChargeStation)
         {
             ChargeStation.OnCharge += ChargeFlashlightWithStation;
+            ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
         }
         else
         {
@@ -74,12 +79,18 @@ public class FlashlightCharge : NetworkBehaviour
         if(canUseChargeStation)
         {
             ChargeStation.OnCharge -= ChargeFlashlightWithStation;
+            ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
         }
         else
         {
             PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
             PCPlayerInputManager.OnFire2 -= SetFlashlightEnableServerRpc;
         }
+    }
+
+    private void GetVRPlayerData()
+    {
+        ChargeFlashlightWithStation(true);
     }
 
     public override void OnNetworkSpawn()
@@ -130,7 +141,6 @@ public class FlashlightCharge : NetworkBehaviour
 
     public void socketRelease(SelectExitEventArgs args)
     {
-        Debug.Log("Release");
         var xr = args.interactableObject;
 
         xr.transform.SetParent(null, true);

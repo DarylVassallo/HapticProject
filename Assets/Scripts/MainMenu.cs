@@ -31,6 +31,8 @@ public class MainMenu : NetworkBehaviour
 
     private void Awake()
     {
+        Debug.Log("MainMenu Awake");
+
         for (int i = 0; i < menuList.Length; i++)
         {
             if (i == 0)
@@ -48,24 +50,31 @@ public class MainMenu : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log("MainMenu OnNetworkSpawn");
+
         nextScene.OnValueChanged += OnNextSceneChanged;
         menuValue.OnValueChanged += OnMenuValueChanged;
     }
 
     private void OnNetworkDespawn()
     {
+        Debug.Log("MainMenu OnNetworkDespawn");
+
         nextScene.OnValueChanged -= OnNextSceneChanged;
         menuValue.OnValueChanged -= OnMenuValueChanged;
     }
 
     private void OnNextSceneChanged(int previousValue, int newValue)
     {
+        Debug.Log("OnNextSceneChanged: " + newValue);
+
         PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
     }
 
     private void OnMenuValueChanged(int previousValue, int newValue)
     {
-        Debug.Log("OnMenuValueChanged");
+        Debug.Log("OnMenuValueChanged: " + newValue);
+
         SetCurrentMenuNumber(newValue);
     }
 
@@ -79,6 +88,8 @@ public class MainMenu : NetworkBehaviour
 
     IEnumerator Start()
     {
+        Debug.Log("MainMenu Start");
+
         yield return LocalizationSettings.InitializationOperation;
 
         LoadSavedLanguage();
@@ -93,6 +104,8 @@ public class MainMenu : NetworkBehaviour
     {
         if (isCreditsScrolling)
         {
+            Debug.Log("MainMenu FixedUpdate");
+
             pcCreditsPage.position = new Vector2(   pcCreditsPage.position.x,
                                                     pcCreditsPage.position.y + 0.3f); 
                                                 
@@ -103,6 +116,8 @@ public class MainMenu : NetworkBehaviour
     }
     private void LoadSavedLanguage()
     {
+        Debug.Log("MainMenu LoadSavedLanguage");
+
         string savedLangCode = PlayerPrefs.GetString("SelectedLanguage", "");
 
         if (!string.IsNullOrEmpty(savedLangCode))
@@ -135,6 +150,8 @@ public class MainMenu : NetworkBehaviour
 
     public void ChangeLanguage(Locale targetLocale)
     {
+        Debug.Log("MainMenu ChangeLanguage: " + targetLocale);
+
         LocalizationSettings.SelectedLocale = targetLocale;
         PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);
         PlayerPrefs.Save();
@@ -143,6 +160,8 @@ public class MainMenu : NetworkBehaviour
 
     private int GetSceneIndex(string sceneName)
     {
+        Debug.Log("MainMenu GetSceneIndex: " + sceneName);
+
         for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
         {
             string path = SceneUtility.GetScenePathByBuildIndex(i);
@@ -156,18 +175,24 @@ public class MainMenu : NetworkBehaviour
     
     public void PlayLevelClient(string _sceneName)
     {
+        Debug.Log("PlayLevelClient: " + _sceneName);
+
         SetNextSceneServerRpc(GetSceneIndex(_sceneName));
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SetNextSceneServerRpc(int _newScene)
     {
+        Debug.Log("SetNextSceneServerRpc: " + _newScene);
+
         nextScene.Value = _newScene;
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void PlayLevelServerRpc(string _sceneName)
     {
+        Debug.Log("PlayLevelServerRpc: " + _sceneName);
+
         if (!NetworkManager.Singleton.IsServer) return;
 
         // foreach (var netObj in FindObjectsOfType<NetworkObject>())
@@ -183,12 +208,16 @@ public class MainMenu : NetworkBehaviour
 
     private void ShowCredits()
     {
+        Debug.Log("MainMenu ShowCredits");
+
         CreateCreditEntries(pcCreditsPage);
         CreateVRCreditEntries(vrCreditsPage);
     }
 
     public void CreateCreditEntries(Transform currentCreditsPage)
     {
+        Debug.Log("MainMenu CreateCreditEntries: " + currentCreditsPage);
+
         currentCreditsPage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
         StreamReader reader = new StreamReader(creditsPath); 
@@ -248,6 +277,8 @@ public class MainMenu : NetworkBehaviour
 
     public void CreateVRCreditEntries(Transform currentCreditsPage)
     {
+        Debug.Log("MainMenu CreateVRCreditEntries: " + currentCreditsPage);
+
         currentCreditsPage.position = currentCreditsPage.parent.position;
 
         StreamReader reader = new StreamReader(creditsPath); 
@@ -313,6 +344,8 @@ public class MainMenu : NetworkBehaviour
 
     public void Quit()
     {
+        Debug.Log("MainMenu Quit");
+
         Application.Quit();
     }
 
@@ -323,20 +356,23 @@ public class MainMenu : NetworkBehaviour
 
     public void SetMenuNumber(int _newMenuValue)
     {
-        Debug.Log("SetMenuNumber");
+        Debug.Log("MainMenu SetMenuNumber: " + _newMenuValue);
+
         SetMenuNumberValueServerRpc(_newMenuValue);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SetMenuNumberValueServerRpc(int _newMenuValue)
     {
-        Debug.Log("SetMenuNumberValueServerRpc");
+        Debug.Log("MainMenu SetMenuNumberValueServerRpc: " + _newMenuValue);
+
         menuValue.Value = _newMenuValue;
     }
 
     private void SetCurrentMenuNumber(int _menuNum)
     {
-        Debug.Log("SetCurrentMenuNumber");
+        Debug.Log("MainMenu SetCurrentMenuNumber: " + _menuNum);
+        
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -367,6 +403,8 @@ public class MainMenu : NetworkBehaviour
 
     public void SetMenuNumberWithoutNetwork(int _menuNum)
     {
+        Debug.Log("MainMenu SetMenuNumberWithoutNetwork: " + _menuNum);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -393,7 +431,9 @@ public class MainMenu : NetworkBehaviour
 
     private IEnumerator ReturnCursor()
     {
-        yield return new WaitForSeconds(1);
+        Debug.Log("MainMenu ReturnCursor");
+
+        yield return new WaitForSeconds(1f);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true; 
     }

@@ -31,12 +31,10 @@ public class PlayerInteraction : MonoBehaviour
 
     private void Interact()
     {
-        Debug.Log("Interact");
         _ray = _pcPlayerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
 
         if(Physics.Raycast(_ray, out _hit, interactionDistance))
         {
-            Debug.Log("_hit.collider: " + _hit.collider);
             if(_hit.collider.GetComponent<IInteractable>() != null)
             {
                 _hit.collider.GetComponent<IInteractable>().TriggerInteraction();

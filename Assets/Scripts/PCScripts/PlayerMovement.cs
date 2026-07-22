@@ -40,8 +40,6 @@ public class PlayerMovement : NetworkBehaviour
     private float _verticalVelocity;
     private float _targetHeight;
 
-    private Volume volume;
-
     [SerializeField] private float bobSpeed = 7f;
     [SerializeField] private float bobAmount = 0.2f;
     private float healthBobAmount = 1;
@@ -61,9 +59,6 @@ public class PlayerMovement : NetworkBehaviour
         CinemachineCore.GetInputAxis = HandleAxisInput;
 
         _inputAxisController = cameraTransform.GetComponent<CinemachineInputAxisController>();
-
-        volume = GameObject.FindGameObjectWithTag("GlobalVolume").GetComponent<Volume>();
-        volume.weight = 0f;
 
         _animator = GetComponentInChildren<Animator>();
 
@@ -241,7 +236,6 @@ public class PlayerMovement : NetworkBehaviour
     private void ChangeHealthCamera(float _currentHealth)
     {
         healthBobAmount = _currentHealth / 100f;
-        if(!UnityEngine.XR.XRSettings.isDeviceActive) volume.weight = Mathf.Lerp(0f, 1f, 1f - healthBobAmount);
     }
 
     private void HandleGravity()

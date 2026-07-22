@@ -221,8 +221,15 @@ public class MenuManager : NetworkBehaviour
         _bar.localScale = new Vector3(_maxBarLength * _newValue, _bar.localScale.y, _bar.localScale.z);
     }
     
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ToggleGameOverMenuRpc()
+    {
+        ToggleGameOverMenu();
+    }
+
     public void ToggleGameOverMenu()
     {
+        Debug.Log("ToggleGameOverMenu _showGameOverMenu: " + _showGameOverMenu);
         _showGameOverMenu = !_showGameOverMenu;
 
         if(_showGameOverMenu)
@@ -230,7 +237,7 @@ public class MenuManager : NetworkBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            PlayLevelServerRpc("GameOverScene");
+            // PlayLevelServerRpc("GameOverScene");
         }
         else
         {
@@ -238,12 +245,12 @@ public class MenuManager : NetworkBehaviour
             Cursor.visible = false;
         }
 
-        // for (int i = 0; i < gameOverMenu.transform.childCount; i++)
-        // {
-        //     if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
-        // }
+        for (int i = 0; i < gameOverMenu.transform.childCount; i++)
+        {
+            if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
+        }
 
-        // CheckTimeScale();
+        CheckTimeScale();
     }
 
     public void ToggleWinGameMenu()

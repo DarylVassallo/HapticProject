@@ -1,10 +1,13 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Collections;
+
+using Unity.Netcode;
 
 //This script updates the hidden object's shader to render correctly based on the spotlights position, direction, and angle (modified to include range) (modifications to the shader used chatgpt).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
-public class RevealUnderLightManager : MonoBehaviour
+public class RevealUnderLightManager : NetworkBehaviour
 {
     private Material _hiddenMaterial;
     
@@ -47,6 +50,8 @@ public class RevealUnderLightManager : MonoBehaviour
     
     public static event Action<bool> OnToggleAll;
 
+    [SerializeField] private float maxDistance;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created.
     void Awake()
     {
@@ -63,25 +68,34 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
+        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataRpc;
 
         RevealUnderLight.OnAddNewHiddenObject += AddNewHiddenObject;
-        Health.OnRemoveHiddenObject += RemoveHiddenObject;
+
+        HiddenTeleportButtonInteract.OnRemoveHiddenObject += RemoveHiddenObject;
+        EnemyManager.OnRemoveHiddenObject += RemoveHiddenObject;
+
         Health.OnChangeEnemyOxidization += ChangeEnemyOxidization;
     }
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
+        hiddenObjects = new List<HiddenObject>();
+        
+        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
 
         RevealUnderLight.OnAddNewHiddenObject -= AddNewHiddenObject;
-        Health.OnRemoveHiddenObject -= RemoveHiddenObject;
+
+        HiddenTeleportButtonInteract.OnRemoveHiddenObject -= RemoveHiddenObject;
+        EnemyManager.OnRemoveHiddenObject -= RemoveHiddenObject;
+
         Health.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
     }
 
-    private void GetPCPlayerData()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void GetPCPlayerDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
@@ -90,9 +104,12 @@ public class RevealUnderLightManager : MonoBehaviour
             _pcFlashLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
             _pcFlashLightCharge = GameObject.FindGameObjectWithTag("PCFlashLight").GetComponent<FlashlightCharge>();
         }
+
+        if(!IsOwner) GetVRPlayerDataRpc();
     }
     
-    private void GetVRPlayerData()
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void GetVRPlayerDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
@@ -116,7 +133,7 @@ public class RevealUnderLightManager : MonoBehaviour
                             isEffectedByLight = newIsEffectedByLight,
                             isReversed = newIsReversed,
                             _isInteractable = false
-                        });
+                        });;
     }
 
     private void RemoveHiddenObject(GameObject oldHiddenObject)
@@ -133,74 +150,86 @@ public class RevealUnderLightManager : MonoBehaviour
 
     private void Update()
     {
-        if(!_canPCFunction) GetPCPlayerData();
-        if(!_canVRFunction) GetVRPlayerData();
+        // if(!IsOwner) return;
 
         // if(!_canVRFunction) return;
 
         for(int i = 0; i < hiddenObjects.Count; i++)
         {
-            if (hiddenObjects[i].isEffectedByLight)
+            if(_canPCFunction)
             {
-                if (CheckLightStrength(hiddenObjects[i]) >= (hiddenObjects[i].isReversed ? _strengthLimit = 1f : _strengthLimit = 0.15f))
-                {
-                    if(!hiddenObjects[i]._isInteractable)
-                    {
-                        hiddenObjects[i]._isInteractable = true;
-                        if (hiddenObjects[i].hiddenCollider != null) hiddenObjects[i].hiddenCollider.enabled = true;
-                        if (hiddenObjects[i].hiddenIInteractable != null) hiddenObjects[i].hiddenIInteractable.EnableInteraction();
-                    }
-                }
-                else
-                {
-                    if(hiddenObjects[i]._isInteractable)
-                    {
-                        hiddenObjects[i]._isInteractable = false;
-                        if (hiddenObjects[i].hiddenCollider != null) hiddenObjects[i].hiddenCollider.enabled = false;
-                        if (hiddenObjects[i].hiddenIInteractable != null) hiddenObjects[i].hiddenIInteractable.DisableInteraction();
-                    }
-                }
+                _positionDifference = hiddenObjects[i].hiddenObject.transform.position - _pcFlashLight.position;
+                _positionDistance = _positionDifference.magnitude;
             }
-            
-            if(hiddenObjects[i].hiddenRenderer.material)
+            else
             {
-                if (_pcFlashLight == null)
+                _positionDistance = 999;
+            }
+
+            if(_positionDistance < maxDistance || hiddenObjects[i].isVRInteractable)
+            {
+                if (hiddenObjects[i].isEffectedByLight)
                 {
-                    hiddenObjects[i].hiddenRenderer.material.SetFloat("_MyLightRange", 0);
-                }else{
-                    if(hiddenObjects[i].isPCInteractable)
+                    if (CheckLightStrength(hiddenObjects[i]) >= (hiddenObjects[i].isReversed ? _strengthLimit = 1f : _strengthLimit = 0.15f))
                     {
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightPosition", _pcFlashLight.transform.position);
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightDirection", -_pcFlashLight.transform.forward);
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightAngle", 55);
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightRange", _pcFlashLightCharge.currentFlashLightRange * 0.5f);
+                        if(!hiddenObjects[i]._isInteractable)
+                        {
+                            hiddenObjects[i]._isInteractable = true;
+                            if (hiddenObjects[i].hiddenCollider != null) hiddenObjects[i].hiddenCollider.enabled = true;
+                            if (hiddenObjects[i].hiddenIInteractable != null) hiddenObjects[i].hiddenIInteractable.EnableInteraction();
+                        }
                     }
                     else
                     {
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightPosition", new Vector3(0, 0, 0));
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightDirection", new Vector3(0, 0, 0));
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightAngle", 0f);
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightRange", 0f);
+                        if(hiddenObjects[i]._isInteractable)
+                        {
+                            hiddenObjects[i]._isInteractable = false;
+                            if (hiddenObjects[i].hiddenCollider != null) hiddenObjects[i].hiddenCollider.enabled = false;
+                            if (hiddenObjects[i].hiddenIInteractable != null) hiddenObjects[i].hiddenIInteractable.DisableInteraction();
+                        }
                     }
                 }
 
-                if (_vrFlashLight == null)
+                if(hiddenObjects[i].hiddenRenderer.material)
                 {
-                    hiddenObjects[i].hiddenRenderer.material.SetFloat("_MyLightRange", 0);
-                }else{
-                    if(hiddenObjects[i].isVRInteractable)
+                    if (_pcFlashLight == null)
                     {
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightPosition", _vrFlashLight.transform.position);
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightDirection", -_vrFlashLight.transform.forward);
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightAngle", 55);
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightRange", _vrFlashLightCharge.currentFlashLightRange * 0.5f);
+                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_MyLightRange", 0);
+                    }else{
+                        if(hiddenObjects[i].isPCInteractable)
+                        {
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightPosition", _pcFlashLight.transform.position);
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightDirection", -_pcFlashLight.transform.forward);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightAngle", 55);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightRange", _pcFlashLightCharge.currentFlashLightRange * 0.5f);
+                        }
+                        else
+                        {
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightPosition", new Vector3(0, 0, 0));
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_PCLightDirection", new Vector3(0, 0, 0));
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightAngle", 0f);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_PCLightRange", 0f);
+                        }
                     }
-                    else
+
+                    if (_vrFlashLight == null)
                     {
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightPosition", new Vector3(0, 0, 0));
-                        hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightDirection", new Vector3(0, 0, 0));
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightAngle", 0f);
-                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightRange", 0f);
+                        hiddenObjects[i].hiddenRenderer.material.SetFloat("_MyLightRange", 0);
+                    }else{
+                        if(hiddenObjects[i].isVRInteractable)
+                        {
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightPosition", _vrFlashLight.transform.position);
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightDirection", -_vrFlashLight.transform.forward);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightAngle", 55);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightRange", _vrFlashLightCharge.currentFlashLightRange * 0.5f);
+                        }
+                        else
+                        {
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightPosition", new Vector3(0, 0, 0));
+                            hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightDirection", new Vector3(0, 0, 0));
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightAngle", 0f);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightRange", 0f);
+                        }
                     }
                 }
             }

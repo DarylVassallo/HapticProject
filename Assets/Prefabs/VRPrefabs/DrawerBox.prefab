@@ -2143,7 +2143,7 @@ ConfigurableJoint:
   m_LinearLimit:
     limit: 4
     bounciness: 0
-    contactDistance: 0
+    contactDistance: 1
   m_AngularXLimitSpring:
     spring: 0
     damper: 0
@@ -2207,9 +2207,9 @@ ConfigurableJoint:
     positionDamper: 0
     maximumForce: 3.4028233e+38
     useAcceleration: 0
-  m_ProjectionMode: 0
-  m_ProjectionDistance: 0.1
-  m_ProjectionAngle: 180
+  m_ProjectionMode: 1
+  m_ProjectionDistance: 0
+  m_ProjectionAngle: 0
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
   m_BreakForce: Infinity

@@ -2,8 +2,10 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
+using Unity.Netcode;
+
 //This script controls is the button can be interacted with, and for what switch it is for
-public class ButtonInteract : MonoBehaviour, IInteractable
+public class ButtonInteract : NetworkBehaviour, IInteractable
 {    
     public static event Action<MazeManager.ShapeType, MazeManager.ButtonType> OnTriggerButton;
     private bool _isInteractable = true;    
@@ -13,12 +15,15 @@ public class ButtonInteract : MonoBehaviour, IInteractable
 
     private float pressedDistance = 0.1f;
     private bool _isFullyPressed = false;
+
+    private Vector3 targetPosition;
+    private Vector3 originalPosition;
     private Vector3 pushedPosition;
 
     private float _buttonSpeed = 20f;
 
-    private bool _moveDown = false;
-    private bool _moveUp = false;
+    private bool _moveDown;
+    private bool _moveUp;
 
     private float _minDistance = 0.005f;
 
@@ -42,51 +47,87 @@ public class ButtonInteract : MonoBehaviour, IInteractable
         _renderer.material = deactiveMaterial;
 
         _activeButton = false;
+
+        originalPosition = this.transform.position;
+
+        //This line formed with ChatGPT
+        pushedPosition =    this.transform.position + 
+                            (   transform.forward * 
+                                pressedDistance * 
+                                this.transform.localScale.x
+                            ); 
     }
 
     private void OnEnable()
     {
-        MazeManager.OnResetHiddenButtons += ResetButton;
+        MazeManager.OnResetButtons += ResetButton;
+    }
+
+    [ClientRpc]
+    public void SetMoveUpFalseClientRpc()
+    {
+        _moveUp = false;
+    }
+
+    [ClientRpc]
+    public void SetMoveUpTrueClientRpc()
+    {
+        _activeButton = false;
+        targetPosition = pushedPosition; 
+        _moveUp = true;
+    }
+
+    [ClientRpc]
+    public void SetMoveDownFalseClientRpc()
+    {
+        _moveDown = false;
+    }
+
+    [ClientRpc]
+    public void SetMoveDownTrueClientRpc()
+    {
+        _activeButton = true;
+
+        OnTriggerButton?.Invoke(shape, button);
+        _isFullyPressed = false;
+
+        targetPosition = originalPosition;
+
+        _moveDown = true;
+
+        if(!_audioSource.isPlaying)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = buttonAudio;
+            _audioSource.Play();
+            _audioSource.enabled = true; 
+        }
     }
 
     public void TriggerInteraction()
     {
         if (_isInteractable && !_activeButton)
         {
-            _activeButton = true;
-
-            OnTriggerButton?.Invoke(shape, button);
-            _isFullyPressed = false;
-
-            //This line formed with ChatGPT
-            pushedPosition =    this.transform.position + 
-                                (   -transform.forward * 
-                                    pressedDistance * 
-                                    this.transform.localScale.x
-                                );            
-            _moveDown = true;
-
-            if(!_audioSource.isPlaying)
-            {
-                _audioSource.Stop();
-                _audioSource.clip = buttonAudio;
-                _audioSource.Play();
-                _audioSource.enabled = true; 
-            }
+            TriggerInteractionServerRpc();
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void TriggerInteractionServerRpc()
+    {
+        SetMoveDownTrueClientRpc();
     }
 
     private void ResetButton()
     {
-        _activeButton = false;
+        if(!_activeButton) return;
+        ResetButtonServerRpc();
+    }
 
-        pushedPosition =    this.transform.position + 
-                            (   transform.forward * 
-                                pressedDistance * 
-                                this.transform.localScale.x
-                            );                  
-        
-        _moveUp = true;
+    [ServerRpc(RequireOwnership = false)]
+    private void ResetButtonServerRpc()
+    {
+        SetMoveUpTrueClientRpc();
     }
 
     public void EnableInteraction()
@@ -107,7 +148,7 @@ public class ButtonInteract : MonoBehaviour, IInteractable
         {
             this.transform.position = Vector3.Lerp(
                 this.transform.position,
-                pushedPosition,
+                targetPosition,
                 Time.deltaTime * _buttonSpeed
             );
 
@@ -120,18 +161,19 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                 )
             );
 
-            if (Vector3.Distance(this.transform.position, pushedPosition) <= _minDistance)
+            if (Vector3.Distance(this.transform.position, targetPosition) <= _minDistance)
             {
-                this.transform.position = pushedPosition;
+                this.transform.position = targetPosition;
                 _renderer.material = inProgressMaterial;
 
-                pushedPosition =    this.transform.position + 
-                                    (   transform.forward * 
-                                        pressedDistance * 
-                                        this.transform.localScale.x
-                                    );
+                // pushedPosition =    this.transform.position + 
+                //                     (   transform.forward * 
+                //                         pressedDistance * 
+                //                         this.transform.localScale.x
+                //                     );
                 _isFullyPressed = true;
                 _moveDown = false;
+                // if(IsServer) SetMoveDownFalseClientRpc();
                 // _moveUp = true;
 
                 if(isResetButton)
@@ -143,7 +185,7 @@ public class ButtonInteract : MonoBehaviour, IInteractable
         {
             this.transform.position = Vector3.Lerp(
                 this.transform.position,
-                pushedPosition,
+                targetPosition,
                 Time.deltaTime * _buttonSpeed
             );
 
@@ -156,9 +198,9 @@ public class ButtonInteract : MonoBehaviour, IInteractable
                 )
             );
 
-            if (Mathf.Abs(this.transform.position.y - pushedPosition.y) <= _minDistance)
+            if (Mathf.Abs(this.transform.position.y - targetPosition.y) <= _minDistance)
             {
-                this.transform.position = pushedPosition;
+                this.transform.position = targetPosition;
                 _renderer.material = deactiveMaterial;
 
                 _isFullyPressed = false;
