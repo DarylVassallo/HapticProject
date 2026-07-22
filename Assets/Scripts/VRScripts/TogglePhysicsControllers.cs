@@ -1,7 +1,9 @@
 using UnityEngine;
 using System;
 
-public class TogglePhysicsControllers : MonoBehaviour
+using Unity.Netcode;
+
+public class TogglePhysicsControllers : NetworkBehaviour
 {
     private bool isActive = false;
     [SerializeField] private GameObject controllerPhysics;
@@ -9,8 +11,47 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     public static event Action OnChangedControllers;
 
+    private bool hasNetworkSpawned = false;
+    private bool hasBeenEnabled = false;
+
+    public override void OnNetworkSpawn()
+    {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkSpawn");
+
+        hasNetworkSpawned = true;
+        if(hasBeenEnabled) ActivateController();
+    }
+
+    private void OnNetworkDespawn()
+    {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkDespawn");
+
+        hasNetworkSpawned = false;
+        if(hasBeenEnabled) DeactivateController();
+    }
+
     private void OnEnable()
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnEnable");
+
+        hasBeenEnabled = true;
+
+        if(hasNetworkSpawned) ActivateController();
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnDisable");
+
+        hasBeenEnabled = false;
+
+        if(hasNetworkSpawned) DeactivateController();
+    }
+
+    private void ActivateController()
+    {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
+        
         MenuManager.OnToggleAll += ToggleHands;
 
         isActive = true;
@@ -20,8 +61,10 @@ public class TogglePhysicsControllers : MonoBehaviour
         OnChangedControllers?.Invoke();
     }
 
-    private void OnDisable()
+    private void DeactivateController()
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
+
         MenuManager.OnToggleAll -= ToggleHands;
 
         isActive = false;
@@ -33,6 +76,7 @@ public class TogglePhysicsControllers : MonoBehaviour
 
      private void ToggleHands(bool toggle)
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ToggleHands");
         if (isActive) controllerRenderer.SetActive(toggle);
     }
 }
