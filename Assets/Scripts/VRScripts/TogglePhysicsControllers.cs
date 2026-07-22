@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class TogglePhysicsControllers : NetworkBehaviour
 {
-    // private bool isActive = false;
+    private bool isActive = false;
     // private bool isInNetwork = false;
 
     [SerializeField] private GameObject controllerPhysics;
@@ -41,7 +41,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
     private void OnEnable()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnEnable");
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        // ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
 
         hasBeenEnabled = true;
 
@@ -58,7 +58,7 @@ public class TogglePhysicsControllers : NetworkBehaviour
     private void OnDisable()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnDisable");
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        // ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
 
         hasBeenEnabled = false;
 
