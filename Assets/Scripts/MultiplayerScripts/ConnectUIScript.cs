@@ -117,6 +117,16 @@ public class ConnectUIScript : NetworkBehaviour
         }
     }
 
+    public override void OnNetworkSpawn()
+    {
+        // if (!IsOwner) return;
+
+        Debug.Log("ConnectUIScript OnNetworkSpawn");
+
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
+    }
+
     IEnumerator SetupNetwork(float delay)
     {
         Debug.Log("ConnectUIScript SetupNetwork");
@@ -223,7 +233,6 @@ public class ConnectUIScript : NetworkBehaviour
                 }
             }
 
-            // StartCoroutine(DisableHostButtonsDelay(1f));
             DisableHostButtonsaRpc();
         }
 
@@ -237,7 +246,8 @@ public class ConnectUIScript : NetworkBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        DisableHostButtonsaRpc();
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -249,8 +259,7 @@ public class ConnectUIScript : NetworkBehaviour
         Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
         hostButton.transform.parent.gameObject.SetActive(false);
 
-        levelCamera.SetActive(false);
-        vrRig.SetActive(true);
+        // StartCoroutine(DisableHostButtonsDelay(3f));
     }
 
     private void HandleClientConnected(ulong clientId)
