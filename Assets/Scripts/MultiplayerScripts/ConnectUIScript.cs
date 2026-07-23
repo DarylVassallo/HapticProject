@@ -24,12 +24,12 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private GameObject vrPlayer;
     [SerializeField] private Transform vrSpawnPoint;
 
-    [SerializeField] private GameObject vrLeftHand;
-    [SerializeField] private GameObject vrLeftPhysicsHand;
+    [SerializeField] private GameObject vrRig;
+    [SerializeField] private GameObject levelCamera;
+
     private bool vrLeftHandActive;
     [SerializeField] private SkinnedMeshRenderer vrLeftHandMesh;
-    [SerializeField] private GameObject vrRightHand;
-    [SerializeField] private GameObject vrRightPhysicsHand;
+
     private bool vrRightHandActive;
     [SerializeField] private SkinnedMeshRenderer vrRightHandMesh;
 
@@ -52,6 +52,8 @@ public class ConnectUIScript : NetworkBehaviour
 
     void Start()
     {
+        vrRig.SetActive(false);
+
         networkDiscovery = this.GetComponent<NetworkDiscovery>();
         Debug.Log("ConnectUIScript Start");
 
@@ -224,6 +226,9 @@ public class ConnectUIScript : NetworkBehaviour
             // StartCoroutine(DisableHostButtonsDelay(1f));
             DisableHostButtonsaRpc();
         }
+
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
     }
 
     IEnumerator DisableHostButtonsDelay(float delay)
@@ -248,16 +253,6 @@ public class ConnectUIScript : NetworkBehaviour
     private void HandleClientConnected(ulong clientId)
     {
         if (!NetworkManager.Singleton.IsServer) return;
-
-        Debug.Log("vrLeftHand.active: " + vrLeftHand.active);
-        vrLeftHandActive = vrLeftHand.active;
-        Debug.Log("vrRightHand.active: " + vrRightHand.active);
-        vrRightHandActive = vrRightHand.active;
-
-        vrLeftHand.SetActive(false);
-        vrLeftPhysicsHand.SetActive(false);
-        vrRightHand.SetActive(false);
-        vrRightPhysicsHand.SetActive(false);
 
         Debug.Log("ConnectUIScript HandleClientConnected 1");
        
@@ -311,10 +306,8 @@ public class ConnectUIScript : NetworkBehaviour
             }
         }
 
-        vrLeftHand.SetActive(vrLeftHandActive);
-        vrLeftPhysicsHand.SetActive(vrLeftHandActive);
-        vrRightHand.SetActive(vrRightHandActive);
-        vrRightPhysicsHand.SetActive(vrRightHandActive);
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
