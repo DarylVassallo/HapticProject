@@ -52,7 +52,7 @@ public class ConnectUIScript : NetworkBehaviour
 
     void Start()
     {
-        vrRig.SetActive(false);
+        vrRig.transform.GetChild(0).gameObject.SetActive(false);
 
         networkDiscovery = this.GetComponent<NetworkDiscovery>();
         Debug.Log("ConnectUIScript Start");
@@ -124,7 +124,7 @@ public class ConnectUIScript : NetworkBehaviour
         Debug.Log("ConnectUIScript OnNetworkSpawn");
 
         levelCamera.SetActive(false);
-        vrRig.SetActive(true);
+        vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     IEnumerator SetupNetwork(float delay)
@@ -237,7 +237,7 @@ public class ConnectUIScript : NetworkBehaviour
         }
 
         // levelCamera.SetActive(false);
-        // vrRig.SetActive(true);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     IEnumerator DisableHostButtonsDelay(float delay)
@@ -247,7 +247,7 @@ public class ConnectUIScript : NetworkBehaviour
         yield return new WaitForSeconds(delay);
 
         // levelCamera.SetActive(false);
-        // vrRig.SetActive(true);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -382,7 +382,7 @@ public class ConnectUIScript : NetworkBehaviour
         hostButton.transform.parent.gameObject.SetActive(false);
 
         // levelCamera.SetActive(false);
-        // vrRig.SetActive(true);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     private void ClientButtonOnClick()
@@ -409,7 +409,7 @@ public class ConnectUIScript : NetworkBehaviour
         clientButton.transform.parent.gameObject.SetActive(false);
 
         // levelCamera.SetActive(false);
-        // vrRig.SetActive(true);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     private void OnHostFoundHandler(string hostIp)

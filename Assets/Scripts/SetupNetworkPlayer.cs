@@ -27,7 +27,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
     {
         // if (!IsOwner) return;
 
-        GameObject.FindGameObjectWithTag("VRRig").SetActive(true);
+        GameObject.FindGameObjectWithTag("VRRig").transform.GetChild(0).gameObject.SetActive(true);
 
         PCPlayerReferences();
         VRPlayerReferences();
