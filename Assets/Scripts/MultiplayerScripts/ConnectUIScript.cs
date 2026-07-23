@@ -236,8 +236,8 @@ public class ConnectUIScript : NetworkBehaviour
             DisableHostButtonsaRpc();
         }
 
-        levelCamera.SetActive(false);
-        vrRig.SetActive(true);
+        // levelCamera.SetActive(false);
+        // vrRig.SetActive(true);
     }
 
     IEnumerator DisableHostButtonsDelay(float delay)
@@ -246,8 +246,8 @@ public class ConnectUIScript : NetworkBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        levelCamera.SetActive(false);
-        vrRig.SetActive(true);
+        // levelCamera.SetActive(false);
+        // vrRig.SetActive(true);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -381,8 +381,8 @@ public class ConnectUIScript : NetworkBehaviour
 
         hostButton.transform.parent.gameObject.SetActive(false);
 
-        levelCamera.SetActive(false);
-        vrRig.SetActive(true);
+        // levelCamera.SetActive(false);
+        // vrRig.SetActive(true);
     }
 
     private void ClientButtonOnClick()
@@ -408,8 +408,8 @@ public class ConnectUIScript : NetworkBehaviour
 
         clientButton.transform.parent.gameObject.SetActive(false);
 
-        levelCamera.SetActive(false);
-        vrRig.SetActive(true);
+        // levelCamera.SetActive(false);
+        // vrRig.SetActive(true);
     }
 
     private void OnHostFoundHandler(string hostIp)

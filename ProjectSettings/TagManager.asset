@@ -23,6 +23,7 @@ TagManager:
   - RightHandSocket
   - Manager
   - Fire
+  - VRRig
   layers:
   - Default
   - TransparentFX

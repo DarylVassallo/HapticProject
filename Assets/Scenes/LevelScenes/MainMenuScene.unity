@@ -9372,6 +9372,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3207699551476226454, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+      propertyPath: m_TagString
+      value: VRRig
+      objectReference: {fileID: 0}
     - target: {fileID: 4181609627353927491, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 167575631
