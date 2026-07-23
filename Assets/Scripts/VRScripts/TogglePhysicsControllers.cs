@@ -1,9 +1,7 @@
 using UnityEngine;
 using System;
 
-using Unity.Netcode;
-
-public class TogglePhysicsControllers : NetworkBehaviour
+public class TogglePhysicsControllers : MonoBehaviour
 {
     private bool isActive = false;
     // private bool isInNetwork = false;

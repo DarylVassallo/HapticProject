@@ -60,6 +60,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void VRPlayerReferences()
     {
+        Debug.Log("VRPlayer: " + GameObject.FindGameObjectWithTag("VRPlayer"));
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
             if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))
