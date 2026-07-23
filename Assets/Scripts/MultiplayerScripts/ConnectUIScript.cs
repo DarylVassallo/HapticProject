@@ -25,8 +25,12 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private Transform vrSpawnPoint;
 
     [SerializeField] private GameObject vrLeftHand;
+    [SerializeField] private GameObject vrLeftPhysicsHand;
+    private bool vrLeftHandActive;
     [SerializeField] private SkinnedMeshRenderer vrLeftHandMesh;
     [SerializeField] private GameObject vrRightHand;
+    [SerializeField] private GameObject vrRightPhysicsHand;
+    private bool vrRightHandActive;
     [SerializeField] private SkinnedMeshRenderer vrRightHandMesh;
 
     public static event Action OnCreatedPCPlayer;
@@ -243,9 +247,19 @@ public class ConnectUIScript : NetworkBehaviour
 
     private void HandleClientConnected(ulong clientId)
     {
-        Debug.Log("ConnectUIScript HandleClientConnected 1");
-
         if (!NetworkManager.Singleton.IsServer) return;
+
+        Debug.Log("vrLeftHand.active: " + vrLeftHand.active);
+        vrLeftHandActive = vrLeftHand.active;
+        Debug.Log("vrRightHand.active: " + vrRightHand.active);
+        vrRightHandActive = vrRightHand.active;
+
+        vrLeftHand.SetActive(false);
+        vrLeftPhysicsHand.SetActive(false);
+        vrRightHand.SetActive(false);
+        vrRightPhysicsHand.SetActive(false);
+
+        Debug.Log("ConnectUIScript HandleClientConnected 1");
        
         Debug.Log("ConnectUIScript HandleClientConnected 2");
 
@@ -296,6 +310,11 @@ public class ConnectUIScript : NetworkBehaviour
                 OnCreatedPCPlayer?.Invoke();
             }
         }
+
+        vrLeftHand.SetActive(vrLeftHandActive);
+        vrLeftPhysicsHand.SetActive(vrLeftHandActive);
+        vrRightHand.SetActive(vrRightHandActive);
+        vrRightPhysicsHand.SetActive(vrRightHandActive);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
