@@ -9,7 +9,14 @@ public class TogglePhysicsControllers : MonoBehaviour
     [SerializeField] private GameObject controllerPhysics;
     [SerializeField] private GameObject controllerRenderer;
 
-    public static event Action OnChangedControllers;
+    public static event Action<int> OnActivateController;
+    public static event Action<int> OnDeactivateController;
+
+    [SerializeField] private int controllerNum;
+    //0 LeftHand
+    //1 LeftController
+    //2 RightHand
+    //3 RightController
 
     private bool hasBeenEnabled = false;
     
@@ -79,15 +86,17 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     public void ActivateController()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
+        OnActivateController?.Invoke(controllerNum);
+
+
+        // Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
         
-        MenuManager.OnToggleAll += ToggleHands;
+        // MenuManager.OnToggleAll += ToggleHands;
 
-        isActive = true;
-        controllerPhysics.SetActive(true);
-        controllerRenderer.SetActive(true);
+        // isActive = true;
+        // controllerPhysics.SetActive(true);
 
-        OnChangedControllers?.Invoke();
+        // OnChangedControllers?.Invoke();
     }
 
     // [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -98,20 +107,20 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     public void DeactivateController()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
+        OnDeactivateController?.Invoke(controllerNum);
 
-        MenuManager.OnToggleAll -= ToggleHands;
+        // Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
 
-        isActive = false;
-        controllerPhysics.SetActive(false);
-        controllerRenderer.SetActive(false);
+        // MenuManager.OnToggleAll -= ToggleHands;
+
+        // isActive = false;
+        // controllerPhysics.SetActive(false);
         
-        OnChangedControllers?.Invoke();
+        // OnChangedControllers?.Invoke();
     }
 
      private void ToggleHands(bool toggle)
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers ToggleHands");
-        if (isActive) controllerRenderer.SetActive(toggle);
     }
 }
