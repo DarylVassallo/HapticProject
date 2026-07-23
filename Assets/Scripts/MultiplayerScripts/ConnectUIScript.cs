@@ -248,6 +248,9 @@ public class ConnectUIScript : NetworkBehaviour
         Debug.Log("hostButton: " + hostButton);
         Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
         hostButton.transform.parent.gameObject.SetActive(false);
+
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
     }
 
     private void HandleClientConnected(ulong clientId)
@@ -305,9 +308,6 @@ public class ConnectUIScript : NetworkBehaviour
                 OnCreatedPCPlayer?.Invoke();
             }
         }
-
-        levelCamera.SetActive(false);
-        vrRig.SetActive(true);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -371,6 +371,9 @@ public class ConnectUIScript : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
 
         hostButton.transform.parent.gameObject.SetActive(false);
+
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
     }
 
     private void ClientButtonOnClick()
@@ -395,6 +398,9 @@ public class ConnectUIScript : NetworkBehaviour
         }
 
         clientButton.transform.parent.gameObject.SetActive(false);
+
+        levelCamera.SetActive(false);
+        vrRig.SetActive(true);
     }
 
     private void OnHostFoundHandler(string hostIp)
