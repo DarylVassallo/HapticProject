@@ -53,17 +53,14 @@ public class ControllerManager : NetworkBehaviour
 
     private void ActivateController(int _newActivateControllerNum)
     {
-        Debug.Log("ControllerManager ActivateController: " + _newActivateControllerNum);
-
-        Debug.Log("ControllerManager ActivateController: " + activateControllerNum);
+        // Debug.Log("ControllerManager ActivateController: " + _newActivateControllerNum);
         if(isInNetwork) SetActivateControllerNumServerRpc(_newActivateControllerNum);
     }
 
     [ServerRpc(RequireOwnership = false)]
     private void SetActivateControllerNumServerRpc(int _newController)
     {
-        Debug.Log("ControllerManager SetActivateControllerNumServerRpc: " + _newController);
-
+        // Debug.Log("ControllerManager SetActivateControllerNumServerRpc: " + _newController);
         activateControllerNum.Value = _newController;
     }
 
@@ -71,58 +68,138 @@ public class ControllerManager : NetworkBehaviour
     {
         Debug.Log("ControllerManager ActivateControllerChanged: " + current);
 
-        ActivateControllerRpc();
+        switch(current)
+        {
+            case 0:
+                ActivateLeftHandRpc();
+                break;
+            case 1:
+                ActivateLeftControllerRpc();
+                break;
+            case 2:
+                ActivateRightHandRpc();
+                break;
+            case 3:
+                ActivateRightControllerRpc();
+                break;
+        }
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void ActivateControllerRpc()
+    public void ActivateLeftHandRpc()
     {
-        Debug.Log("ControllerManager ActivateControllerRpc");
+        Debug.Log("ControllerManager ActivateLeftHandRpc");
+        ToggleControllers(0, true);
+    }
 
-        controllers[activateControllerNum.Value].SetActive(true);
-        
-        if(activateControllerNum.Value == 0 || activateControllerNum.Value == 2)
-        {
-            controllers[activateControllerNum.Value + 1].SetActive(false);
-        }else if(activateControllerNum.Value == 1 || activateControllerNum.Value == 3)
-        {
-            controllers[activateControllerNum.Value - 1].SetActive(false);
-        }
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ActivateLeftControllerRpc()
+    {
+        Debug.Log("ControllerManager ActivateLeftControllerRpc");
+        ToggleControllers(1, true);
+    }
 
-        OnChangedControllers?.Invoke();
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ActivateRightHandRpc()
+    {
+        Debug.Log("ControllerManager ActivateRightHandRpc");
+        ToggleControllers(2, true);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void ActivateRightControllerRpc()
+    {
+        Debug.Log("ControllerManager ActivateRightControllerRpc");
+        ToggleControllers(3, true);
     }
 
 
 
+    private void DeactivateController(int _newDeactivateControllerNum)
+    {
+        // Debug.Log("ControllerManager DeactivateController: " + deactivateControllerNum);
+        if(isInNetwork) SetDeactivateControllerNumServerRpc(_newDeactivateControllerNum);
+    }
 
     [ServerRpc(RequireOwnership = false)]
     private void SetDeactivateControllerNumServerRpc(int _newController)
     {
-        Debug.Log("ControllerManager SetDeactivateControllerNumServerRpc: " + _newController);
-
+        // Debug.Log("ControllerManager SetDeactivateControllerNumServerRpc: " + _newController);
         deactivateControllerNum.Value = _newController;
-    }
-
-    private void DeactivateController(int _newDeactivateControllerNum)
-    {
-        Debug.Log("ControllerManager DeactivateController: " + deactivateControllerNum);
-
-        if(isInNetwork) SetDeactivateControllerNumServerRpc(_newDeactivateControllerNum);
     }
 
     private void DeactivateControllerChanged(int previous, int current)
     {
         Debug.Log("ControllerManager DeactivateControllerChanged: " + current);
 
-        DeactivateControllerRpc();
+        switch(current)
+        {
+            case 0:
+                DeactivateLeftHandRpc();
+                break;
+            case 1:
+                DeactivateLeftControllerRpc();
+                break;
+            case 2:
+                DeactivateRightHandRpc();
+                break;
+            case 3:
+                DeactivateRightControllerRpc();
+                break;
+        }
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void DeactivateControllerRpc()
+    public void DeactivateLeftHandRpc()
     {
-        Debug.Log("ControllerManager DeactivateControllerRpc");
+        Debug.Log("ControllerManager DeactivateLeftHandRpc");
+        ToggleControllers(0, false);
+    }
 
-        controllers[deactivateControllerNum.Value].SetActive(false);
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void DeactivateLeftControllerRpc()
+    {
+        Debug.Log("ControllerManager DeactivateLeftControllerRpc");
+        ToggleControllers(1, false);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void DeactivateRightHandRpc()
+    {
+        Debug.Log("ControllerManager DeactivateRightHandRpc");
+        ToggleControllers(2, false);
+    }
+
+    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    public void DeactivateRightControllerRpc()
+    {
+        Debug.Log("ControllerManager DeactivateRightControllerRpc");
+        ToggleControllers(3, false);
+    }
+
+    private void ToggleControllers(int _controllerNum, bool _activate)
+    {
+        Debug.Log("ControllerManager ToggleControllers: " + _controllerNum + " : " + _activate);
+        Debug.Log("ControllerManager ToggleControllers: controllers["  +_controllerNum +"]: " + controllers[_controllerNum]);
+
+        Debug.Log("ControllerManager ToggleControllers: old controllers["  +_controllerNum +"].active: " + controllers[_controllerNum].active);
+        controllers[_controllerNum].SetActive(_activate);
+        Debug.Log("ControllerManager ToggleControllers: new controllers["  +_controllerNum +"].active: " + controllers[_controllerNum].active);
+        
+        if((_controllerNum == 0 || _controllerNum == 2) && _activate)
+        {
+            Debug.Log("ControllerManager ToggleControllers: other controllers["  + (_controllerNum + 1) +"]: " + controllers[(_controllerNum + 1)]);
+            Debug.Log("ControllerManager ToggleControllers: old other controllers["  + (_controllerNum + 1) +"].active: " + controllers[(_controllerNum + 1)].active);
+            controllers[_controllerNum + 1].SetActive(false);
+            Debug.Log("ControllerManager ToggleControllers: new other controllers["  + (_controllerNum + 1) +"].active: " + controllers[(_controllerNum + 1)].active);
+        }else if((_controllerNum == 1 || _controllerNum == 3) && _activate)
+        {
+            Debug.Log("ControllerManager ToggleControllers: other controllers["  + (_controllerNum - 1) +"]: " + controllers[(_controllerNum - 1)]);
+            Debug.Log("ControllerManager ToggleControllers: old other controllers["  + (_controllerNum - 1) +"].active: " + controllers[(_controllerNum - 1)].active);
+            controllers[_controllerNum - 1].SetActive(false);
+            Debug.Log("ControllerManager ToggleControllers: new other controllers["  + (_controllerNum - 1) +"].active: " + controllers[(_controllerNum - 1)].active);
+        }
+
         OnChangedControllers?.Invoke();
     }
 

@@ -1544,6 +1544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
   controllerPhysics: {fileID: 8871825701458128100}
   controllerRenderer: {fileID: 1197825969843019776}
+  controllerNum: 0
 --- !u!1 &996415335972745225
 GameObject:
   m_ObjectHideFlags: 0
@@ -5486,6 +5487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
   controllerPhysics: {fileID: 4336382886760728654}
   controllerRenderer: {fileID: 412925962486966613}
+  controllerNum: 0
 --- !u!1 &2182688562150306386
 GameObject:
   m_ObjectHideFlags: 0
@@ -7749,6 +7751,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
   controllerPhysics: {fileID: 5430598173370977210}
   controllerRenderer: {fileID: 4600263308161309566}
+  controllerNum: 0
 --- !u!1 &2726625562107952189
 GameObject:
   m_ObjectHideFlags: 0
@@ -16107,6 +16110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TogglePhysicsControllers
   controllerPhysics: {fileID: 8726251925843060254}
   controllerRenderer: {fileID: 9164146376865140710}
+  controllerNum: 0
 --- !u!1 &5462183358455158065
 GameObject:
   m_ObjectHideFlags: 0
