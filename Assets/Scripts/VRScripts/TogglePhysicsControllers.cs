@@ -19,112 +19,50 @@ public class TogglePhysicsControllers : MonoBehaviour
     //3 RightController
 
     private bool hasBeenEnabled = false;
-    
-    // public override void OnNetworkSpawn()
-    // {
-    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkSpawn");
-
-    //     isInNetwork = true;
-    //     if(isActive) ActivateControllerRpc();
-    // }
-
-    // private void OnNetworkDespawn()
-    // {
-    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnNetworkDespawn");
-
-    //     isInNetwork = false;
-    //     if(!isActive) DeactivateControllerRpc();
-    // }
-    // private void GetPCPlayerData()
-    // {
-    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData");
-    //     isInNetwork = true;
-    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers GetPCPlayerData isActive: " + isActive);
-    //     if(isActive) ActivateControllerRpc();
-    // }
 
     private void OnEnable()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnEnable");
-        // ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
 
+        ControllerManager.OnCheckControllers += CheckController;
         hasBeenEnabled = true;
-
         ActivateController();
-        // if(isInNetwork)
-        // {
-        //     ActivateControllerRpc();
-        // }
-        // else{
-        //     ActivateController();
-        // }
     }
 
     private void OnDisable()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnDisable");
-        // ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
 
+        ControllerManager.OnCheckControllers -= CheckController;
         hasBeenEnabled = false;
-
         DeactivateController();
-        // if(isInNetwork)
-        // {
-        //     DeactivateControllerRpc();
-        // }
-        // else{
-        //     DeactivateController();
-        // }
     }
 
-    // [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    // public void ActivateControllerRpc()
-    // {
-    //     Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateControllerRpc");
-    //     ActivateController();
-    // }
-
-    public void ActivateController()
+    private void CheckController()
+    {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers CheckController");
+        
+        if(hasBeenEnabled)
+        {
+            ActivateController();
+        }
+        else
+        {
+            DeactivateController();
+        }
+    }
+    
+    private void ActivateController()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
 
         OnActivateController?.Invoke(controllerNum);
-
-
-        // Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
-        
-        // MenuManager.OnToggleAll += ToggleHands;
-
-        // isActive = true;
-        // controllerPhysics.SetActive(true);
-
-        // OnChangedControllers?.Invoke();
     }
 
-    // [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    // public void DeactivateControllerRpc()
-    // {
-    //     DeactivateController();
-    // }
-
-    public void DeactivateController()
+    private void DeactivateController()
     {
         Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
 
         OnDeactivateController?.Invoke(controllerNum);
-
-        // Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
-
-        // MenuManager.OnToggleAll -= ToggleHands;
-
-        // isActive = false;
-        // controllerPhysics.SetActive(false);
-        
-        // OnChangedControllers?.Invoke();
-    }
-
-     private void ToggleHands(bool toggle)
-    {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ToggleHands");
     }
 }
