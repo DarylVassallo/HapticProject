@@ -86,6 +86,8 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     public void ActivateController()
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
+
         OnActivateController?.Invoke(controllerNum);
 
 
@@ -107,6 +109,8 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     public void DeactivateController()
     {
+        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
+
         OnDeactivateController?.Invoke(controllerNum);
 
         // Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
