@@ -17,6 +17,11 @@ public class ControllerManager : NetworkBehaviour
     private NetworkVariable<int> activateControllerNum = new(-1);
     private NetworkVariable<int> deactivateControllerNum = new(-1);
 
+    private NetworkVariable<bool> isLeftHandActive = new(false);
+    private NetworkVariable<bool> isLeftControllerActive = new(false);
+    private NetworkVariable<bool> isRightHandActive = new(false);
+    private NetworkVariable<bool> isRightControllerActive = new(false);
+
     private bool isInNetwork = false;
 
     public override void OnNetworkSpawn()
@@ -25,6 +30,11 @@ public class ControllerManager : NetworkBehaviour
 
         isInNetwork = true;
         OnCheckControllers?.Invoke();
+
+        if(isLeftHandActive.Value) ActivateLeftHandRpc();
+        if(isLeftControllerActive.Value) ActivateLeftControllerRpc();
+        if(isRightHandActive.Value) ActivateRightHandRpc();
+        if(isRightControllerActive.Value) ActivateRightControllerRpc();
     }
 
     private void OnEnable()
@@ -64,6 +74,34 @@ public class ControllerManager : NetworkBehaviour
         activateControllerNum.Value = _newController;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsLeftHandActiveServerRpc(bool _isActive)
+    {
+        isLeftHandActive.Value = _isActive;
+        if(_isActive) SetIsLeftControllerActiveServerRpc(false);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsLeftControllerActiveServerRpc(bool _isActive)
+    {
+        isLeftControllerActive.Value = _isActive;
+        if(_isActive) SetIsLeftHandActiveServerRpc(false);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsRightHandActiveServerRpc(bool _isActive)
+    {
+        isRightHandActive.Value = _isActive;
+        if(_isActive) SetIsRightControllerActiveServerRpc(false);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsRightControllerActiveServerRpc(bool _isActive)
+    {
+        isRightControllerActive.Value = _isActive;
+        if(_isActive) SetIsRightHandActiveServerRpc(false);
+    }
+
     private void ActivateControllerChanged(int previous, int current)
     {
         Debug.Log("ControllerManager ActivateControllerChanged: " + current);
@@ -89,6 +127,7 @@ public class ControllerManager : NetworkBehaviour
     public void ActivateLeftHandRpc()
     {
         Debug.Log("ControllerManager ActivateLeftHandRpc");
+        SetIsLeftHandActiveServerRpc(true);
         ToggleControllers(0, true);
     }
 
@@ -96,6 +135,7 @@ public class ControllerManager : NetworkBehaviour
     public void ActivateLeftControllerRpc()
     {
         Debug.Log("ControllerManager ActivateLeftControllerRpc");
+        SetIsLeftControllerActiveServerRpc(true);
         ToggleControllers(1, true);
     }
 
@@ -103,6 +143,7 @@ public class ControllerManager : NetworkBehaviour
     public void ActivateRightHandRpc()
     {
         Debug.Log("ControllerManager ActivateRightHandRpc");
+        SetIsRightHandActiveServerRpc(true);
         ToggleControllers(2, true);
     }
 
@@ -110,6 +151,7 @@ public class ControllerManager : NetworkBehaviour
     public void ActivateRightControllerRpc()
     {
         Debug.Log("ControllerManager ActivateRightControllerRpc");
+        SetIsRightControllerActiveServerRpc(true);
         ToggleControllers(3, true);
     }
 
