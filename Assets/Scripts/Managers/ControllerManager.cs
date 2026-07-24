@@ -62,6 +62,15 @@ public class ControllerManager : NetworkBehaviour
     public void ActivateControllerRpc()
     {
         controllers[activateControllerNum.Value].SetActive(true);
+        
+        if(activateControllerNum.Value == 0 || activateControllerNum.Value == 2)
+        {
+            controllers[activateControllerNum.Value + 1].SetActive(false);
+        }else if(activateControllerNum.Value == 1 || activateControllerNum.Value == 3)
+        {
+            controllers[activateControllerNum.Value - 1].SetActive(false);
+        }
+
         OnChangedControllers?.Invoke();
     }
 
