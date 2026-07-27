@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using Unity.VRTemplate;
@@ -26,9 +27,9 @@ public class MazeManager : NetworkBehaviour
     }
     public HiddenSwitches[] hiddenSwitches;
 
-    public enum ShapeType { None, Triangle, Square, Circle, Pentagon, Diamond }
+    public enum ShapeType { None, Health, Spin, Defense }
     public enum ButtonType { None, Square, Circle, Triangle, Cross, Star }
-    public enum InteractiveObject { SquareWheel, DiamondLever, TriangleLever, CircleButton }
+    public enum InteractiveObject { SpinWheel, HealthLever, DefenseButton }
 
     private ShapeType[] currentShapeOrder = new ShapeType[5];
     private ButtonType[] currentButtonOrder = new ButtonType[5];
@@ -45,20 +46,20 @@ public class MazeManager : NetworkBehaviour
     [SerializeField] private Transform[] rotateBridges;
     [SerializeField] private Transform[] reverseRotateBridges;
 
-    [SerializeField] private Transform squareWheelObject;
-    private NetworkVariable<bool> isSquareWheelActive = new (false);
-    private XRKnob squareWheelKnob;
-    private float prevSquareWheelKnobValue = 0;
-    private float squareWheelKnobValueDiff = 0;
+    [SerializeField] private Transform spinWheelObject;
+    private NetworkVariable<bool> hasSpinWheelBeenUsed = new (false);
+    private NetworkVariable<bool> isSpinWheelActive = new (false);
+    private XRKnob spinWheelKnob;
+    private float prevSpinWheelKnobValue = 0;
+    private float spinWheelKnobValueDiff = 0;
 
-    [SerializeField] private Transform diamondLeverObject;
-    private NetworkVariable<bool> isDiamondLeverActive = new (false);
+    [SerializeField] private Transform healthLeverObject;
+    private NetworkVariable<bool> hasHealthLeverBeenUsed = new (false);
+    private NetworkVariable<bool> isHealthLeverActive = new (false);
 
-    [SerializeField] private Transform triangleLeverObject;
-    private NetworkVariable<bool> isTriangleLeverActive = new (false);
-
-    [SerializeField] private Transform circleButtonObject;
-    private NetworkVariable<bool> isCircleButtonActive = new (false);
+    [SerializeField] private Transform defenseButtonObject;
+    private NetworkVariable<bool> hasDefenseButtonBeenUsed = new (false);
+    private NetworkVariable<bool> isDefenseButtonActive = new (false);
     
     [SerializeField] private Material activeMaterial;
     [SerializeField] private Material deactiveMaterial;
@@ -84,10 +85,9 @@ public class MazeManager : NetworkBehaviour
     [SerializeField] private int maxWheelCheckCount;
     private int wheelCheckCount;
 
-    [SerializeField] private bool startWithActivatedSquareWheel;
-    [SerializeField] private bool startWithActivatedDiamondLever;
-    [SerializeField] private bool startWithActivatedTriangleLever;
-    [SerializeField] private bool startWithActivatedCircleButton;
+    [SerializeField] private bool startWithActivatedSpinWheel;
+    [SerializeField] private bool startWithActivatedHealthLever;
+    [SerializeField] private bool startWithActivatedDefenseButton;
 
     private NetworkVariable<int> _networkAudioNum = new (-1);
 
@@ -99,7 +99,7 @@ public class MazeManager : NetworkBehaviour
 
         _isNewNavMeshAvailable = false;
 
-        squareWheelKnob = squareWheelObject.GetComponentInChildren<XRKnob>();
+        spinWheelKnob = spinWheelObject.GetComponentInChildren<XRKnob>();
 
         isFunctioningWheelRotating = false;
 
@@ -130,36 +130,31 @@ public class MazeManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        isSquareWheelActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.SquareWheel, p, c);
-        if(isSquareWheelActive.Value)
+        Debug.Log("OnNetworkSpawn");
+        isSpinWheelActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.SpinWheel, p, c);
+        if(isSpinWheelActive.Value)
         {
-            ActivateObjectLight(squareWheelObject);
+            ActivateObjectLight(spinWheelObject);
         }
 
-        isDiamondLeverActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.DiamondLever, p, c);
-        if(isDiamondLeverActive.Value)
+        isHealthLeverActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.HealthLever, p, c);
+        if(isHealthLeverActive.Value)
         {
-            ActivateObjectLight(diamondLeverObject);
+            ActivateObjectLight(healthLeverObject);
         }
 
-        isTriangleLeverActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.TriangleLever, p, c);
-        if(isTriangleLeverActive.Value)
+        isDefenseButtonActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.DefenseButton, p, c);
+        if(isDefenseButtonActive.Value)
         {
-            ActivateObjectLight(triangleLeverObject);
-        }
-
-        isCircleButtonActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.CircleButton, p, c);
-        if(isCircleButtonActive.Value)
-        {
-            ActivateObjectLight(circleButtonObject);
+            ActivateObjectLight(defenseButtonObject);
         }
 
         base.OnNetworkSpawn();
 
-        if(startWithActivatedSquareWheel) ActivateSquareWheel();
-        if(startWithActivatedDiamondLever) ActivateDiamondLever();
-        if(startWithActivatedTriangleLever) ActivateTriangleLever();
-        if(startWithActivatedCircleButton) ActivateCircleButton();
+        Debug.Log("OnNetworkSpawn 2");
+        if(startWithActivatedSpinWheel) ActivateSpinWheel();
+        if(startWithActivatedHealthLever) ActivateHealthLever();
+        if(startWithActivatedDefenseButton) ActivateDefenseButton();
     }
 
     void FixedUpdate()
@@ -187,18 +182,18 @@ public class MazeManager : NetworkBehaviour
         }
         
 
-        if(isSquareWheelActive.Value)
+        if(isSpinWheelActive.Value)
         {
-            CheckSquareWheel();
+            CheckSpinWheel();
 
             for(int i = 0; i < rotateBridges.Length; i++)
             {
-                rotateBridges[i].Rotate(0.0f, squareWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+                rotateBridges[i].Rotate(0.0f, spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
             }
 
             for(int i = 0; i < reverseRotateBridges.Length; i++)
             {
-                reverseRotateBridges[i].Rotate(0.0f, -squareWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+                reverseRotateBridges[i].Rotate(0.0f, -spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
             }
         }
 
@@ -256,22 +251,37 @@ public class MazeManager : NetworkBehaviour
         _audioSource.Stop();
     }
 
-    private void CheckSquareWheel()
+    public void PressedDefenseButton(int maxEnemies)
     {
-        squareWheelKnobValueDiff = squareWheelKnob.value - prevSquareWheelKnobValue;
+        if(isDefenseButtonActive.Value)
+        {
+            if(!hasDefenseButtonBeenUsed.Value) SetDefenseButtonBeenUsedServerRpc(true);
 
-        if(squareWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
+            OnCreateRandomEnemy?.Invoke(maxEnemies);
+        }
+    }
+    private void CheckSpinWheel()
+    {
+        spinWheelKnobValueDiff = spinWheelKnob.value - prevSpinWheelKnobValue;
+
+        if(spinWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
         {
             SetAudioNumServerRpc(2);
             // PlayAudio(2);
 
             _isNewNavMeshAvailable = true;
-            // SetSquareWheelEnemyActiveServerRpc(true);
+            // SetSpinWheelEnemyActiveServerRpc(true);
             // SetChanceOfEnemysServerRpc(0.01f);
 
             wheelCheckCount = maxWheelCheckCount;
+
+            if(!hasSpinWheelBeenUsed.Value)
+            {
+                Debug.Log("CheckSpinWheel " + spinWheelKnobValueDiff + " : " + wheelCheckCount);
+                SetSpinWheelBeenUsedServerRpc(true);
+            }
         }
-        else if(squareWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
+        else if(spinWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
             // StopAudioClientRpc();
             SetAudioNumServerRpc(-1);
@@ -280,12 +290,31 @@ public class MazeManager : NetworkBehaviour
             // levelGround.RemoveData();
             // levelGround.BuildNavMesh();
 
-            // SetSquareWheelEnemyActiveServerRpc(false);
+            // SetSpinWheelEnemyActiveServerRpc(false);
             // SetChanceOfEnemysServerRpc(-0.01f);
         }
 
-        prevSquareWheelKnobValue = squareWheelKnob.value;
+        prevSpinWheelKnobValue = spinWheelKnob.value;
         if(wheelCheckCount > 0) wheelCheckCount--;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetSpinWheelBeenUsedServerRpc(bool _newValue)
+    {
+        Debug.Log("SetSpinWheelBeenUsedServerRpc: " + _newValue);
+        hasSpinWheelBeenUsed.Value = _newValue;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetHealthLeverBeenUsedServerRpc(bool _newValue)
+    {
+        hasHealthLeverBeenUsed.Value = _newValue;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetDefenseButtonBeenUsedServerRpc(bool _newValue)
+    {
+        hasDefenseButtonBeenUsed.Value = _newValue;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -303,22 +332,20 @@ public class MazeManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
+        Debug.Log("ActivateServerRpc: " + interactiveObject);
+
         switch(interactiveObject)
         {
-            case InteractiveObject.SquareWheel:
-                isSquareWheelActive.Value = true;
+            case InteractiveObject.SpinWheel:
+                isSpinWheelActive.Value = true;
                 break;
 
-            case InteractiveObject.DiamondLever:
-                isDiamondLeverActive.Value = true;
+            case InteractiveObject.HealthLever:
+                isHealthLeverActive.Value = true;
                 break;
 
-            case InteractiveObject.TriangleLever:
-                isTriangleLeverActive.Value = true;
-                break;
-
-            case InteractiveObject.CircleButton:
-                isCircleButtonActive.Value = true;
+            case InteractiveObject.DefenseButton:
+                isDefenseButtonActive.Value = true;
                 break;
         }
     }
@@ -326,25 +353,21 @@ public class MazeManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void DeactivateAllServerRpc()
     {
-        isSquareWheelActive.Value = false;
-        DeactivateObjectLight(squareWheelObject);
+        isSpinWheelActive.Value = false;
+        DeactivateObjectLight(spinWheelObject);
 
-        isDiamondLeverActive.Value = false;
-        DeactivateObjectLight(diamondLeverObject);
+        isHealthLeverActive.Value = false;
+        DeactivateObjectLight(healthLeverObject);
 
-        isTriangleLeverActive.Value = false;
-        DeactivateObjectLight(triangleLeverObject);
-
-        isCircleButtonActive.Value = false;
-        DeactivateObjectLight(circleButtonObject);
+        isDefenseButtonActive.Value = false;
+        DeactivateObjectLight(defenseButtonObject);
 
         ResetButtons();
     }
 
     // private void UpdateChancesOfEnemy(bool previous, bool current)
     // {
-    //     float newChances =  0.01f * (squareWheelEnemyActive.Value ? 1 : 0) + 
-    //                         0f * (diamondLeverEnemyActive.Value ? 1 : 0);
+    //     float newChances =  0.01f * (spinWheelEnemyActive.Value ? 1 : 0);
 
     //     SetChanceOfEnemysServerRpc(newChances);
     // }
@@ -356,82 +379,75 @@ public class MazeManager : NetworkBehaviour
     // }
 
     // [ServerRpc(RequireOwnership = false)]
-    // private void SetSquareWheelEnemyActiveServerRpc(bool _isEnemyActive)
+    // private void SetSpinWheelEnemyActiveServerRpc(bool _isEnemyActive)
     // {
-    //     squareWheelEnemyActive.Value = _isEnemyActive;
+    //     spinWheelEnemyActive.Value = _isEnemyActive;
     // }
 
     // [ServerRpc(RequireOwnership = false)]
-    // private void SetDiamondLeverEnemyActiveServerRpc(bool _isEnemyActive)
+    // private void SetHealthLeverEnemyActiveServerRpc(bool _isEnemyActive)
     // {
-    //     diamondLeverEnemyActive.Value = _isEnemyActive;
+    //     healthLeverEnemyActive.Value = _isEnemyActive;
     // }
 
     // [ServerRpc(RequireOwnership = false)]
-    // private void SetTriangleLeverEnemyActiveServerRpc(bool _isEnemyActive)
+    // private void SetDefenseButtonEnemyActiveServerRpc(bool _isEnemyActive)
     // {
-    //     triangleLeverEnemyActive.Value = _isEnemyActive;
-    // }
-
-    // [ServerRpc(RequireOwnership = false)]
-    // private void SetCircleButtonEnemyActiveServerRpc(bool _isEnemyActive)
-    // {
-    //     circleButtonEnemyActive.Value = _isEnemyActive;
+    //     defenseButtonEnemyActive.Value = _isEnemyActive;
     // }
 
 
     
     private void OnObjectChanged(InteractiveObject interactiveObject, bool previous, bool current)
     {
+        Debug.Log("OnObjectChanged: " + interactiveObject + " : " + current);
         if (!current) return;
 
         switch(interactiveObject)
         {
-            case InteractiveObject.SquareWheel:
-                ActivateObjectLight(squareWheelObject);
+            case InteractiveObject.SpinWheel:
+                ActivateObjectLight(spinWheelObject);
                 break;
 
-            case InteractiveObject.DiamondLever:
-                ActivateObjectLight(diamondLeverObject);
+            case InteractiveObject.HealthLever:
+                ActivateObjectLight(healthLeverObject);
                 break;
 
-            case InteractiveObject.TriangleLever:
-                ActivateObjectLight(triangleLeverObject);
-                break;
-
-            case InteractiveObject.CircleButton:
-                ActivateObjectLight(circleButtonObject);
+            case InteractiveObject.DefenseButton:
+                ActivateObjectLight(defenseButtonObject);
                 break;
         }
     }
     
-    public void ActivateSquareWheel()
+    public void ActivateSpinWheel()
     {
-        ActivateServerRpc(InteractiveObject.SquareWheel);
+        Debug.Log("ActivateSpinWheel");
+        ActivateServerRpc(InteractiveObject.SpinWheel);
     }
 
-    public void ActivateDiamondLever()
+    public void ActivateHealthLever()
     {
-        ActivateServerRpc(InteractiveObject.DiamondLever);
+        ActivateServerRpc(InteractiveObject.HealthLever);
     }
 
-    public void ActivateTriangleLever()
+    public void ActivateDefenseButton()
     {
-        ActivateServerRpc(InteractiveObject.TriangleLever);
-    }
-
-    public void ActivateCircleButton()
-    {
-        ActivateServerRpc(InteractiveObject.CircleButton);
+        ActivateServerRpc(InteractiveObject.DefenseButton);
     }
 
     private void ActivateObjectLight(Transform interactiveObject)
     {
+        Debug.Log("ActivateObjectLight: " + interactiveObject);
         foreach (Renderer rend in interactiveObject.GetComponentsInChildren<Renderer>(true))
         {
+            Debug.Log("ActivateObjectLight foreach");
             if (rend.CompareTag("ActiveLight"))
             {
-                rend.material = activeMaterial;
+                Debug.Log("ActivateObjectLight tag");
+                // rend.material = activeMaterial;
+                rend.material.SetColor("_BaseColor", Color.green);
+                Debug.Log("ObjectLightFlicker 1");
+                StartCoroutine(ObjectLightFlicker(false, rend.material, interactiveObject));
                 break;
             }
         }
@@ -443,9 +459,49 @@ public class MazeManager : NetworkBehaviour
         {
             if (rend.CompareTag("ActiveLight"))
             {
-                rend.material = deactiveMaterial;
+                // rend.material = deactiveMaterial;
+                rend.material.SetColor("_BaseColor", Color.red);
                 break;
             }
+        }
+    }
+
+    private IEnumerator ObjectLightFlicker(bool isOn, Material objectLight, Transform interactiveObject)
+    {
+        Debug.Log("Running ObjectLightFlicker: " + isOn + " : " + objectLight + " : " + interactiveObject);
+        bool hasBeenUsed = false;
+
+        yield return new WaitForSeconds(1f);
+
+        if(interactiveObject == spinWheelObject)
+        {
+            hasBeenUsed = hasSpinWheelBeenUsed.Value;
+        }else if(interactiveObject == healthLeverObject)
+        {
+            hasBeenUsed = hasHealthLeverBeenUsed.Value;
+        }else if(interactiveObject == defenseButtonObject)
+        {
+            hasBeenUsed = hasDefenseButtonBeenUsed.Value;
+        }
+
+        if(!hasBeenUsed)
+        {
+            if(isOn)
+            {
+                objectLight.SetColor("_BaseColor", Color.red);
+                Debug.Log("ObjectLightFlicker 2");
+                StartCoroutine(ObjectLightFlicker(false, objectLight, interactiveObject));
+            }
+            else
+            {
+                objectLight.SetColor("_BaseColor", Color.green);
+                Debug.Log("ObjectLightFlicker 3");
+                StartCoroutine(ObjectLightFlicker(true, objectLight, interactiveObject));
+            }
+        }
+        else
+        {
+            objectLight.SetColor("_BaseColor", Color.green);
         }
     }
 
@@ -454,9 +510,6 @@ public class MazeManager : NetworkBehaviour
         SetAudioNumServerRpc(3);
         // PlayAudio(3);
 
-        if(!isDiamondLeverActive.Value) return;
-
-        // SetDiamondLeverEnemyActiveServerRpc(true);
         if(_secretBridgeToggle.Value == false) SetSecretBridgeEnableServerRpc();
 
         levelGround.RemoveData();
@@ -469,10 +522,7 @@ public class MazeManager : NetworkBehaviour
     {
         SetAudioNumServerRpc(4);
         // PlayAudio(4);
-
-        if(!isDiamondLeverActive.Value) return;
         
-        // SetDiamondLeverEnemyActiveServerRpc(false);
         if(_secretBridgeToggle.Value == true) SetSecretBridgeEnableServerRpc();
         
         levelGround.RemoveData();
@@ -486,7 +536,11 @@ public class MazeManager : NetworkBehaviour
         SetAudioNumServerRpc(3);
         // PlayAudio(3);
 
-        if(isTriangleLeverActive.Value) GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(6f, -1);
+        if(isHealthLeverActive.Value)
+        {
+            if(!hasHealthLeverBeenUsed.Value) SetHealthLeverBeenUsedServerRpc(true);
+            GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(6f, -1);
+        }
     }
 
     private void ResetButtons()
