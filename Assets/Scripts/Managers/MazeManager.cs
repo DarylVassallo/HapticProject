@@ -115,6 +115,8 @@ public class MazeManager : NetworkBehaviour
 
         CheckpointManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
 
+        HealthBallTargeting.GivePCPlayerHealth += GivePCPlayerHealthByLever;
+
         // TeleportManager.OnEveythingCollected += ActivateCrookedBridges
     }
 
