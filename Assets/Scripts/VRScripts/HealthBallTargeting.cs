@@ -11,10 +11,9 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private Rigidbody _rb;
 
-    [SerializeField] private float respawnRecharge;
     [SerializeField] private float respawnDelay;
 
-    private bool canRespawn;  
+    private bool isRespawning;  
 
     private Transform pcPlayer;
     private bool _canPCFunction;
@@ -31,7 +30,7 @@ public class HealthBallTargeting : NetworkBehaviour
     {
         _startingPosition = this.transform.position;
         _startingRotation = this.transform.rotation;
-        canRespawn = true;
+        isRespawning = false;
 
         _canPCFunction = false;
         _isThrown = false;
@@ -61,24 +60,19 @@ public class HealthBallTargeting : NetworkBehaviour
 
     public void testSelectExited()
     {
-        _isThrown = true;
-    }
-
-    private IEnumerator RespawnRecharge()
-    {
-        yield return new WaitForSeconds(respawnRecharge);
-        canRespawn = true;
+        if(_canPCFunction) _isThrown = true;
     }
 
     private IEnumerator RespawnDelayAfterCollision()
     {
+        Debug.Log("RespawnDelayAfterCollision");
         yield return new WaitForSeconds(respawnDelay);
         RespawnNow();
     }
 
     private void RespawnNow()
     {
-        canRespawn = false;
+        Debug.Log("RespawnNow");
         _isThrown = false;
 
         this.transform.position = _startingPosition;
@@ -90,7 +84,7 @@ public class HealthBallTargeting : NetworkBehaviour
             _rb.linearVelocity = Vector3.zero;
         }
 
-        StartCoroutine(RespawnRecharge());
+        isRespawning = false;
     }
 
     private void FixedUpdate()
@@ -115,9 +109,14 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {        
-        if (!other.CompareTag("HealthBowl") && canRespawn)
+        Debug.Log("OnTriggerStay other: " + other);
+        Debug.Log("OnTriggerStay other.CompareTag(HealthBowl): " + other.CompareTag("HealthBowl"));
+        Debug.Log("isRespawning: " + isRespawning);
+
+        if (!other.CompareTag("HealthBowl") && !isRespawning)
         { 
-            RespawnDelayAfterCollision();
+            isRespawning = true;
+            StartCoroutine(RespawnDelayAfterCollision());
         }
     }
 }

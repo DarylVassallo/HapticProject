@@ -9,7 +9,7 @@ public class FallTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {        
-        Debug.Log(this.gameObject + " : OnTriggerEnter");
+        Debug.Log(this.gameObject + " : " + other + " : OnTriggerEnter");
         if (isVRTrigger)
         {
             _entityRespawn = other.GetComponent<Respawn>();
@@ -22,7 +22,8 @@ public class FallTrigger : MonoBehaviour
         else
         {
             _entityHealth = other.GetComponent<Health>();
-            
+            Debug.Log("_entityHealth : " + _entityHealth);
+
             if (_entityHealth != null)
             {
                 _entityHealth.ChangeHealth(-999, -1);
@@ -30,6 +31,7 @@ public class FallTrigger : MonoBehaviour
             else
             {
                 _entityRespawn = other.GetComponent<Respawn>();
+                Debug.Log("_entityRespawn : " + _entityRespawn);
 
                 if(_entityRespawn != null)
                 {
