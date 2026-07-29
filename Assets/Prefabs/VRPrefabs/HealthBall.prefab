@@ -305,13 +305,25 @@ MonoBehaviour:
       m_Calls: []
   m_SelectEntered:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4017814149737353123}
+        m_TargetAssemblyTypeName: HealthBallTargeting, Assembly-CSharp
+        m_MethodName: grabbedHealthBall
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_SelectExited:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4017814149737353123}
         m_TargetAssemblyTypeName: HealthBallTargeting, Assembly-CSharp
-        m_MethodName: testSelectExited
+        m_MethodName: releasedHealthBall
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -486,7 +498,9 @@ MonoBehaviour:
   respawnDelay: 1.5
   minDistance: 5
   pcPlayerPipes: {fileID: 2100000, guid: 4a7ed7c1c66a53247b8cee72af84b173, type: 2}
-  intensity: 0
+  minIntensity: -1
+  maxIntensity: 1
+  intensityIncrement: 0.05
 --- !u!114 &3514320747339884762
 MonoBehaviour:
   m_ObjectHideFlags: 0
