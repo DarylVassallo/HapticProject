@@ -91,8 +91,8 @@ public class HealthBallTargeting : NetworkBehaviour
         float currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
         if(currentDistance <= minDistance)
         {
-            GivePCPlayerHealth?.Invoke();
-            currentDistance *= 2;
+            
+            currentDistance *= 3;
         }
 
         Vector3 currentDirection = rb.linearVelocity.normalized;
@@ -109,6 +109,13 @@ public class HealthBallTargeting : NetworkBehaviour
     {        
         Debug.Log("other: " + other);
         Debug.Log("other.tag: " + other.tag);
+
+        if (other.CompareTag("PCPlayer"))
+        { 
+            GivePCPlayerHealth?.Invoke();
+            RespawnNow();
+        }
+
         if (!other.CompareTag("HealthBowl") && !isRespawning)
         { 
             isRespawning = true;
