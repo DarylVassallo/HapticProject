@@ -19,11 +19,20 @@ public class HealthBallTargeting : NetworkBehaviour
     private bool _canPCFunction;
 
     private bool _isThrown;
+    private bool _isSelected;
+    private bool _isEmitting;
 
     private Rigidbody rb;
 
     [SerializeField] private float minDistance;
     public static event Action GivePCPlayerHealth;
+
+    [SerializeField] private Material pcPlayerPipes;
+    private Color baseColor = Color.orange;
+    private float intensity;
+    [SerializeField] private float minIntensity;
+    [SerializeField] private float maxIntensity;
+    [SerializeField] private float intensityIncrement;
 
     void Awake()
     {
@@ -32,9 +41,16 @@ public class HealthBallTargeting : NetworkBehaviour
         isRespawning = false;
 
         _canPCFunction = false;
+
         _isThrown = false;
 
+        _isSelected = false;
+        _isEmitting = false;
+        intensity = minIntensity;
+
         rb = GetComponent<Rigidbody>();
+
+        pcPlayerPipes.EnableKeyword("_EMISSION");
     }
 
     private void OnEnable()
@@ -57,9 +73,18 @@ public class HealthBallTargeting : NetworkBehaviour
         }
     }
 
-    public void testSelectExited()
+    public void grabbedHealthBall()
     {
-        if(_canPCFunction) _isThrown = true;
+        if(_canPCFunction) _isSelected = true;
+    }
+    
+    public void releasedHealthBall()
+    {
+        if(_canPCFunction)
+        {
+            _isThrown = true;
+            _isSelected = false;
+        }
     }
 
     private IEnumerator RespawnDelayAfterCollision()
@@ -86,20 +111,53 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if(!_isThrown) return;
+        if(!_isThrown && !_isSelected) return;
 
+        if(_isSelected) Selected();
+        if(_isThrown) Thrown();
+    }
+
+    private void Selected()
+    {
+        if(_isEmitting)
+        {
+            intensity -= intensityIncrement;
+            if(intensity < minIntensity)
+            {
+                intensity = minIntensity;
+                _isEmitting = false;
+            }
+        }
+        else
+        {
+            intensity += intensityIncrement;
+            if(intensity > maxIntensity)
+            {
+                intensity = maxIntensity;
+                _isEmitting = true;
+            }
+        }
+
+        Color finalColor = baseColor * Mathf.LinearToGammaSpace(intensity);
+        pcPlayerPipes.SetColor("_EmissionColor", finalColor);
+    }
+
+    private void Thrown()
+    {
         float currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
         if(currentDistance <= minDistance)
         {
             
             currentDistance *= 3;
         }
+        currentDistance = 70 - currentDistance;
+        if(currentDistance < 0) currentDistance = 0;
 
         Vector3 currentDirection = rb.linearVelocity.normalized;
         Vector3 targetDirection = (pcPlayer.transform.position - transform.position).normalized;
         Vector3 newDirection = Vector3.RotateTowards(   currentDirection, 
                                                         targetDirection, 
-                                                        (70 - currentDistance) * Mathf.Deg2Rad * Time.fixedDeltaTime, 
+                                                        currentDistance * Mathf.Deg2Rad * Time.fixedDeltaTime, 
                                                         0f).normalized;
         
         rb.linearVelocity = newDirection * rb.linearVelocity.magnitude;
