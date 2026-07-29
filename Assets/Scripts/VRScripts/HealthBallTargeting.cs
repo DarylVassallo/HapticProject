@@ -22,7 +22,6 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private Rigidbody rb;
 
-    [SerializeField] private float turningSpeed;
     [SerializeField] private float minDistance;
     public static event Action GivePCPlayerHealth;
 
@@ -90,10 +89,10 @@ public class HealthBallTargeting : NetworkBehaviour
         if(!_isThrown) return;
 
         float currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
-        Debug.Log("currentDistance: " + currentDistance);
         if(currentDistance <= minDistance)
         {
             GivePCPlayerHealth?.Invoke();
+            currentDistance *= 2;
         }
 
         Vector3 currentDirection = rb.linearVelocity.normalized;
@@ -108,6 +107,8 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {        
+        Debug.Log("other: " + other);
+        Debug.Log("other.tag: " + other.tag);
         if (!other.CompareTag("HealthBowl") && !isRespawning)
         { 
             isRespawning = true;
