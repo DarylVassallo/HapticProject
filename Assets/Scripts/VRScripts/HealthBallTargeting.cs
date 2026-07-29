@@ -65,14 +65,12 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private IEnumerator RespawnDelayAfterCollision()
     {
-        Debug.Log("RespawnDelayAfterCollision");
         yield return new WaitForSeconds(respawnDelay);
         RespawnNow();
     }
 
     private void RespawnNow()
     {
-        Debug.Log("RespawnNow");
         _isThrown = false;
 
         this.transform.position = _startingPosition;
@@ -92,6 +90,7 @@ public class HealthBallTargeting : NetworkBehaviour
         if(!_isThrown) return;
 
         float currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
+        Debug.Log("currentDistance: " + currentDistance);
         if(currentDistance <= minDistance)
         {
             GivePCPlayerHealth?.Invoke();
@@ -109,10 +108,6 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {        
-        Debug.Log("OnTriggerStay other: " + other);
-        Debug.Log("OnTriggerStay other.CompareTag(HealthBowl): " + other.CompareTag("HealthBowl"));
-        Debug.Log("isRespawning: " + isRespawning);
-
         if (!other.CompareTag("HealthBowl") && !isRespawning)
         { 
             isRespawning = true;
