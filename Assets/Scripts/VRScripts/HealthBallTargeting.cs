@@ -24,6 +24,8 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private Rigidbody rb;
 
+    private Vector3 newDirection;
+    private float currentDistance;
     [SerializeField] private float minDistance;
     public static event Action GivePCPlayerHealth;
 
@@ -44,7 +46,7 @@ public class HealthBallTargeting : NetworkBehaviour
 
         _isThrown = false;
 
-        _isSelected = true;
+        _isSelected = false;
         _isEmitting = false;
         intensity = minIntensity;
 
@@ -86,6 +88,10 @@ public class HealthBallTargeting : NetworkBehaviour
         {
             _isThrown = true;
             _isSelected = false;
+
+            intensity = 0;
+            Color finalColor = baseColor * Mathf.LinearToGammaSpace(intensity);
+            pcPlayerPipes.SetColor("_EmissionColor", finalColor);
         }
     }
 
@@ -146,21 +152,19 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void Thrown()
     {
-        float currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
+        currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
         if(currentDistance <= minDistance)
         {
             
             currentDistance *= 3;
         }
-        currentDistance = 70 - currentDistance;
+        currentDistance = (70 - currentDistance) * 2;
         if(currentDistance < 0) currentDistance = 0;
 
-        Vector3 currentDirection = rb.linearVelocity.normalized;
-        Vector3 targetDirection = (pcPlayer.transform.position - transform.position).normalized;
-        Vector3 newDirection = Vector3.RotateTowards(   currentDirection, 
-                                                        targetDirection, 
-                                                        currentDistance * Mathf.Deg2Rad * Time.fixedDeltaTime, 
-                                                        0f).normalized;
+        newDirection = Vector3.RotateTowards(   rb.linearVelocity.normalized, 
+                                                (pcPlayer.transform.position - transform.position).normalized, 
+                                                currentDistance * Mathf.Deg2Rad * Time.fixedDeltaTime, 
+                                                0f).normalized;
         
         rb.linearVelocity = newDirection * rb.linearVelocity.magnitude;
     }
