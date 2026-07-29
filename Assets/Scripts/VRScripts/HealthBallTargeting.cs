@@ -100,7 +100,7 @@ public class HealthBallTargeting : NetworkBehaviour
         Vector3 targetDirection = (pcPlayer.transform.position - transform.position).normalized;
         Vector3 newDirection = Vector3.RotateTowards(   currentDirection, 
                                                         targetDirection, 
-                                                        turningSpeed * Mathf.Deg2Rad * Time.fixedDeltaTime, 
+                                                        (70 - currentDistance) * Mathf.Deg2Rad * Time.fixedDeltaTime, 
                                                         0f).normalized;
         
         rb.linearVelocity = newDirection * rb.linearVelocity.magnitude;
