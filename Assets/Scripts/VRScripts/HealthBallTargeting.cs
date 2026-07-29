@@ -19,7 +19,7 @@ public class HealthBallTargeting : NetworkBehaviour
     private bool _canPCFunction;
 
     private bool _isThrown;
-    private bool _isSelected;
+    private NetworkVariable<bool> _isSelected = new (false);
     private bool _isEmitting;
 
     private Rigidbody rb;
@@ -44,7 +44,7 @@ public class HealthBallTargeting : NetworkBehaviour
 
         _isThrown = false;
 
-        _isSelected = false;
+        SetIsSelectedServerRpc(false);
         _isEmitting = false;
         intensity = minIntensity;
 
@@ -73,9 +73,16 @@ public class HealthBallTargeting : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsSelectedServerRpc(bool _newSelect)
+    {
+        Debug.Log("SetIsSelectedServerRpc: " + _newSelect);
+        _isSelected.Value = _newSelect;
+    }
+
     public void grabbedHealthBall()
     {
-        if(_canPCFunction) _isSelected = true;
+        if(_canPCFunction) SetIsSelectedServerRpc(true);
     }
     
     public void releasedHealthBall()
@@ -83,7 +90,7 @@ public class HealthBallTargeting : NetworkBehaviour
         if(_canPCFunction)
         {
             _isThrown = true;
-            _isSelected = false;
+            SetIsSelectedServerRpc(false);
         }
     }
 
@@ -111,9 +118,9 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if(!_isThrown && !_isSelected) return;
+        if(!_isThrown && !_isSelected.Value) return;
 
-        if(_isSelected) Selected();
+        if(_isSelected.Value) Selected();
         if(_isThrown) Thrown();
     }
 
