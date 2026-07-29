@@ -105,7 +105,7 @@ public class HealthBallTargeting : NetworkBehaviour
         rb.linearVelocity = newDirection * rb.linearVelocity.magnitude;
     }
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     {        
         Debug.Log("other: " + other);
         Debug.Log("other.tag: " + other.tag);
