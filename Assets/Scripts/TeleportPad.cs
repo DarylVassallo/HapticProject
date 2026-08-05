@@ -92,17 +92,20 @@ public class TeleportPad : NetworkBehaviour
         _secretCode.OnValueChanged -= ChangeCodeText;
     }
 
+    //Resets the teleport pad, so the PC Player can use it 'for the first time' again
     private void ResetTeleportPad()
     {
         _hasBeenUsed = false;
     }
 
+    //This triggers the teleportation sequence immediately without requiring the code
     private void ActivateInstantTeleport()
     {
         bar.parent.gameObject.SetActive(false);
         _instantTeleport = true;
     }
 
+    
     public void SetExitPadTransform(Transform _newExitPadTransform)
     {
         exitTeleportPad = _newExitPadTransform;

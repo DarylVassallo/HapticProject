@@ -29,11 +29,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private Vector3 _positionDifference;
 
-    [Header("Shake")]
-    [SerializeField] private float shakeSpeed;
-    [SerializeField] private float shakeAmount;
-
-
     [Header("Damage")]
     [SerializeField] private float damageToAngel;
     [SerializeField] private float damageToPlayer;
@@ -198,26 +193,34 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
 
+        //The enemy does not move if it is too far from the PC Player
         if (_isPCTooFar)
         {
             StandBy();
         }else{    
             _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
 
+            //Freezes and damages the enemy if it is within the PC Player's flashlight's light
             if (_isInsidePCSpotLight)
             {
                 DamageAndFreeze(0);
             }
             else
             {
+                //Removes the enemy if it is dead
                 if(health.isDead)
                 {
                     RemoveEnemyClientRpc();
+
+                //The enemy stops and attacks the player if it is close enough to the PC Player,
+                //  and not within their light
                 }else if (_isPCTooClose && _attackCount <= 0)
                 {
                     StopAndAttack(damageToPlayer);  
-                }
-                else if(!_isPCTooClose)
+                
+                //The enemy walks towards the  PC Player if it is not too far from them, 
+                // and not within their light
+                }else if(!_isPCTooClose)
                 {
                     Walk();
                 }
@@ -225,11 +228,13 @@ public class EnemyWithSpotlight : NetworkBehaviour
         }
     }
 
+    // This triggers the funciton to properly remove the enemy
     private void DestroyEnemy()
     {
         RemoveEnemyClientRpc();
     }
 
+    //This stops the enemy from moving
     private void StandBy()
     {
         _agent.speed = 0;
@@ -237,28 +242,27 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _agent.SetDestination(transform.position);
     }
 
+    //This causes the enemy to move towards the PC Player
     private void Walk()
     {
         _agent.speed = agentSpeed;
         _agent.isStopped = false;
 
         if(_animator.speed != 1) MoveAnimationClientRpc();
-        // _animator.speed = 1;
 
         if (_currentAudioNum != 1 || !_audioSource.isPlaying)
         {
-            // _currentAudio = enemyManager.GetAppropriateAudio(1);
             PlayWalkAudioClientRpc();
             WalkAudioVolumeClientRpc();
         }
         _currentAudioNum = 1;
 
         _destination = _pcPlayerTransform.position;
-        // _agent.destination = _destination;
 
         if(_agent.isOnNavMesh) _agent.SetDestination(_destination);
     }
 
+    //This stops the enemy, and reduces the PC Player's health
     private void StopAndAttack(float _damage)
     {
         _attackCount = maxAttackDelay;
@@ -267,11 +271,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         
         if(!_shuttingDown)
         {
-            if (_currentAudioNum != 3 || !_audioSource.isPlaying)
-            {
-                // _currentAudio = enemyManager.GetAppropriateAudio(3);
-                PlayAttackAudioClientRpc();
-            }
+            if (_currentAudioNum != 3 || !_audioSource.isPlaying) PlayAttackAudioClientRpc();
             _currentAudioNum = 3;
         }
         
@@ -280,62 +280,48 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _pcPlayerHealth.ChangeHealth(-_damage, -1);
     }
 
+    //This stops the enemy, and reduces the enemy's health
     private void DamageAndFreeze(int _playerType)
     {
         _agent.speed = 0;
 
+        //Reduces the enemy's health if it is not dead
         if(!health.isDead)
         {             
             if(_animator.speed != 0) FreezeAnimationClientRpc();
-            // _animator.speed = 0;
 
-            if (_currentAudioNum != 0 || !_audioSource.isPlaying)
-            {
-                // _currentAudio = enemyManager.GetAppropriateAudio(0);
-                PlayDamageAudioClientRpc();
-            }
+            if (_currentAudioNum != 0 || !_audioSource.isPlaying) PlayDamageAudioClientRpc();
             _currentAudioNum = 0;
             
             if(IsServer) DamageAudioClientRpc();
 
-            // _agent.SetDestination(transform.position);
-
+            //This damages to the enemy in increments
             if(canBeDamaged)
             {
                 canBeDamaged = false;
                 health.ChangeHealth(-damageToAngel * damageMultiplier, _playerType);
                 StartCoroutine(DelayDamage());
             }
-        }
-        else
-        {
-            if(_animator.speed != 1) MoveAnimationClientRpc();
-            // _animator.speed = 1;
 
-            // if (_currentAudioNum != 2)
-            // {
-            //     _currentAudio = enemyManager.GetAppropriateAudio(2);
-            // }
+        //Properly removes the enemy if it has no more health
+        } else {
+            if(_animator.speed != 1) MoveAnimationClientRpc();
+
             _currentAudioNum = 2;
 
             PlayDeathAudioClientRpc();
             DeathAudioVolumeClientRpc();
         }
-
-        // transform.position = new Vector3(   
-        //                                 transform.position.x + 
-        //                                 Mathf.Sin(shakeSpeed * Time.time * (1 - (health.GetHealth() / 100))) * shakeAmount * (1 - (health.GetHealth() / 100)),
-        //                                 transform.position.y, 
-        //                                 transform.position.z
-        //                             );
     }
 
+    //After a delay, the enemy is able to be damaged again by the PC Player's light
     IEnumerator DelayDamage()
     {
         yield return new WaitForSeconds(damageDelay);
         canBeDamaged = true;
     }
     
+    //This checks if the enemy is within the PC Player's flashlights range and angle (which depends on its strength)
     //Used ChatGPT here
     bool IsInsideSpotLight(Transform _playerSpotLight, FlashlightCharge _playerFlashlightCharge)
     {
@@ -345,22 +331,20 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _positionDifference = transform.position - _playerSpotLight.position;
         _spotLightDistance = _positionDifference.magnitude;
 
-        if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f))
-        {
-            return false;
-        }
+        //Returns false if the enemy is outside of the flashlight's range
+        if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f)) return false;
 
         _spotLightAngle = Vector3.Angle(_playerSpotLight.forward, _positionDifference);
 
-        if (_spotLightAngle > 55 * 0.5f)
-        {
-            return false;
-        }
+        //Returns fals if the enemy is outside of the falshlight's angle (the angle remains unchanged)
+        if (_spotLightAngle > 55 * 0.5f) return false;
 
+        //The damage applied to the PC Player depends on the distance between the enemy and flashlight (the closer they are, the greater the damage)
         damageMultiplier = 1 - (_spotLightDistance / (_playerFlashlightCharge.currentFlashLightRange * 0.5f));
         return true;
     }
 
+    //This checks if the enemy is too close or too far from the PC Player
     (bool _isTooClose, bool _isTooFar) IsCloseToPlayer(Transform _playerTransform)
     {
         float distance = (transform.position - _playerTransform.position).magnitude;

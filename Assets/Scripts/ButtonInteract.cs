@@ -140,10 +140,14 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         _isInteractable = false;
     }
 
+    //When a button is pressed, or is reset, this smoothly changes the buttons position and colour to be pushed in and blue if it is pressed.
+    // This also change the button back to its original position and colour if it is reset
     private void FixedUpdate()
     {
+        //Does not run if the button does not need to move
         if(!_moveDown && !_moveUp) return;
 
+        //Slowly moves the button down, and changes the colour to blue
         if(_moveDown)
         {
             this.transform.position = Vector3.Lerp(
@@ -166,21 +170,16 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
                 this.transform.position = targetPosition;
                 _renderer.material = inProgressMaterial;
 
-                // pushedPosition =    this.transform.position + 
-                //                     (   transform.forward * 
-                //                         pressedDistance * 
-                //                         this.transform.localScale.x
-                //                     );
                 _isFullyPressed = true;
                 _moveDown = false;
-                // if(IsServer) SetMoveDownFalseClientRpc();
-                // _moveUp = true;
 
                 if(isResetButton)
                 {
                     OnActivateReset?.Invoke();
                 }
             }
+
+        //Slowly resets the button's position and colour
         }else if(_moveUp)
         {
             this.transform.position = Vector3.Lerp(

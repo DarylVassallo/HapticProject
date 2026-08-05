@@ -13,42 +13,53 @@ using System.Collections;
 //This script uses UI buttons to create the host, client, and server for the multiplayer network.
 public class ConnectUIScript : NetworkBehaviour
 {
+    [SerializeField] private GameObject levelCamera;
+    private MultiplayerData multiplayerData;
+    private bool isSceneLoaded = false;
+    private bool hasSceneLoaded = false;
+    private NetworkDiscovery networkDiscovery;
+
+
+
+    
+    [Header("UI Buttons")]
     [SerializeField] private Button hostButton;
     [SerializeField] private Button clientButton;
 
+
+
+
+    [Header("PC Player")]
     [SerializeField] private GameObject pcPlayerWithBody;
     [SerializeField] private GameObject pcPlayerWithoutBody;
     [SerializeField] private GameObject currentPCPlayer;
     [SerializeField] private Transform pcSpawnPoint;
+    public static event Action OnCreatedPCPlayer;
+    
 
+
+
+
+    [Header("VR Player")]
     [SerializeField] private GameObject vrPlayer;
     [SerializeField] private Transform vrSpawnPoint;
-
     [SerializeField] private GameObject vrRig;
-    [SerializeField] private GameObject levelCamera;
-
     private bool vrLeftHandActive;
     [SerializeField] private SkinnedMeshRenderer vrLeftHandMesh;
-
     private bool vrRightHandActive;
     [SerializeField] private SkinnedMeshRenderer vrRightHandMesh;
-
-    public static event Action OnCreatedPCPlayer;
     public static event Action OnCreatedVRPlayer;
+    
+    
 
-    private bool _isTestingVRPlayer = false;
-    private bool _isTestingPCPlayer = false;
-
+    
+    
+    [Header("Testing Variables")]
     [SerializeField] private bool isUsingPlayMode;
-    [SerializeField] private bool isUsingOnlyPCPlayer;
     [SerializeField] private bool isUsingOnlyVRPlayer;
-
-    private MultiplayerData multiplayerData;
-    private bool isSceneLoaded = false;
-
-    private bool hasSceneLoaded = false;
-
-    private NetworkDiscovery networkDiscovery;
+     private bool _isTestingVRPlayer = false;
+    [SerializeField] private bool isUsingOnlyPCPlayer;
+    private bool _isTestingPCPlayer = false;
 
     void Start()
     {
@@ -127,16 +138,6 @@ public class ConnectUIScript : NetworkBehaviour
         vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    IEnumerator SetupNetwork(float delay)
-    {
-        Debug.Log("ConnectUIScript SetupNetwork");
-
-        yield return new WaitForSeconds(delay);
-
-        if(NetworkManager.Singleton.SceneManager != null) NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
-        NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
-    }
-
     private void OnDestroy()
     {
         Debug.Log("ConnectUIScript OnDestroy");
@@ -149,6 +150,8 @@ public class ConnectUIScript : NetworkBehaviour
         if (NetworkManager.Singleton != null)  NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
     }
 
+    //If this scene is loaded after the players join the server, 
+    // the players will be loaded with the correct bodies, and into the correct positions for the scene
     private void SceneLoaded(   string sceneName, 
                                 LoadSceneMode mode, 
                                 List<ulong> clientsCompleted, 
@@ -170,6 +173,7 @@ public class ConnectUIScript : NetworkBehaviour
         LoadPlayers();
     }
 
+    //This obtains the correct spawnpoints for both players
     private void CacheSpawnPoints()
     {
         Debug.Log("ConnectUIScript CacheSpawnPoints");
@@ -178,12 +182,16 @@ public class ConnectUIScript : NetworkBehaviour
         pcSpawnPoint = GameObject.Find("PCSpawnpoint")?.transform;
     }
 
+    //This creates the players, and assigns them the correct bodies. 
+    // This is used only if the scene is loaded, 
+    // and the players have already joined the game server
     private void LoadPlayers()
     {
         Debug.Log("ConnectUIScript LoadPlayers");
 
         if (!NetworkManager.Singleton.IsServer) return;
 
+        //Creates a PC Player if the host player requested to be a PC Player
         multiplayerData = GameObject.FindGameObjectWithTag("NetworkManager").GetComponent<MultiplayerData>();
         if (multiplayerData.isFirstPlayerPCPlayer)
         {
@@ -199,12 +207,13 @@ public class ConnectUIScript : NetworkBehaviour
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             _newPCPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(0, true);
 
-            ActivateVRHandsRpc();
-
             OnCreatedPCPlayer?.Invoke();
         }
         else
         {
+            //Goes through the two clients, 
+            // creates a VR Player for the host player, 
+            // and creates a PC Player for the client player
             foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
             {
                 bool isHost = clientId == NetworkManager.ServerClientId;
@@ -224,8 +233,6 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
                     GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                     NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
-
-                    ActivateVRHandsRpc();
                     
                     _pcNetObj.SpawnAsPlayerObject(clientId, true);
 
@@ -235,21 +242,9 @@ public class ConnectUIScript : NetworkBehaviour
 
             DisableHostButtonsaRpc();
         }
-
-        // levelCamera.SetActive(false);
-        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    IEnumerator DisableHostButtonsDelay(float delay)
-    {
-        Debug.Log("ConnectUIScript DisableHostButtonsDelay");
-
-        yield return new WaitForSeconds(delay);
-
-        // levelCamera.SetActive(false);
-        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
-    }
-
+    //Disables the Host login button
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void DisableHostButtonsaRpc()
     {
@@ -258,28 +253,26 @@ public class ConnectUIScript : NetworkBehaviour
         Debug.Log("hostButton: " + hostButton);
         Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
         hostButton.transform.parent.gameObject.SetActive(false);
-
-        // StartCoroutine(DisableHostButtonsDelay(3f));
     }
 
+    //Creates a VR/PC Player when someone logs in as host/client
     private void HandleClientConnected(ulong clientId)
     {
         if (!NetworkManager.Singleton.IsServer) return;
 
         Debug.Log("ConnectUIScript HandleClientConnected 1");
        
-        Debug.Log("ConnectUIScript HandleClientConnected 2");
-
+        //Creates a PC Player for the host player, playing alone
         if (_isTestingPCPlayer)
         {
             Debug.Log("Create PCPlayer 3");
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
 
-            ActivateVRHandsRpc();
-
             _pcNetObj.SpawnAsPlayerObject(clientId, true);
             OnCreatedPCPlayer?.Invoke();
+
+        //Creates a VR Player for the host player, playing alone
         }else if (_isTestingVRPlayer)
         {
             Debug.Log("Create VRPlayer 2");
@@ -288,6 +281,8 @@ public class ConnectUIScript : NetworkBehaviour
             _vrNetObj.SpawnAsPlayerObject(clientId, true);
             OnCreatedVRPlayer?.Invoke();
         }else{
+            //Creates a VR/PC Player for the current player (a VR Player if this is the host, and a PC Player if this is the client)
+
             Debug.Log("ConnectUIScript HandleClientConnected 3");
 
             bool isHost = clientId == NetworkManager.ServerClientId;
@@ -310,8 +305,6 @@ public class ConnectUIScript : NetworkBehaviour
                 Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
                 GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
-
-                ActivateVRHandsRpc();
                 
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
                 OnCreatedPCPlayer?.Invoke();
@@ -319,17 +312,8 @@ public class ConnectUIScript : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void ActivateVRHandsRpc()
-    {
-        // vrLeftHand.SetActive(true);
-        // vrLeftHandMesh.enabled = true;
-
-        // vrRightHand.SetActive(true);
-        // vrRightHandMesh.enabled = true;
-    }
-
-    public void DebugStartVRPlayer()
+    //Immediately creates a VR Player for the host (used in debugging only)
+    private void DebugStartVRPlayer()
     {
         Debug.Log("ConnectUIScript DebugStartVRPlayer");
 
@@ -342,7 +326,8 @@ public class ConnectUIScript : NetworkBehaviour
         hostButton.transform.parent.gameObject.SetActive(false);
     }
 
-    public void DebugStartPCPlayer()
+    //Immediately creates a PC Player for the host (used in debugging only)
+    private void DebugStartPCPlayer()
     {
         Debug.Log("ConnectUIScript DebugStartPCPlayer");
 
@@ -363,6 +348,9 @@ public class ConnectUIScript : NetworkBehaviour
         multiplayerData.isFirstPlayerPCPlayer = true;
     }
 
+    //Upon clicking the host button, it creates the host which starts broadcasting a message, 
+    // allowing the client player to recieve and connect
+
     //NetworkManager aspect created using Claude
     private  void HostButtonClick()
     {
@@ -380,11 +368,11 @@ public class ConnectUIScript : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
 
         hostButton.transform.parent.gameObject.SetActive(false);
-
-        // levelCamera.SetActive(false);
-        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
+    //Upon clicking the client button, 
+    // it creates the client and listens to a particular message being broadcasted by the host, 
+    // which helps connect them together
     private void ClientButtonOnClick()
     {
         Debug.Log("ConnectUIScript ClientButtonOnClick");
@@ -396,10 +384,6 @@ public class ConnectUIScript : NetworkBehaviour
         {
             networkDiscovery.OnHostFound += OnHostFoundHandler;
             networkDiscovery.StartListening();
-
-            // var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            // transport.SetConnectionData("192.168.1.10", 7777);
-            // NetworkManager.Singleton.StartClient();
         }
         else
         {
@@ -407,11 +391,9 @@ public class ConnectUIScript : NetworkBehaviour
         }
 
         clientButton.transform.parent.gameObject.SetActive(false);
-
-        // levelCamera.SetActive(false);
-        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
+    //Upon finding the host, the client connects to the host's IP, and continues creating the client / PC Player
     private void OnHostFoundHandler(string hostIp)
     {
         Debug.Log("ConnectUIScript OnHostFoundHandler");

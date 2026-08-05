@@ -29,18 +29,13 @@ public class FlashlightCharge : NetworkBehaviour
     [SerializeField] private Transform chargeBar;
     private float _maxChargeBarLength;
 
-    [SerializeField] private bool canUseChargeStation;
-
     public static event Action<float> OnChangeChargeBar;
-
-    private NetworkVariable<float> _decayMultiplier = new (1f);
 
     private bool _isNetworkSpawned = false;
 
     private bool _shuttingDown = true;
 
     [SerializeField] private AudioClip handCrankAudio;
-    [SerializeField] private AudioClip chargeStationAudio;
     private AudioSource _audioSource;
 
     [SerializeField] private Vector3 _initialPosition;
@@ -56,41 +51,14 @@ public class FlashlightCharge : NetworkBehaviour
     
     private void OnEnable()
     {
-        MazeManager.EnableDrainFlashlight += EnableDrainFlashlight;
-        MazeManager.DisableDrainFlashlight += DisableDrainFlashlight;
-
-        if(canUseChargeStation)
-        {
-            ChargeStation.OnCharge += ChargeFlashlightWithStation;
-            ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
-        }
-        else
-        {
-            PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
-            PCPlayerInputManager.OnFire2 += SetFlashlightEnableServerRpc;
-        }
+        PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
+        PCPlayerInputManager.OnFire2 += SetFlashlightEnableServerRpc;
     }
 
     private void OnDisable()
     {
-        MazeManager.EnableDrainFlashlight -= EnableDrainFlashlight;
-        MazeManager.DisableDrainFlashlight -= DisableDrainFlashlight;
-
-        if(canUseChargeStation)
-        {
-            ChargeStation.OnCharge -= ChargeFlashlightWithStation;
-            ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
-        }
-        else
-        {
-            PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
-            PCPlayerInputManager.OnFire2 -= SetFlashlightEnableServerRpc;
-        }
-    }
-
-    private void GetVRPlayerData()
-    {
-        ChargeFlashlightWithStation(true);
+        PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
+        PCPlayerInputManager.OnFire2 -= SetFlashlightEnableServerRpc;
     }
 
     public override void OnNetworkSpawn()
@@ -104,25 +72,11 @@ public class FlashlightCharge : NetworkBehaviour
         _shuttingDown = true;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetDecayMultiplayerServerRpc(float _newDecay)
-    {
-        _decayMultiplier.Value = _newDecay;
-    }
-
+    //Plays charge flashlight audio when required
     [ClientRpc]
     private void PlayAudioClientRpc(int _audioNum)
     {
         AudioClip _currentAudio = handCrankAudio;
-        switch (_audioNum)
-        {
-            case 0:
-                _currentAudio = handCrankAudio;
-                break;
-            case 1:
-                _currentAudio = chargeStationAudio;
-                break;
-        }
 
         if(!_audioSource.isPlaying)
         {
@@ -133,45 +87,11 @@ public class FlashlightCharge : NetworkBehaviour
         }
     }
 
+    //Stops audio
     [ClientRpc]
     private void StopAudioClientRpc()
     {
         _audioSource.Stop();
-    }
-
-    public void socketRelease(SelectExitEventArgs args)
-    {
-        var xr = args.interactableObject;
-
-        xr.transform.SetParent(null, true);
-    }
-
-    private void EnableDrainFlashlight()
-    {
-        if(_isNetworkSpawned) SetDecayMultiplayerServerRpc(10f);
-    }
-
-    private void DisableDrainFlashlight()
-    {
-        if(_isNetworkSpawned) SetDecayMultiplayerServerRpc(1f);
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SetIsChargingServerRpc(bool _newIsCharging)
-    {
-        _isCharging.Value = _newIsCharging;
-    }
-
-    private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
-    {
-        if(_isNetworkSpawned) SetIsChargingServerRpc(context.performed);
-        ChangeFlashLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
-    }
-
-    private void ChargeFlashlightWithStation(bool charge)
-    {
-        if(_isNetworkSpawned) SetIsChargingServerRpc(charge);
-        ChangeFlashLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -180,29 +100,10 @@ public class FlashlightCharge : NetworkBehaviour
         _flashLightToggle.Value = !_flashLightToggle.Value;
     }
 
-    private void FixedUpdate()
-    {              
-        if(_charge.Value >= 100 && _isCharging.Value && !_shuttingDown) StopAudioClientRpc();
-
-        if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && _flashLightToggle.Value)) return;
-
-        if (_isCharging.Value && _charge.Value < 100)
-        {
-            if(!_flashLightToggle.Value) SetFlashlightEnableServerRpc();
-            ChangeFlashLightStrength(chargeRate / _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
-
-            if(flashlightLever != null)
-            {
-                flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
-                if(!_shuttingDown) PlayAudioClientRpc(0);
-            }else if(canUseChargeStation)
-            {
-                if(!_shuttingDown) PlayAudioClientRpc(1);
-            }
-        }else{
-            ChangeFlashLightStrength(-decayRate * _decayMultiplier.Value, _isCharging.Value ? chargeIntensity : 1f);
-            if(!_shuttingDown) StopAudioClientRpc();
-        }
+    [ServerRpc(RequireOwnership = false)]
+    private void SetIsChargingServerRpc(bool _newIsCharging)
+    {
+        _isCharging.Value = _newIsCharging;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -211,6 +112,42 @@ public class FlashlightCharge : NetworkBehaviour
         _charge.Value = _newCharge;
     }
 
+    //This triggers if the PC Player pressed the left mouse button.
+    // This allows it to begin charging the PC Flashlight
+    private void ChargeFlashlightWithMouse(InputAction.CallbackContext context)
+    {
+        if(_isNetworkSpawned) SetIsChargingServerRpc(context.performed);
+        ChangeFlashLightStrength(0, _isCharging.Value ? chargeIntensity : 1f);
+    }
+
+    private void FixedUpdate()
+    {              
+        //Stops any audio if the flashlight is fully charged, is 'trying' to charge, and is not off
+        if(_charge.Value >= 100 && _isCharging.Value && !_shuttingDown) StopAudioClientRpc();
+
+        //Prevents any calculations if the flashlight is fully charged and is 'trying' to charge, or has no charge and 
+        if ((_charge.Value >= 100 && _isCharging.Value) || (_charge.Value <= 0 && !_isCharging.Value && _flashLightToggle.Value)) return;
+
+        //Charges the flashlight, if it is trying to, and is able to do so
+        if (_isCharging.Value && _charge.Value < 100)
+        {
+            if(!_flashLightToggle.Value) SetFlashlightEnableServerRpc();
+            ChangeFlashLightStrength(chargeRate, _isCharging.Value ? chargeIntensity : 1f);
+
+            if(flashlightLever != null)
+            {
+                flashlightLever.Rotate(Vector3.forward * Time.deltaTime * flashLightRotationSpeed);
+                if(!_shuttingDown) PlayAudioClientRpc(0);
+            }
+        }else{
+            //Causes the flashlight's charge to decay, if it is not charging
+        
+            ChangeFlashLightStrength(-decayRate, _isCharging.Value ? chargeIntensity : 1f);
+            if(!_shuttingDown) StopAudioClientRpc();
+        }
+    }
+
+    //This changes the flashlight's strength, either to slowly charge or decay it
     private void ChangeFlashLightStrength(float _change, float _brightness)
     {        
         if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(_charge.Value + _change);
@@ -223,7 +160,6 @@ public class FlashlightCharge : NetworkBehaviour
             if(_isNetworkSpawned && !_shuttingDown) SetChargeServerRpc(100f);
         }
 
-        // currentFlashLightIntensity = maxFlashLightIntensity * (_charge.Value / 100f) * _brightness;
         currentFlashLightRange = maxFlashLightRange * (_charge.Value / 100f) * _brightness;
 
         chargeBar.localScale = new Vector3  (   chargeBar.localScale.x, 
