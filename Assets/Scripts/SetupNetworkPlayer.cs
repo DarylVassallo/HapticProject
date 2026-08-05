@@ -27,6 +27,8 @@ public class SetupNetworkPlayer : NetworkBehaviour
     {
         // if (!IsOwner) return;
 
+        GameObject.FindGameObjectWithTag("VRRig").transform.GetChild(0).gameObject.SetActive(true);
+
         PCPlayerReferences();
         VRPlayerReferences();
 
@@ -58,6 +60,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void VRPlayerReferences()
     {
+        Debug.Log("VRPlayer: " + GameObject.FindGameObjectWithTag("VRPlayer"));
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
             if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))

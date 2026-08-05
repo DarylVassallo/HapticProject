@@ -59,9 +59,6 @@ public class NetworkPlayer : NetworkBehaviour
                                                  VRRigReferences.Singleton.head.rotation.eulerAngles.y + pelvisOffsetRotation.eulerAngles.y, 
                                                  pelvis.rotation.z + pelvisOffsetRotation.eulerAngles.z);
 
-            Debug.Log("NetworkPlayer leftHand: " + VRRigReferences.Singleton.leftHand);
-            Debug.Log("NetworkPlayer rightHand: " + VRRigReferences.Singleton.rightHand);
-
             leftHand.position = VRRigReferences.Singleton.leftHand.position;
             leftHand.rotation = VRRigReferences.Singleton.leftHand.rotation;
 

@@ -14,7 +14,6 @@ public class RevealUnderLightManager : NetworkBehaviour
     private Transform _pcFlashLight;
     private FlashlightCharge _pcFlashLightCharge;
     private Transform _vrFlashLight;
-    private FlashlightCharge _vrFlashLightCharge;
 
     private Vector3 _positionDifference;
     private float _positionDistance;
@@ -111,12 +110,14 @@ public class RevealUnderLightManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void GetVRPlayerDataRpc()
     {
+        Debug.Log("GetVRPlayerDataRpc");
         if(GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
+            Debug.Log("GameObject.FindGameObjectWithTag(VRPlayer): " + GameObject.FindGameObjectWithTag("VRPlayer"));
             _canVRFunction = true;
 
             _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
-            _vrFlashLightCharge = GameObject.FindGameObjectWithTag("VRFlashLight").GetComponent<FlashlightCharge>();
+            Debug.Log("_vrFlashLight: " + _vrFlashLight);
         }
     }
 
@@ -221,7 +222,7 @@ public class RevealUnderLightManager : NetworkBehaviour
                             hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightPosition", _vrFlashLight.transform.position);
                             hiddenObjects[i].hiddenRenderer.material.SetVector("_VRLightDirection", -_vrFlashLight.transform.forward);
                             hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightAngle", 55);
-                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightRange", _vrFlashLightCharge.currentFlashLightRange * 0.5f);
+                            hiddenObjects[i].hiddenRenderer.material.SetFloat("_VRLightRange", 999f * 0.5f);
                         }
                         else
                         {

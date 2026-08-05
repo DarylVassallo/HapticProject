@@ -53,12 +53,12 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnEnable()
     {
-        TogglePhysicsControllers.OnChangedControllers += ChangeHandSockets;
+        ControllerManager.OnChangedControllers += ChangeHandSockets;
     }
 
     private void OnDisable()
     {
-        TogglePhysicsControllers.OnChangedControllers -= ChangeHandSockets;
+        ControllerManager.OnChangedControllers -= ChangeHandSockets;
     }
 
     private void ChangeHandSockets()

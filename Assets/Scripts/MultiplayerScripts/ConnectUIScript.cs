@@ -24,9 +24,13 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private GameObject vrPlayer;
     [SerializeField] private Transform vrSpawnPoint;
 
-    [SerializeField] private GameObject vrLeftHand;
+    [SerializeField] private GameObject vrRig;
+    [SerializeField] private GameObject levelCamera;
+
+    private bool vrLeftHandActive;
     [SerializeField] private SkinnedMeshRenderer vrLeftHandMesh;
-    [SerializeField] private GameObject vrRightHand;
+
+    private bool vrRightHandActive;
     [SerializeField] private SkinnedMeshRenderer vrRightHandMesh;
 
     public static event Action OnCreatedPCPlayer;
@@ -48,6 +52,8 @@ public class ConnectUIScript : NetworkBehaviour
 
     void Start()
     {
+        vrRig.transform.GetChild(0).gameObject.SetActive(false);
+
         networkDiscovery = this.GetComponent<NetworkDiscovery>();
         Debug.Log("ConnectUIScript Start");
 
@@ -109,6 +115,16 @@ public class ConnectUIScript : NetworkBehaviour
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
         }
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        // if (!IsOwner) return;
+
+        Debug.Log("ConnectUIScript OnNetworkSpawn");
+
+        levelCamera.SetActive(false);
+        vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     IEnumerator SetupNetwork(float delay)
@@ -217,9 +233,11 @@ public class ConnectUIScript : NetworkBehaviour
                 }
             }
 
-            // StartCoroutine(DisableHostButtonsDelay(1f));
             DisableHostButtonsaRpc();
         }
+
+        // levelCamera.SetActive(false);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     IEnumerator DisableHostButtonsDelay(float delay)
@@ -228,7 +246,8 @@ public class ConnectUIScript : NetworkBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        DisableHostButtonsaRpc();
+        // levelCamera.SetActive(false);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -239,13 +258,15 @@ public class ConnectUIScript : NetworkBehaviour
         Debug.Log("hostButton: " + hostButton);
         Debug.Log("hostButton.transform.parent.gameObject: " + hostButton.transform.parent.gameObject);
         hostButton.transform.parent.gameObject.SetActive(false);
+
+        // StartCoroutine(DisableHostButtonsDelay(3f));
     }
 
     private void HandleClientConnected(ulong clientId)
     {
-        Debug.Log("ConnectUIScript HandleClientConnected 1");
-
         if (!NetworkManager.Singleton.IsServer) return;
+
+        Debug.Log("ConnectUIScript HandleClientConnected 1");
        
         Debug.Log("ConnectUIScript HandleClientConnected 2");
 
@@ -359,6 +380,9 @@ public class ConnectUIScript : NetworkBehaviour
         NetworkManager.Singleton.StartHost();
 
         hostButton.transform.parent.gameObject.SetActive(false);
+
+        // levelCamera.SetActive(false);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     private void ClientButtonOnClick()
@@ -383,6 +407,9 @@ public class ConnectUIScript : NetworkBehaviour
         }
 
         clientButton.transform.parent.gameObject.SetActive(false);
+
+        // levelCamera.SetActive(false);
+        // vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
     private void OnHostFoundHandler(string hostIp)
