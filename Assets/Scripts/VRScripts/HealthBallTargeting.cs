@@ -158,7 +158,7 @@ public class HealthBallTargeting : NetworkBehaviour
             
             currentDistance *= 3;
         }
-        currentDistance = (70 - currentDistance) * 2;
+        currentDistance = (70 - currentDistance) * 1.1f;
         if(currentDistance < 0) currentDistance = 0;
 
         newDirection = Vector3.RotateTowards(   rb.linearVelocity.normalized, 
