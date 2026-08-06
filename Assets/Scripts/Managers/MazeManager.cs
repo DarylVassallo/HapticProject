@@ -13,6 +13,7 @@ using Unity.Netcode;
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
+    public static event Action<GameObject, float> OnChangeHealth;
 
     [Header("Switches")]
     public HiddenSwitches[] hiddenSwitches;
@@ -423,7 +424,8 @@ public class MazeManager : NetworkBehaviour
         if(isHealthBallActive.Value)
         {
             if(!hasHealthBallBeenUsed.Value) SetHealthBallBeenUsedServerRpc(true);
-            GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(6f, -1);
+
+            OnChangeHealth?.Invoke(GameObject.FindGameObjectWithTag("PCPlayer"), 6f);
         }
     }
 

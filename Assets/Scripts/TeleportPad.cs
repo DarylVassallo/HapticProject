@@ -23,17 +23,16 @@ public class TeleportPad : NetworkBehaviour
     [SerializeField] private Transform bar;
 
     public static event Action<Transform> OnAddNewBar;
-    // public static event Action<bool> OnSetPadsReady;
     public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
     public static event Action OnCrossedCrookedBridges;
 
-    public bool arePadsReady = true;
+    private bool arePadsReady = true;
 
     private bool _hasBeenUsed = false;
 
     private bool _instantTeleport;
 
-    public bool rotateRings = false;
+    private bool rotateRings = false;
 
     [SerializeField] private Transform ring;
     [SerializeField] private Transform reverseRing;
@@ -74,8 +73,7 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnEnable()
     {
-        TeleportNumPad.OnSendCode += CheckInputtedCode;
-        // OnSetPadsReady += SetPadsReady;
+        TeleportManager.OnSendCodeToTeleportPads += CheckInputtedCode;
         TeleportManager.OnEverythingCollected += ActivateInstantTeleport;
         CheckpointManager.OnResetTeleportPads += ResetTeleportPad;
 
@@ -84,8 +82,7 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnDisable()
     {
-        TeleportNumPad.OnSendCode -= CheckInputtedCode;
-        // OnSetPadsReady -= SetPadsReady;
+        TeleportManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
         TeleportManager.OnEverythingCollected -= ActivateInstantTeleport;
         CheckpointManager.OnResetTeleportPads -= ResetTeleportPad;
 
@@ -105,13 +102,14 @@ public class TeleportPad : NetworkBehaviour
         _instantTeleport = true;
     }
 
-    
+    //This allows the TeleportManager to change the current teleport pad's exit pad
     public void SetExitPadTransform(Transform _newExitPadTransform)
     {
         exitTeleportPad = _newExitPadTransform;
         ChangeSecretCodePadServerRpc();
     }
 
+    //This changes the code to a random number (within the set range)
     [ServerRpc(RequireOwnership = false)]
     public void  ChangeSecretCodePadServerRpc()
     {
@@ -124,11 +122,13 @@ public class TeleportPad : NetworkBehaviour
         _isPlayerOnPad.Value = _newOnPad;
     }
 
+    //Changes the code written on the teleport pad, to the correct code
     private void ChangeCodeText(int _previous, int _current)
     {
         _codeText.text = "" + _current + "";
     }
 
+    //If the inputted code is correct, then the teleportation sequence can begin
     private void CheckInputtedCode(int _inputtedCode)
     {
         if(_inputtedCode == _secretCode.Value && _isPlayerOnPad.Value)
@@ -139,17 +139,20 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnTriggerEnter(Collider _other)
     {
+        //If the PC Player has entered this teleport pad for the first time, the chances for an enemy to randomly spawn increases slightly
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
             OnIncreaseChanceOfSpawningEnemy?.Invoke(0.0001f);
 
+            //If the PCPlayer has reached the final teleport pad, their progress is saved
             if(_isFinalPad)
             {
                 OnCrossedCrookedBridges?.Invoke();
             }
         }
 
+        //This saves if the PC Player has entered this teleport pad, and can also begin the teleport sequence immediately if required
         if (_other.CompareTag("PCPlayer"))
         {
             ChangeIsPlayerOnPadServerRpc(true);
@@ -161,6 +164,7 @@ public class TeleportPad : NetworkBehaviour
         }
     }
 
+    //This causes the rings of both the current and exit teleport pad to begin rotation, while playing the teleportation audio
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void StartRingRotationRpc()
     {
@@ -176,12 +180,14 @@ public class TeleportPad : NetworkBehaviour
         _audioSource.enabled = true; 
     }
 
+    //Stops the audio playing
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     private void StopAudioRpc()
     {
         _audioSource.Stop();
     }
 
+    //Once ready, this teleports the PC Player to the exit pad, in the same position and rotation relative to the current teleport pad
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void TeleportRpc()
     {
@@ -203,31 +209,27 @@ public class TeleportPad : NetworkBehaviour
     {
         if(!rotateRings) return;
         
-        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || ring.rotation != restRotation)
-        {
-            ring.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
-        }
-        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || reverseRing.rotation != restRotation)
-        {
-            reverseRing.Rotate(Vector3.up * -rotateSpeed * Time.deltaTime);
-        }
+        //This rotates the rings
+        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || ring.rotation != restRotation) ring.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
 
+        //This rotates the rings in the opposite direction
+        if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || reverseRing.rotation != restRotation) reverseRing.Rotate(Vector3.up * -rotateSpeed * Time.deltaTime);
+
+        //This increases/decreases the rotation speed and teleportation visual effect (visuals only applied to the PC Player)
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
         {
             rotateSpeed += rotateIncrement;
-            Debug.Log(this.gameObject + " : Change Rotate Speed");
             OnChangeTeleportRotateSpeed?.Invoke(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
         }
 
+        //Inverts the rotation increment to begin reducing rotation speed, and teleports the PC Player
         if(rotateSpeed >= maxRotateSpeed)
         {
             rotateIncrement *= -1f;   
-            if(_isPlayerOnPad.Value)
-            {
-                TeleportRpc();     
-            }
+            if(_isPlayerOnPad.Value) TeleportRpc();     
         }
 
+        //If the rotation has slowed down enough, and the rings are at a rough angle, the rotation is stopped
         if( rotateIncrement < 0 && 
             rotateSpeed <= minRotateSpeed && 
             Quaternion.Angle(ring.rotation, restRotation) < rotationRange && 
@@ -239,13 +241,13 @@ public class TeleportPad : NetworkBehaviour
             ring.rotation = restRotation;
             reverseRing.rotation = restRotation;
 
-            Debug.Log(this.gameObject + " : Stop Rotating");
             OnChangeTeleportRotateSpeed?.Invoke(0, maxRotateSpeed);
             
             StopAudioRpc();
         }
     }
 
+    //Records if the PC Player has left the teleport pad
     private void OnTriggerExit(Collider _other)
     {
         if (_other.CompareTag("PCPlayer"))
@@ -254,6 +256,7 @@ public class TeleportPad : NetworkBehaviour
         }
     }
 
+    //This stops the teleport pad from working for a period of time, to avoid multiple teleports at once
     IEnumerator TeleportPause()
     {
         yield return new WaitForSeconds(5f);

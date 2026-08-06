@@ -11,13 +11,13 @@ using UnityEngine.Rendering.Universal;
 
 public class SetupNetworkPlayer : NetworkBehaviour
 {
-    public bool isPCPlayer;
+    [SerializeField] private bool isPCPlayer;
     private GameObject pcPlayerMainCamera;
     private Camera pcPlayerMainCameraCamera;
     private AudioListener pcPlayerMainCameraAudioListener;
     private InputSystemUIInputModule pcInput;
     
-    public bool isVRPlayer;
+    [SerializeField] private bool isVRPlayer;
     private GameObject vrPlayerMainCamera;
     private Camera vrPlayerMainCameraCamera;
     private AudioListener vrPlayerMainCameraAudioListener;
@@ -60,7 +60,6 @@ public class SetupNetworkPlayer : NetworkBehaviour
 
     private void VRPlayerReferences()
     {
-        Debug.Log("VRPlayer: " + GameObject.FindGameObjectWithTag("VRPlayer"));
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
             if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))
@@ -92,6 +91,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
         SetVRPlayerCamera(true);
     }
 
+    //This toggles the PC Camera, and input (disables if the VR Player is the owner, and enables if it is the PC Player)
     private void SetPCPlayerCamera(bool toggle)
     {
         pcPlayerMainCameraCamera.enabled = toggle;
@@ -99,6 +99,7 @@ public class SetupNetworkPlayer : NetworkBehaviour
         pcInput.enabled = toggle;
     }
 
+    //This toggles the VR Camera, and input (disables if the PC Player is the owner, and enables if it is the VR Player)
     private void SetVRPlayerCamera(bool toggle)
     {
         vrPlayerMainCameraCamera.enabled = toggle;
@@ -106,7 +107,8 @@ public class SetupNetworkPlayer : NetworkBehaviour
         vrInput.enabled = toggle;
     }
 
-    public void DisableXRSockets()
+    //This disables all XR Sockets in the scene
+    private void DisableXRSockets()
     {
         foreach (var socket in FindObjectsOfType<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>())
         {

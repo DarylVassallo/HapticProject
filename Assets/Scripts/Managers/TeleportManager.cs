@@ -48,77 +48,44 @@ public class TeleportManager : NetworkBehaviour
 
     public static event Action OnEverythingCollected;
 
-    private bool _canPCFunction = false;
-    private bool _canVRFunction = false;
-
-    void Awake()
-    {
-        _canPCFunction = false;
-        _canVRFunction = false;
-    }
+    public static event Action<int> OnSendCodeToTeleportPads;
     
     private void OnEnable()
     {
         _barList = new List<Transform>();
 
-        HiddenTeleportButtonInteract.OnTriggerHiddenButton += GainHiddenButton;
-        HiddenTeleportButtonInteract.OnResetHiddenButton += RemoveHiddenButton;
+        CollectableInteract.OnTriggerHiddenButton += GainCollectable;
+        CollectableInteract.OnResetHiddenButton += RemoveCollectable;
         _currentMap.OnValueChanged += ChangeMap;
 
+        TeleportNumPad.OnSendCode += CheckInputtedCode;
         TeleportPad.OnAddNewBar += AddNewBar;
 
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
-        ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataRpc;
     }
 
     private void OnDisable()
     {
-        HiddenTeleportButtonInteract.OnTriggerHiddenButton -= GainHiddenButton;
-        HiddenTeleportButtonInteract.OnResetHiddenButton -= RemoveHiddenButton;
+        CollectableInteract.OnTriggerHiddenButton -= GainCollectable;
+        CollectableInteract.OnResetHiddenButton -= RemoveCollectable;
         _currentMap.OnValueChanged -= ChangeMap;
 
+        TeleportNumPad.OnSendCode += CheckInputtedCode;
         TeleportPad.OnAddNewBar -= AddNewBar;
 
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
-        ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
     }
-
-    // public override void OnNetworkSpawn()
-    // {
-    //     CurrentMapServerRpc(false);
-    //     mapRenderer.material = maps[_currentMap.Value];
-    // }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void GetPCPlayerDataRpc()
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _canPCFunction = true;
-            InitialMap();
-        }
-
-        if(!IsOwner) GetVRPlayerDataRpc();
-    }
-
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void GetVRPlayerDataRpc()
-    {
-        if( GameObject.FindGameObjectWithTag("VRPlayer") != null)
-        {
-            _canVRFunction = true;
-            InitialMap();
-        }
-    }
-
-    private void InitialMap()
-    {
-        if(_canPCFunction)
-        {
             CurrentMapServerRpc(false);
         }
     }
 
+    //This adds the bar of a teleport pad to a list
     private void AddNewBar(Transform newBar)
     {
         _barList.Add(newBar);
@@ -127,11 +94,13 @@ public class TeleportManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void CurrentMapServerRpc(bool _foundAllCollectables)
     {
+        //If the PC Player has found all the collectables, then the final map and teleport connections are set
         if(_foundAllCollectables)
         {
             _currentMap.Value = 999;
         }
 
+        //If not all collectables have been found, then a random map is chosen to replace the current one
         if(_canChangeMap.Value)
         {
             if(!_foundAllCollectables)
@@ -148,8 +117,15 @@ public class TeleportManager : NetworkBehaviour
         _canChangeMap.Value = canChange;
     }
 
+    //If the inputted code is correct, then the teleportation sequence can begin
+    private void CheckInputtedCode(int _inputtedCode)
+    {
+        OnSendCodeToTeleportPads?.Invoke(_inputtedCode);
+    }
+
     private void ChangeMap(int previous, int current)
     {
+        //If the final map is called, the final teleport connections are set up
         if(current == 999)
         {
             mapRenderer.material = finalMap;
@@ -161,9 +137,10 @@ public class TeleportManager : NetworkBehaviour
                     entrancePad.GetComponent<TeleportPad>().
                     SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
             }
-        }
-        else
-        {
+
+        //This sets up the correct map for the VR Player, and set up the correct teleport connections.
+        // It also sets up a random time limit before the next time the map changes again
+        } else {
             mapRenderer.material = maps[current];
             CanChangeMapServerRpc(false);
 
@@ -182,10 +159,9 @@ public class TeleportManager : NetworkBehaviour
 
     IEnumerator ChangeMapDelay(float delay)
     {
-        // if(_isEverythingCollected) return;
-
         float elapsed = 0f;
 
+        //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
             elapsed += Time.deltaTime;
@@ -204,9 +180,11 @@ public class TeleportManager : NetworkBehaviour
             yield return null;
         }
 
+        //This changes the current map
         CanChangeMapServerRpc(true);
         CurrentMapServerRpc(false);
 
+        //The teleport bars are reset to their full size
         for(int i = 0; i < _barList.Count; i++)
         {
             _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
@@ -215,17 +193,15 @@ public class TeleportManager : NetworkBehaviour
         }
     }
 
-    private void GainHiddenButton()
+    private void GainCollectable()
     {
-        // GainHiddenButtonClientRpc();
-
+        //Once a collectable is collected, this hids it, and gives the PCPlayer a point
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
         _collectablePoints++;
 
-        // if(1 <= _collectablePoints)
+        //If all collectables are collected, then the teleport pad's bars are removed, and an event is called to inform other scripts about the PCPlayer's progress
         if(collectableIndicators.Length <= _collectablePoints)
         {
-            Debug.Log("Eveything Is Collected");
             _barList = null;
             _isEverythingCollected = true;
             OnEverythingCollected?.Invoke();
@@ -233,46 +209,10 @@ public class TeleportManager : NetworkBehaviour
         }
     }
 
-    // [ClientRpc]
-    // public void GainHiddenButtonClientRpc()
-    // {
-    //     Debug.Log("=================");
-    //     Debug.Log("GainHiddenButtonClientRpc");
-    //     Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-    //     Debug.Log("before _collectablePoints: " + _collectablePoints);
-    //     collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
-    //     _collectablePoints++;
-    //     Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-    //     Debug.Log("after _collectablePoints: " + _collectablePoints);
-
-    //     if(collectableIndicators.Length <= _collectablePoints)
-    //     {
-    //         Debug.Log("Eveything Is Collected");
-    //         _barList = null;
-    //         _isEverythingCollected = true;
-    //         OnEverythingCollected?.Invoke();
-    //         CurrentMapServerRpc(true);
-    //     }
-    // }
-
-    private void RemoveHiddenButton()
+    //This resets the latest collectable (to be used when all collectables need to be reset)
+    private void RemoveCollectable()
     {
-        // RemoveHiddenButtonClientRpc();
-
         _collectablePoints--;
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
     }
-
-    // [ClientRpc]
-    // private void RemoveHiddenButtonClientRpc()
-    // {
-    //     Debug.Log("=================");
-    //     Debug.Log("RemoveHiddenButtonClientRpc");
-    //     Debug.Log("before collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-    //     Debug.Log("before _collectablePoints: " + _collectablePoints);
-    //     _collectablePoints--;
-    //     collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
-    //     Debug.Log("after collectableIndicators[_collectablePoints].material.GetColor(_BaseColor): " + collectableIndicators[_collectablePoints].material.GetColor("_BaseColor"));
-    //     Debug.Log("after _collectablePoints: " + _collectablePoints);
-    // }
 }

@@ -14,21 +14,22 @@ public class TeleportNumPad : MonoBehaviour
         codeText.text = "";
     }
 
+    //Adds the inputted number to the current visible code
     public void AddNumber(int _newNumber)
     {
         codeText.text = codeText.text + "" + _newNumber + "";
     }
 
+    //Resets the current visible code
     public void ResetCode()
     {
         codeText.text = "";
     }
 
+    //Sends the current code to be compared to existing correct codes.
+    // It also resets the current code
     public void InputCode()
     {
-        Debug.Log("InputCode");
-        Debug.Log("codeText.text: " + codeText.text);
-        // Debug.Log("int.Parse(codeText.text): " + int.Parse(codeText.text));
         if(codeText.text != "") OnSendCode?.Invoke(int.Parse(codeText.text));
         codeText.text = "";
     }

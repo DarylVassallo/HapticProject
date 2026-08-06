@@ -22,14 +22,14 @@ public class RevealUnderLight : NetworkBehaviour
 
     private void OnEnable()
     {
-        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects += AddObject;
-        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects += AddObject;
+        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects += AddHiddenObject;
+        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects += AddHiddenObject;
     }
 
     private void OnDisable()
     {
-        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects -= AddObject;
-        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects -= AddObject;
+        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects -= AddHiddenObject;
+        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects -= AddHiddenObject;
     }
 
     public override void OnNetworkSpawn()
@@ -38,18 +38,14 @@ public class RevealUnderLight : NetworkBehaviour
         if(!isImmediatelyNeeded) this.gameObject.SetActive(false);
     }
 
+    //Upon spawning, the object is added to a hidden object list
     IEnumerator RequestNewHiddenObject()
     {
         yield return new WaitForSeconds(0.5f);
-        AddObject();
-    }
-
-    public void AddObject()
-    {
         AddHiddenObject();
     }
 
-    public void AddHiddenObject()
+    private void AddHiddenObject()
     {
         OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
     }

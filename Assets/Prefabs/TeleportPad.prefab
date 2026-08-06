@@ -12832,8 +12832,6 @@ MonoBehaviour:
   exitTeleportPad: {fileID: 0}
   numLimit: 99999
   bar: {fileID: 7903812685218580918}
-  arePadsReady: 1
-  rotateRings: 0
   ring: {fileID: 4116925117570124113}
   reverseRing: {fileID: 8338258130115603118}
   rotateIncrement: 5

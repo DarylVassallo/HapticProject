@@ -13,8 +13,7 @@ public class CheckpointManager : NetworkBehaviour
     [SerializeField] private Transform fourthCheckpoint;
     private Transform currentCheckpoint;
 
-    private Transform _pcPlayerTransform;
-    private Health _pcPlayerHealth;
+    private GameObject _pcPlayer;
     private bool _canPCFunction;
 
     private bool _hasUsedTeleporter;
@@ -29,6 +28,8 @@ public class CheckpointManager : NetworkBehaviour
 
     public static event Action OnActivateSecondCheckpointHiddenObjects;
     public static event Action OnActivateThirdCheckpointHiddenObjects;
+
+    public static event Action<GameObject> OnResetHealth;
 
     [SerializeField] private Transform hiddenButtons;
     [SerializeField] private Transform hiddenArrows;
@@ -53,8 +54,7 @@ public class CheckpointManager : NetworkBehaviour
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;   
-            _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();   
+            _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");   
             _canPCFunction = true;
         }
     }
@@ -175,8 +175,8 @@ public class CheckpointManager : NetworkBehaviour
             }
 
             //The PC Player's health and position are reset
-            _pcPlayerHealth.ResetHealth();
-            _pcPlayerTransform.position = currentCheckpoint.position;
+            OnResetHealth?.Invoke(_pcPlayer);
+            _pcPlayer.transform.position = currentCheckpoint.position;
         }
     }
 }

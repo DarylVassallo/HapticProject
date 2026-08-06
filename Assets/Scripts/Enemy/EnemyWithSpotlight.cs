@@ -11,7 +11,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 {
     private NavMeshAgent _agent;
 
-    private Transform _pcPlayerTransform;
+    private GameObject _pcPlayer;
     private Health _pcPlayerHealth;
     private FlashlightCharge _pcFlashlightCharge;
 
@@ -34,8 +34,9 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [SerializeField] private float damageToPlayer;
     [SerializeField] private float _tooCloseDistance;
     [SerializeField] private float _tooFarDistance;
-     private Health health;
 
+    private bool _notifiedOfDeath;
+    private float _notifiedHealth;
 
     [Header("Audio")]
     [SerializeField] private AudioClip[] burningAudios;
@@ -53,23 +54,21 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private Animator _animator;
 
     [SerializeField] private float damageDelay;
-    private bool canBeDamaged = true;
+    private bool _canBeDamaged;
 
-    private int currentAudioNum = -1;
-
-    private EnemyManager enemyManager;
+    private EnemyManager _enemyManager;
 
     private AudioClip _currentAudio;
     private int _currentAudioNum;
 
     public static event Action<GameObject> OnRemoveEnemy;
+    public static event Action<GameObject, float> OnChangeHealth;
 
-    private float damageMultiplier = 0f;
+    private float _damageMultiplier;
 
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
-        health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
@@ -78,19 +77,32 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         _attackCount = maxAttackDelay;
 
-        enemyManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<EnemyManager>();
+        _enemyManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<EnemyManager>();
+
+        _canBeDamaged = true;
+
+        _notifiedOfDeath = false;
+        _notifiedHealth = 100f;
+
+        _damageMultiplier = 0f;
     }
 
     private void OnEnable()
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
         CheckpointManager.OnDestroyAllEnemies += DestroyEnemy;
+
+        HealthManager.OnNotifyDeath += RecieveDeath;
+        HealthManager.OnNotifyChangedHealth += RecieveChangedHealth;
     }
 
     private void OnDisable()
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
         CheckpointManager.OnDestroyAllEnemies -= DestroyEnemy;
+
+        HealthManager.OnNotifyDeath -= RecieveDeath;
+        HealthManager.OnNotifyChangedHealth -= RecieveChangedHealth;
     }
 
     public override void OnNetworkDespawn()
@@ -101,25 +113,25 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [ClientRpc]
     private void PlayWalkAudioClientRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(1));
+        PlayAudio(_enemyManager.GetAppropriateAudio(1));
     }
 
     [ClientRpc]
     private void PlayAttackAudioClientRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(3));
+        PlayAudio(_enemyManager.GetAppropriateAudio(3));
     }
 
     [ClientRpc]
     private void PlayDamageAudioClientRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(0));
+        PlayAudio(_enemyManager.GetAppropriateAudio(0));
     }
 
     [ClientRpc]
     private void PlayDeathAudioClientRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(2));
+        PlayAudio(_enemyManager.GetAppropriateAudio(2));
     }
 
     private void PlayAudio(AudioClip _newAudio)
@@ -165,7 +177,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [ClientRpc]
     public void DamageAudioClientRpc()
     {
-        _audioSource.volume = 1 - (health.GetHealth() / 100);
+        _audioSource.volume = 1 - (_notifiedHealth / 100);
     }
 
     [ClientRpc]
@@ -178,8 +190,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-            _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
+            _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
             _pcPlayerSpotLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
             _pcFlashlightCharge = _pcPlayerSpotLight.GetComponent<FlashlightCharge>();
         }
@@ -191,7 +202,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         if(_attackCount > 0) _attackCount--;
 
-        (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
+        (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayer.transform);
 
         //The enemy does not move if it is too far from the PC Player
         if (_isPCTooFar)
@@ -203,12 +214,12 @@ public class EnemyWithSpotlight : NetworkBehaviour
             //Freezes and damages the enemy if it is within the PC Player's flashlight's light
             if (_isInsidePCSpotLight)
             {
-                DamageAndFreeze(0);
+                DamageAndFreeze();
             }
             else
             {
                 //Removes the enemy if it is dead
-                if(health.isDead)
+                if(_notifiedOfDeath)
                 {
                     RemoveEnemyClientRpc();
 
@@ -226,6 +237,16 @@ public class EnemyWithSpotlight : NetworkBehaviour
                 }
             }
         }
+    }
+
+    private void RecieveDeath(GameObject entity)
+    {
+        if(entity == this.gameObject) _notifiedOfDeath = true;
+    }
+
+    private void RecieveChangedHealth(GameObject entity, float newHealth)
+    {
+        if(entity == this.gameObject) _notifiedHealth = newHealth;
     }
 
     // This triggers the funciton to properly remove the enemy
@@ -257,7 +278,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         }
         _currentAudioNum = 1;
 
-        _destination = _pcPlayerTransform.position;
+        _destination = _pcPlayer.transform.position;
 
         if(_agent.isOnNavMesh) _agent.SetDestination(_destination);
     }
@@ -277,16 +298,16 @@ public class EnemyWithSpotlight : NetworkBehaviour
         
         _agent.SetDestination(transform.position);
 
-        _pcPlayerHealth.ChangeHealth(-_damage, -1);
+        OnChangeHealth?.Invoke(_pcPlayer, -_damage);
     }
 
     //This stops the enemy, and reduces the enemy's health
-    private void DamageAndFreeze(int _playerType)
+    private void DamageAndFreeze()
     {
         _agent.speed = 0;
 
         //Reduces the enemy's health if it is not dead
-        if(!health.isDead)
+        if(!_notifiedOfDeath)
         {             
             if(_animator.speed != 0) FreezeAnimationClientRpc();
 
@@ -296,10 +317,10 @@ public class EnemyWithSpotlight : NetworkBehaviour
             if(IsServer) DamageAudioClientRpc();
 
             //This damages to the enemy in increments
-            if(canBeDamaged)
+            if(_canBeDamaged)
             {
-                canBeDamaged = false;
-                health.ChangeHealth(-damageToAngel * damageMultiplier, _playerType);
+                _canBeDamaged = false;
+                OnChangeHealth?.Invoke(this.gameObject, -damageToAngel * _damageMultiplier);
                 StartCoroutine(DelayDamage());
             }
 
@@ -318,7 +339,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     IEnumerator DelayDamage()
     {
         yield return new WaitForSeconds(damageDelay);
-        canBeDamaged = true;
+        _canBeDamaged = true;
     }
     
     //This checks if the enemy is within the PC Player's flashlights range and angle (which depends on its strength)
@@ -340,7 +361,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         if (_spotLightAngle > 55 * 0.5f) return false;
 
         //The damage applied to the PC Player depends on the distance between the enemy and flashlight (the closer they are, the greater the damage)
-        damageMultiplier = 1 - (_spotLightDistance / (_playerFlashlightCharge.currentFlashLightRange * 0.5f));
+        _damageMultiplier = 1 - (_spotLightDistance / (_playerFlashlightCharge.currentFlashLightRange * 0.5f));
         return true;
     }
 

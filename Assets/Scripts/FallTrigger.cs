@@ -1,11 +1,14 @@
 using UnityEngine;
 
+using System;
+
 public class FallTrigger : MonoBehaviour
 {
-    private Health _entityHealth;
     private Respawn _entityRespawn;
 
     [SerializeField] private bool isVRTrigger;
+
+    public static event Action<GameObject, float> OnChangeHealth;
 
     private void OnTriggerEnter(Collider other)
     {        
@@ -21,26 +24,17 @@ public class FallTrigger : MonoBehaviour
         }
         else
         {
-            _entityHealth = other.GetComponent<Health>();
-            Debug.Log("_entityHealth : " + _entityHealth);
+            OnChangeHealth?.Invoke(other.gameObject, -999);
 
-            if (_entityHealth != null)
+            _entityRespawn = other.GetComponent<Respawn>();
+
+            if(_entityRespawn != null)
             {
-                _entityHealth.ChangeHealth(-999, -1);
+                _entityRespawn.ActivateRespawn();
             }
             else
             {
-                _entityRespawn = other.GetComponent<Respawn>();
-                Debug.Log("_entityRespawn : " + _entityRespawn);
-
-                if(_entityRespawn != null)
-                {
-                    _entityRespawn.ActivateRespawn();
-                }
-                else
-                {
-                    Destroy(other);
-                }
+                Destroy(other);
             }
         }
         

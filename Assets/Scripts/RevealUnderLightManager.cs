@@ -32,7 +32,7 @@ public class RevealUnderLightManager : NetworkBehaviour
     private float _strengthLimit;
 
     [Serializable]
-    public class HiddenObject
+    private class HiddenObject
     {
         public GameObject hiddenObject;
         public Collider hiddenCollider;
@@ -51,31 +51,18 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     [SerializeField] private float maxDistance;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created.
-    void Awake()
-    {
-        // _hiddenMaterial = GetComponent<Renderer>().material;        
-
-        // if (isReversed)
-        // {
-        //     _strengthLimit = 1f;
-        // }else
-        // {
-        //     _strengthLimit = 0.15f;
-        // }
-    }
-
     private void OnEnable()
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
         ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataRpc;
 
         RevealUnderLight.OnAddNewHiddenObject += AddNewHiddenObject;
+        CollectableInteract.OnAddNewHiddenObject += AddNewHiddenObject;
 
-        HiddenTeleportButtonInteract.OnRemoveHiddenObject += RemoveHiddenObject;
+        CollectableInteract.OnRemoveHiddenObject += RemoveHiddenObject;
         EnemyManager.OnRemoveHiddenObject += RemoveHiddenObject;
 
-        Health.OnChangeEnemyOxidization += ChangeEnemyOxidization;
+        HealthManager.OnChangeEnemyOxidization += ChangeEnemyOxidization;
     }
 
     private void OnDisable()
@@ -86,11 +73,12 @@ public class RevealUnderLightManager : NetworkBehaviour
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
 
         RevealUnderLight.OnAddNewHiddenObject -= AddNewHiddenObject;
+        CollectableInteract.OnAddNewHiddenObject -= AddNewHiddenObject;
 
-        HiddenTeleportButtonInteract.OnRemoveHiddenObject -= RemoveHiddenObject;
+        CollectableInteract.OnRemoveHiddenObject -= RemoveHiddenObject;
         EnemyManager.OnRemoveHiddenObject -= RemoveHiddenObject;
 
-        Health.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
+        HealthManager.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
@@ -99,7 +87,6 @@ public class RevealUnderLightManager : NetworkBehaviour
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
             _canPCFunction = true;
-
             _pcFlashLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
             _pcFlashLightCharge = GameObject.FindGameObjectWithTag("PCFlashLight").GetComponent<FlashlightCharge>();
         }
@@ -110,17 +97,14 @@ public class RevealUnderLightManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void GetVRPlayerDataRpc()
     {
-        Debug.Log("GetVRPlayerDataRpc");
         if(GameObject.FindGameObjectWithTag("VRPlayer") != null)
         {
-            Debug.Log("GameObject.FindGameObjectWithTag(VRPlayer): " + GameObject.FindGameObjectWithTag("VRPlayer"));
             _canVRFunction = true;
-
             _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
-            Debug.Log("_vrFlashLight: " + _vrFlashLight);
         }
     }
 
+    //This adds a new object, and its related components to the hidden objects list
     private void AddNewHiddenObject(GameObject newHiddenObject, bool newIsPCInteractable, bool newIsVRInteractable, bool newIsEffectedByLight, bool newIsReversed)
     {
         hiddenObjects.Add(new HiddenObject
@@ -137,6 +121,7 @@ public class RevealUnderLightManager : NetworkBehaviour
                         });;
     }
 
+    //This removes a specific object from the hidden object list
     private void RemoveHiddenObject(GameObject oldHiddenObject)
     {
         hiddenObjects.RemoveAll(h => 
@@ -144,6 +129,7 @@ public class RevealUnderLightManager : NetworkBehaviour
                                 h.hiddenObject.transform.IsChildOf(oldHiddenObject.transform));
     }
 
+    //This changes the visual appearance of a specific enemy
     private void ChangeEnemyOxidization(Renderer _renderer, float oxidization)
     {
         _renderer.material.SetFloat("_MapBlend", 1 - oxidization);
@@ -151,10 +137,6 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     private void Update()
     {
-        // if(!IsOwner) return;
-
-        // if(!_canVRFunction) return;
-
         for(int i = 0; i < hiddenObjects.Count; i++)
         {
             if(_canPCFunction)
@@ -167,8 +149,12 @@ public class RevealUnderLightManager : NetworkBehaviour
                 _positionDistance = 999;
             }
 
+            //Checks if the current object is within the PC flashlight's distance, or is supposed to be seen using the VR flashlight
             if(_positionDistance < maxDistance || hiddenObjects[i].isVRInteractable)
             {
+                //If the object is within the PC/VR light, 
+                // the object's collider and interactable components are toggled 
+                // (active if they are within the range, deactive if they are not)
                 if (hiddenObjects[i].isEffectedByLight)
                 {
                     if (CheckLightStrength(hiddenObjects[i]) >= (hiddenObjects[i].isReversed ? _strengthLimit = 1f : _strengthLimit = 0.15f))
@@ -191,6 +177,8 @@ public class RevealUnderLightManager : NetworkBehaviour
                     }
                 }
 
+                //If the object is within the PC/VR light, 
+                // the object's renderer shader is updated with the correct position, direction, angle, and range of the PC and VR lights
                 if(hiddenObjects[i].hiddenRenderer.material)
                 {
                     if (_pcFlashLight == null)
@@ -237,6 +225,7 @@ public class RevealUnderLightManager : NetworkBehaviour
         }
     }
 
+    //Checks the strength of a specified light
     private float CheckPlayerLightStrength(Transform hiddenObject, Transform _flashLight)
     {
         _positionDifference = hiddenObject.position - _flashLight.position;
@@ -256,6 +245,7 @@ public class RevealUnderLightManager : NetworkBehaviour
         return _strength;
     }
 
+    //Checks the total strength of the light from the PC and VR players that reaches the object
     private float CheckLightStrength(HiddenObject _hiddenObject)
     {
         _totalStrength = 0;
