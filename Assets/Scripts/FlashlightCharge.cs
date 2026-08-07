@@ -29,8 +29,6 @@ public class FlashlightCharge : NetworkBehaviour
     [SerializeField] private Transform chargeBar;
     private float _maxChargeBarLength;
 
-    public static event Action<float> OnChangeChargeBar;
-
     private bool _isNetworkSpawned = false;
 
     private bool _shuttingDown = true;
@@ -51,14 +49,14 @@ public class FlashlightCharge : NetworkBehaviour
     
     private void OnEnable()
     {
-        PCPlayerInputManager.OnFire += ChargeFlashlightWithMouse;
-        PCPlayerInputManager.OnFire2 += SetFlashlightEnableServerRpc;
+        EventsManager.OnFire += ChargeFlashlightWithMouse;
+        EventsManager.OnFire2 += SetFlashlightEnableServerRpc;
     }
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnFire -= ChargeFlashlightWithMouse;
-        PCPlayerInputManager.OnFire2 -= SetFlashlightEnableServerRpc;
+        EventsManager.OnFire -= ChargeFlashlightWithMouse;
+        EventsManager.OnFire2 -= SetFlashlightEnableServerRpc;
     }
 
     public override void OnNetworkSpawn()
@@ -167,6 +165,6 @@ public class FlashlightCharge : NetworkBehaviour
                                                 _maxChargeBarLength * (_charge.Value / 100f)
                                             );
 
-        if (this.CompareTag("PCFlashLight")) OnChangeChargeBar?.Invoke(_charge.Value);
+        if (this.CompareTag("PCFlashLight")) EventsManager.ChangeChargeBar(_charge.Value);
     }
 }

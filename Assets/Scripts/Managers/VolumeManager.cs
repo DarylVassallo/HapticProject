@@ -22,14 +22,14 @@ public class VolumeManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Health.OnChangeHealthCamera += ChangeHealthDamageVolume;
-        TeleportPad.OnChangeTeleportRotateSpeed += ChangeTeleportVolume;
+        EventsManager.OnChangeHealthCamera += ChangeHealthDamageVolume;
+        EventsManager.OnChangeTeleportRotateSpeed += ChangeTeleportVolume;
     }
 
     private void OnDisable()
     {
-        Health.OnChangeHealthCamera -= ChangeHealthDamageVolume;
-        TeleportPad.OnChangeTeleportRotateSpeed -= ChangeTeleportVolume;
+        EventsManager.OnChangeHealthCamera -= ChangeHealthDamageVolume;
+        EventsManager.OnChangeTeleportRotateSpeed -= ChangeTeleportVolume;
     }
 
     //This applies a damaged health visual effect to the PC Player, depending on the amount of health left (the less the PC Player's health is, the greater the visual intensity)

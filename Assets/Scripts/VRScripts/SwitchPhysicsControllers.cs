@@ -13,8 +13,6 @@ public class SwitchPhysicsControllers : MonoBehaviour
     public GameObject leftControllerPhysics;
     public GameObject leftControllerRenderer;
 
-    public static event Action OnChangedControllers;
-
     private bool _canPCFunction = false;
     private bool _canVRFunction = false;
 
@@ -32,7 +30,7 @@ public class SwitchPhysicsControllers : MonoBehaviour
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
         ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerData;
 
-        MenuManager.OnToggleAll += ToggleHands;
+        EventsManager.OnToggleAll += ToggleHands;
     }
 
     private void OnDisable()
@@ -40,7 +38,7 @@ public class SwitchPhysicsControllers : MonoBehaviour
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerData;
 
-        MenuManager.OnToggleAll -= ToggleHands;
+        EventsManager.OnToggleAll -= ToggleHands;
     }
 
     private void GetPCPlayerData()
@@ -62,7 +60,6 @@ public class SwitchPhysicsControllers : MonoBehaviour
 
     private void ToggleHands(bool toggle)
     {
-        Debug.Log("SwitchPhysicsControllers ToggleHands : " + toggle);
         rightHandRenderer.SetActive(toggle);
         leftHandRenderer.SetActive(toggle);
 
@@ -72,13 +69,11 @@ public class SwitchPhysicsControllers : MonoBehaviour
     
     public void StartTrackedHands()
     {
-        Debug.Log("SwitchPhysicsControllers StartTrackedHands");
         TogglePhysicsControllers(true);
     }
 
     public void StartTrackedControllers()
     {
-        Debug.Log("SwitchPhysicsControllers StartTrackedControllers");
         TogglePhysicsControllers(false);
     }
 
@@ -86,14 +81,13 @@ public class SwitchPhysicsControllers : MonoBehaviour
     {
         if(_canVRFunction)
         {
-            Debug.Log("SwitchPhysicsControllers TogglePhysicsControllers : " + newIsUsingVirtualHands);
             rightHandPhysics.SetActive(newIsUsingVirtualHands);
             leftHandPhysics.SetActive(newIsUsingVirtualHands);
 
             rightControllerPhysics.SetActive(!newIsUsingVirtualHands);
             leftControllerPhysics.SetActive(!newIsUsingVirtualHands);
 
-            OnChangedControllers?.Invoke();
+            EventsManager.ChangedControllers();
         }
     }
 }

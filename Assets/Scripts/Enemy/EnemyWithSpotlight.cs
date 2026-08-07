@@ -90,19 +90,19 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private void OnEnable()
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        CheckpointManager.OnDestroyAllEnemies += DestroyEnemy;
+        EventsManager.OnDestroyAllEnemies += DestroyEnemy;
 
-        HealthManager.OnNotifyDeath += RecieveDeath;
-        HealthManager.OnNotifyChangedHealth += RecieveChangedHealth;
+        Health.OnEntityDeath += RecieveDeath;
+        Health.OnEntityChangeHealth += RecieveChangedHealth;
     }
 
     private void OnDisable()
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        CheckpointManager.OnDestroyAllEnemies -= DestroyEnemy;
+        EventsManager.OnDestroyAllEnemies -= DestroyEnemy;
 
-        HealthManager.OnNotifyDeath -= RecieveDeath;
-        HealthManager.OnNotifyChangedHealth -= RecieveChangedHealth;
+        Health.OnEntityDeath -= RecieveDeath;
+        Health.OnEntityChangeHealth -= RecieveChangedHealth;
     }
 
     public override void OnNetworkDespawn()

@@ -20,11 +20,8 @@ public class EnemyManager : NetworkBehaviour
     private List<Transform> _closeSpawnPoints;
 
     private Transform _pcPlayer;
-    private bool canPCFunction = false;
+    private bool canPCFunction = false;    
 
-    public static event Action<GameObject> OnRemoveHiddenObject;
-    
-    
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> damageAudios;
@@ -69,23 +66,23 @@ public class EnemyManager : NetworkBehaviour
     private void OnEnable()
     {
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        MazeManager.OnCreateRandomEnemy += EnemyCreation;
+        EventsManager.OnCreateRandomEnemy += EnemyCreation;
 
         EnemyWithSpotlight.OnRemoveEnemy += RemoveEnemy;
 
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
-        CheckpointManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
+        EventsManager.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
+        EventsManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
     }
 
     private void OnDisable()
     {
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        MazeManager.OnCreateRandomEnemy -= EnemyCreation;
+        EventsManager.OnCreateRandomEnemy -= EnemyCreation;
 
         EnemyWithSpotlight.OnRemoveEnemy -= RemoveEnemy;
 
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
-        CheckpointManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
+        EventsManager.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
+        EventsManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
     }
 
     private void GetPCPlayerData()
@@ -128,7 +125,7 @@ public class EnemyManager : NetworkBehaviour
         RevealUnderLight[] revealUnderLightObjects = removedEnemy.GetComponentsInChildren<RevealUnderLight>(true);
         foreach (RevealUnderLight revealUnderLight in revealUnderLightObjects)
         {
-            OnRemoveHiddenObject?.Invoke(revealUnderLight.gameObject);
+            EventsManager.RemoveHiddenObject(revealUnderLight.gameObject);
         }
         Destroy(removedEnemy);
     }

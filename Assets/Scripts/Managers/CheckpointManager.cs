@@ -20,17 +20,6 @@ public class CheckpointManager : NetworkBehaviour
     private bool _hasCollectedEverything;
     private bool _hasCrossedCrookedBridges;
 
-    public static event Action OnResetHiddenSwitches;
-    public static event Action OnResetHiddenButtons;
-    public static event Action OnResetTeleportPads;
-    public static event Action OnDestroyAllEnemies;
-    public static event Action OnDisableEnemySpawning;
-
-    public static event Action OnActivateSecondCheckpointHiddenObjects;
-    public static event Action OnActivateThirdCheckpointHiddenObjects;
-
-    public static event Action<GameObject> OnResetHealth;
-
     [SerializeField] private Transform hiddenButtons;
     [SerializeField] private Transform hiddenArrows;
 
@@ -38,16 +27,16 @@ public class CheckpointManager : NetworkBehaviour
     {
         currentCheckpoint = firstCheckpoint;
 
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
-        TeleportManager.OnEverythingCollected += EverythingCollected;
-        TeleportPad.OnCrossedCrookedBridges += CrossedCrookedBridges;
+        EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
+        EventsManager.OnEverythingCollected += EverythingCollected;
+        EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
     }
 
     private void OnDisable()
     {
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
-        TeleportManager.OnEverythingCollected -= EverythingCollected;
-        TeleportPad.OnCrossedCrookedBridges -= CrossedCrookedBridges;
+        EventsManager.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
+        EventsManager.OnEverythingCollected -= EverythingCollected;
+        EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
     }
 
     private void GetPCPlayerData()
@@ -73,10 +62,7 @@ public class CheckpointManager : NetworkBehaviour
     // the third checkpoint will be set as the active checkpoint
     private void EverythingCollected()
     {
-        if(!_hasCollectedEverything)
-        {
-            ActivateThirdCheckpointClientRpc();
-        }
+        if(!_hasCollectedEverything) ActivateThirdCheckpointClientRpc();
     }
 
     //If the PC Player has crossed the crooked bridges, 
@@ -118,8 +104,8 @@ public class CheckpointManager : NetworkBehaviour
         _hasCollectedEverything = true;
         currentCheckpoint = thirdCheckpoint;
 
-        OnDestroyAllEnemies?.Invoke();
-        OnDisableEnemySpawning?.Invoke();
+        EventsManager.DestroyAllEnemies();
+        EventsManager.DisableEnemySpawning();
 
         StartCoroutine(ActivateCheckpoint(3));
     }
@@ -141,10 +127,10 @@ public class CheckpointManager : NetworkBehaviour
         switch(checkpointNum)
         {
             case 2:
-                OnActivateSecondCheckpointHiddenObjects?.Invoke();
+                EventsManager.ActivateSecondCheckpointHiddenObjects();
                 break;
             case 3:
-                OnActivateThirdCheckpointHiddenObjects?.Invoke();
+                EventsManager.ActivateThirdCheckpointHiddenObjects();
                 break;
             
         }        
@@ -159,23 +145,23 @@ public class CheckpointManager : NetworkBehaviour
 
         if(_canPCFunction) 
         {
-            OnDestroyAllEnemies?.Invoke();
+            EventsManager.DestroyAllEnemies();
 
             //If the PC Player has not reached a teleport pad, then progress made with the switches are reset
             if(!_hasUsedTeleporter)
             {
-                OnResetHiddenSwitches?.Invoke();
+                EventsManager.ResetHiddenSwitches();
             }
 
             //If the PC Player has not collected all the collectables, then all collectables and teleport pads are reset
             if(!_hasCollectedEverything)
             {
-                OnResetHiddenButtons?.Invoke();
-                OnResetTeleportPads?.Invoke();
+                EventsManager.ResetHiddenButtons();
+                EventsManager.ResetTeleportPads();
             }
 
             //The PC Player's health and position are reset
-            OnResetHealth?.Invoke(_pcPlayer);
+            EventsManager.ResetHealth(_pcPlayer);
             _pcPlayer.transform.position = currentCheckpoint.position;
         }
     }

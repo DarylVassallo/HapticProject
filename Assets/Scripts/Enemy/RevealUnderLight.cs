@@ -13,8 +13,6 @@ public class RevealUnderLight : NetworkBehaviour
     [SerializeField] private bool isVRInteractable;
     [SerializeField] private bool isEffectedByLight;
     [SerializeField] private bool isReversed;
-
-    public static event Action<GameObject, bool, bool, bool, bool> OnAddNewHiddenObject;
     
     [SerializeField] private bool isImmediatelyNeeded;
     [SerializeField] private bool isForSecondCheckpoint;
@@ -22,14 +20,14 @@ public class RevealUnderLight : NetworkBehaviour
 
     private void OnEnable()
     {
-        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects += AddHiddenObject;
-        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects += AddHiddenObject;
+        if(isForSecondCheckpoint) EventsManager.OnActivateSecondCheckpointHiddenObjects += AddHiddenObject;
+        if(isForThirdCheckpoint) EventsManager.OnActivateThirdCheckpointHiddenObjects += AddHiddenObject;
     }
 
     private void OnDisable()
     {
-        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects -= AddHiddenObject;
-        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects -= AddHiddenObject;
+        if(isForSecondCheckpoint) EventsManager.OnActivateSecondCheckpointHiddenObjects -= AddHiddenObject;
+        if(isForThirdCheckpoint) EventsManager.OnActivateThirdCheckpointHiddenObjects -= AddHiddenObject;
     }
 
     public override void OnNetworkSpawn()
@@ -47,6 +45,6 @@ public class RevealUnderLight : NetworkBehaviour
 
     private void AddHiddenObject()
     {
-        OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
+        EventsManager.AddNewHiddenObject(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
     }
 }

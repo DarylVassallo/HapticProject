@@ -21,14 +21,15 @@ public class PlayerInteraction : MonoBehaviour
 
     private void OnEnable()
     {
-        PCPlayerInputManager.OnInteract += Interact;
+        EventsManager.OnInteract += Interact;
     }
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnInteract -= Interact;
+        EventsManager.OnInteract -= Interact;
     }
 
+    //Upon interacting, this checks if there is an object in front of the PC Player, and triggers the object's interaction function if there is
     private void Interact()
     {
         _ray = _pcPlayerCamera.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));

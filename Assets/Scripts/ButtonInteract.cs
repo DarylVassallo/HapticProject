@@ -7,11 +7,10 @@ using Unity.Netcode;
 //This script controls is the button can be interacted with, and for what switch it is for
 public class ButtonInteract : NetworkBehaviour, IInteractable
 {    
-    public static event Action<MazeManager.ShapeType, MazeManager.ButtonType> OnTriggerButton;
     private bool _isInteractable = true;    
 
-    [SerializeField] private MazeManager.ShapeType shape;
-    [SerializeField] private MazeManager.ButtonType button;
+    [SerializeField] private EventsManager.ShapeType shape;
+    [SerializeField] private EventsManager.ButtonType button;
 
     private float pressedDistance = 0.1f;
     private bool _isFullyPressed = false;
@@ -36,7 +35,6 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     [SerializeField] private Material completeMaterial;
 
     [SerializeField] private bool isResetButton;
-    public static event Action OnActivateReset;
 
     private bool _activeButton;
 
@@ -60,7 +58,12 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
     private void OnEnable()
     {
-        MazeManager.OnResetButtons += ResetButton;
+        EventsManager.OnResetButtons += ResetButton;
+    }
+
+    private void OnDisable()
+    {
+        EventsManager.OnResetButtons -= ResetButton;
     }
 
     [ClientRpc]
@@ -88,7 +91,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     {
         _activeButton = true;
 
-        OnTriggerButton?.Invoke(shape, button);
+        EventsManager.TriggerButton(shape, button);
         _isFullyPressed = false;
 
         targetPosition = originalPosition;
@@ -175,7 +178,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
                 if(isResetButton)
                 {
-                    OnActivateReset?.Invoke();
+                    EventsManager.ActivateReset();
                 }
             }
 

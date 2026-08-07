@@ -9,9 +9,6 @@ public class TogglePhysicsControllers : MonoBehaviour
     [SerializeField] private GameObject controllerPhysics;
     [SerializeField] private GameObject controllerRenderer;
 
-    public static event Action<int> OnActivateController;
-    public static event Action<int> OnDeactivateController;
-
     [SerializeField] private int controllerNum;
     //0 LeftHand
     //1 LeftController
@@ -22,47 +19,38 @@ public class TogglePhysicsControllers : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnEnable");
-
-        ControllerManager.OnCheckControllers += CheckController;
+        EventsManager.OnCheckControllers += CheckController;
         hasBeenEnabled = true;
         ActivateController();
     }
 
     private void OnDisable()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers OnDisable");
-
-        ControllerManager.OnCheckControllers -= CheckController;
+        EventsManager.OnCheckControllers -= CheckController;
         hasBeenEnabled = false;
         DeactivateController();
     }
 
+    //Checks if the current controller should be activated
     private void CheckController()
-    {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers CheckController");
-        
+    {        
         if(hasBeenEnabled)
         {
             ActivateController();
-        }
-        else
-        {
+        }else{
             DeactivateController();
         }
     }
     
+    //Activates the specified controller
     private void ActivateController()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers ActivateController");
-
-        OnActivateController?.Invoke(controllerNum);
+        EventsManager.ActivateController(controllerNum);
     }
 
+    //Deactivates the specified controller
     private void DeactivateController()
     {
-        Debug.Log(this.gameObject  + " : TogglePhysicsControllers DeactivateController");
-
-        OnDeactivateController?.Invoke(controllerNum);
+        EventsManager.DeactivateController(controllerNum);
     }
 }

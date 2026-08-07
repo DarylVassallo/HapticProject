@@ -47,8 +47,6 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     [SerializeField] private List<HiddenObject> hiddenObjects;
     
-    public static event Action<bool> OnToggleAll;
-
     [SerializeField] private float maxDistance;
 
     private void OnEnable()
@@ -56,13 +54,10 @@ public class RevealUnderLightManager : NetworkBehaviour
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
         ConnectUIScript.OnCreatedVRPlayer += GetVRPlayerDataRpc;
 
-        RevealUnderLight.OnAddNewHiddenObject += AddNewHiddenObject;
-        CollectableInteract.OnAddNewHiddenObject += AddNewHiddenObject;
+        EventsManager.OnAddNewHiddenObject += AddNewHiddenObject;
+        EventsManager.OnRemoveHiddenObject += RemoveHiddenObject;
 
-        CollectableInteract.OnRemoveHiddenObject += RemoveHiddenObject;
-        EnemyManager.OnRemoveHiddenObject += RemoveHiddenObject;
-
-        HealthManager.OnChangeEnemyOxidization += ChangeEnemyOxidization;
+        Health.OnChangeEnemyOxidization += ChangeEnemyOxidization;
     }
 
     private void OnDisable()
@@ -72,13 +67,10 @@ public class RevealUnderLightManager : NetworkBehaviour
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
         ConnectUIScript.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
 
-        RevealUnderLight.OnAddNewHiddenObject -= AddNewHiddenObject;
-        CollectableInteract.OnAddNewHiddenObject -= AddNewHiddenObject;
+        EventsManager.OnAddNewHiddenObject -= AddNewHiddenObject;
+        EventsManager.OnRemoveHiddenObject -= RemoveHiddenObject;
 
-        CollectableInteract.OnRemoveHiddenObject -= RemoveHiddenObject;
-        EnemyManager.OnRemoveHiddenObject -= RemoveHiddenObject;
-
-        HealthManager.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
+        Health.OnChangeEnemyOxidization -= ChangeEnemyOxidization;
     }
 
     [Rpc(SendTo.Everyone, RequireOwnership = false)]

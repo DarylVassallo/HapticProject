@@ -45,33 +45,29 @@ public class TeleportManager : NetworkBehaviour
 
     private float _timeLimit;
     private float _timePassed;
-
-    public static event Action OnEverythingCollected;
-
-    public static event Action<int> OnSendCodeToTeleportPads;
     
     private void OnEnable()
     {
         _barList = new List<Transform>();
 
-        CollectableInteract.OnTriggerHiddenButton += GainCollectable;
-        CollectableInteract.OnResetHiddenButton += RemoveCollectable;
+        EventsManager.OnTriggerHiddenButton += GainCollectable;
+        EventsManager.OnResetHiddenButtons += RemoveCollectable;
         _currentMap.OnValueChanged += ChangeMap;
 
         TeleportNumPad.OnSendCode += CheckInputtedCode;
-        TeleportPad.OnAddNewBar += AddNewBar;
+        EventsManager.OnAddNewBar += AddNewBar;
 
         ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
     }
 
     private void OnDisable()
     {
-        CollectableInteract.OnTriggerHiddenButton -= GainCollectable;
-        CollectableInteract.OnResetHiddenButton -= RemoveCollectable;
+        EventsManager.OnTriggerHiddenButton -= GainCollectable;
+        EventsManager.OnResetHiddenButtons -= RemoveCollectable;
         _currentMap.OnValueChanged -= ChangeMap;
 
         TeleportNumPad.OnSendCode += CheckInputtedCode;
-        TeleportPad.OnAddNewBar -= AddNewBar;
+        EventsManager.OnAddNewBar -= AddNewBar;
 
         ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
     }
@@ -120,7 +116,7 @@ public class TeleportManager : NetworkBehaviour
     //If the inputted code is correct, then the teleportation sequence can begin
     private void CheckInputtedCode(int _inputtedCode)
     {
-        OnSendCodeToTeleportPads?.Invoke(_inputtedCode);
+        EventsManager.SendCodeToTeleportPads(_inputtedCode);
     }
 
     private void ChangeMap(int previous, int current)
@@ -204,7 +200,7 @@ public class TeleportManager : NetworkBehaviour
         {
             _barList = null;
             _isEverythingCollected = true;
-            OnEverythingCollected?.Invoke();
+            EventsManager.EverythingCollected();
             CurrentMapServerRpc(true);
         }
     }

@@ -9,8 +9,6 @@ using Unity.Netcode;
 //This script controls is the button can be interacted with, and for what switch it is for
 public class CollectableInteract : NetworkBehaviour, IInteractable
 {    
-    public static event Action OnTriggerHiddenButton;
-    public static event Action OnResetHiddenButton;
     private bool _isInteractable = true;    
 
     [SerializeField] private AudioClip buttonAudio;
@@ -18,12 +16,8 @@ public class CollectableInteract : NetworkBehaviour, IInteractable
 
     [SerializeField] private float destroyDelay;
 
-    public static event Action<GameObject> OnRemoveHiddenObject;
-
     private MeshRenderer renderer;
     [SerializeField] private MeshRenderer imageRenderer;
-
-    public static event Action<GameObject, bool, bool, bool, bool> OnAddNewHiddenObject;
 
     void Awake()
     {
@@ -33,12 +27,12 @@ public class CollectableInteract : NetworkBehaviour, IInteractable
 
     private void OnEnable()
     {
-        CheckpointManager.OnResetHiddenButtons += ResetHiddenButton;
+        EventsManager.OnResetHiddenButtons += ResetHiddenButton;
     }
 
     private void OnDisable()
     {
-        CheckpointManager.OnResetHiddenButtons -= ResetHiddenButton;
+        EventsManager.OnResetHiddenButtons -= ResetHiddenButton;
     }
 
     //Triggers interaction, if the PCPlayer selects the collectable
@@ -54,7 +48,7 @@ public class CollectableInteract : NetworkBehaviour, IInteractable
     [Rpc(SendTo.Everyone, RequireOwnership = false)]
     public void TriggerInteractionRpc()
     {
-        OnTriggerHiddenButton?.Invoke();
+        EventsManager.TriggerHiddenButton();
 
         if(!_audioSource.isPlaying)
         {
@@ -63,7 +57,7 @@ public class CollectableInteract : NetworkBehaviour, IInteractable
             _audioSource.Play();
             _audioSource.enabled = true; 
 
-            OnRemoveHiddenObject?.Invoke(this.gameObject);
+            EventsManager.RemoveHiddenObject(this.gameObject);
             
             ToggleRenderer(false);
             DisableInteraction();
@@ -85,8 +79,7 @@ public class CollectableInteract : NetworkBehaviour, IInteractable
     {
         if(!_isInteractable)
         {
-            OnAddNewHiddenObject?.Invoke(this.gameObject, true, false, true, false);
-            OnResetHiddenButton?.Invoke();
+            EventsManager.AddNewHiddenObject(this.gameObject, true, false, true, false);
 
             ToggleRenderer(true);
             EnableInteraction();

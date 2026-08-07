@@ -22,10 +22,6 @@ public class TeleportPad : NetworkBehaviour
 
     [SerializeField] private Transform bar;
 
-    public static event Action<Transform> OnAddNewBar;
-    public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
-    public static event Action OnCrossedCrookedBridges;
-
     private bool arePadsReady = true;
 
     private bool _hasBeenUsed = false;
@@ -50,8 +46,6 @@ public class TeleportPad : NetworkBehaviour
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _teleportAudio;
 
-    public static event Action<float, float> OnChangeTeleportRotateSpeed;
-
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
@@ -68,23 +62,23 @@ public class TeleportPad : NetworkBehaviour
 
     void Start()
     {
-        OnAddNewBar?.Invoke(bar);
+        EventsManager.AddNewBar(bar);
     }
 
     private void OnEnable()
     {
-        TeleportManager.OnSendCodeToTeleportPads += CheckInputtedCode;
-        TeleportManager.OnEverythingCollected += ActivateInstantTeleport;
-        CheckpointManager.OnResetTeleportPads += ResetTeleportPad;
+        EventsManager.OnSendCodeToTeleportPads += CheckInputtedCode;
+        EventsManager.OnEverythingCollected += ActivateInstantTeleport;
+        EventsManager.OnResetTeleportPads += ResetTeleportPad;
 
         _secretCode.OnValueChanged += ChangeCodeText;
     }
 
     private void OnDisable()
     {
-        TeleportManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
-        TeleportManager.OnEverythingCollected -= ActivateInstantTeleport;
-        CheckpointManager.OnResetTeleportPads -= ResetTeleportPad;
+        EventsManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
+        EventsManager.OnEverythingCollected -= ActivateInstantTeleport;
+        EventsManager.OnResetTeleportPads -= ResetTeleportPad;
 
         _secretCode.OnValueChanged -= ChangeCodeText;
     }
@@ -143,12 +137,12 @@ public class TeleportPad : NetworkBehaviour
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
-            OnIncreaseChanceOfSpawningEnemy?.Invoke(0.0001f);
+            EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
 
             //If the PCPlayer has reached the final teleport pad, their progress is saved
             if(_isFinalPad)
             {
-                OnCrossedCrookedBridges?.Invoke();
+                EventsManager.CrossedCrookedBridges();
             }
         }
 
@@ -219,7 +213,7 @@ public class TeleportPad : NetworkBehaviour
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
         {
             rotateSpeed += rotateIncrement;
-            OnChangeTeleportRotateSpeed?.Invoke(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
+            EventsManager.ChangeTeleportRotateSpeed(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
         }
 
         //Inverts the rotation increment to begin reducing rotation speed, and teleports the PC Player
@@ -241,7 +235,7 @@ public class TeleportPad : NetworkBehaviour
             ring.rotation = restRotation;
             reverseRing.rotation = restRotation;
 
-            OnChangeTeleportRotateSpeed?.Invoke(0, maxRotateSpeed);
+            EventsManager.ChangeTeleportRotateSpeed(0, maxRotateSpeed);
             
             StopAudioRpc();
         }

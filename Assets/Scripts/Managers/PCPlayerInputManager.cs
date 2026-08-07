@@ -5,37 +5,22 @@ using System;
 public class PCPlayerInputManager : MonoBehaviour
 {
     private PlayerInput playerInput;
-    public static event Action<string, bool> OnToggleRestriction;
 
-    public static event Action<Vector2> OnMove;
     [SerializeField] private static bool canMove = true;
     private InputAction moveAction;
 
-    public static event Action OnJump;
     [SerializeField] private static bool canJump = true;
     private InputAction jumpAction;
 
-    public static event Action OnCrouch;
-    [SerializeField] private static bool canCrouch = true;
-    private InputAction crouchAction;
-
-    public static event Action OnInteract;
     [SerializeField] private static bool canInteract = true;
     private InputAction interactAction;
 
-    public static event Action<InputAction.CallbackContext> OnSprint;
-    [SerializeField] private static bool canSprint = true;
-    private InputAction sprintAction;
-
-    public static event Action<InputAction.CallbackContext> OnFire;
     [SerializeField] private static bool canFire = true;
     private InputAction fireAction;
 
-    public static event Action OnFire2;
     [SerializeField] private static bool canFire2 = true;
     private InputAction fire2Action;
 
-    public static event Action OnCancel;
     [SerializeField] private static bool canCancel = true;
     private InputAction cancelAction;
 
@@ -57,14 +42,8 @@ public class PCPlayerInputManager : MonoBehaviour
         canJump = true;
         jumpAction = playerInput.actions["Jump"];
 
-        canCrouch = true;
-        crouchAction = playerInput.actions["Crouch"];
-
         canInteract = true;
         interactAction = playerInput.actions["Interact"];
-
-        canSprint = true;
-        sprintAction = playerInput.actions["Sprint"];
 
         canFire = true;
         fireAction = playerInput.actions["Fire"];
@@ -80,6 +59,8 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnToggleAll += ToggleAll;
+
         moveAction.Enable();
         moveAction.performed += HandleMove;
         moveAction.canceled += HandleMove;
@@ -87,16 +68,8 @@ public class PCPlayerInputManager : MonoBehaviour
         jumpAction.Enable();
         jumpAction.performed += HandleJump;
 
-        crouchAction.Enable();
-        crouchAction.performed += HandleCrouch;
-
         interactAction.Enable();
         interactAction.performed += HandleInteract;
-        // interactAction.canceled += HandleInteract;
-
-        sprintAction.Enable();
-        sprintAction.performed += HandleSprint;
-        sprintAction.canceled += HandleSprint;
 
         fireAction.Enable();
         fireAction.performed += HandleFire;
@@ -107,12 +80,12 @@ public class PCPlayerInputManager : MonoBehaviour
 
         cancelAction.Enable();
         cancelAction.performed += HandleCancel;
-
-        MenuManager.OnToggleAll += ToggleAll;
     }
 
     private void OnDisable()
     {
+        EventsManager.OnToggleAll -= ToggleAll;
+
         moveAction.performed -= HandleMove;
         moveAction.canceled -= HandleMove;
         moveAction.Disable();
@@ -120,16 +93,8 @@ public class PCPlayerInputManager : MonoBehaviour
         jumpAction.performed -= HandleJump;
         jumpAction.Disable();
 
-        crouchAction.performed -= HandleCrouch;
-        crouchAction.Disable();
-
         interactAction.performed -= HandleInteract;
-        // interactAction.canceled -= HandleInteract;
         interactAction.Disable();
-
-        sprintAction.performed -= HandleSprint;
-        sprintAction.canceled -= HandleSprint;
-        sprintAction.Disable();
 
         fireAction.performed -= HandleFire;
         fireAction.canceled -= HandleFire;
@@ -140,8 +105,6 @@ public class PCPlayerInputManager : MonoBehaviour
 
         cancelAction.performed -= HandleCancel;
         cancelAction.Disable();
-
-        MenuManager.OnToggleAll -= ToggleAll;
     }
 
     private void ToggleAll(bool _toggle)
@@ -149,7 +112,8 @@ public class PCPlayerInputManager : MonoBehaviour
         ToggleRestriction("All", _toggle);
     }
 
-    public static void ToggleRestriction(string _restriction, bool _toggle)
+    //Toggles the restriction of various input controls
+    private void ToggleRestriction(string _restriction, bool _toggle)
     {
         if(_restriction == "Move" || _restriction == "All")
         {
@@ -157,108 +121,62 @@ public class PCPlayerInputManager : MonoBehaviour
             if (_toggle == false)
             {
                 Vector2 move = Vector2.zero;
-                OnMove?.Invoke(move);
+                EventsManager.Move(move);
             }
         }
         
-        if(_restriction == "Jump" || _restriction == "All")
-        {
-            canJump = _toggle;
-        }
-        
-        if(_restriction == "Crouch" || _restriction == "All")
-        {
-            canCrouch = _toggle;
-        }
+        if(_restriction == "Jump" || _restriction == "All") canJump = _toggle;
 
-        if(_restriction == "Interact" || _restriction == "All")
-        {
-            canInteract = _toggle;
-        }
+        if(_restriction == "Interact" || _restriction == "All") canInteract = _toggle;
         
-        if(_restriction == "Sprint" || _restriction == "All")
-        {
-            canSprint = _toggle;
-        }
+        if(_restriction == "Fire" || _restriction == "All") canFire = _toggle;
         
-        if(_restriction == "Fire" || _restriction == "All")
-        {
-            canFire = _toggle;
-        }
+        if(_restriction == "Fire2" || _restriction == "All") canFire2 = _toggle;
         
-        if(_restriction == "Fire2" || _restriction == "All")
-        {
-            canFire2 = _toggle;
-        }
-        
-        if(_restriction == "Cancel" || _restriction == "All")
-        {
-            canCancel = _toggle;
-        }
+        if(_restriction == "Cancel" || _restriction == "All") canCancel = _toggle;
     }
 
+    //Controls the movement controls of the PC Player
     private void HandleMove(InputAction.CallbackContext ctx)
     {
         if (canMove)
         {
             Vector2 move = ctx.ReadValue<Vector2>();
-            OnMove?.Invoke(move);
+            EventsManager.Move(move);
         }
     }
 
+    //Controls the jump controls of the PC Player
     private void HandleJump(InputAction.CallbackContext ctx)
     {
-        if (canJump)
-        {
-            OnJump?.Invoke();
-        }
+        if (canJump) EventsManager.Jump();
     }
 
-    private void HandleCrouch(InputAction.CallbackContext ctx)
-    {
-        if (canCrouch)
-        {
-            OnCrouch?.Invoke();
-        }
-    }
-
+    //Controls the interaction controls of the PC Player
     private void HandleInteract(InputAction.CallbackContext ctx)
     {
-        if (canInteract)
-        {
-            OnInteract?.Invoke();
-        }
+        if (canInteract) EventsManager.Interact();
     }
 
-    private void HandleSprint(InputAction.CallbackContext ctx)
-    {
-        if (canSprint)
-        {
-            OnSprint?.Invoke(ctx);
-        }
-    }
-
+    //Controls the fire controls (recharges the PC flashlight) of the PC Player
     private void HandleFire(InputAction.CallbackContext ctx)
     {
-        if (canFire)
-        {
-            OnFire?.Invoke(ctx);
-        }
+        if (canFire) EventsManager.Fire(ctx);
     }
 
+    //Controls the fire2 controls (toggles the PC flashlight) of the PC Player
     private void HandleFire2(InputAction.CallbackContext ctx)
     {
-        if (canFire2)
-        {
-            OnFire2?.Invoke();
-        }
+        if (canFire2) EventsManager.Fire2();
     }
 
+    //Controls the cancel controls (toggles the pause menu) of the PC Player
     private void HandleCancel(InputAction.CallbackContext ctx)
     {
         // if (canCancel)
         // {
-        //     OnCancel?.Invoke();
+        //     EventsManager.Cancel();
         // }
+        if (canFire2) EventsManager.Fire2();
     }
 }

@@ -1,23 +1,17 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using System.Collections;
-
+//???????
 public class GrabbableLayerControl : MonoBehaviour
 {
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable _xrGrabInteractable;
     private int _standardLayer;
     private GameObject _interactor;
     private bool isRightHandInteractable = false;
-    private bool isInRightHandSocket = false;
 
     private bool isLeftHandInteractable = false;
-    private bool isInLeftHandSocket = false;
-
-    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor leftHandSocket;
-    private UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor rightHandSocket;
 
     [SerializeField] private bool isAttachable;
-    private bool isInSocket = false;
 
     void Awake()
     {
@@ -26,87 +20,29 @@ public class GrabbableLayerControl : MonoBehaviour
         _xrGrabInteractable.selectExited.AddListener(OnReleased);
 
         _standardLayer = this.gameObject.layer;
-
-        // leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        // leftHandSocket.selectEntered.AddListener(OnLeftHandInserted);
-        // leftHandSocket.selectExited.AddListener(OnLeftHandRemoved);
-
-        // rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-        // rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
-        // rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
-    }
-
-    private void OnDestroy()
-    {
-        if(leftHandSocket != null)
-        {
-            leftHandSocket.selectEntered.RemoveListener(OnLeftHandInserted);
-            leftHandSocket.selectExited.RemoveListener(OnLeftHandRemoved);
-        }
-
-        if(rightHandSocket != null)
-        {
-            rightHandSocket.selectEntered.RemoveListener(OnRightHandInserted);
-            rightHandSocket.selectExited.RemoveListener(OnRightHandRemoved);
-        }
-    }
-
-    private void OnEnable()
-    {
-        ControllerManager.OnChangedControllers += ChangeHandSockets;
-    }
-
-    private void OnDisable()
-    {
-        ControllerManager.OnChangedControllers -= ChangeHandSockets;
-    }
-
-    private void ChangeHandSockets()
-    {
-        OnDestroy();
-
-        this.gameObject.layer = _standardLayer;
-        
-        if(GameObject.FindWithTag("LeftHandSocket") != null)
-        {
-            leftHandSocket = GameObject.FindWithTag("LeftHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-            leftHandSocket.selectEntered.AddListener(OnLeftHandInserted);
-            leftHandSocket.selectExited.AddListener(OnLeftHandRemoved);
-        }
-        
-        if(GameObject.FindWithTag("RightHandSocket") != null)
-        {
-            rightHandSocket = GameObject.FindWithTag("RightHandSocket").GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactors.XRSocketInteractor>();
-            rightHandSocket.selectEntered.AddListener(OnRightHandInserted);
-            rightHandSocket.selectExited.AddListener(OnRightHandRemoved);
-        }
     }
 
     private void OnLeftHandInserted(SelectEnterEventArgs args)
     {
         if (args.interactableObject != _xrGrabInteractable) return;
-        isInLeftHandSocket = true;
         ChangeLayer(this.gameObject, -1);
     }
 
     private void OnLeftHandRemoved(SelectExitEventArgs args)
     {
         if (args.interactableObject != _xrGrabInteractable) return;
-        isInLeftHandSocket = false;
         ChangeLayer(this.gameObject, -1);
     }
 
     private void OnRightHandInserted(SelectEnterEventArgs args)
     {
         if (args.interactableObject != _xrGrabInteractable) return;
-        isInRightHandSocket = true;
         ChangeLayer(this.gameObject, -1);
     }
 
     private void OnRightHandRemoved(SelectExitEventArgs args)
     {
         if (args.interactableObject != _xrGrabInteractable) return;
-        isInRightHandSocket = false;
         ChangeLayer(this.gameObject, -1);
     }
 
@@ -115,8 +51,6 @@ public class GrabbableLayerControl : MonoBehaviour
         Transform attachPoint = args.interactorObject.GetAttachTransform(args.interactableObject);
 
         _interactor = args.interactorObject.transform.gameObject;
-
-        // _standardLayer = this.gameObject.layer;
 
         if (_interactor.CompareTag("LeftHandInteractor"))
         {
@@ -166,22 +100,8 @@ public class GrabbableLayerControl : MonoBehaviour
             }
             else
             {
-                if(isInLeftHandSocket)
-                {
-                    layer = LayerMask.NameToLayer("LeftHandInteractable");
-
-                    ChangeInteractionLayer(-2);
-                }else if(isInRightHandSocket)
-                {
-                    layer = LayerMask.NameToLayer("RightHandInteractable");
-
-                    ChangeInteractionLayer(2);
-                }
-                else
-                {
-                    layer = _standardLayer;
-                    ChangeInteractionLayer(0);
-                }
+                layer = _standardLayer;
+                ChangeInteractionLayer(0);
             }
         }
 
@@ -197,10 +117,7 @@ public class GrabbableLayerControl : MonoBehaviour
     {        
         if(!isAttachable) return;
 
-        if(interactionLayer == -2)
-        {
-            _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("InLeftHandSocket");
-        }else if(interactionLayer == -1)
+        if(interactionLayer == -1)
         {
             _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("LeftHandGrab");
         }else if(interactionLayer == 0)
@@ -209,9 +126,6 @@ public class GrabbableLayerControl : MonoBehaviour
         }else if(interactionLayer == 1)
         {
             _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("RightHandGrab");
-        }else if(interactionLayer == 2)
-        {
-            _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("InRightHandSocket");
         }
     }
 
@@ -219,7 +133,7 @@ public class GrabbableLayerControl : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
 
-        if(!isInLeftHandSocket && !isLeftHandInteractable && !isInRightHandSocket && !isRightHandInteractable)
+        if(!isLeftHandInteractable && !isRightHandInteractable)
         {
             _xrGrabInteractable.interactionLayers = InteractionLayerMask.GetMask("Default");
         }

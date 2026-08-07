@@ -9,12 +9,7 @@ public class Health : NetworkBehaviour
     private float _maxHealth = 100;
     private NetworkVariable<float> _health = new(100f);
 
-    public static event Action OnGameOverTrigger;
-    public static event Action<int> OnKilledEnemy;
-    public static event Action<float> OnChangeHealthBarTrigger;
-    public static event Action<float> OnChangeHealthCamera;
-
-    public static event Action<Renderer, float> OnChangeEnemyOxidizationTrigger;
+    public static event Action<Renderer, float> OnChangeEnemyOxidization;
     public static event Action<GameObject> OnEntityDeath;
     public static event Action<GameObject, float> OnEntityChangeHealth;
 
@@ -36,13 +31,13 @@ public class Health : NetworkBehaviour
 
     private void OnEnable()
     {
-        HealthManager.OnChangeHealthForEntity += ChangeHealth;
-        HealthManager.OnResetHealthForEntity += ResetHealth;
+        // HealthManager.OnChangeHealthForEntity += ChangeHealth;
+        // HealthManager.OnResetHealthForEntity += ResetHealth;
     }
 
     private void OnDisable()
     {
-        HealthManager.OnResetHealthForEntity -= ResetHealth;
+        // HealthManager.OnResetHealthForEntity -= ResetHealth;
     }
 
 
@@ -75,12 +70,10 @@ public class Health : NetworkBehaviour
         {
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
-                OnGameOverTrigger?.Invoke();
+                EventsManager.GameOver();
             }
             else if (this.CompareTag("Enemy"))
             {
-                OnKilledEnemy?.Invoke(1);
-
                 isDead = true;
                 OnEntityDeath?.Invoke(this.gameObject);
 
@@ -93,13 +86,13 @@ public class Health : NetworkBehaviour
         } else {
             if (this.CompareTag("PCPlayer"))
             {
-                OnChangeHealthBarTrigger?.Invoke(newValue);
-                OnChangeHealthCamera?.Invoke(newValue);
+                EventsManager.ChangeHealthBar(newValue);
+                EventsManager.ChangeHealthCamera(newValue);
             }else if (this.CompareTag("Enemy"))
             {
                 foreach (Renderer renderer in this.gameObject.GetComponentsInChildren<Renderer>())
                 {
-                    OnChangeEnemyOxidizationTrigger?.Invoke(renderer, _health.Value / 100f);
+                    OnChangeEnemyOxidization?.Invoke(renderer, _health.Value / 100f);
                 }
             }
         }

@@ -34,8 +34,6 @@ public class MenuManager : NetworkBehaviour
     private float _maxChargeBarLength;
     private TMP_Text _scoreUI;
 
-    public static event Action<bool> OnToggleAll;
-
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -58,20 +56,20 @@ public class MenuManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        PCPlayerInputManager.OnCancel += TogglePauseMenu;
+        EventsManager.OnCancel += TogglePauseMenu;
         
-        HealthManager.OnGameOver += ToggleGameOverMenu;
-        HealthManager.OnChangeHealthBar += ChangeHealthBar;
-        FlashlightCharge.OnChangeChargeBar += ChangeChargeBar;
+        EventsManager.OnGameOver += ToggleGameOverMenu;
+        EventsManager.OnChangeHealthBar += ChangeHealthBar;
+        EventsManager.OnChangeChargeBar += ChangeChargeBar;
     }
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnCancel -= TogglePauseMenu;
+        EventsManager.OnCancel -= TogglePauseMenu;
 
-        HealthManager.OnGameOver -= ToggleGameOverMenu;
-        HealthManager.OnChangeHealthBar -= ChangeHealthBar;
-        FlashlightCharge.OnChangeChargeBar -= ChangeChargeBar;
+        EventsManager.OnGameOver -= ToggleGameOverMenu;
+        EventsManager.OnChangeHealthBar -= ChangeHealthBar;
+        EventsManager.OnChangeChargeBar -= ChangeChargeBar;
     }
 
     [System.Serializable]
@@ -246,7 +244,7 @@ public class MenuManager : NetworkBehaviour
     //This stops the game
     private void FreezeGame()
     {
-        OnToggleAll?.Invoke(false);
+        EventsManager.ToggleAll(false);
         AudioListener.volume = 0;
         Time.timeScale = 0;
     }
@@ -254,7 +252,7 @@ public class MenuManager : NetworkBehaviour
     //This resumes the game
     private void ResumeGame()
     {
-        OnToggleAll?.Invoke(true);
+        EventsManager.ToggleAll(true);
         AudioListener.volume = 1;
         Time.timeScale = 1;
     }

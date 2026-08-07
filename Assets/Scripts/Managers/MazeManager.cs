@@ -13,30 +13,25 @@ using Unity.Netcode;
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
-    public static event Action<GameObject, float> OnChangeHealth;
 
     [Header("Switches")]
-    public HiddenSwitches[] hiddenSwitches;
+    private HiddenSwitches[] hiddenSwitches;
 
     //This is the Switch wall, recording the specific type of switch, 
     // and the button order required to activate it
     [System.Serializable]
-    public struct HiddenSwitches
+    private struct HiddenSwitches
     {
-        public ShapeType shape;
-        public ButtonType[] buttonOrder;
+        public EventsManager.ShapeType shape;
+        public EventsManager.ButtonType[] buttonOrder;
         public UnityEvent activateMethod;
     }
 
-    public enum ShapeType { None, Health, Spin, Defense }
-    public enum ButtonType { None, Square, Circle, Triangle, Cross, Star }
-    public enum InteractiveObject { SpinWheel, HealthBall, DefenseButton }
+    private enum InteractiveObject { SpinWheel, HealthBall, DefenseButton }
 
-    private ShapeType[] currentShapeOrder = new ShapeType[5];
-    private ButtonType[] currentButtonOrder = new ButtonType[5];
+    private EventsManager.ShapeType[] currentShapeOrder = new EventsManager.ShapeType[5];
+    private EventsManager.ButtonType[] currentButtonOrder = new EventsManager.ButtonType[5];
     private int entryNum = 0;
-
-    public static event Action OnResetButtons;
 
     [SerializeField] private Material activeMaterial;
     [SerializeField] private Material deactiveMaterial;
@@ -67,29 +62,16 @@ public class MazeManager : NetworkBehaviour
 
     private bool _isNewNavMeshAvailable;
     [SerializeField] private NavMeshSurface levelGround; 
-    
-
-
-
 
     [Header("Health Ball")]
     [SerializeField] private Transform healthBallObject;
-    public static event Action GivePCPlayerHealth;
     private NetworkVariable<bool> hasHealthBallBeenUsed = new (false);
     private NetworkVariable<bool> isHealthBallActive = new (false);
-
-    public static event Action<int> OnCreateRandomEnemy;
-
-
-
 
     [Header("Defense Button")]
     [SerializeField] private Transform defenseButtonObject;
     private NetworkVariable<bool> hasDefenseButtonBeenUsed = new (false);
     private NetworkVariable<bool> isDefenseButtonActive = new (false);
-
-
-
 
     void Awake()
     {        
@@ -104,24 +86,24 @@ public class MazeManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        ButtonInteract.OnTriggerButton += PressedButton;
-        ButtonInteract.OnActivateReset += ResetButtons;
+        EventsManager.OnTriggerButton += PressedButton;
+        EventsManager.OnActivateReset += ResetButtons;
 
         _networkAudioNum.OnValueChanged += PlayAudio;
 
-        CheckpointManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
+        EventsManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
 
         HealthBallTargeting.GivePCPlayerHealth += GivePCPlayerHealthUsingBall;
     }
 
     private void OnDisable()
     {
-        ButtonInteract.OnTriggerButton -= PressedButton;
-        ButtonInteract.OnActivateReset -= ResetButtons;
+        EventsManager.OnTriggerButton -= PressedButton;
+        EventsManager.OnActivateReset -= ResetButtons;
 
         _networkAudioNum.OnValueChanged -= PlayAudio;
 
-        CheckpointManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
+        EventsManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
     }
 
     public override void OnNetworkSpawn()
@@ -234,7 +216,7 @@ public class MazeManager : NetworkBehaviour
         {
             if(!hasDefenseButtonBeenUsed.Value) SetDefenseButtonBeenUsedServerRpc(true);
 
-            OnCreateRandomEnemy?.Invoke(maxEnemies);
+            EventsManager.CreateRandomEnemy(maxEnemies);
         }
     }
 
@@ -425,18 +407,18 @@ public class MazeManager : NetworkBehaviour
         {
             if(!hasHealthBallBeenUsed.Value) SetHealthBallBeenUsedServerRpc(true);
 
-            OnChangeHealth?.Invoke(GameObject.FindGameObjectWithTag("PCPlayer"), 6f);
+            EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 6f);
         }
     }
 
     //Resets the recorded inputted buttons of the switch
     private void ResetButtons()
     {
-        currentShapeOrder = new ShapeType[5];
-        currentButtonOrder = new ButtonType[5];
+        currentShapeOrder = new EventsManager.ShapeType[5];
+        currentButtonOrder = new EventsManager.ButtonType[5];
         entryNum = 0;
 
-        OnResetButtons?.Invoke();
+        EventsManager.ResetButtons();
 
         //Wrong
         return;
@@ -446,17 +428,17 @@ public class MazeManager : NetworkBehaviour
     // Checks if the button matches the switches order, 
     // Checks if the button belongs to the current switch,
     // Spawns one enemy nearby
-    private void PressedButton(ShapeType _shape, ButtonType _button)
+    private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
         //Spawns one enemy nearby 
-        OnCreateRandomEnemy?.Invoke(1);
+        EventsManager.CreateRandomEnemy(1);
 
         //Checks if buttons have already been inputted. 
         // If they have been, it checks if all buttons belong to the same switch. 
         // If they do not, then the entry is reset.
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
-            if(currentShapeOrder[i] == ShapeType.None) break;
+            if(currentShapeOrder[i] == EventsManager.ShapeType.None) break;
 
             if(currentShapeOrder[i] != _shape)
             {
@@ -480,7 +462,7 @@ public class MazeManager : NetworkBehaviour
                 //The checked switch is the one being used
 
                 //Checks if the current order is complete
-                if(currentButtonOrder[currentButtonOrder.Length - 1] == ButtonType.None) return;
+                if(currentButtonOrder[currentButtonOrder.Length - 1] == EventsManager.ButtonType.None) return;
 
                 for (int j = 0; j < hiddenSwitches[i].buttonOrder.Length; j++)
                 {
