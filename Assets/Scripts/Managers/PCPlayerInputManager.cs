@@ -28,7 +28,7 @@ public class PCPlayerInputManager : MonoBehaviour
     {
         if (playerInput == null)
         {
-            playerInput = FindObjectOfType<PlayerInput>();
+            playerInput = FindAnyObjectByType<PlayerInput>();
             if (playerInput == null)
             {
                 Debug.LogError("No PlayerInput component found in the scene!");

@@ -128,13 +128,13 @@ public class PlayerMovement : NetworkBehaviour
     //     return 0;
     // }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsWalkingServerRpc(bool _walk)
     {
         isWalking.Value = _walk;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetBodyYRotationServerRpc(float _newYRotation)
     {
         bodyYRotation.Value = _newYRotation;

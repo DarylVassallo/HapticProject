@@ -34,7 +34,6 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private GameObject pcPlayerWithoutBody;
     [SerializeField] private GameObject currentPCPlayer;
     [SerializeField] private Transform pcSpawnPoint;
-    public static event Action OnCreatedPCPlayer;
     
 
 
@@ -48,7 +47,6 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private SkinnedMeshRenderer vrLeftHandMesh;
     private bool vrRightHandActive;
     [SerializeField] private SkinnedMeshRenderer vrRightHandMesh;
-    public static event Action OnCreatedVRPlayer;
     
     
 
@@ -138,7 +136,7 @@ public class ConnectUIScript : NetworkBehaviour
         vrRig.transform.GetChild(0).gameObject.SetActive(true);
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
         Debug.Log("ConnectUIScript OnDestroy");
         if (NetworkManager.Singleton != null) NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
@@ -207,7 +205,7 @@ public class ConnectUIScript : NetworkBehaviour
             GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.identity);
             _newPCPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(0, true);
 
-            OnCreatedPCPlayer?.Invoke();
+            EventsManager.CreatedPCPlayer();
         }
         else
         {
@@ -225,7 +223,7 @@ public class ConnectUIScript : NetworkBehaviour
                     NetworkObject _vrNetObj = _newVRPlayer.GetComponent<NetworkObject>();
                     _vrNetObj.SpawnAsPlayerObject(clientId, true);
 
-                    OnCreatedVRPlayer?.Invoke();
+                    EventsManager.CreatedVRPlayer();
                 }
                 else
                 {
@@ -236,7 +234,7 @@ public class ConnectUIScript : NetworkBehaviour
                     
                     _pcNetObj.SpawnAsPlayerObject(clientId, true);
 
-                    OnCreatedPCPlayer?.Invoke();
+                    EventsManager.CreatedPCPlayer();
                 }
             }
 
@@ -245,7 +243,7 @@ public class ConnectUIScript : NetworkBehaviour
     }
 
     //Disables the Host login button
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DisableHostButtonsaRpc()
     {
         Debug.Log("ConnectUIScript DisableHostButtonsaRpc");
@@ -270,7 +268,7 @@ public class ConnectUIScript : NetworkBehaviour
             NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
 
             _pcNetObj.SpawnAsPlayerObject(clientId, true);
-            OnCreatedPCPlayer?.Invoke();
+            EventsManager.CreatedPCPlayer();
 
         //Creates a VR Player for the host player, playing alone
         }else if (_isTestingVRPlayer)
@@ -279,7 +277,7 @@ public class ConnectUIScript : NetworkBehaviour
             GameObject _newVRPlayer = Instantiate(vrPlayer, vrSpawnPoint.position, Quaternion.identity);
             NetworkObject _vrNetObj = _newVRPlayer.GetComponent<NetworkObject>();
             _vrNetObj.SpawnAsPlayerObject(clientId, true);
-            OnCreatedVRPlayer?.Invoke();
+            EventsManager.CreatedVRPlayer();
         }else{
             //Creates a VR/PC Player for the current player (a VR Player if this is the host, and a PC Player if this is the client)
 
@@ -295,7 +293,7 @@ public class ConnectUIScript : NetworkBehaviour
                 GameObject _newVRPlayer = Instantiate(vrPlayer, vrSpawnPoint.position, Quaternion.identity);
                 NetworkObject _vrNetObj = _newVRPlayer.GetComponent<NetworkObject>();
                 _vrNetObj.SpawnAsPlayerObject(clientId, true);
-                OnCreatedVRPlayer?.Invoke();
+                EventsManager.CreatedVRPlayer();
             }
             else
             {
@@ -307,7 +305,7 @@ public class ConnectUIScript : NetworkBehaviour
                 NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
                 
                 _pcNetObj.SpawnAsPlayerObject(clientId, true);
-                OnCreatedPCPlayer?.Invoke();
+                EventsManager.CreatedPCPlayer();
             }
         }
     }

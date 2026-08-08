@@ -4,11 +4,25 @@ using System;
 
 public class EventsManager : MonoBehaviour
 {
+    //Network Events=============================================
+    public static event Action OnCreatedPCPlayer;
+    public static void CreatedPCPlayer() => OnCreatedPCPlayer?.Invoke();
+    public static event Action OnCreatedVRPlayer;
+    public static void CreatedVRPlayer() => OnCreatedVRPlayer?.Invoke();
+
+
+
+
+
     //GameOver Events=============================================
     public static event Action OnGameOver;
     public static void GameOver() => OnGameOver?.Invoke();
     public static event Action<bool> OnToggleAll;
     public static void ToggleAll(bool toggle) => OnToggleAll?.Invoke(toggle);
+
+
+
+
 
     //Enemy Events=============================================
     public static event Action OnDisableEnemySpawning;
@@ -19,6 +33,17 @@ public class EventsManager : MonoBehaviour
     public static void IncreaseChanceOfSpawningEnemy(float chance) => OnIncreaseChanceOfSpawningEnemy?.Invoke(chance);
     public static event Action<int> OnCreateRandomEnemy;
     public static void CreateRandomEnemy(int enemyNum) => OnCreateRandomEnemy?.Invoke(enemyNum);
+    public static event Action<GameObject> OnRemoveEnemy;
+    public static void RemoveEnemy(GameObject enemy) => OnRemoveEnemy?.Invoke(enemy);
+    public static event Action<GameObject, int> OnGetAppropriateEnemyAudio;
+
+    public static void GetAppropriateEnemyAudio(GameObject enemy, int audioType) => OnGetAppropriateEnemyAudio?.Invoke(enemy, audioType);
+    public static event Action<GameObject, AudioClip> OnSendAppropriateEnemyAudio;
+    public static void SendAppropriateEnemyAudio(GameObject enemy, AudioClip audio) => OnSendAppropriateEnemyAudio?.Invoke(enemy, audio);
+
+
+
+
 
     //Reset Events=============================================
     public static event Action OnResetHiddenSwitches;
@@ -32,6 +57,10 @@ public class EventsManager : MonoBehaviour
     public static event Action<GameObject> OnResetHealth;
     public static void ResetHealth(GameObject entity) => OnResetHealth?.Invoke(entity);
 
+
+
+
+
     //Switch Events=============================================
     public enum ShapeType { None, Health, Spin, Defense }
     public enum ButtonType { None, Square, Circle, Triangle, Cross, Star }
@@ -39,6 +68,12 @@ public class EventsManager : MonoBehaviour
     public static void TriggerButton(ShapeType shape, ButtonType button) => OnTriggerButton?.Invoke(shape, button);
     public static event Action OnActivateReset;
     public static void ActivateReset() => OnActivateReset?.Invoke();
+    public static event Action OnGivePCPlayerHealth;
+    public static void GivePCPlayerHealth() => OnGivePCPlayerHealth?.Invoke();
+
+
+
+
 
     //Health Events=============================================
     public static event Action<float> OnChangeHealthCamera;
@@ -47,10 +82,24 @@ public class EventsManager : MonoBehaviour
     public static void ChangeHealthBar(float newHealth) => OnChangeHealthBar?.Invoke(newHealth);
     public static event Action<GameObject, float> OnChangeHealthForEntity;
     public static void ChangeHealthForEntity(GameObject entity, float newHealth) => OnChangeHealthForEntity?.Invoke(entity, newHealth);
+    public static event Action<GameObject, float> OnEntityChangedHealth;
+    public static void EntityChangedHealth(GameObject entity, float newHealth) => OnEntityChangedHealth?.Invoke(entity, newHealth);
+    public static event Action<GameObject> OnEntityKilled;
+    public static void EntityKilled(GameObject entity) => OnEntityKilled?.Invoke(entity);
+    public static event Action<Renderer, float> OnChangedEnemyOxidization;
+    public static void ChangedEnemyOxidization(Renderer rend, float oxidization) => OnChangedEnemyOxidization?.Invoke(rend, oxidization);
+
+
+
+
 
     //Charge Events=============================================
     public static event Action<float> OnChangeChargeBar;
     public static void ChangeChargeBar(float newCharge) => OnChangeChargeBar?.Invoke(newCharge);
+
+
+
+
 
     //Hidden Object Events=============================================
     public static event Action OnTriggerHiddenButton;
@@ -68,6 +117,10 @@ public class EventsManager : MonoBehaviour
                                                                                             isEffectedByLight, 
                                                                                             isReverse);
 
+
+
+
+
     //Teleporter Events=============================================
     public static event Action<int> OnSendCodeToTeleportPads;
     public static void SendCodeToTeleportPads(int code) => OnSendCodeToTeleportPads?.Invoke(code);
@@ -75,6 +128,12 @@ public class EventsManager : MonoBehaviour
     public static void ChangeTeleportRotateSpeed(float currentRotateSpeed, float maxRotateSpeed) => OnChangeTeleportRotateSpeed?.Invoke(currentRotateSpeed, maxRotateSpeed);
     public static event Action<Transform> OnAddNewBar;
     public static void AddNewBar(Transform bar) => OnAddNewBar?.Invoke(bar);
+    public static event Action<bool> OnChangePadsReady;
+    public static void ChangePadsReady(bool _newPadsReady) => OnChangePadsReady?.Invoke(_newPadsReady);
+
+
+
+
 
     //Progress Events=============================================
     public static event Action OnEverythingCollected;
@@ -82,11 +141,19 @@ public class EventsManager : MonoBehaviour
     public static event Action OnCrossedCrookedBridges;
     public static void CrossedCrookedBridges() => OnCrossedCrookedBridges?.Invoke();
 
+
+
+
+
     //Checkpoints Events=============================================
     public static event Action OnActivateSecondCheckpointHiddenObjects;
     public static void ActivateSecondCheckpointHiddenObjects() => OnActivateSecondCheckpointHiddenObjects?.Invoke();
     public static event Action OnActivateThirdCheckpointHiddenObjects;    
     public static void ActivateThirdCheckpointHiddenObjects() => OnActivateThirdCheckpointHiddenObjects?.Invoke();
+
+
+
+
 
     //Controllers Events=============================================
     public static event Action OnChangedControllers;
@@ -97,6 +164,10 @@ public class EventsManager : MonoBehaviour
     public static void ActivateController(int controllerNum) => OnActivateController?.Invoke(controllerNum);
     public static event Action<int> OnDeactivateController;
     public static void DeactivateController(int controllerNum) => OnDeactivateController?.Invoke(controllerNum);
+
+
+
+
 
     //PC Player Input=============================================
     public static event Action<Vector2> OnMove;
@@ -111,5 +182,8 @@ public class EventsManager : MonoBehaviour
     public static void Fire2() => OnFire2?.Invoke();
     public static event Action OnCancel;
     public static void Cancel() => OnCancel?.Invoke();
+
+    public static event Action<float> OnEntityChangedFlashlightRange;
+    public static void EntityChangedFlashlightRange(float newFlashlightRange) => OnEntityChangedFlashlightRange?.Invoke(newFlashlightRange);
 
 }

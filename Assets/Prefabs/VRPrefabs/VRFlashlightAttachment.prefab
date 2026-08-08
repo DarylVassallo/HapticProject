@@ -738,7 +738,6 @@ MonoBehaviour:
   chargeRate: 0.2
   flashLightRotationSpeed: 0
   maxFlashLightRange: 999
-  currentFlashLightRange: 0
   chargeIntensity: 0.1
   flashlightLever: {fileID: 0}
   chargeBar: {fileID: 764852091717946181}

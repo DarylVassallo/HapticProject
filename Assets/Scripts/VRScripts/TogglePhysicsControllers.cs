@@ -3,9 +3,6 @@ using System;
 
 public class TogglePhysicsControllers : MonoBehaviour
 {
-    private bool isActive = false;
-    // private bool isInNetwork = false;
-
     [SerializeField] private GameObject controllerPhysics;
     [SerializeField] private GameObject controllerRenderer;
 

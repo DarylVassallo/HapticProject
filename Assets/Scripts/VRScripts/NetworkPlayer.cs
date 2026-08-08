@@ -5,6 +5,7 @@ using Unity.Netcode;
 //Source: https://www.youtube.com/watch?v=6fZ7LT5AeTw
 public class NetworkPlayer : NetworkBehaviour
 {
+    //Change to visible private
     public Transform root;
     public Transform head;
     public Transform chest;
@@ -39,12 +40,15 @@ public class NetworkPlayer : NetworkBehaviour
     {
         if (IsOwner)
         {
+            //Matches VR body root to the VR Player's root
             root.position = VRRigReferences.Singleton.root.position;
             root.rotation = VRRigReferences.Singleton.root.rotation;
 
+            //Matches VR body head to the VR Player's head
             head.position = VRRigReferences.Singleton.head.position + headOffsetPosition;
             head.rotation = Quaternion.Euler(   VRRigReferences.Singleton.head.rotation.eulerAngles + headOffsetRotation.eulerAngles);
 
+            //Matches VR body chest and pelvis to slightly below the VR Player's head
             chest.position = new Vector3(   VRRigReferences.Singleton.head.position.x +  + chestOffsetPosition.x, 
                                             VRRigReferences.Singleton.head.position.y +  + chestOffsetPosition.y, 
                                             VRRigReferences.Singleton.head.position.z + chestOffsetPosition.z);
@@ -59,6 +63,7 @@ public class NetworkPlayer : NetworkBehaviour
                                                  VRRigReferences.Singleton.head.rotation.eulerAngles.y + pelvisOffsetRotation.eulerAngles.y, 
                                                  pelvis.rotation.z + pelvisOffsetRotation.eulerAngles.z);
 
+            //Matches VR body hands to the VR Player's hands
             leftHand.position = VRRigReferences.Singleton.leftHand.position;
             leftHand.rotation = VRRigReferences.Singleton.leftHand.rotation;
 

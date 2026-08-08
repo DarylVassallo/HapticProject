@@ -197,7 +197,7 @@ public class MenuManager : NetworkBehaviour
     }
     
     //Toggles the game over screen
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ToggleGameOverMenuRpc()
     {
         ToggleGameOverMenu();

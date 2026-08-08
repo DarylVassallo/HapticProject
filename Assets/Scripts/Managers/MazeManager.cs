@@ -93,7 +93,7 @@ public class MazeManager : NetworkBehaviour
 
         EventsManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
 
-        HealthBallTargeting.GivePCPlayerHealth += GivePCPlayerHealthUsingBall;
+        EventsManager.OnGivePCPlayerHealth += GivePCPlayerHealthUsingBall;
     }
 
     private void OnDisable()
@@ -104,6 +104,8 @@ public class MazeManager : NetworkBehaviour
         _networkAudioNum.OnValueChanged -= PlayAudio;
 
         EventsManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
+
+        EventsManager.OnGivePCPlayerHealth -= GivePCPlayerHealthUsingBall;
     }
 
     public override void OnNetworkSpawn()
@@ -244,25 +246,25 @@ public class MazeManager : NetworkBehaviour
         if(wheelCheckCount > 0) wheelCheckCount--;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetSpinWheelBeenUsedServerRpc(bool _newValue)
     {
         hasSpinWheelBeenUsed.Value = _newValue;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetHealthBallBeenUsedServerRpc(bool _newValue)
     {
         hasHealthBallBeenUsed.Value = _newValue;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetDefenseButtonBeenUsedServerRpc(bool _newValue)
     {
         hasDefenseButtonBeenUsed.Value = _newValue;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetAudioNumServerRpc(int newAudioNum)
     {
         _networkAudioNum.Value = newAudioNum;
@@ -270,7 +272,7 @@ public class MazeManager : NetworkBehaviour
     
     //Activates a required interactive object (wheel, ball, or button), 
     // which allows them to effect the level
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
         switch(interactiveObject)
@@ -291,7 +293,7 @@ public class MazeManager : NetworkBehaviour
 
     //Deactivates all interactive objects (wheel, ball, button), 
     // which prevents them from being able to effect the level
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void DeactivateAllServerRpc()
     {
         isSpinWheelActive.Value = false;

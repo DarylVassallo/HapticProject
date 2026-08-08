@@ -138,7 +138,7 @@ public class CheckpointManager : NetworkBehaviour
 
     //If the PC Player dies, this sets them to their latest checkpoint, 
     // and reset's various objects depending on the progress made
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RespawnPCPlayerRpc()
     {
         if(!_canPCFunction) GetPCPlayerData();

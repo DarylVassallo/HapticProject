@@ -13,7 +13,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private GameObject _pcPlayer;
     private Health _pcPlayerHealth;
-    private FlashlightCharge _pcFlashlightCharge;
 
     private Transform _pcPlayerSpotLight;
     private bool _isPCTooClose;
@@ -37,6 +36,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private bool _notifiedOfDeath;
     private float _notifiedHealth;
+    private float _notifiedFlashlightRange;
 
     [Header("Audio")]
     [SerializeField] private AudioClip[] burningAudios;
@@ -61,9 +61,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private AudioClip _currentAudio;
     private int _currentAudioNum;
 
-    public static event Action<GameObject> OnRemoveEnemy;
-    public static event Action<GameObject, float> OnChangeHealth;
-
     private float _damageMultiplier;
 
     void Awake()
@@ -83,26 +80,33 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         _notifiedOfDeath = false;
         _notifiedHealth = 100f;
+        _notifiedFlashlightRange = 0;
 
         _damageMultiplier = 0f;
     }
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
         EventsManager.OnDestroyAllEnemies += DestroyEnemy;
 
-        Health.OnEntityDeath += RecieveDeath;
-        Health.OnEntityChangeHealth += RecieveChangedHealth;
+        EventsManager.OnEntityKilled += RecieveDeath;
+        EventsManager.OnEntityChangedHealth += RecieveChangedHealth;
+        EventsManager.OnEntityChangedFlashlightRange += RecieveFlashlightRange;
+
+        EventsManager.OnSendAppropriateEnemyAudio += PlayAudio;
     }
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
         EventsManager.OnDestroyAllEnemies -= DestroyEnemy;
 
-        Health.OnEntityDeath -= RecieveDeath;
-        Health.OnEntityChangeHealth -= RecieveChangedHealth;
+        EventsManager.OnEntityKilled -= RecieveDeath;
+        EventsManager.OnEntityChangedHealth -= RecieveChangedHealth;
+        EventsManager.OnEntityChangedFlashlightRange -= RecieveFlashlightRange;
+
+        EventsManager.OnSendAppropriateEnemyAudio -= PlayAudio;
     }
 
     public override void OnNetworkDespawn()
@@ -113,30 +117,30 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [ClientRpc]
     private void PlayWalkAudioClientRpc()
     {
-        PlayAudio(_enemyManager.GetAppropriateAudio(1));
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 1);
     }
 
     [ClientRpc]
     private void PlayAttackAudioClientRpc()
     {
-        PlayAudio(_enemyManager.GetAppropriateAudio(3));
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 3);
     }
 
     [ClientRpc]
     private void PlayDamageAudioClientRpc()
     {
-        PlayAudio(_enemyManager.GetAppropriateAudio(0));
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 0);
     }
 
     [ClientRpc]
     private void PlayDeathAudioClientRpc()
     {
-        PlayAudio(_enemyManager.GetAppropriateAudio(2));
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 2);
     }
 
-    private void PlayAudio(AudioClip _newAudio)
+    private void PlayAudio(GameObject enemy, AudioClip _newAudio)
     {
-        if(_audioSource.isPlaying) return;
+        if(_audioSource.isPlaying || enemy != this.gameObject) return;
 
         _audioSource.Stop();
         _audioSource.clip = _newAudio;
@@ -147,7 +151,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [ClientRpc]
     public void RemoveEnemyClientRpc()
     {
-        OnRemoveEnemy?.Invoke(this.gameObject);
+        EventsManager.RemoveEnemy(this.gameObject);
     }
 
     [ClientRpc]
@@ -192,7 +196,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
         {
             _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
             _pcPlayerSpotLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
-            _pcFlashlightCharge = _pcPlayerSpotLight.GetComponent<FlashlightCharge>();
         }
     }
 
@@ -209,7 +212,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         {
             StandBy();
         }else{    
-            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
+            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight); 
 
             //Freezes and damages the enemy if it is within the PC Player's flashlight's light
             if (_isInsidePCSpotLight)
@@ -247,6 +250,11 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private void RecieveChangedHealth(GameObject entity, float newHealth)
     {
         if(entity == this.gameObject) _notifiedHealth = newHealth;
+    }
+    
+    private void RecieveFlashlightRange(float newFlashlightRange)
+    {
+        _notifiedFlashlightRange = newFlashlightRange;
     }
 
     // This triggers the funciton to properly remove the enemy
@@ -298,7 +306,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         
         _agent.SetDestination(transform.position);
 
-        OnChangeHealth?.Invoke(_pcPlayer, -_damage);
+        EventsManager.ChangeHealthForEntity(_pcPlayer, -_damage);
     }
 
     //This stops the enemy, and reduces the enemy's health
@@ -320,7 +328,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
             if(_canBeDamaged)
             {
                 _canBeDamaged = false;
-                OnChangeHealth?.Invoke(this.gameObject, -damageToAngel * _damageMultiplier);
+                EventsManager.ChangeHealthForEntity(this.gameObject, -damageToAngel * _damageMultiplier);
                 StartCoroutine(DelayDamage());
             }
 
@@ -344,7 +352,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     
     //This checks if the enemy is within the PC Player's flashlights range and angle (which depends on its strength)
     //Used ChatGPT here
-    bool IsInsideSpotLight(Transform _playerSpotLight, FlashlightCharge _playerFlashlightCharge)
+    bool IsInsideSpotLight(Transform _playerSpotLight)
     {
         if (_playerSpotLight == null) return false;
         if (!_playerSpotLight.gameObject.activeSelf) return false;
@@ -353,7 +361,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _spotLightDistance = _positionDifference.magnitude;
 
         //Returns false if the enemy is outside of the flashlight's range
-        if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f)) return false;
+        if (_spotLightDistance > (_notifiedFlashlightRange * 0.5f)) return false;
 
         _spotLightAngle = Vector3.Angle(_playerSpotLight.forward, _positionDifference);
 
@@ -361,7 +369,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         if (_spotLightAngle > 55 * 0.5f) return false;
 
         //The damage applied to the PC Player depends on the distance between the enemy and flashlight (the closer they are, the greater the damage)
-        _damageMultiplier = 1 - (_spotLightDistance / (_playerFlashlightCharge.currentFlashLightRange * 0.5f));
+        _damageMultiplier = 1 - (_spotLightDistance / (_notifiedFlashlightRange * 0.5f));
         return true;
     }
 

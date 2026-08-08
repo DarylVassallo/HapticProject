@@ -58,34 +58,34 @@ public class ControllerManager : NetworkBehaviour
         if(isInNetwork) SetActivateControllerNumServerRpc(_newActivateControllerNum);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetActivateControllerNumServerRpc(int _newController)
     {
         activateControllerNum.Value = _newController;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsLeftHandActiveServerRpc(bool _isActive)
     {
         isLeftHandActive.Value = _isActive;
         if(_isActive) SetIsLeftControllerActiveServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsLeftControllerActiveServerRpc(bool _isActive)
     {
         isLeftControllerActive.Value = _isActive;
         if(_isActive) SetIsLeftHandActiveServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsRightHandActiveServerRpc(bool _isActive)
     {
         isRightHandActive.Value = _isActive;
         if(_isActive) SetIsRightControllerActiveServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsRightControllerActiveServerRpc(bool _isActive)
     {
         isRightControllerActive.Value = _isActive;
@@ -112,28 +112,28 @@ public class ControllerManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateLeftHandRpc()
     {
         SetIsLeftHandActiveServerRpc(true);
         ToggleControllers(0, true);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateLeftControllerRpc()
     {
         SetIsLeftControllerActiveServerRpc(true);
         ToggleControllers(1, true);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateRightHandRpc()
     {
         SetIsRightHandActiveServerRpc(true);
         ToggleControllers(2, true);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateRightControllerRpc()
     {
         SetIsRightControllerActiveServerRpc(true);
@@ -147,7 +147,7 @@ public class ControllerManager : NetworkBehaviour
         if(isInNetwork) SetDeactivateControllerNumServerRpc(_newDeactivateControllerNum);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetDeactivateControllerNumServerRpc(int _newController)
     {
         deactivateControllerNum.Value = _newController;
@@ -173,25 +173,25 @@ public class ControllerManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateLeftHandRpc()
     {
         ToggleControllers(0, false);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateLeftControllerRpc()
     {
         ToggleControllers(1, false);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateRightHandRpc()
     {
         ToggleControllers(2, false);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateRightControllerRpc()
     {
         ToggleControllers(3, false);

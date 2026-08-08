@@ -27,7 +27,6 @@ public class HealthBallTargeting : NetworkBehaviour
     private Vector3 newDirection;
     private float currentDistance;
     [SerializeField] private float minDistance;
-    public static event Action GivePCPlayerHealth;
 
     [SerializeField] private Material pcPlayerPipes;
     private Color baseColor = Color.orange;
@@ -57,15 +56,15 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayer += GetPCPlayerDataRpc;
     }
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
     }
     
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void GetPCPlayerDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
@@ -180,7 +179,7 @@ public class HealthBallTargeting : NetworkBehaviour
     {        
         if (other.CompareTag("PCPlayer"))
         { 
-            GivePCPlayerHealth?.Invoke();
+            EventsManager.GivePCPlayerHealth();
             RespawnNow();
         }
 

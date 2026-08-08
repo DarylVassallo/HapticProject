@@ -24,25 +24,25 @@ public class GrabbableLayerControl : MonoBehaviour
 
     private void OnLeftHandInserted(SelectEnterEventArgs args)
     {
-        if (args.interactableObject != _xrGrabInteractable) return;
+        // if (args.interactableObject != _xrGrabInteractable) return;
         ChangeLayer(this.gameObject, -1);
     }
 
     private void OnLeftHandRemoved(SelectExitEventArgs args)
     {
-        if (args.interactableObject != _xrGrabInteractable) return;
+        // if (args.interactableObject != _xrGrabInteractable) return;
         ChangeLayer(this.gameObject, -1);
     }
 
     private void OnRightHandInserted(SelectEnterEventArgs args)
     {
-        if (args.interactableObject != _xrGrabInteractable) return;
+        // if (args.interactableObject != _xrGrabInteractable) return;
         ChangeLayer(this.gameObject, -1);
     }
 
     private void OnRightHandRemoved(SelectExitEventArgs args)
     {
-        if (args.interactableObject != _xrGrabInteractable) return;
+        // if (args.interactableObject != _xrGrabInteractable) return;
         ChangeLayer(this.gameObject, -1);
     }
 

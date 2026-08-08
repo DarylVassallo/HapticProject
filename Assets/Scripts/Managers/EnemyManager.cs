@@ -20,8 +20,6 @@ public class EnemyManager : NetworkBehaviour
     private List<Transform> _closeSpawnPoints;
 
     private Transform _pcPlayer;
-    private bool canPCFunction = false;    
-
 
     [Header("Audio")]
     [SerializeField] private List<AudioClip> damageAudios;
@@ -65,46 +63,49 @@ public class EnemyManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
         EventsManager.OnCreateRandomEnemy += EnemyCreation;
 
-        EnemyWithSpotlight.OnRemoveEnemy += RemoveEnemy;
+        EventsManager.OnRemoveEnemy += RemoveEnemy;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
         EventsManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
+
+        EventsManager.OnGetAppropriateEnemyAudio += GetAppropriateAudio;
     }
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
         EventsManager.OnCreateRandomEnemy -= EnemyCreation;
 
-        EnemyWithSpotlight.OnRemoveEnemy -= RemoveEnemy;
+        EventsManager.OnRemoveEnemy -= RemoveEnemy;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
         EventsManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
+
+        EventsManager.OnGetAppropriateEnemyAudio -= GetAppropriateAudio;
     }
 
     private void GetPCPlayerData()
     {
         _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-        canPCFunction = true;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetChanceOfEnemysServerRpc(float _chance)
     {
         if(!_isEnemySpawningDisabled) chancesOfEnemy.Value = _chance;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void AddChanceOfEnemysServerRpc(float _chance)
     {
         if(!_isEnemySpawningDisabled) chancesOfEnemy.Value = chancesOfEnemy.Value + _chance;
     }
 
     //If requested, this can prevent any enemies from spawning
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void DisableEnemySpawningServerRpc()
     {
         chancesOfEnemy.Value = 0;
@@ -131,7 +132,7 @@ public class EnemyManager : NetworkBehaviour
     }
 
     //Using the requested audio type, this finds a variation of it that has not been recently used
-    public AudioClip GetAppropriateAudio(int _audioNum)
+    private void GetAppropriateAudio(GameObject enemy, int _audioNum)
     {        
         int _length = _goodAudio[_audioNum].Count;
         if(_length != 0)
@@ -148,10 +149,8 @@ public class EnemyManager : NetworkBehaviour
                 StartCoroutine(AudioBreak(currentAudio, _audioNum));
             }
 
-            return currentAudio; 
+            EventsManager.SendAppropriateEnemyAudio(enemy, currentAudio); 
         }
-
-        return null;
     }
 
     //Once a specific audio is used, a delay is set so it cannot be immediately used by another/the same enemy
@@ -184,7 +183,7 @@ public class EnemyManager : NetworkBehaviour
 
     //This finds a random enemy spawn point that is close enough to the PC Player, 
     // and spawns an enemy there
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void InstantiateNearbyRandomEnemyServerRpc()
     {
         if(disableEnemies) return;
