@@ -196,7 +196,10 @@ public class TeleportManager : NetworkBehaviour
     //This resets the latest collectable (to be used when all collectables need to be reset)
     private void RemoveCollectable()
     {
-        _collectablePoints--;
-        collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
+        if(_collectablePoints > 0)
+        {
+            _collectablePoints--;
+            collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
+        }
     }
 }

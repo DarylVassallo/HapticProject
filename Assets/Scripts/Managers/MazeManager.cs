@@ -15,7 +15,7 @@ public class MazeManager : NetworkBehaviour
     private AudioSource _audioSource;
 
     [Header("Switches")]
-    private HiddenSwitches[] hiddenSwitches;
+    [SerializeField] private HiddenSwitches[] hiddenSwitches;
 
     //This is the Switch wall, recording the specific type of switch, 
     // and the button order required to activate it
@@ -135,17 +135,20 @@ public class MazeManager : NetworkBehaviour
         if(startWithActivatedDefenseButton) ActivateDefenseButton();
     }
 
-    private void ActivateSpinWheel()
+    //Triggered by inputting correct sequence to activate the spin wheel
+    public void ActivateSpinWheel()
     {
         ActivateServerRpc(InteractiveObject.SpinWheel);
     }
 
-    private void ActivateHealthBall()
+    //Triggered by inputting correct sequence to activate the health ball
+    public void ActivateHealthBall()
     {
         ActivateServerRpc(InteractiveObject.HealthBall);
     }
 
-    private void ActivateDefenseButton()
+    //Triggered by inputting correct sequence to activate the defense button
+    public void ActivateDefenseButton()
     {
         ActivateServerRpc(InteractiveObject.DefenseButton);
     }

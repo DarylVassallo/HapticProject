@@ -28,6 +28,7 @@ public class MapPlayerTracker : NetworkBehaviour
     private void OnDisable()
     {
         EventsManager.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        _canPCFunction = false;
     }
     
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]

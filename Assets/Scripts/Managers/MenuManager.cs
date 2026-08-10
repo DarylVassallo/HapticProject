@@ -78,7 +78,7 @@ public class MenuManager : NetworkBehaviour
         public Button button;
         public Locale locale;
     }
-    private LanguageButton[] languageButtons;
+    [SerializeField] private LanguageButton[] languageButtons;
     
     IEnumerator Start()
     {
