@@ -22160,6 +22160,10 @@ PrefabInstance:
       propertyPath: m_BoundingSphereOverride.z
       value: 6.3e-43
       objectReference: {fileID: 0}
+    - target: {fileID: 7387968435084664567, guid: 34534f9a2d6df1c4f8dee201f8d50aaa, type: 3}
+      propertyPath: m_Name
+      value: TeleportCandleLight
+      objectReference: {fileID: 0}
     - target: {fileID: 8266949716707160795, guid: 34534f9a2d6df1c4f8dee201f8d50aaa, type: 3}
       propertyPath: m_Name
       value: Candlestick_Triple (1)
@@ -22316,6 +22320,10 @@ PrefabInstance:
     - target: {fileID: 2992976193325264541, guid: 34534f9a2d6df1c4f8dee201f8d50aaa, type: 3}
       propertyPath: m_BoundingSphereOverride.z
       value: 6.3e-43
+      objectReference: {fileID: 0}
+    - target: {fileID: 7387968435084664567, guid: 34534f9a2d6df1c4f8dee201f8d50aaa, type: 3}
+      propertyPath: m_Name
+      value: TeleportCandleLight
       objectReference: {fileID: 0}
     - target: {fileID: 8266949716707160795, guid: 34534f9a2d6df1c4f8dee201f8d50aaa, type: 3}
       propertyPath: m_Name
