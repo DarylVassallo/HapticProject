@@ -87,7 +87,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerData;
         EventsManager.OnDestroyAllEnemies += DestroyEnemy;
 
         EventsManager.OnEntityKilled += RecieveDeath;
@@ -99,7 +99,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerData;
         EventsManager.OnDestroyAllEnemies -= DestroyEnemy;
 
         EventsManager.OnEntityKilled -= RecieveDeath;

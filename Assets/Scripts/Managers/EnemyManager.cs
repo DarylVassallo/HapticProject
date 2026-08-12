@@ -63,7 +63,7 @@ public class EnemyManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerData;
         EventsManager.OnCreateRandomEnemy += EnemyCreation;
 
         EventsManager.OnRemoveEnemy += RemoveEnemy;
@@ -76,7 +76,7 @@ public class EnemyManager : NetworkBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerData;
         EventsManager.OnCreateRandomEnemy -= EnemyCreation;
 
         EventsManager.OnRemoveEnemy -= RemoveEnemy;

@@ -22,17 +22,17 @@ public class MapPlayerTracker : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         _canPCFunction = false;
     }
     
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void GetPCPlayerDataRpc()
+    public void GetPCPlayerBodyDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {

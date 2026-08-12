@@ -1,21 +1,40 @@
 using UnityEngine;
 
+using System.Collections;
+
 public class PlotManager : MonoBehaviour
 {
     [Header("VR Cover")]
-    [SerializeField]private float coverIncrement = 0.0001f;
+    [SerializeField] private float coverIncrement = 0.0001f;
     private bool uncoverVRCamera = false;
     private Material vrPlayerCameraCover;
+
+    [Header("PC Statue")]
+    [SerializeField] private GameObject pcStatue;
+    [SerializeField] private float pcSpawnDelay;
     
 
     private void OnEnable()
     {
+        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData;
     }
 
     private void OnDisable()
     {
        EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
+    }
+
+    private void GetPCPlayerData()
+    {
+        StartCoroutine(DelayPCSpawn());
+    }
+
+    IEnumerator DelayPCSpawn()
+    {
+        yield return new WaitForSeconds(pcSpawnDelay);
+        Destroy(pcStatue);
+        EventsManager.AddPCPlayerBody();
     }
 
     private void GetVRPlayerData()

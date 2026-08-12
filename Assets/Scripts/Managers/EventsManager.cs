@@ -7,6 +7,10 @@ public class EventsManager : MonoBehaviour
     //Network Events=============================================
     public static event Action OnCreatedPCPlayer;
     public static void CreatedPCPlayer() => OnCreatedPCPlayer?.Invoke();
+    public static event Action OnAddPCPlayerBody;
+    public static void AddPCPlayerBody() => OnAddPCPlayerBody?.Invoke();
+    public static event Action OnCreatedPCPlayerBody;
+    public static void CreatedPCPlayerBody() => OnCreatedPCPlayerBody?.Invoke();
     public static event Action OnCreatedVRPlayer;
     public static void CreatedVRPlayer() => OnCreatedVRPlayer?.Invoke();
 

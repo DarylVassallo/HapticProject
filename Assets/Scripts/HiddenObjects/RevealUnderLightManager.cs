@@ -54,7 +54,7 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerDataRpc;
 
         EventsManager.OnAddNewHiddenObject += AddNewHiddenObject;
@@ -69,7 +69,7 @@ public class RevealUnderLightManager : NetworkBehaviour
     {
         hiddenObjects = new List<HiddenObject>();
         
-        EventsManager.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerDataRpc;
 
         EventsManager.OnAddNewHiddenObject -= AddNewHiddenObject;
@@ -81,7 +81,7 @@ public class RevealUnderLightManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void GetPCPlayerDataRpc()
+    public void GetPCPlayerBodyDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {

@@ -53,7 +53,7 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnAddNewBar += AddNewBar;
 
-        EventsManager.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
     }
 
     private void OnDisable()
@@ -64,11 +64,11 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnAddNewBar -= AddNewBar;
 
-        EventsManager.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void GetPCPlayerDataRpc()
+    public void GetPCPlayerBodyDataRpc()
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
