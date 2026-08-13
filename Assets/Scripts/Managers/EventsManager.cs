@@ -134,7 +134,27 @@ public class EventsManager : MonoBehaviour
     public static void AddNewBar(Transform bar) => OnAddNewBar?.Invoke(bar);
     public static event Action<bool> OnChangePadsReady;
     public static void ChangePadsReady(bool _newPadsReady) => OnChangePadsReady?.Invoke(_newPadsReady);
+    public static event Action<GameObject> OnTriggerTeleportButton;
+    public static void TriggerTeleportButton(GameObject _teleportPad) => OnTriggerTeleportButton?.Invoke(_teleportPad);
 
+
+
+
+
+
+    //Respawn Events=============================================
+    public static event Action<GameObject> OnObjectRespawned;
+    public static void ObjectRespawned(GameObject entity) => OnObjectRespawned?.Invoke(entity);
+
+
+
+
+
+    //PC Tutorial Events=============================================
+    public static event Action OnTriggerPCChargeTutorial;
+    public static void TriggerPCChargeTutorial() => OnTriggerPCChargeTutorial?.Invoke();
+    public static event Action OnTriggerPCInteractTutorial;
+    public static void TriggerPCInteractTutorial() => OnTriggerPCInteractTutorial?.Invoke();
 
 
 

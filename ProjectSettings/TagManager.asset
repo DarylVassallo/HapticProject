@@ -24,7 +24,7 @@ TagManager:
   - Manager
   - Fire
   - VRRig
-  - HealthBowl
+  - RespawnPlatform
   layers:
   - Default
   - TransparentFX

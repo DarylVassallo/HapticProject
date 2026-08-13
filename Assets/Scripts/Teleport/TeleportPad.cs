@@ -53,7 +53,7 @@ public class TeleportPad : NetworkBehaviour
 
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
 
-        _instantTeleport = true;
+        _instantTeleport = false;
 
         restRotation = ring.rotation;
 
@@ -73,6 +73,8 @@ public class TeleportPad : NetworkBehaviour
 
         EventsManager.OnChangePadsReady += ChangePadsReady;
 
+        EventsManager.OnTriggerTeleportButton += CheckPad;
+
         _secretCode.OnValueChanged += ChangeCodeText;
     }
 
@@ -83,6 +85,8 @@ public class TeleportPad : NetworkBehaviour
         EventsManager.OnResetTeleportPads -= ResetTeleportPad;
 
         EventsManager.OnChangePadsReady -= ChangePadsReady;
+
+        EventsManager.OnTriggerTeleportButton -= CheckPad;
 
         _secretCode.OnValueChanged -= ChangeCodeText;
     }
@@ -130,6 +134,16 @@ public class TeleportPad : NetworkBehaviour
     private void CheckInputtedCode(int _inputtedCode)
     {
         if(_inputtedCode == _secretCode.Value && _isPlayerOnPad.Value)
+        {
+            StartRingRotationRpc();
+        }
+    }
+
+    //If the inputted code is correct, then the teleportation sequence can begin
+    private void CheckPad(GameObject _teleportPad)
+    {
+        Debug.Log("CheckPad: " + _teleportPad + " : " + this.gameObject);
+        if(_teleportPad == this.gameObject)
         {
             StartRingRotationRpc();
         }

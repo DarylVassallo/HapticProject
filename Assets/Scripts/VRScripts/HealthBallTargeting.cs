@@ -6,14 +6,11 @@ using Unity.Netcode;
 
 public class HealthBallTargeting : NetworkBehaviour
 {
-     private Vector3 _startingPosition;
-    private Quaternion _startingRotation;
-
     private Rigidbody _rb;
 
     [SerializeField] private float respawnDelay;
 
-    private bool isRespawning;  
+    // private bool isRespawning;  
 
     private Transform pcPlayer;
     private bool _canPCFunction;
@@ -37,10 +34,6 @@ public class HealthBallTargeting : NetworkBehaviour
 
     void Awake()
     {
-        _startingPosition = this.transform.position;
-        _startingRotation = this.transform.rotation;
-        isRespawning = false;
-
         _canPCFunction = false;
 
         _isThrown = false;
@@ -57,11 +50,13 @@ public class HealthBallTargeting : NetworkBehaviour
     private void OnEnable()
     {
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
+        EventsManager.OnObjectRespawned += Respawned;
     }
 
     private void OnDisable()
     {
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
+        EventsManager.OnObjectRespawned -= Respawned;
     }
     
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -94,28 +89,9 @@ public class HealthBallTargeting : NetworkBehaviour
         }
     }
 
-    //Once a small delay has passed, the ball is then teleported back to its spawn position
-    private IEnumerator RespawnDelayAfterCollision()
+    private void Respawned(GameObject entity)
     {
-        yield return new WaitForSeconds(respawnDelay);
-        RespawnNow();
-    }
-
-    //This teleports the ball in its spawn position, and resets its values
-    private void RespawnNow()
-    {
-        _isThrown = false;
-
-        this.transform.position = _startingPosition;
-        this.transform.rotation = _startingRotation;
-                
-        _rb = GetComponent<Rigidbody>();
-        if(_rb != null)
-        {
-            _rb.linearVelocity = Vector3.zero;
-        }
-
-        isRespawning = false;
+        if(entity == this.gameObject) _isThrown = false;
     }
 
     private void FixedUpdate()
@@ -180,13 +156,6 @@ public class HealthBallTargeting : NetworkBehaviour
         if (other.CompareTag("PCPlayer"))
         { 
             EventsManager.GivePCPlayerHealth();
-            RespawnNow();
-        }
-
-        if (!other.CompareTag("HealthBowl") && !isRespawning)
-        { 
-            isRespawning = true;
-            StartCoroutine(RespawnDelayAfterCollision());
         }
     }
 }

@@ -208,10 +208,8 @@ public class ConnectUIScript : NetworkBehaviour
             hostButton.transform.parent.gameObject.SetActive(false);
             
             Debug.Log("Create PCPlayer 1");
-            GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, pcSpawnPoint.rotation);
-            _newPCPlayer.GetComponent<NetworkObject>().SpawnAsPlayerObject(0, true);
-
-            EventsManager.CreatedPCPlayerBody();
+            pcPlayerClientID = 0;
+            EventsManager.CreatedPCPlayer();
         }
         else
         {
@@ -234,13 +232,8 @@ public class ConnectUIScript : NetworkBehaviour
                 else
                 {
                     Debug.Log("Create PCPlayer 2");
-                    Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
-                    GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, pcSpawnPoint.rotation);
-                    NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
-                    
-                    _pcNetObj.SpawnAsPlayerObject(clientId, true);
-
-                    EventsManager.CreatedPCPlayerBody();
+                    pcPlayerClientID = clientId;
+                    EventsManager.CreatedPCPlayer();
                 }
             }
 
@@ -270,13 +263,7 @@ public class ConnectUIScript : NetworkBehaviour
         if (_isTestingPCPlayer)
         {
             Debug.Log("Create PCPlayer 3");
-
-            // GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, pcSpawnPoint.rotation);
-            // NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
-            // _pcNetObj.SpawnAsPlayerObject(clientId, true);
-
             pcPlayerClientID = clientId;
-            
             EventsManager.CreatedPCPlayer();
 
         //Creates a VR Player for the host player, playing alone
@@ -309,21 +296,19 @@ public class ConnectUIScript : NetworkBehaviour
                 Debug.Log("ConnectUIScript HandleClientConnected 5");
 
                 Debug.Log("Create PCPlayer 4");
-                Debug.Log("pcSpawnPoint: " + pcSpawnPoint);
-                GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, pcSpawnPoint.rotation);
-                NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
-                
-                _pcNetObj.SpawnAsPlayerObject(clientId, true);
-                EventsManager.CreatedPCPlayerBody();
+                pcPlayerClientID = clientId;
+                EventsManager.CreatedPCPlayer();
             }
         }
     }
 
     private void CreatePCPlayerBody()
     {
-        GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, pcSpawnPoint.rotation);
+        GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.Euler(0f, pcSpawnPoint.eulerAngles.y, 0f));
         NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
         _pcNetObj.SpawnAsPlayerObject(pcPlayerClientID, true);
+
+        EventsManager.CreatedPCPlayerBody();
     }
 
     //Immediately creates a VR Player for the host (used in debugging only)
