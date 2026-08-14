@@ -4,9 +4,11 @@ using System.Collections;
 
 public class PlotManager : MonoBehaviour
 {
-    [Header("VR Cover")]
-    [SerializeField] private float coverIncrement = 0.0001f;
-    private bool uncoverVRCamera = false;
+    private bool _constantlyCheck;
+    private bool _checkRoof;
+
+    [Header("VR Head")]
+    private Transform vrPlayerCamera;
     private Material vrPlayerCameraCover;
 
     [Header("PC Statue")]
@@ -19,6 +21,9 @@ public class PlotManager : MonoBehaviour
     [SerializeField] private GameObject pcMovementTutorial;
     [SerializeField] private GameObject pcChargeTutorial;
     [SerializeField] private GameObject pcInteractTutorial;
+
+    [Header("Roof")]
+    [SerializeField] private Transform roof;
     
 
     private void Awake()
@@ -52,7 +57,7 @@ public class PlotManager : MonoBehaviour
     private void GetPCPlayerData()
     {
         ToggleTutorial(pcMovementTutorial);
-        StartCoroutine(DelayPCSpawn());
+        // StartCoroutine(DelayPCSpawn());
     }
 
     private void TriggerPCChargeTutorial()
@@ -81,6 +86,7 @@ public class PlotManager : MonoBehaviour
 
     public void BeginPCTransformation()
     {
+        EventsManager.TriggerNarratorAudio("VRIntro", 2);
         StartCoroutine(DelayPCSpawn());
     }
 
@@ -102,35 +108,73 @@ public class PlotManager : MonoBehaviour
 
     private void GetVRPlayerData()
     {
+        StartCoroutine(VRIntroEvent());
+    }
+
+    IEnumerator VRIntroEvent()
+    {
+        EventsManager.TriggerNarratorAudio("VRIntro", 0);
+
+        yield return new WaitForSeconds(12f);
+
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
             if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))
             {
-                vrPlayerCameraCover = child.GetChild(0).GetComponent<Renderer>().material;
-                FadeVRPlayerIntoGame();
+                vrPlayerCamera = child;
+                vrPlayerCameraCover = vrPlayerCamera.GetChild(0).GetComponent<Renderer>().material;
+                StartCoroutine(FadeVRPlayerIntoGame(2f));
                 break;
             }
         }
     }
 
-    private void FadeVRPlayerIntoGame()
+    private void CheckedRoofEvent()
     {
-        Color colour = vrPlayerCameraCover.color;
-        colour.a = colour.a - coverIncrement;
-        vrPlayerCameraCover.color = colour;
+        EventsManager.TriggerNarratorAudio("VRIntro", 1);
+    }
 
-        if(colour.a <= coverIncrement)
+    IEnumerator FadeVRPlayerIntoGame(float _delay)
+    {
+        float elapsed = 0f;
+
+        while(elapsed < _delay)
         {
-            uncoverVRCamera = false;
+            elapsed += Time.deltaTime;
+            
+            Color colour = vrPlayerCameraCover.color;
+            colour.a = (_delay - elapsed) / _delay;
+            vrPlayerCameraCover.color = colour;
+
+            yield return null;
         }
-        else
-        {
-            uncoverVRCamera = true;
-        }
+
+        _constantlyCheck = true;
+        _checkRoof = true;
     }
 
     private void Update()
     {
-       if(uncoverVRCamera) FadeVRPlayerIntoGame();
+        if(!_constantlyCheck) return;
+
+        if(_checkRoof)
+        {
+            if(IsLookingAtRoof())
+            {
+                _constantlyCheck = false;
+                _checkRoof = false;
+                CheckedRoofEvent();
+            }
+        }
+    }
+
+    bool IsLookingAtRoof()
+    {
+        Vector3 _positionDifference = roof.position - vrPlayerCamera.position;
+        float _spotLightAngle = Vector3.Angle(vrPlayerCamera.forward, _positionDifference);
+
+        //Returns false if the roof is outside of the Vr Player's sight (the angle remains unchanged)
+        if (_spotLightAngle > 55 * 0.5f) return false;
+        return true;
     }
 }

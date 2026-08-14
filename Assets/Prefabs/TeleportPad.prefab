@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 1205399760740803199}
   - component: {fileID: 6366350617039970438}
   m_Layer: 0
-  m_Name: Column (1)
+  m_Name: TeleportColumn (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2547,7 +2547,7 @@ GameObject:
   m_Component:
   - component: {fileID: 543757518470175950}
   m_Layer: 0
-  m_Name: Arch (1)
+  m_Name: ReverseTeleportArch (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2583,7 +2583,7 @@ GameObject:
   - component: {fileID: 773400837724613953}
   - component: {fileID: 5078915324921516053}
   m_Layer: 0
-  m_Name: Arch (2)
+  m_Name: TeleportArch (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4834,7 +4834,7 @@ GameObject:
   - component: {fileID: 8938985484791365353}
   - component: {fileID: 7444028366500635786}
   m_Layer: 0
-  m_Name: Column (3)
+  m_Name: TeleportColumn (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7301,7 +7301,7 @@ GameObject:
   - component: {fileID: 547971219522001424}
   - component: {fileID: 4053989877212784826}
   m_Layer: 0
-  m_Name: Column (2)
+  m_Name: TeleportColumn (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9763,7 +9763,7 @@ GameObject:
   m_Component:
   - component: {fileID: 422783080760729700}
   m_Layer: 0
-  m_Name: Arch (1)
+  m_Name: TeleportArch (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10189,7 +10189,7 @@ GameObject:
   - component: {fileID: 1579976049015257139}
   - component: {fileID: 6387277400228846392}
   m_Layer: 0
-  m_Name: Column
+  m_Name: TeleportColumn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12651,7 +12651,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9126385240347627291}
   m_Layer: 0
-  m_Name: Arch (3)
+  m_Name: ReverseTeleportArch (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12965,7 +12965,7 @@ GameObject:
   - component: {fileID: 1893958528558022052}
   - component: {fileID: 2061611230734855071}
   m_Layer: 0
-  m_Name: Arch
+  m_Name: TeleportArch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15126,7 +15126,7 @@ GameObject:
   - component: {fileID: 3166624533888068563}
   - component: {fileID: 6817654385999665483}
   m_Layer: 0
-  m_Name: Arch (2)
+  m_Name: ReverseTeleportArch (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19935,7 +19935,7 @@ GameObject:
   - component: {fileID: 6794454913354701994}
   - component: {fileID: 7105707544061106402}
   m_Layer: 0
-  m_Name: Arch
+  m_Name: ReverseTeleportArch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22091,7 +22091,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4089267454260931759}
   m_Layer: 0
-  m_Name: Arch (3)
+  m_Name: TeleportArch (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

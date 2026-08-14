@@ -60,6 +60,7 @@ public class PCPlayerInputManager : MonoBehaviour
     private void OnEnable()
     {
         EventsManager.OnToggleAll += ToggleAll;
+        EventsManager.OnToggleRestriction += ToggleRestriction;
 
         moveAction.Enable();
         moveAction.performed += HandleMove;
@@ -85,6 +86,7 @@ public class PCPlayerInputManager : MonoBehaviour
     private void OnDisable()
     {
         EventsManager.OnToggleAll -= ToggleAll;
+        EventsManager.OnToggleRestriction -= ToggleRestriction;
 
         moveAction.performed -= HandleMove;
         moveAction.canceled -= HandleMove;

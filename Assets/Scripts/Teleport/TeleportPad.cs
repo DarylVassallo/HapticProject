@@ -46,6 +46,8 @@ public class TeleportPad : NetworkBehaviour
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _teleportAudio;
 
+    private bool _isTutorialTeleport;
+
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
@@ -75,6 +77,8 @@ public class TeleportPad : NetworkBehaviour
 
         EventsManager.OnTriggerTeleportButton += CheckPad;
 
+        EventsManager.OnSetExitPadTransform += SetExitPadTransform;
+
         _secretCode.OnValueChanged += ChangeCodeText;
     }
 
@@ -87,6 +91,8 @@ public class TeleportPad : NetworkBehaviour
         EventsManager.OnChangePadsReady -= ChangePadsReady;
 
         EventsManager.OnTriggerTeleportButton -= CheckPad;
+
+        EventsManager.OnSetExitPadTransform -= SetExitPadTransform;
 
         _secretCode.OnValueChanged -= ChangeCodeText;
     }
@@ -105,10 +111,13 @@ public class TeleportPad : NetworkBehaviour
     }
 
     //This allows the TeleportManager to change the current teleport pad's exit pad
-    public void SetExitPadTransform(Transform _newExitPadTransform)
+    private void SetExitPadTransform(GameObject _pad, Transform _newExitPadTransform)
     {
-        exitTeleportPad = _newExitPadTransform;
-        ChangeSecretCodePadServerRpc();
+        if(_pad == this.gameObject)
+        {
+            exitTeleportPad = _newExitPadTransform;
+            ChangeSecretCodePadServerRpc();
+        }
     }
 
     //This changes the code to a random number (within the set range)
@@ -142,9 +151,9 @@ public class TeleportPad : NetworkBehaviour
     //If the inputted code is correct, then the teleportation sequence can begin
     private void CheckPad(GameObject _teleportPad)
     {
-        Debug.Log("CheckPad: " + _teleportPad + " : " + this.gameObject);
         if(_teleportPad == this.gameObject)
         {
+            _isTutorialTeleport = true;
             StartRingRotationRpc();
         }
     }
@@ -222,24 +231,43 @@ public class TeleportPad : NetworkBehaviour
     {
         if(!rotateRings) return;
         
+        RotateRings();
+        ChangeTeleportEffect();
+        CheckTeleportCondition();
+    }
+
+    private void RotateRings()
+    {
         //This rotates the rings
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || ring.rotation != restRotation) ring.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
 
         //This rotates the rings in the opposite direction
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed || reverseRing.rotation != restRotation) reverseRing.Rotate(Vector3.up * -rotateSpeed * Time.deltaTime);
+    }
 
+    private void ChangeTeleportEffect()
+    {
         //This increases/decreases the rotation speed and teleportation visual effect (visuals only applied to the PC Player)
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
         {
             rotateSpeed += rotateIncrement;
             EventsManager.ChangeTeleportRotateSpeed(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
         }
+    }
 
+    private void CheckTeleportCondition()
+    {
         //Inverts the rotation increment to begin reducing rotation speed, and teleports the PC Player
         if(rotateSpeed >= maxRotateSpeed)
         {
             rotateIncrement *= -1f;   
-            if(_isPlayerOnPad.Value) TeleportRpc();     
+            if(_isTutorialTeleport)
+            {
+                EventsManager.TutorialTeleport();
+            }else if(_isPlayerOnPad.Value)
+            {
+                 TeleportRpc();   
+            }  
         }
 
         //If the rotation has slowed down enough, and the rings are at a rough angle, the rotation is stopped

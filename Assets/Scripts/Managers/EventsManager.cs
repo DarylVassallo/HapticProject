@@ -22,7 +22,9 @@ public class EventsManager : MonoBehaviour
     public static event Action OnGameOver;
     public static void GameOver() => OnGameOver?.Invoke();
     public static event Action<bool> OnToggleAll;
-    public static void ToggleAll(bool toggle) => OnToggleAll?.Invoke(toggle);
+    public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
+    public static event Action<string, bool> OnToggleRestriction;
+    public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
 
 
 
@@ -34,16 +36,16 @@ public class EventsManager : MonoBehaviour
     public static event Action OnDestroyAllEnemies;
     public static void DestroyAllEnemies() => OnDestroyAllEnemies?.Invoke();
     public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
-    public static void IncreaseChanceOfSpawningEnemy(float chance) => OnIncreaseChanceOfSpawningEnemy?.Invoke(chance);
+    public static void IncreaseChanceOfSpawningEnemy(float _chance) => OnIncreaseChanceOfSpawningEnemy?.Invoke(_chance);
     public static event Action<int> OnCreateRandomEnemy;
-    public static void CreateRandomEnemy(int enemyNum) => OnCreateRandomEnemy?.Invoke(enemyNum);
+    public static void CreateRandomEnemy(int _enemyNum) => OnCreateRandomEnemy?.Invoke(_enemyNum);
     public static event Action<GameObject> OnRemoveEnemy;
-    public static void RemoveEnemy(GameObject enemy) => OnRemoveEnemy?.Invoke(enemy);
+    public static void RemoveEnemy(GameObject _enemy) => OnRemoveEnemy?.Invoke(_enemy);
     public static event Action<GameObject, int> OnGetAppropriateEnemyAudio;
 
-    public static void GetAppropriateEnemyAudio(GameObject enemy, int audioType) => OnGetAppropriateEnemyAudio?.Invoke(enemy, audioType);
+    public static void GetAppropriateEnemyAudio(GameObject _enemy, int _audioType) => OnGetAppropriateEnemyAudio?.Invoke(_enemy, _audioType);
     public static event Action<GameObject, AudioClip> OnSendAppropriateEnemyAudio;
-    public static void SendAppropriateEnemyAudio(GameObject enemy, AudioClip audio) => OnSendAppropriateEnemyAudio?.Invoke(enemy, audio);
+    public static void SendAppropriateEnemyAudio(GameObject _enemy, AudioClip _audio) => OnSendAppropriateEnemyAudio?.Invoke(_enemy, _audio);
 
 
 
@@ -59,7 +61,7 @@ public class EventsManager : MonoBehaviour
     public static event Action OnResetTeleportPads;
     public static void ResetTeleportPads() => OnResetTeleportPads?.Invoke();
     public static event Action<GameObject> OnResetHealth;
-    public static void ResetHealth(GameObject entity) => OnResetHealth?.Invoke(entity);
+    public static void ResetHealth(GameObject _entity) => OnResetHealth?.Invoke(_entity);
 
 
 
@@ -69,7 +71,7 @@ public class EventsManager : MonoBehaviour
     public enum ShapeType { None, Health, Spin, Defense }
     public enum ButtonType { None, Square, Circle, Triangle, Cross, Star }
     public static event Action<ShapeType, ButtonType> OnTriggerButton;
-    public static void TriggerButton(ShapeType shape, ButtonType button) => OnTriggerButton?.Invoke(shape, button);
+    public static void TriggerButton(ShapeType _shape, ButtonType _button) => OnTriggerButton?.Invoke(_shape, _button);
     public static event Action OnActivateReset;
     public static void ActivateReset() => OnActivateReset?.Invoke();
     public static event Action OnGivePCPlayerHealth;
@@ -81,17 +83,17 @@ public class EventsManager : MonoBehaviour
 
     //Health Events=============================================
     public static event Action<float> OnChangeHealthCamera;
-    public static void ChangeHealthCamera(float healthCameraIntensity) => OnChangeHealthCamera?.Invoke(healthCameraIntensity);
+    public static void ChangeHealthCamera(float _healthCameraIntensity) => OnChangeHealthCamera?.Invoke(_healthCameraIntensity);
     public static event Action<float> OnChangeHealthBar;
-    public static void ChangeHealthBar(float newHealth) => OnChangeHealthBar?.Invoke(newHealth);
+    public static void ChangeHealthBar(float _newHealth) => OnChangeHealthBar?.Invoke(_newHealth);
     public static event Action<GameObject, float> OnChangeHealthForEntity;
-    public static void ChangeHealthForEntity(GameObject entity, float newHealth) => OnChangeHealthForEntity?.Invoke(entity, newHealth);
+    public static void ChangeHealthForEntity(GameObject _entity, float _newHealth) => OnChangeHealthForEntity?.Invoke(_entity, _newHealth);
     public static event Action<GameObject, float> OnEntityChangedHealth;
-    public static void EntityChangedHealth(GameObject entity, float newHealth) => OnEntityChangedHealth?.Invoke(entity, newHealth);
+    public static void EntityChangedHealth(GameObject _entity, float _newHealth) => OnEntityChangedHealth?.Invoke(_entity, _newHealth);
     public static event Action<GameObject> OnEntityKilled;
-    public static void EntityKilled(GameObject entity) => OnEntityKilled?.Invoke(entity);
+    public static void EntityKilled(GameObject _entity) => OnEntityKilled?.Invoke(_entity);
     public static event Action<Renderer, float> OnChangedEnemyOxidization;
-    public static void ChangedEnemyOxidization(Renderer rend, float oxidization) => OnChangedEnemyOxidization?.Invoke(rend, oxidization);
+    public static void ChangedEnemyOxidization(Renderer _rend, float _oxidization) => OnChangedEnemyOxidization?.Invoke(_rend, _oxidization);
 
 
 
@@ -99,7 +101,7 @@ public class EventsManager : MonoBehaviour
 
     //Charge Events=============================================
     public static event Action<float> OnChangeChargeBar;
-    public static void ChangeChargeBar(float newCharge) => OnChangeChargeBar?.Invoke(newCharge);
+    public static void ChangeChargeBar(float _newCharge) => OnChangeChargeBar?.Invoke(_newCharge);
 
 
 
@@ -109,17 +111,17 @@ public class EventsManager : MonoBehaviour
     public static event Action OnTriggerHiddenButton;
     public static void TriggerHiddenButton() => OnTriggerHiddenButton?.Invoke();
     public static event Action<GameObject> OnRemoveHiddenObject;
-    public static void RemoveHiddenObject(GameObject hiddenObject) => OnRemoveHiddenObject?.Invoke(hiddenObject);
+    public static void RemoveHiddenObject(GameObject _hiddenObject) => OnRemoveHiddenObject?.Invoke(_hiddenObject);
     public static event Action<GameObject, bool, bool, bool, bool> OnAddNewHiddenObject;
-    public static void AddNewHiddenObject(  GameObject hiddenObject, 
-                                            bool isPCInteractable, 
-                                            bool isVRInteractable, 
-                                            bool isEffectedByLight,
-                                            bool isReverse) => OnAddNewHiddenObject?.Invoke(hiddenObject, 
-                                                                                            isPCInteractable, 
-                                                                                            isVRInteractable, 
-                                                                                            isEffectedByLight, 
-                                                                                            isReverse);
+    public static void AddNewHiddenObject(  GameObject _hiddenObject, 
+                                            bool _isPCInteractable, 
+                                            bool _isVRInteractable, 
+                                            bool _isEffectedByLight,
+                                            bool _isReverse) => OnAddNewHiddenObject?.Invoke(_hiddenObject, 
+                                                                                            _isPCInteractable, 
+                                                                                            _isVRInteractable, 
+                                                                                            _isEffectedByLight, 
+                                                                                            _isReverse);
 
 
 
@@ -127,15 +129,21 @@ public class EventsManager : MonoBehaviour
 
     //Teleporter Events=============================================
     public static event Action<int> OnSendCodeToTeleportPads;
-    public static void SendCodeToTeleportPads(int code) => OnSendCodeToTeleportPads?.Invoke(code);
+    public static void SendCodeToTeleportPads(int _code) => OnSendCodeToTeleportPads?.Invoke(_code);
     public static event Action<float, float> OnChangeTeleportRotateSpeed;
-    public static void ChangeTeleportRotateSpeed(float currentRotateSpeed, float maxRotateSpeed) => OnChangeTeleportRotateSpeed?.Invoke(currentRotateSpeed, maxRotateSpeed);
+    public static void ChangeTeleportRotateSpeed(float _currentRotateSpeed, float _maxRotateSpeed) => OnChangeTeleportRotateSpeed?.Invoke(_currentRotateSpeed, _maxRotateSpeed);
+    public static event Action<float, bool> OnFixTeleportEffect;
+    public static void FixTeleportEffect(float _teleportEffect, bool _canChange) => OnFixTeleportEffect?.Invoke(_teleportEffect, _canChange);
     public static event Action<Transform> OnAddNewBar;
-    public static void AddNewBar(Transform bar) => OnAddNewBar?.Invoke(bar);
+    public static void AddNewBar(Transform _bar) => OnAddNewBar?.Invoke(_bar);
     public static event Action<bool> OnChangePadsReady;
     public static void ChangePadsReady(bool _newPadsReady) => OnChangePadsReady?.Invoke(_newPadsReady);
     public static event Action<GameObject> OnTriggerTeleportButton;
     public static void TriggerTeleportButton(GameObject _teleportPad) => OnTriggerTeleportButton?.Invoke(_teleportPad);
+    public static event Action<GameObject, Transform> OnSetExitPadTransform;
+    public static void SetExitPadTransform(GameObject _teleportPad, Transform _exitPad) => OnSetExitPadTransform?.Invoke(_teleportPad, _exitPad);
+    public static event Action OnTutorialTeleport;
+    public static void TutorialTeleport() => OnTutorialTeleport?.Invoke();
 
 
 
@@ -144,7 +152,7 @@ public class EventsManager : MonoBehaviour
 
     //Respawn Events=============================================
     public static event Action<GameObject> OnObjectRespawned;
-    public static void ObjectRespawned(GameObject entity) => OnObjectRespawned?.Invoke(entity);
+    public static void ObjectRespawned(GameObject _entity) => OnObjectRespawned?.Invoke(_entity);
 
 
 
@@ -193,7 +201,7 @@ public class EventsManager : MonoBehaviour
 
 
 
-    //PC Player Input=============================================
+    //PC Player Input Events=============================================
     public static event Action<Vector2> OnMove;
     public static void Move(Vector2 movement) => OnMove?.Invoke(movement);
     public static event Action OnJump;
@@ -209,5 +217,10 @@ public class EventsManager : MonoBehaviour
 
     public static event Action<float> OnEntityChangedFlashlightRange;
     public static void EntityChangedFlashlightRange(float newFlashlightRange) => OnEntityChangedFlashlightRange?.Invoke(newFlashlightRange);
+
+
+    //NarratorManager Events=============================================
+    public static event Action<string, int> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _section, int _audioNum) => OnTriggerNarratorAudio?.Invoke(_section, _audioNum);
 
 }

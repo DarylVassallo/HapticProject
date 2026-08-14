@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Unity.Netcode;
-
 public class TeleportManager : NetworkBehaviour
 {
     [SerializeField] private Renderer[] collectableIndicators;
@@ -36,12 +35,26 @@ public class TeleportManager : NetworkBehaviour
     {
         public TeleportPairs[] teleportPairs;
     }
+    
+    [SerializeField] private Transform[] tutorialTeleportPads;
+    private int tutorialTeleportCount = 1;
+
     [SerializeField] private TeleportConnections[] teleportConnections;
     [SerializeField] private TeleportConnections finalTeleportConnections;
 
     private List<Transform> _barList;
 
     private float _timeLimit;
+
+    private Transform _pcPlayerTransform;
+
+    private AudioSource _audioSource;
+    [SerializeField] private AudioClip _teleportAudio;
+
+    private void Awake()
+    {
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
+    }
     
     private void OnEnable()
     {
@@ -54,6 +67,8 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnAddNewBar += AddNewBar;
 
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
+
+        EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
     }
 
     private void OnDisable()
@@ -65,6 +80,8 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnAddNewBar -= AddNewBar;
 
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
+
+        EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -73,7 +90,83 @@ public class TeleportManager : NetworkBehaviour
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
             CurrentMapServerRpc(false);
+            _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void TutorialTeleportRpc()
+    {
+        if(tutorialTeleportCount < tutorialTeleportPads.Length)
+        {        
+            EventsManager.ToggleRestriction("Move", false);
+            // EventsManager.FixTeleportEffect(0.2f, false);
+
+            // Vector3 localPos = tutorialTeleportPads[tutorialTeleportCount - 1].InverseTransformPoint(_pcPlayerTransform.position);
+            // Quaternion localRot = Quaternion.Inverse(tutorialTeleportPads[tutorialTeleportCount - 1].rotation) * _pcPlayerTransform.GetChild(0).rotation;
+
+            // _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].TransformPoint(localPos);
+            // _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation * localRot;
+
+            _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
+            _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+
+            tutorialTeleportCount++;
+
+            if(tutorialTeleportCount >= tutorialTeleportPads.Length - 1)
+            {
+                _audioSource.Stop();
+                _audioSource.clip = _teleportAudio;
+                _audioSource.pitch = 3f;
+                _audioSource.Play();
+                _audioSource.enabled = true; 
+
+                StartCoroutine(TutorialTeleportDelay(4f));
+            }
+            else
+            {
+                _audioSource.Stop();
+                _audioSource.clip = _teleportAudio;
+                _audioSource.pitch = 5f;
+                _audioSource.Play();
+                _audioSource.enabled = true; 
+
+                StartCoroutine(TutorialTeleportDelay(2f));
+            }
+            
+        }
+        
+        if(tutorialTeleportCount >= tutorialTeleportPads.Length)
+        {
+            _audioSource.Stop();
+
+            EventsManager.ToggleRestriction("Move", true);
+            EventsManager.FixTeleportEffect(0, true);
+        }
+    }
+
+    IEnumerator TutorialTeleportDelay(float _delay)
+    {
+        float elapsed = 0f;
+
+        Debug.Log("tutorialTeleportCount: " + tutorialTeleportCount);
+        Debug.Log("tutorialTeleportPads.Length: " + tutorialTeleportPads.Length);
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            
+            if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
+            {
+                EventsManager.FixTeleportEffect(0, true);
+            } else {
+                EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
+            }
+
+            yield return null;
+        }
+
+        TutorialTeleportRpc();
     }
 
     //This adds the bar of a teleport pad to a list
@@ -118,9 +211,16 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
             {
-                finalTeleportConnections.teleportPairs[i].
-                    entrancePad.GetComponent<TeleportPad>().
-                    SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
+                // finalTeleportConnections.teleportPairs[i].
+                //     entrancePad.GetComponent<TeleportPad>().
+                //     SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
+
+                // finalTeleportConnections.teleportPairs[i].
+                //     entrancePad.GetComponent<TeleportPad>().
+                //     SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
+
+                EventsManager.SetExitPadTransform(  finalTeleportConnections.teleportPairs[i].entrancePad.gameObject, 
+                                                    finalTeleportConnections.teleportPairs[i].exitPad);
             }
 
         //This sets up the correct map for the VR Player, and set up the correct teleport connections.
@@ -131,9 +231,12 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
             {
-                teleportConnections[_currentMap.Value].teleportPairs[i].
-                    entrancePad.GetComponent<TeleportPad>().
-                    SetExitPadTransform(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
+                // teleportConnections[_currentMap.Value].teleportPairs[i].
+                //     entrancePad.GetComponent<TeleportPad>().
+                //     SetExitPadTransform(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
+
+                EventsManager.SetExitPadTransform(  teleportConnections[_currentMap.Value].teleportPairs[i].entrancePad.gameObject, 
+                                                    teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
             }
             
             _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
