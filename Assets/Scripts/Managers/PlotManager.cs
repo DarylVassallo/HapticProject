@@ -11,7 +11,7 @@ public class PlotManager : MonoBehaviour
     private Transform vrPlayerCamera;
     private Material vrPlayerCameraCover;
 
-    [Header("PC Statue")]
+    [Header("PC Statue Pipes")]
     [SerializeField] private GameObject pcStatue;
     [SerializeField] private GameObject[] pcPipes;
     private int visiblePCPipes = 0;
@@ -134,7 +134,7 @@ public class PlotManager : MonoBehaviour
 
         if(visiblePCPipes >= pcPipes.Length)
         {
-            Destroy(pcStatue);
+            // Destroy(pcStatue);
             EventsManager.AddPCPlayerBody();
         } else {
             StartCoroutine(DelayPCSpawn());

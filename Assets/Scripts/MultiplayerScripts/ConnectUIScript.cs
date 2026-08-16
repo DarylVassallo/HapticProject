@@ -30,6 +30,7 @@ public class ConnectUIScript : NetworkBehaviour
 
 
     [Header("PC Player")]
+    [SerializeField] private GameObject pcPlayerStatue;
     [SerializeField] private GameObject pcPlayerWithBody;
     [SerializeField] private GameObject pcPlayerWithoutBody;
     [SerializeField] private GameObject currentPCPlayer;
@@ -304,6 +305,7 @@ public class ConnectUIScript : NetworkBehaviour
 
     private void CreatePCPlayerBody()
     {
+        if(pcPlayerStatue != null) Destroy(pcPlayerStatue);
         GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.Euler(0f, pcSpawnPoint.eulerAngles.y, 0f));
         NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
         _pcNetObj.SpawnAsPlayerObject(pcPlayerClientID, true);
