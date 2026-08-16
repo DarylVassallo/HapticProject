@@ -21,17 +21,20 @@ public class NarratorManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnTriggerNarratorAudio += TriggerNarratorAudio;
+        EventsManager.OnTriggerNarratorAudio += TriggerNarratorAudioRpc;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnTriggerNarratorAudio -= TriggerNarratorAudio;
+        EventsManager.OnTriggerNarratorAudio -= TriggerNarratorAudioRpc;
     }
 
-    private void TriggerNarratorAudio(string _currentSection, int _audioNum)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void TriggerNarratorAudioRpc(string _currentSection, int _audioNum, bool _isVRPlayer)
     {
         Debug.Log("TriggerNarratorAudio IsOwner: " + IsOwner);
+        if(_isVRPlayer && !IsOwner || !_isVRPlayer && IsOwner) return;
+        Debug.Log("TriggerNarratorAudio Playing");
 
         for(int i = 0; i < narratorAudio.Length; i++)
         {

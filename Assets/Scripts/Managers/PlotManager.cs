@@ -69,7 +69,7 @@ public class PlotManager : MonoBehaviour
     
     private void GetPCPlayerBodyData()
     {
-        EventsManager.TriggerNarratorAudio("PCIntro", 0);
+        EventsManager.TriggerNarratorAudio("PCIntro", 0, false);
         ToggleTutorial(pcMovementTutorial);
         // StartCoroutine(DelayPCSpawn());
     }
@@ -79,7 +79,7 @@ public class PlotManager : MonoBehaviour
         if(!_hasSeenChargeTutorial)
         {
             _hasSeenChargeTutorial = true;
-            EventsManager.TriggerNarratorAudio("PCIntro", 1);
+            EventsManager.TriggerNarratorAudio("PCIntro", 1, false);
         }
 
         ToggleTutorial(pcChargeTutorial);
@@ -90,7 +90,7 @@ public class PlotManager : MonoBehaviour
         if(!_hasSeenInteractTutorial)
         {
             _hasSeenInteractTutorial = true;
-            EventsManager.TriggerNarratorAudio("PCIntro", 2);
+            EventsManager.TriggerNarratorAudio("PCIntro", 2, false);
         }
 
         ToggleTutorial(pcInteractTutorial);
@@ -98,7 +98,7 @@ public class PlotManager : MonoBehaviour
 
     private void ResetPCTutorial()
     {
-        EventsManager.TriggerNarratorAudio("PCIntro", 0);
+        EventsManager.TriggerNarratorAudio("PCIntro", 0, false);
         ToggleTutorial(pcMovementTutorial);
 
         _hasSeenChargeTutorial = false;
@@ -121,7 +121,7 @@ public class PlotManager : MonoBehaviour
 
     public void BeginPCTransformation()
     {
-        EventsManager.TriggerNarratorAudio("VRIntro", 2);
+        EventsManager.TriggerNarratorAudio("VRIntro", 2, true);
         StartCoroutine(DelayPCSpawn());
     }
 
@@ -148,7 +148,7 @@ public class PlotManager : MonoBehaviour
 
     IEnumerator VRIntroEvent()
     {
-        EventsManager.TriggerNarratorAudio("VRIntro", 0);
+        EventsManager.TriggerNarratorAudio("VRIntro", 0, true);
 
         yield return new WaitForSeconds(12f);
 
@@ -166,7 +166,7 @@ public class PlotManager : MonoBehaviour
 
     private void CheckedRoofEvent()
     {
-        EventsManager.TriggerNarratorAudio("VRIntro", 1);
+        EventsManager.TriggerNarratorAudio("VRIntro", 1, true);
     }
 
     IEnumerator FadeVRPlayerIntoGame(float _delay)

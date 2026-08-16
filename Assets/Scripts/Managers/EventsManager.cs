@@ -224,7 +224,7 @@ public class EventsManager : MonoBehaviour
 
 
     //NarratorManager Events=============================================
-    public static event Action<string, int> OnTriggerNarratorAudio;
-    public static void TriggerNarratorAudio(string _section, int _audioNum) => OnTriggerNarratorAudio?.Invoke(_section, _audioNum);
+    public static event Action<string, int, bool> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _section, int _audioNum, bool _isVRPlayer) => OnTriggerNarratorAudio?.Invoke(_section, _audioNum, _isVRPlayer);
 
 }
