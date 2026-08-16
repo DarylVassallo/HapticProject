@@ -3,7 +3,6 @@ using UnityEngine;
 public class NarratorManager : MonoBehaviour
 {
     private AudioSource _audioSource;
-    [SerializeField] private AudioClip _teleportAudio;
     
     [System.Serializable]
     private struct NarratorAudio

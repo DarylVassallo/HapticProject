@@ -26,7 +26,8 @@ public class TeleportPad : NetworkBehaviour
 
     private bool _hasBeenUsed = false;
 
-    private bool _instantTeleport;
+    [SerializeField] private bool _instantTeleport;
+    [SerializeField] private bool _effectsEnemies;
 
     private bool rotateRings = false;
 
@@ -51,11 +52,11 @@ public class TeleportPad : NetworkBehaviour
     void Awake()
     {
         _codeText = this.GetComponentInChildren<TMP_Text>();
-        _codeText.text = "";
+        if(_codeText != null) _codeText.text = "";
 
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
 
-        _instantTeleport = false;
+        // _instantTeleport = false;
 
         restRotation = ring.rotation;
 
@@ -64,7 +65,7 @@ public class TeleportPad : NetworkBehaviour
 
     void Start()
     {
-        EventsManager.AddNewBar(bar);
+        if(bar != null) EventsManager.AddNewBar(bar);
     }
 
     private void OnEnable()
@@ -164,7 +165,7 @@ public class TeleportPad : NetworkBehaviour
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
-            EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
+            if(_effectsEnemies) EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
 
             //If the PCPlayer has reached the final teleport pad, their progress is saved
             if(_isFinalPad)

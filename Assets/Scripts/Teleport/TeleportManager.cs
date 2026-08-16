@@ -96,17 +96,10 @@ public class TeleportManager : NetworkBehaviour
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TutorialTeleportRpc()
-    {
+    {        
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
             EventsManager.ToggleRestriction("Move", false);
-            // EventsManager.FixTeleportEffect(0.2f, false);
-
-            // Vector3 localPos = tutorialTeleportPads[tutorialTeleportCount - 1].InverseTransformPoint(_pcPlayerTransform.position);
-            // Quaternion localRot = Quaternion.Inverse(tutorialTeleportPads[tutorialTeleportCount - 1].rotation) * _pcPlayerTransform.GetChild(0).rotation;
-
-            // _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].TransformPoint(localPos);
-            // _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation * localRot;
 
             _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
             _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
@@ -117,7 +110,7 @@ public class TeleportManager : NetworkBehaviour
             {
                 _audioSource.Stop();
                 _audioSource.clip = _teleportAudio;
-                _audioSource.pitch = 3f;
+                _audioSource.pitch = 3.5f;
                 _audioSource.Play();
                 _audioSource.enabled = true; 
 

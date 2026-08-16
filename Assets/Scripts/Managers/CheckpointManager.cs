@@ -7,6 +7,7 @@ using Unity.Netcode;
 public class CheckpointManager : NetworkBehaviour
 {
     [Header("Checkpoints")]
+    [SerializeField] private Transform tutorialCheckpoint;
     [SerializeField] private Transform firstCheckpoint;
     [SerializeField] private Transform secondCheckpoint;
     [SerializeField] private Transform thirdCheckpoint;
@@ -16,6 +17,7 @@ public class CheckpointManager : NetworkBehaviour
     private GameObject _pcPlayer;
     private bool _canPCFunction;
 
+    private bool _hasCompleteTutorial;
     private bool _hasUsedTeleporter;
     private bool _hasCollectedEverything;
     private bool _hasCrossedCrookedBridges;
@@ -25,8 +27,9 @@ public class CheckpointManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        currentCheckpoint = firstCheckpoint;
+        currentCheckpoint = tutorialCheckpoint;
 
+        EventsManager.OnTutorialTeleport += CompleteTutorial;
         EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
         EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
@@ -34,6 +37,7 @@ public class CheckpointManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnTutorialTeleport -= CompleteTutorial;
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
         EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
@@ -48,6 +52,16 @@ public class CheckpointManager : NetworkBehaviour
         }
     }
 
+    //If the PC Player completes the tutorial, and starts the game, 
+    // the first checkpoint will be set as the active checkpoint
+    private void CompleteTutorial()
+    {
+        if(!_hasCompleteTutorial)
+        {
+            ActivateFirstCheckpointClientRpc();
+        }
+    }
+    
     //If the PC Player reaches a teleport pad for the first time, 
     // the second checkpoint will be set as the active checkpoint
     private void UsedTeleporter(float _chance)
@@ -75,6 +89,14 @@ public class CheckpointManager : NetworkBehaviour
         }
     }
 
+    //This activates the first checkpoint
+    [ClientRpc]
+    public void ActivateFirstCheckpointClientRpc()
+    {
+        _hasCompleteTutorial = true;
+        currentCheckpoint = firstCheckpoint;
+    }
+    
     //Once the second checkpoint is activated, 
     // all the collectable and hidden arrows are activated
     [ClientRpc]
@@ -147,6 +169,12 @@ public class CheckpointManager : NetworkBehaviour
         {
             EventsManager.DestroyAllEnemies();
 
+            //If the PC Player has not completed the tutorial, then tutorial audio cues are reset
+            if(!_hasCompleteTutorial)
+            {
+                EventsManager.ResetPCTutorial();
+            }
+            
             //If the PC Player has not reached a teleport pad, then progress made with the switches are reset
             if(!_hasUsedTeleporter)
             {

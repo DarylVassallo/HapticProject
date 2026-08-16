@@ -20,7 +20,9 @@ public class PlotManager : MonoBehaviour
     [Header("PC Tutorial UI")]
     [SerializeField] private GameObject pcMovementTutorial;
     [SerializeField] private GameObject pcChargeTutorial;
+    private bool _hasSeenChargeTutorial;
     [SerializeField] private GameObject pcInteractTutorial;
+    private bool _hasSeenInteractTutorial;
 
     [Header("Roof")]
     [SerializeField] private Transform roof;
@@ -39,35 +41,68 @@ public class PlotManager : MonoBehaviour
     private void OnEnable()
     {
         EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData;
 
         EventsManager.OnTriggerPCChargeTutorial += TriggerPCChargeTutorial;
         EventsManager.OnTriggerPCInteractTutorial += TriggerPCInteractTutorial;
+        EventsManager.OnResetPCTutorial += ResetPCTutorial;
+        EventsManager.OnTutorialTeleport += DisableTutorials;
     }
 
     private void OnDisable()
     {
-       EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
+       EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+       EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
        EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
 
        EventsManager.OnTriggerPCChargeTutorial -= TriggerPCChargeTutorial;
        EventsManager.OnTriggerPCInteractTutorial -= TriggerPCInteractTutorial;
+       EventsManager.OnResetPCTutorial -= ResetPCTutorial;
+       EventsManager.OnTutorialTeleport -= DisableTutorials;
     }
 
     private void GetPCPlayerData()
     {
+        // BeginPCTransformation();
+    }
+    
+    private void GetPCPlayerBodyData()
+    {
+        EventsManager.TriggerNarratorAudio("PCIntro", 0);
         ToggleTutorial(pcMovementTutorial);
         // StartCoroutine(DelayPCSpawn());
     }
 
     private void TriggerPCChargeTutorial()
     {
+        if(!_hasSeenChargeTutorial)
+        {
+            _hasSeenChargeTutorial = true;
+            EventsManager.TriggerNarratorAudio("PCIntro", 1);
+        }
+
         ToggleTutorial(pcChargeTutorial);
     }
 
     private void TriggerPCInteractTutorial()
     {
+        if(!_hasSeenInteractTutorial)
+        {
+            _hasSeenInteractTutorial = true;
+            EventsManager.TriggerNarratorAudio("PCIntro", 2);
+        }
+
         ToggleTutorial(pcInteractTutorial);
+    }
+
+    private void ResetPCTutorial()
+    {
+        EventsManager.TriggerNarratorAudio("PCIntro", 0);
+        ToggleTutorial(pcMovementTutorial);
+
+        _hasSeenChargeTutorial = false;
+        _hasSeenInteractTutorial = false;
     }
 
     private void DisableTutorials()

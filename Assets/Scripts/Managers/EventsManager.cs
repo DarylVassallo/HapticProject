@@ -163,6 +163,10 @@ public class EventsManager : MonoBehaviour
     public static void TriggerPCChargeTutorial() => OnTriggerPCChargeTutorial?.Invoke();
     public static event Action OnTriggerPCInteractTutorial;
     public static void TriggerPCInteractTutorial() => OnTriggerPCInteractTutorial?.Invoke();
+    public static event Action OnResetPCTutorial;
+    public static void ResetPCTutorial() => OnResetPCTutorial?.Invoke();
+    
+    
 
 
 
