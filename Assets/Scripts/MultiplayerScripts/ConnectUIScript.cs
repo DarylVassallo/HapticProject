@@ -305,12 +305,19 @@ public class ConnectUIScript : NetworkBehaviour
 
     private void CreatePCPlayerBody()
     {
-        if(pcPlayerStatue != null) Destroy(pcPlayerStatue);
+        DestroyPCPlayerStatueRpc();
         GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.Euler(0f, pcSpawnPoint.eulerAngles.y, 0f));
         NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
         _pcNetObj.SpawnAsPlayerObject(pcPlayerClientID, true);
 
         EventsManager.CreatedPCPlayerBody();
+    }
+
+    //Destroys the PC Player statue for both players
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void DestroyPCPlayerStatueRpc()
+    {
+        if(pcPlayerStatue != null) Destroy(pcPlayerStatue);
     }
 
     //Immediately creates a VR Player for the host (used in debugging only)
