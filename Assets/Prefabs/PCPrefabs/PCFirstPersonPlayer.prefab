@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 9092263592227103064}
   - component: {fileID: 6002630217480227733}
   - component: {fileID: 3018107112325426984}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 4624475592963330042}
   - component: {fileID: 2729143116228798163}
   - component: {fileID: 5405330894379558282}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8911,7 +8911,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8595087166085165321}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18363,7 +18363,7 @@ GameObject:
   - component: {fileID: 2062469043834754837}
   - component: {fileID: 9092755387211706361}
   - component: {fileID: 169331215546519734}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28449,7 +28449,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8538803252831386756}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39930,7 +39930,7 @@ GameObject:
   - component: {fileID: 5574668738839092238}
   - component: {fileID: 5004757540774543332}
   - component: {fileID: 2897623892185484919}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
