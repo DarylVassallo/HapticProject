@@ -64,7 +64,7 @@ public class PlotManager : NetworkBehaviour
 
     private void GetPCPlayerData()
     {
-        BeginPCTransformation();
+        // BeginPCTransformation();
     }
     
     private void GetPCPlayerBodyData()
