@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlotManager : MonoBehaviour
+using Unity.Netcode;
+public class PlotManager : NetworkBehaviour
 {
     private bool _constantlyCheck;
     private bool _checkRoof;
@@ -63,13 +64,13 @@ public class PlotManager : MonoBehaviour
 
     private void GetPCPlayerData()
     {
-        // BeginPCTransformation();
+        BeginPCTransformation();
     }
     
     private void GetPCPlayerBodyData()
     {
         EventsManager.TriggerNarratorAudio("PCIntro", 0, false);
-        ToggleTutorial(pcMovementTutorial);
+        ToggleTutorialRpc(0);
         // StartCoroutine(DelayPCSpawn());
     }
 
@@ -81,7 +82,7 @@ public class PlotManager : MonoBehaviour
             EventsManager.TriggerNarratorAudio("PCIntro", 1, false);
         }
 
-        ToggleTutorial(pcChargeTutorial);
+        ToggleTutorialRpc(1);
     }
 
     private void TriggerPCInteractTutorial()
@@ -92,13 +93,13 @@ public class PlotManager : MonoBehaviour
             EventsManager.TriggerNarratorAudio("PCIntro", 2, false);
         }
 
-        ToggleTutorial(pcInteractTutorial);
+        ToggleTutorialRpc(2);
     }
 
     private void ResetPCTutorial()
     {
         EventsManager.TriggerNarratorAudio("PCIntro", 0, false);
-        ToggleTutorial(pcMovementTutorial);
+        ToggleTutorialRpc(0);
 
         _hasSeenChargeTutorial = false;
         _hasSeenInteractTutorial = false;
@@ -106,7 +107,28 @@ public class PlotManager : MonoBehaviour
 
     private void DisableTutorials()
     {
-        ToggleTutorial(null);
+        ToggleTutorialRpc(-1);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ToggleTutorialRpc(int _tutorialNum)
+    {
+        switch(_tutorialNum)
+        {
+            case -1:
+                ToggleTutorial(null);
+                break;
+            case 0:
+                ToggleTutorial(pcMovementTutorial);
+                break;
+            case 1:
+                ToggleTutorial(pcChargeTutorial);
+                break;
+            case 2:
+                ToggleTutorial(pcInteractTutorial);
+                break;
+
+        }
     }
 
     private void ToggleTutorial(GameObject tutorial)
