@@ -18,6 +18,7 @@ public class MapPlayerTracker : NetworkBehaviour
     void Awake()
     {
         _canPCFunction = false;
+        mapPlayer.gameObject.SetActive(false);
     }
 
     private void OnEnable()
@@ -37,6 +38,8 @@ public class MapPlayerTracker : NetworkBehaviour
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
             _canPCFunction = true;
+            mapPlayer.gameObject.SetActive(true);
+
             pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
             pcCamera = pcPlayer.GetComponentInChildren<CinemachineCamera>().gameObject.transform;
             posOffset = mapPlayer.position;
