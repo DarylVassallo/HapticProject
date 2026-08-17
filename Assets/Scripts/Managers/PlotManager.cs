@@ -30,7 +30,7 @@ public class PlotManager : NetworkBehaviour
 
     private void Awake()
     {
-        DisableTutorials();
+        ToggleTutorial(null);
 
         for(int i = 0; i < pcPipes.Length; i++)
         {
