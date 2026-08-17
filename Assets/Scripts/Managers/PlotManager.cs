@@ -110,9 +110,10 @@ public class PlotManager : NetworkBehaviour
         ToggleTutorialRpc(-1);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ToggleTutorialRpc(int _tutorialNum)
     {
+        Debug.Log("ToggleTutorialRpc: " + _tutorialNum);
         switch(_tutorialNum)
         {
             case -1:
