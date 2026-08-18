@@ -4,6 +4,9 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 
+using UnityEngine.SceneManagement;
+using System.IO;
+
 public class CheckpointManager : NetworkBehaviour
 {
     [Header("Checkpoints")]
@@ -25,6 +28,8 @@ public class CheckpointManager : NetworkBehaviour
     [SerializeField] private Transform hiddenButtons;
     [SerializeField] private Transform hiddenArrows;
 
+    private NetworkVariable<int> nextScene = new (-1);
+
     private void OnEnable()
     {
         currentCheckpoint = tutorialCheckpoint;
@@ -33,6 +38,8 @@ public class CheckpointManager : NetworkBehaviour
         EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
         EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
+
+        nextScene.OnValueChanged += OnNextSceneChanged;
     }
 
     private void OnDisable()
@@ -41,6 +48,8 @@ public class CheckpointManager : NetworkBehaviour
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
         EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
+
+        nextScene.OnValueChanged -= OnNextSceneChanged;
     }
 
     private void GetPCPlayerData()
@@ -192,5 +201,45 @@ public class CheckpointManager : NetworkBehaviour
             EventsManager.ResetHealth(_pcPlayer);
             _pcPlayer.transform.position = currentCheckpoint.position;
         }
+    }
+
+    //Used by UI Button to change the scene
+    public void PlayLevelClient(string _sceneName)
+    {
+        SetNextSceneServerRpc(GetSceneIndex(_sceneName));
+    }
+
+    //Gets the correct scene number
+    private int GetSceneIndex(string sceneName)
+    {
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(i);
+            string name = Path.GetFileNameWithoutExtension(path);
+
+            if (name == sceneName) return i;
+        }
+
+        return -1;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetNextSceneServerRpc(int _newScene)
+    {
+        nextScene.Value = _newScene;
+    }
+
+    private void OnNextSceneChanged(int previousValue, int newValue)
+    {
+        PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
+    }
+
+    //Loads the correct scene
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayLevelServerRpc(string _sceneName)
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 }

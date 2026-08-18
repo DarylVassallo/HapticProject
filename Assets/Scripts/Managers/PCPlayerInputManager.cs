@@ -59,6 +59,8 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnFreezePCPlayer += FreezePlayer;
+
         EventsManager.OnToggleAll += ToggleAll;
         EventsManager.OnToggleRestriction += ToggleRestriction;
 
@@ -85,6 +87,8 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnFreezePCPlayer -= FreezePlayer;
+
         EventsManager.OnToggleAll -= ToggleAll;
         EventsManager.OnToggleRestriction -= ToggleRestriction;
 
@@ -109,6 +113,11 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.Disable();
     }
 
+    private void FreezePlayer(bool _toggle)
+    {
+        ToggleRestriction("All", !_toggle);
+        Debug.Log("ToggleRestriction: " + !_toggle);
+    }
     private void ToggleAll(bool _toggle)
     {
         ToggleRestriction("All", _toggle);

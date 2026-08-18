@@ -16,6 +16,7 @@ public class PlayerMovement : NetworkBehaviour
     [Header("Jump and Fall")]
     [SerializeField] private float jumpForce = 7f;
     [SerializeField] private float gravity = -12f;
+    private bool _isGravityEnabled;
     [SerializeField] private float initialFallVelocity = -2f;
 
 
@@ -42,6 +43,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Awake()
     {
+        _isGravityEnabled = true;
+
         _characterController = GetComponent<CharacterController>();
 
         // CinemachineCore.GetInputAxis = HandleAxisInput;
@@ -97,6 +100,8 @@ public class PlayerMovement : NetworkBehaviour
     
     private void OnEnable()
     {
+        EventsManager.OnFreezePCPlayer += FreezePlayer;
+
         EventsManager.OnMove += ChangeMotion;
         EventsManager.OnJump += Jump;
 
@@ -108,6 +113,8 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnFreezePCPlayer -= FreezePlayer;
+
         EventsManager.OnMove -= ChangeMotion;
         EventsManager.OnJump -= Jump;
 
@@ -117,16 +124,15 @@ public class PlayerMovement : NetworkBehaviour
         bodyYRotation.OnValueChanged -= SetBodyYRotation;
     }
 
-    // private float HandleAxisInput(string axisName)
-    // {
-    //     // if (axisName == "Mouse X")
-    //     //     return Mouse.current.delta.x.ReadValue();
+    private void FreezePlayer(bool _toggle)
+    {
+        _isGravityEnabled = !_toggle;
 
-    //     // if (axisName == "Mouse Y")
-    //     //     return Mouse.current.delta.y.ReadValue();
-
-    //     return 0;
-    // }
+        if(!_isGravityEnabled)
+        {
+            _characterController.Move(new Vector3(0, 0, 0) * Time.deltaTime);
+        }
+    }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsWalkingServerRpc(bool _walk)
@@ -187,12 +193,19 @@ public class PlayerMovement : NetworkBehaviour
     //Controls the gravity applied to the PC Player
     private void HandleGravity()
     {
-        if(_isGrounded && _verticalVelocity < 0)
+        if(_isGravityEnabled)
         {
-            _verticalVelocity = initialFallVelocity;
-        }
+            if(_isGrounded && _verticalVelocity < 0)
+            {
+                _verticalVelocity = initialFallVelocity;
+            }
 
-        _verticalVelocity += gravity * Time.deltaTime;
+            _verticalVelocity += gravity * Time.deltaTime;
+        }
+        else
+        {
+            _verticalVelocity = 0;
+        }
     }
 
 

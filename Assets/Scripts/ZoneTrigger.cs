@@ -4,6 +4,7 @@ public class ZoneTrigger : MonoBehaviour
 {
     [SerializeField] private bool chargeTutorial;
     [SerializeField] private bool interactTutorial;
+    [SerializeField] private bool enteredTemple;
 
     private void OnTriggerEnter(Collider other)
     {        
@@ -11,6 +12,7 @@ public class ZoneTrigger : MonoBehaviour
         { 
             if(chargeTutorial) EventsManager.TriggerPCChargeTutorial();
             if(interactTutorial) EventsManager.TriggerPCInteractTutorial();
+            if(enteredTemple) EventsManager.EnteredTemple();
         }
     }
 }

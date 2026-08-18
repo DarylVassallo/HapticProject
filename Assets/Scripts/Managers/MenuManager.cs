@@ -27,6 +27,9 @@ public class MenuManager : NetworkBehaviour
     [SerializeField] private GameObject gameOverMenu;
     private bool _showGameOverMenu;
 
+    [SerializeField] private GameObject winMenu;
+    private bool _showWinMenu;
+
     [SerializeField] private GameObject pcPlayerUI;
     [SerializeField] private Transform pcHealthBar;
     private float _maxHealthBarLength;
@@ -48,6 +51,9 @@ public class MenuManager : NetworkBehaviour
         _showGameOverMenu = true;
         ToggleGameOverMenu();
 
+        _showWinMenu = true;
+        ToggleWinMenu();
+
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
 
         _maxHealthBarLength = pcHealthBar.localScale.y;
@@ -59,6 +65,7 @@ public class MenuManager : NetworkBehaviour
         EventsManager.OnCancel += TogglePauseMenu;
         
         EventsManager.OnGameOver += ToggleGameOverMenu;
+        EventsManager.OnEnteredTemple += ToggleWinMenu;
         EventsManager.OnChangeHealthBar += ChangeHealthBar;
         EventsManager.OnChangeChargeBar += ChangeChargeBar;
     }
@@ -68,6 +75,7 @@ public class MenuManager : NetworkBehaviour
         EventsManager.OnCancel -= TogglePauseMenu;
 
         EventsManager.OnGameOver -= ToggleGameOverMenu;
+        EventsManager.OnEnteredTemple -= ToggleWinMenu;
         EventsManager.OnChangeHealthBar -= ChangeHealthBar;
         EventsManager.OnChangeChargeBar -= ChangeChargeBar;
     }
@@ -196,7 +204,7 @@ public class MenuManager : NetworkBehaviour
         _bar.localScale = new Vector3(_maxBarLength * _newValue, _bar.localScale.y, _bar.localScale.z);
     }
     
-    //Toggles the game over screen
+    //Toggles the game over screen (using UI Buttons)
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ToggleGameOverMenuRpc()
     {
@@ -206,7 +214,6 @@ public class MenuManager : NetworkBehaviour
     //Toggles the game over screen, stopping the game when the menu is active
     private void ToggleGameOverMenu()
     {
-        Debug.Log("ToggleGameOverMenu _showGameOverMenu: " + _showGameOverMenu);
         _showGameOverMenu = !_showGameOverMenu;
 
         if(_showGameOverMenu)
@@ -228,10 +235,34 @@ public class MenuManager : NetworkBehaviour
         CheckTimeScale();
     }
 
+    //Toggles the win screen, stopping the game when the menu is active
+    private void ToggleWinMenu()
+    {
+        _showWinMenu = !_showWinMenu;
+
+        if(_showWinMenu)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        for (int i = 0; i < winMenu.transform.childCount; i++)
+        {
+            if (winMenu.transform.GetChild(i).gameObject != null)  winMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
+        }
+
+        CheckTimeScale();
+    }
+
     //This can stop/resume the game when required
     private void CheckTimeScale()
     {
-        if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu)
+        if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu || _showWinMenu)
         {
             FreezeGame();
         }

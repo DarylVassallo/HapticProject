@@ -52,7 +52,7 @@ public class PlotManager : NetworkBehaviour
 
     private void OnDisable()
     {
-       EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+       EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
        EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
 
@@ -64,12 +64,13 @@ public class PlotManager : NetworkBehaviour
 
     private void GetPCPlayerData()
     {
-        // BeginPCTransformation();
+        Debug.Log("GetPCPlayerData");
+        BeginPCTransformation();
     }
     
     private void GetPCPlayerBodyData()
     {
-        EventsManager.TriggerNarratorAudio("PCIntro", 0, false);
+        EventsManager.TriggerNarratorAudio("PCIntro", "IntroducePC", false);
         ToggleTutorialRpc(0);
         // StartCoroutine(DelayPCSpawn());
     }
@@ -79,7 +80,7 @@ public class PlotManager : NetworkBehaviour
         if(!_hasSeenChargeTutorial)
         {
             _hasSeenChargeTutorial = true;
-            EventsManager.TriggerNarratorAudio("PCIntro", 1, false);
+            EventsManager.TriggerNarratorAudio("PCIntro", "IntroduceCharge", false);
         }
 
         ToggleTutorialRpc(1);
@@ -90,7 +91,7 @@ public class PlotManager : NetworkBehaviour
         if(!_hasSeenInteractTutorial)
         {
             _hasSeenInteractTutorial = true;
-            EventsManager.TriggerNarratorAudio("PCIntro", 2, false);
+            EventsManager.TriggerNarratorAudio("PCIntro", "IntroduceInteraction", false);
         }
 
         ToggleTutorialRpc(2);
@@ -98,7 +99,7 @@ public class PlotManager : NetworkBehaviour
 
     private void ResetPCTutorial()
     {
-        EventsManager.TriggerNarratorAudio("PCIntro", 0, false);
+        EventsManager.TriggerNarratorAudio("PCIntro", "IntroducePC", false);
         ToggleTutorialRpc(0);
 
         _hasSeenChargeTutorial = false;
@@ -113,7 +114,6 @@ public class PlotManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ToggleTutorialRpc(int _tutorialNum)
     {
-        Debug.Log("ToggleTutorialRpc: " + _tutorialNum);
         switch(_tutorialNum)
         {
             case -1:
@@ -143,7 +143,8 @@ public class PlotManager : NetworkBehaviour
 
     public void BeginPCTransformation()
     {
-        EventsManager.TriggerNarratorAudio("VRIntro", 2, true);
+        Debug.Log("BeginPCTransformation");
+        EventsManager.TriggerNarratorAudio("VRIntro", "WaitForPC", true);
         StartCoroutine(DelayPCSpawn());
     }
 
@@ -165,14 +166,19 @@ public class PlotManager : NetworkBehaviour
 
     private void GetVRPlayerData()
     {
-        StartCoroutine(VRIntroEvent());
+        VRIntroEvent();
     }
 
-    IEnumerator VRIntroEvent()
+    private void VRIntroEvent()
     {
-        EventsManager.TriggerNarratorAudio("VRIntro", 0, true);
+        EventsManager.TriggerNarratorAudio("VRIntro", "IntroduceVR", true);
+        EventsManager.OnNarratorStopped += UncoverVRPlayer;
+    }
 
-        yield return new WaitForSeconds(12f);
+    private void UncoverVRPlayer()
+    {
+        EventsManager.TriggerNarratorAudio("VRIntro", "CheckRoof", true);
+        EventsManager.OnNarratorStopped -= UncoverVRPlayer;
 
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
@@ -188,7 +194,7 @@ public class PlotManager : NetworkBehaviour
 
     private void CheckedRoofEvent()
     {
-        EventsManager.TriggerNarratorAudio("VRIntro", 1, true);
+        EventsManager.TriggerNarratorAudio("VRIntro", "GrabPCStatue", true);
     }
 
     IEnumerator FadeVRPlayerIntoGame(float _delay)

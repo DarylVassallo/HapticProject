@@ -13,6 +13,11 @@ public class EventsManager : MonoBehaviour
     public static void CreatedPCPlayerBody() => OnCreatedPCPlayerBody?.Invoke();
     public static event Action OnCreatedVRPlayer;
     public static void CreatedVRPlayer() => OnCreatedVRPlayer?.Invoke();
+    
+    public static event Action<ulong> OnSetPCPlayerID;
+    public static void SetPCPlayerID(ulong _clientID) => OnSetPCPlayerID?.Invoke(_clientID);
+    public static event Action<ulong> OnSetVRPlayerID;
+    public static void SetVRPlayerID(ulong _clientID) => OnSetVRPlayerID?.Invoke(_clientID);
 
 
 
@@ -25,6 +30,9 @@ public class EventsManager : MonoBehaviour
     public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
     public static event Action<string, bool> OnToggleRestriction;
     public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
+
+    public static event Action<bool> OnFreezePCPlayer;
+    public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
 
 
 
@@ -224,7 +232,12 @@ public class EventsManager : MonoBehaviour
 
 
     //NarratorManager Events=============================================
-    public static event Action<string, int, bool> OnTriggerNarratorAudio;
-    public static void TriggerNarratorAudio(string _section, int _audioNum, bool _isVRPlayer) => OnTriggerNarratorAudio?.Invoke(_section, _audioNum, _isVRPlayer);
+    public static event Action<string, string, bool> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer);
+    public static event Action OnNarratorStopped;
+    public static void NarratorStopped() => OnNarratorStopped?.Invoke();
 
+    //Ending Events=============================================
+    public static event Action OnEnteredTemple;
+    public static void EnteredTemple() => OnEnteredTemple?.Invoke();
 }

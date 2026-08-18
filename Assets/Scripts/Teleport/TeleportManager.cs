@@ -99,7 +99,8 @@ public class TeleportManager : NetworkBehaviour
     {        
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
-            EventsManager.ToggleRestriction("Move", false);
+            EventsManager.FreezePCPlayer(true);
+            // EventsManager.ToggleRestriction("Move", false);
 
             _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
             _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
@@ -133,7 +134,9 @@ public class TeleportManager : NetworkBehaviour
         {
             _audioSource.Stop();
 
-            EventsManager.ToggleRestriction("Move", true);
+            EventsManager.FreezePCPlayer(false);
+            // EventsManager.ToggleRestriction("Move", true);
+
             EventsManager.FixTeleportEffect(0, true);
         }
     }
@@ -141,9 +144,6 @@ public class TeleportManager : NetworkBehaviour
     IEnumerator TutorialTeleportDelay(float _delay)
     {
         float elapsed = 0f;
-
-        Debug.Log("tutorialTeleportCount: " + tutorialTeleportCount);
-        Debug.Log("tutorialTeleportPads.Length: " + tutorialTeleportPads.Length);
 
         while(elapsed < _delay)
         {
@@ -159,7 +159,7 @@ public class TeleportManager : NetworkBehaviour
             yield return null;
         }
 
-        if(!IsOwner) TutorialTeleportRpc();
+        if(IsOwner) TutorialTeleportRpc();
     }
 
     //This adds the bar of a teleport pad to a list
