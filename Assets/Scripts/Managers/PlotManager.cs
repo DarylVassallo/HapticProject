@@ -40,7 +40,6 @@ public class PlotManager : NetworkBehaviour
     
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData;
 
@@ -48,11 +47,12 @@ public class PlotManager : NetworkBehaviour
         EventsManager.OnTriggerPCInteractTutorial += TriggerPCInteractTutorial;
         EventsManager.OnResetPCTutorial += ResetPCTutorial;
         EventsManager.OnTutorialTeleport += DisableTutorials;
+
+        EventsManager.OnUsingOnlyPCPlayer += UseOnlyPCPlayer;
     }
 
     private void OnDisable()
     {
-       EventsManager.OnCreatedPCPlayer -= GetPCPlayerData;
        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
        EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
 
@@ -60,11 +60,12 @@ public class PlotManager : NetworkBehaviour
        EventsManager.OnTriggerPCInteractTutorial -= TriggerPCInteractTutorial;
        EventsManager.OnResetPCTutorial -= ResetPCTutorial;
        EventsManager.OnTutorialTeleport -= DisableTutorials;
+
+       EventsManager.OnUsingOnlyPCPlayer -= UseOnlyPCPlayer;
     }
 
-    private void GetPCPlayerData()
+    private void UseOnlyPCPlayer()
     {
-        Debug.Log("GetPCPlayerData");
         BeginPCTransformation();
     }
     
@@ -77,6 +78,7 @@ public class PlotManager : NetworkBehaviour
 
     private void TriggerPCChargeTutorial()
     {
+        EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), -25);
         if(!_hasSeenChargeTutorial)
         {
             _hasSeenChargeTutorial = true;
@@ -88,6 +90,7 @@ public class PlotManager : NetworkBehaviour
 
     private void TriggerPCInteractTutorial()
     {
+        EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25);
         if(!_hasSeenInteractTutorial)
         {
             _hasSeenInteractTutorial = true;

@@ -69,6 +69,8 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
 
         EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
+
+        EventsManager.OnDisableTeleportChange += DisableTeleportChange;
     }
 
     private void OnDisable()
@@ -81,7 +83,15 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
 
-        EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
+        EventsManager.OnTutorialTeleport -= TutorialTeleportRpc;
+
+        EventsManager.OnDisableTeleportChange -= DisableTeleportChange;
+    }
+
+    private void DisableTeleportChange()
+    {
+        minDelay *= 1000;
+        maxDelay *= 1000;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]

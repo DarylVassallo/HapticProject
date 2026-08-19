@@ -37,9 +37,6 @@ public class MazeManager : NetworkBehaviour
     [SerializeField] private Material deactiveMaterial;
     [SerializeField] private AudioClip correctAudio;
     [SerializeField] private AudioClip incorrectAudio;
-    [SerializeField] private bool startWithActivatedSpinWheel;
-    [SerializeField] private bool startWithActivatedHealthBall;
-    [SerializeField] private bool startWithActivatedDefenseButton;
 
 
 
@@ -94,6 +91,10 @@ public class MazeManager : NetworkBehaviour
         EventsManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
 
         EventsManager.OnGivePCPlayerHealth += GivePCPlayerHealthUsingBall;
+
+        EventsManager.OnActivateSpinWheel += ActivateSpinWheel;
+        EventsManager.OnActivateHealthBall += ActivateHealthBall;
+        EventsManager.OnActivateDefenseButton += ActivateDefenseButton;
     }
 
     private void OnDisable()
@@ -106,6 +107,10 @@ public class MazeManager : NetworkBehaviour
         EventsManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
 
         EventsManager.OnGivePCPlayerHealth -= GivePCPlayerHealthUsingBall;
+
+        EventsManager.OnActivateSpinWheel -= ActivateSpinWheel;
+        EventsManager.OnActivateHealthBall -= ActivateHealthBall;
+        EventsManager.OnActivateDefenseButton -= ActivateDefenseButton;
     }
 
     public override void OnNetworkSpawn()
@@ -129,10 +134,6 @@ public class MazeManager : NetworkBehaviour
         }
 
         base.OnNetworkSpawn();
-
-        if(startWithActivatedSpinWheel) ActivateSpinWheel();
-        if(startWithActivatedHealthBall) ActivateHealthBall();
-        if(startWithActivatedDefenseButton) ActivateDefenseButton();
     }
 
     //Triggered by inputting correct sequence to activate the spin wheel

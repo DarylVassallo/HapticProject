@@ -45,7 +45,7 @@ public class EnemyManager : NetworkBehaviour
 
     private bool _isEnemySpawningDisabled = false;
 
-    [SerializeField] private bool disableEnemies;
+    private bool disableEnemies;
 
     void Awake()
     {
@@ -72,6 +72,8 @@ public class EnemyManager : NetworkBehaviour
         EventsManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
 
         EventsManager.OnGetAppropriateEnemyAudio += GetAppropriateAudio;
+
+        EventsManager.OnDisableEnemies += DisableEnemies;
     }
 
     private void OnDisable()
@@ -85,6 +87,13 @@ public class EnemyManager : NetworkBehaviour
         EventsManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
 
         EventsManager.OnGetAppropriateEnemyAudio -= GetAppropriateAudio;
+
+        EventsManager.OnDisableEnemies -= DisableEnemies;
+    }
+
+    private void DisableEnemies()
+    {
+        disableEnemies = true;
     }
 
     private void GetPCPlayerData()

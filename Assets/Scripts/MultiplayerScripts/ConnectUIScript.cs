@@ -56,10 +56,8 @@ public class ConnectUIScript : NetworkBehaviour
     
     
     [Header("Testing Variables")]
-    [SerializeField] private bool isUsingPlayMode;
-    [SerializeField] private bool isUsingOnlyVRPlayer;
-     private bool _isTestingVRPlayer = false;
-    [SerializeField] private bool isUsingOnlyPCPlayer;
+    private bool isUsingPlayMode;
+    private bool _isTestingVRPlayer = false;
     private bool _isTestingPCPlayer = false;
 
     void Start()
@@ -98,9 +96,6 @@ public class ConnectUIScript : NetworkBehaviour
                 } 
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
-
-            if(isUsingOnlyVRPlayer) DebugStartVRPlayer();
-            if(isUsingOnlyPCPlayer) DebugStartPCPlayer();
         }
     }
 
@@ -110,6 +105,10 @@ public class ConnectUIScript : NetworkBehaviour
         Debug.Log("ConnectUIScript OnEnable NetworkManager.Singleton: " + NetworkManager.Singleton);
 
         EventsManager.OnAddPCPlayerBody += CreatePCPlayerBody;
+
+        EventsManager.OnUsingPlayMode += UsingPlayMode;
+        EventsManager.OnUsingOnlyVRPlayer += UsingOnlyVRPlayer;
+        EventsManager.OnUsingOnlyPCPlayer += UsingOnlyPCPlayer;
 
         if(NetworkManager.Singleton != null)
         {
@@ -153,6 +152,24 @@ public class ConnectUIScript : NetworkBehaviour
         if (NetworkManager.Singleton != null)  NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
 
         EventsManager.OnAddPCPlayerBody -= CreatePCPlayerBody;
+    }
+
+    private void UsingPlayMode()
+    {
+        Debug.Log("UsingPlayMode");
+        isUsingPlayMode = true;
+    }
+
+    private void UsingOnlyVRPlayer()
+    {
+        Debug.Log("UsingOnlyVRPlayer");
+        DebugStartVRPlayer();
+    }
+
+    private void UsingOnlyPCPlayer()
+    {
+        Debug.Log("UsingOnlyPCPlayer");
+        DebugStartPCPlayer();
     }
 
     //If this scene is loaded after the players join the server, 

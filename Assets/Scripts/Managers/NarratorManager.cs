@@ -38,6 +38,8 @@ public class NarratorManager : NetworkBehaviour
         EventsManager.OnTriggerNarratorAudio += TriggerNarratorAudioRpc;
         EventsManager.OnSetPCPlayerID += SetPCPlayerIDRpc;
         EventsManager.OnSetVRPlayerID += SetVRPlayerIDRpc;
+
+        EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
     }
 
     private void OnDisable()
@@ -45,6 +47,21 @@ public class NarratorManager : NetworkBehaviour
         EventsManager.OnTriggerNarratorAudio -= TriggerNarratorAudioRpc;
         EventsManager.OnSetPCPlayerID -= SetPCPlayerIDRpc;
         EventsManager.OnSetVRPlayerID -= SetVRPlayerIDRpc;
+
+        EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void TogglePauseManagerAudioRpc(bool _toggle)
+    {
+        if(_toggle)
+        {
+            _audioSource.Pause();
+        }
+        else
+        {
+            _audioSource.UnPause();
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]

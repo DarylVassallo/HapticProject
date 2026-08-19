@@ -4,6 +4,24 @@ using System;
 
 public class EventsManager : MonoBehaviour
 {
+    //Debug Events=============================================
+    public static event Action OnUsingPlayMode;
+    public static void UsingPlayMode() => OnUsingPlayMode?.Invoke();
+    public static event Action OnUsingOnlyVRPlayer;
+    public static void UsingOnlyVRPlayer() => OnUsingOnlyVRPlayer?.Invoke();
+    public static event Action OnUsingOnlyPCPlayer;
+    public static void UsingOnlyPCPlayer() => OnUsingOnlyPCPlayer?.Invoke();
+
+    public static event Action OnActivateSpinWheel;
+    public static void ActivateSpinWheel() => OnActivateSpinWheel?.Invoke();
+    public static event Action OnActivateHealthBall;
+    public static void ActivateHealthBall() => OnActivateHealthBall?.Invoke();
+    public static event Action OnActivateDefenseButton;
+    public static void ActivateDefenseButton() => OnActivateDefenseButton?.Invoke();
+
+
+
+
     //Network Events=============================================
     public static event Action OnCreatedPCPlayer;
     public static void CreatedPCPlayer() => OnCreatedPCPlayer?.Invoke();
@@ -54,6 +72,12 @@ public class EventsManager : MonoBehaviour
     public static void GetAppropriateEnemyAudio(GameObject _enemy, int _audioType) => OnGetAppropriateEnemyAudio?.Invoke(_enemy, _audioType);
     public static event Action<GameObject, AudioClip> OnSendAppropriateEnemyAudio;
     public static void SendAppropriateEnemyAudio(GameObject _enemy, AudioClip _audio) => OnSendAppropriateEnemyAudio?.Invoke(_enemy, _audio);
+
+    public static event Action OnDisableEnemies;
+    public static void DisableEnemies() => OnDisableEnemies?.Invoke();
+
+    public static event Action OnDisableTeleportChange;
+    public static void DisableTeleportChange() => OnDisableTeleportChange?.Invoke();
 
 
 
@@ -231,11 +255,20 @@ public class EventsManager : MonoBehaviour
     public static void EntityChangedFlashlightRange(float newFlashlightRange) => OnEntityChangedFlashlightRange?.Invoke(newFlashlightRange);
 
 
+
+
+
     //NarratorManager Events=============================================
     public static event Action<string, string, bool> OnTriggerNarratorAudio;
     public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer);
     public static event Action OnNarratorStopped;
     public static void NarratorStopped() => OnNarratorStopped?.Invoke();
+    public static event Action<bool> OnTogglePauseManagerAudio;
+    public static void TogglePauseManagerAudio(bool _toggle) => OnTogglePauseManagerAudio?.Invoke(_toggle);
+
+
+
+
 
     //Ending Events=============================================
     public static event Action OnEnteredTemple;
