@@ -165,7 +165,11 @@ public class TeleportPad : NetworkBehaviour
         if (!_hasBeenUsed)
         {
             _hasBeenUsed = true;
-            if(_effectsEnemies) EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
+            if(_effectsEnemies)
+            {
+                Debug.Log("IncreaseChanceOfSpawningEnemy : " + this.gameObject);
+                EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
+            }
 
             //If the PCPlayer has reached the final teleport pad, their progress is saved
             if(_isFinalPad)

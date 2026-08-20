@@ -309,7 +309,7 @@ public class MazeManager : NetworkBehaviour
         isDefenseButtonActive.Value = false;
         DeactivateObjectLight(defenseButtonObject);
 
-        ResetButtons();
+        TrueResetButtons();
     }
     
     //Upon an interactive object being active, 
@@ -425,6 +425,19 @@ public class MazeManager : NetworkBehaviour
         entryNum = 0;
 
         EventsManager.ResetButtons();
+
+        //Wrong
+        return;
+    }
+
+    //Resets the recorded inputted buttons of the switch and deactives correctly inputted buttons
+    private void TrueResetButtons()
+    {
+        currentShapeOrder = new EventsManager.ShapeType[5];
+        currentButtonOrder = new EventsManager.ButtonType[5];
+        entryNum = 0;
+
+        EventsManager.TrueResetButtons();
 
         //Wrong
         return;

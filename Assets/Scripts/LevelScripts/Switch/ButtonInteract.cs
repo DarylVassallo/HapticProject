@@ -111,9 +111,17 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void TrueResetButtonRpc()
+    {
+        _isPermanentallyCorrect = false;
+        if(!_activeButton) return;
+        SetMoveUpTrue();
+    }
+    
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ResetButtonRpc()
     {
-        if(!_activeButton) return;
+        if(!_activeButton || _isPermanentallyCorrect) return;
         SetMoveUpTrue();
     }
 
