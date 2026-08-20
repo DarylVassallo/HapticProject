@@ -266,11 +266,13 @@ public class TeleportManager : NetworkBehaviour
             {
                 for(int i = 0; i < _barList.Count; i++)
                 {
-                    _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
-                                                        _barList[i].localScale.y, 
-                                                        Mathf.Lerp(0.95f, 0f, t));
+                    // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+                    //                                     _barList[i].localScale.y, 
+                    //                                     Mathf.Lerp(0.95f, 0f, t));
 
-                    Debug.Log("Mathf.Lerp(0.95f, 0f, " + t + "): " + Mathf.Lerp(0.95f, 0f, t)); 
+                    // Debug.Log("Mathf.Lerp(0.95f, 0f, " + t + "): " + Mathf.Lerp(0.95f, 0f, t));
+
+                    ChangeBarSizeRpc(t); 
                 }
             }
 
@@ -284,9 +286,24 @@ public class TeleportManager : NetworkBehaviour
         //The teleport bars are reset to their full size
         for(int i = 0; i < _barList.Count; i++)
         {
+            // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+            //                                     _barList[i].localScale.y, 
+            //                                     0.95f);
+
+            ChangeBarSizeRpc(0.95f); 
+        }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeBarSizeRpc(float _newSize)
+    {
+        for(int i = 0; i < _barList.Count; i++)
+        {
             _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
                                                 _barList[i].localScale.y, 
-                                                0.95f);
+                                                Mathf.Lerp(0.95f, 0f, _newSize));
+
+            Debug.Log("Mathf.Lerp(0.95f, 0f, " + _newSize + "): " + Mathf.Lerp(0.95f, 0f, _newSize)); 
         }
     }
 
