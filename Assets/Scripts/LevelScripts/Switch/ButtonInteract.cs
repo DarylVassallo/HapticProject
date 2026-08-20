@@ -37,6 +37,8 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
     private bool _activeButton;
 
+    private bool _isPermanentallyCorrect;
+
     void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -57,40 +59,31 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
     private void OnEnable()
     {
-        EventsManager.OnResetButtons += ResetButton;
+        EventsManager.OnResetButtons += ResetButtonRpc;
+        EventsManager.OnFreezeCorrectButtons += FreezeButtonRpc;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnResetButtons -= ResetButton;
+        EventsManager.OnResetButtons -= ResetButtonRpc;
+        EventsManager.OnFreezeCorrectButtons -= FreezeButtonRpc;
     }
 
-    [ClientRpc]
-    public void SetMoveUpFalseClientRpc()
+    //Override function from IInteractable
+    public void TriggerInteraction()
     {
-        _moveUp = false;
+        if (_isInteractable && !_activeButton)
+        {
+            SetMoveDownTrueRpc();
+        }
     }
 
-    [ClientRpc]
-    public void SetMoveUpTrueClientRpc()
-    {
-        _activeButton = false;
-        targetPosition = pushedPosition; 
-        _moveUp = true;
-    }
-
-    [ClientRpc]
-    public void SetMoveDownFalseClientRpc()
-    {
-        _moveDown = false;
-    }
-
-    [ClientRpc]
-    public void SetMoveDownTrueClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void SetMoveDownTrueRpc()
     {
         _activeButton = true;
 
-        EventsManager.TriggerButton(shape, button);
+        if(IsOwner) EventsManager.TriggerButton(shape, button);
 
         targetPosition = originalPosition;
 
@@ -106,15 +99,6 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     }
 
     //Override function from IInteractable
-    public void TriggerInteraction()
-    {
-        if (_isInteractable && !_activeButton)
-        {
-            TriggerInteractionServerRpc();
-        }
-    }
-
-    //Override function from IInteractable
     public void EnableInteraction()
     {
         _isInteractable = true;
@@ -126,22 +110,33 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         _isInteractable = false;
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void TriggerInteractionServerRpc()
-    {
-        SetMoveDownTrueClientRpc();
-    }
-
-    private void ResetButton()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ResetButtonRpc()
     {
         if(!_activeButton) return;
-        ResetButtonServerRpc();
+        SetMoveUpTrue();
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ResetButtonServerRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void FreezeButtonRpc(EventsManager.ShapeType _shape)
     {
-        SetMoveUpTrueClientRpc();
+        if(!_activeButton) return;
+
+        if(_shape == shape)
+        {
+            _isPermanentallyCorrect = true;
+        }
+        else
+        {
+            SetMoveUpTrue();
+        }
+    }
+
+    public void SetMoveUpTrue()
+    {
+        _activeButton = false;
+        targetPosition = pushedPosition; 
+        _moveUp = true;
     }
 
     //When a button is pressed, or is reset, this smoothly changes the buttons position and colour to be pushed in and blue if it is pressed.

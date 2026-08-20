@@ -430,6 +430,19 @@ public class MazeManager : NetworkBehaviour
         return;
     }
 
+    //Resets the recorded inputted buttons of the switch, and freezes the correct buttons
+    private void FreezeCorrectButtons(EventsManager.ShapeType _shape)
+    {
+        currentShapeOrder = new EventsManager.ShapeType[5];
+        currentButtonOrder = new EventsManager.ButtonType[5];
+        entryNum = 0;
+
+        EventsManager.FreezeCorrectButtons(_shape);
+
+        //Wrong
+        return;
+    }
+
     //Records the new inputted button of the switch, 
     // Checks if the button matches the switches order, 
     // Checks if the button belongs to the current switch,
@@ -483,7 +496,7 @@ public class MazeManager : NetworkBehaviour
                 }
 
                 //The current order is complete and correct
-                ResetButtons();
+                FreezeCorrectButtons(_shape);
                 hiddenSwitches[i].activateMethod.Invoke();
                 SetAudioNumServerRpc(1);
 

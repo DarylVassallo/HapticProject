@@ -87,8 +87,12 @@ public class EventsManager : MonoBehaviour
     public static event Action OnResetHiddenSwitches;
     public static void ResetHiddenSwitches() => OnResetHiddenSwitches?.Invoke();
     public static event Action OnResetHiddenButtons;
+
     public static event Action OnResetButtons;
     public static void ResetButtons() => OnResetButtons?.Invoke();
+    public static event Action<ShapeType> OnFreezeCorrectButtons;
+    public static void FreezeCorrectButtons(ShapeType _shape) => OnFreezeCorrectButtons?.Invoke(_shape);
+
     public static void ResetHiddenButtons() => OnResetHiddenButtons?.Invoke();
     public static event Action OnResetTeleportPads;
     public static void ResetTeleportPads() => OnResetTeleportPads?.Invoke();
