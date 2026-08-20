@@ -68,7 +68,7 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
 
-        EventsManager.OnTutorialTeleport += TutorialTeleportServerRpc;
+        EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
 
         EventsManager.OnDisableTeleportChange += DisableTeleportChange;
     }
@@ -83,7 +83,7 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
 
-        EventsManager.OnTutorialTeleport -= TutorialTeleportServerRpc;
+        EventsManager.OnTutorialTeleport -= TutorialTeleportRpc;
 
         EventsManager.OnDisableTeleportChange -= DisableTeleportChange;
     }
@@ -104,15 +104,18 @@ public class TeleportManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void TutorialTeleportServerRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void TutorialTeleportRpc()
     {        
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
             EventsManager.FreezePCPlayer(true);
 
-            _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
-            _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+            if(!IsOwner)
+            {
+                _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
+                _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+            }
 
             tutorialTeleportCount++;
 
@@ -168,7 +171,7 @@ public class TeleportManager : NetworkBehaviour
             yield return null;
         }
 
-        TutorialTeleportServerRpc();
+        if(IsOwner) TutorialTeleportRpc();
     }
 
     //This adds the bar of a teleport pad to a list
