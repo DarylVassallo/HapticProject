@@ -80,8 +80,8 @@ public class MenuManager : NetworkBehaviour
         
         EventsManager.OnGameOver += ToggleGameOverMenuRpc;
         EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
-        EventsManager.OnChangeHealthBar += ChangeHealthBar;
-        EventsManager.OnChangeChargeBar += ChangeChargeBar;
+        EventsManager.OnChangeHealthBar += ChangeHealthBarRpc;
+        EventsManager.OnChangeChargeBar += ChangeChargeBarRpc;
     }
 
     private void OnDisable()
@@ -90,32 +90,34 @@ public class MenuManager : NetworkBehaviour
 
         EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
         EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
-        EventsManager.OnChangeHealthBar -= ChangeHealthBar;
-        EventsManager.OnChangeChargeBar -= ChangeChargeBar;
+        EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
+        EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
     }
 
     //This changes the length of the  PC Player health bar, to represent the total health
-    private void ChangeHealthBar(float _currentHealth)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeHealthBarRpc(float _currentHealth)
     {
-        StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, _maxHealthBarLength, _currentHealth / 100f, 1f));
+        StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarImage.color, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
 
     //This changes the length of the  PC Player charge bar, to represent the total charge
-    private void ChangeChargeBar(float _currentCharge)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeChargeBarRpc(float _currentCharge)
     {
-        ConstantChangeBar(pcChargeBarTransform, _maxChargeBarLength, _currentCharge / 100f);
+        ConstantChangeBar(pcChargeBarTransform, pcChargeBarImage, pcChargeBarImage.color, _maxChargeBarLength, _currentCharge / 100f);
     }
     
     //Changes the size of the specified bar
-    private void ConstantChangeBar(Transform _bar, float _maxBarLength, float _newValue)
+    private void ConstantChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue)
     {
-        _bar.localScale = new Vector3(_maxBarLength * _newValue, _bar.localScale.y, _bar.localScale.z);
+        _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
+        _barImage.color = originalColour;
     }
 
-    IEnumerator ChangeBar(Transform _barTransform, Image _barImage, float _maxBarLength, float _newValue, float _delay)
+    IEnumerator ChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue, float _delay)
     {
         float elapsed = 0f;
-        Color originalColour = _barImage.color;
         Material chargingMaterial;
 
         if(previousHealth > _newValue)
@@ -155,9 +157,8 @@ public class MenuManager : NetworkBehaviour
             yield return null;
         }
 
-        _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
-        _barImage.color = originalColour;
         previousHealth = _newValue;
+        ConstantChangeBar(_barTransform, _barImage, originalColour, _maxBarLength, _newValue);
     }
 
     //This toggles the pause menu, and pausing the scene when the menu is shown

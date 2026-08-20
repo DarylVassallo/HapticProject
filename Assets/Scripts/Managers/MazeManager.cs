@@ -413,7 +413,7 @@ public class MazeManager : NetworkBehaviour
         {
             if(!hasHealthBallBeenUsed.Value) SetHealthBallBeenUsedServerRpc(true);
 
-            EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 6f);
+            EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25f);
         }
     }
 

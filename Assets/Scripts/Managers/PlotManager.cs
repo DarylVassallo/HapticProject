@@ -79,7 +79,6 @@ public class PlotManager : NetworkBehaviour
 
     private void TriggerPCChargeTutorial()
     {
-        EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), -25);
         if(!_hasSeenChargeTutorial)
         {
             _hasSeenChargeTutorial = true;
@@ -91,7 +90,6 @@ public class PlotManager : NetworkBehaviour
 
     private void TriggerPCInteractTutorial()
     {
-        EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25);
         if(!_hasSeenInteractTutorial)
         {
             _hasSeenInteractTutorial = true;
