@@ -34,7 +34,7 @@ public class CheckpointManager : NetworkBehaviour
     {
         currentCheckpoint = tutorialCheckpoint;
 
-        EventsManager.OnTutorialTeleport += CompleteTutorial;
+        EventsManager.OnTutorialTeleport += CompleteTutorialRpc;
         EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
         EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
@@ -44,7 +44,7 @@ public class CheckpointManager : NetworkBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnTutorialTeleport -= CompleteTutorial;
+        EventsManager.OnTutorialTeleport -= CompleteTutorialRpc;
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
         EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
@@ -63,10 +63,11 @@ public class CheckpointManager : NetworkBehaviour
 
     //If the PC Player completes the tutorial, and starts the game, 
     // the first checkpoint will be set as the active checkpoint
-    private void CompleteTutorial()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void CompleteTutorialRpc()
     {
         _hasCompleteTutorial = true;
-        ActivateFirstCheckpointClientRpc();
+        ActivateFirstCheckpointRpc();
     }
     
     //If the PC Player reaches a teleport pad for the first time, 
@@ -75,7 +76,7 @@ public class CheckpointManager : NetworkBehaviour
     {
         if(!_hasUsedTeleporter)
         {
-            ActivateSecondCheckpointClientRpc();
+            ActivateSecondCheckpointRpc();
         }
     }
 
@@ -83,7 +84,7 @@ public class CheckpointManager : NetworkBehaviour
     // the third checkpoint will be set as the active checkpoint
     private void EverythingCollected()
     {
-        if(!_hasCollectedEverything) ActivateThirdCheckpointClientRpc();
+        if(!_hasCollectedEverything) ActivateThirdCheckpointRpc();
     }
 
     //If the PC Player has crossed the crooked bridges, 
@@ -92,21 +93,21 @@ public class CheckpointManager : NetworkBehaviour
     {
         if(!_hasCrossedCrookedBridges)
         {
-            ActivateFourthCheckpointClientRpc();
+            ActivateFourthCheckpointRpc();
         }
     }
 
     //This activates the first checkpoint
-    [ClientRpc]
-    public void ActivateFirstCheckpointClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateFirstCheckpointRpc()
     {
         currentCheckpoint = firstCheckpoint;
     }
     
     //Once the second checkpoint is activated, 
     // all the collectable and hidden arrows are activated
-    [ClientRpc]
-    public void ActivateSecondCheckpointClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateSecondCheckpointRpc()
     {
         _hasUsedTeleporter = true;
         currentCheckpoint = secondCheckpoint;
@@ -126,8 +127,8 @@ public class CheckpointManager : NetworkBehaviour
 
     //Once the third checkpoint is activated, 
     // all enemies are removed and are unable to spawn
-    [ClientRpc]
-    public void ActivateThirdCheckpointClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateThirdCheckpointRpc()
     {
         _hasCollectedEverything = true;
         currentCheckpoint = thirdCheckpoint;
@@ -139,8 +140,8 @@ public class CheckpointManager : NetworkBehaviour
     }
 
     //This activates the fourth checkpoint
-    [ClientRpc]
-    public void ActivateFourthCheckpointClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateFourthCheckpointRpc()
     {
         _hasCrossedCrookedBridges = true;
         currentCheckpoint = fourthCheckpoint;
