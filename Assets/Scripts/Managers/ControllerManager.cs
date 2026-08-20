@@ -11,6 +11,8 @@ public class ControllerManager : NetworkBehaviour
     //3 RightController
 
     [SerializeField] private GameObject[] controllers;
+    [SerializeField] private SkinnedMeshRenderer[] controllerVisuals;
+    private bool[] activeControllers = new bool[4];
 
     private NetworkVariable<int> activateControllerNum = new(-1);
     private NetworkVariable<int> deactivateControllerNum = new(-1);
@@ -201,24 +203,37 @@ public class ControllerManager : NetworkBehaviour
     private void ToggleControllers(int _controllerNum, bool _activate)
     {
         controllers[_controllerNum].SetActive(_activate);
+        activeControllers[_controllerNum] = _activate;
         
         if((_controllerNum == 0 || _controllerNum == 2) && _activate)
         {
             controllers[_controllerNum + 1].SetActive(false);
+            activeControllers[_controllerNum + 1] = false;
         }else if((_controllerNum == 1 || _controllerNum == 3) && _activate)
         {
             controllers[_controllerNum - 1].SetActive(false);
+            activeControllers[_controllerNum - 1] = false;
         }
 
         EventsManager.ChangedControllers();
     }
 
-    //Deactivates all controllers
+    //Deactivates / Activates all controllers
     private void ToggleHands(bool toggle)
     {
-        for(int i = 0; i < controllers.Length; i++)
+        if(toggle)
         {
-            controllers[i].SetActive(false);
+            for(int i = 0; i < controllers.Length; i++)
+            {
+                controllers[i].SetActive(activeControllers[i]);
+                if(controllerVisuals[i] != null) controllerVisuals[i].enabled = true;
+            }
+        }else{
+            for(int i = 0; i < controllers.Length; i++)
+            {
+                controllers[i].SetActive(false);
+                if(controllerVisuals[i] != null) controllerVisuals[i].enabled = false;
+            }
         }
     }
 }

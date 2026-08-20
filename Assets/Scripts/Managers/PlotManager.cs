@@ -16,6 +16,7 @@ public class PlotManager : NetworkBehaviour
     [SerializeField] private GameObject[] pcPipes;
     private int visiblePCPipes = 0;
     [SerializeField] private float pcSpawnDelay;
+    private bool isPCTransforming;
 
     [Header("PC Tutorial UI")]
     [SerializeField] private GameObject pcMovementTutorial;
@@ -146,7 +147,9 @@ public class PlotManager : NetworkBehaviour
 
     public void BeginPCTransformation()
     {
-        Debug.Log("BeginPCTransformation");
+        if(isPCTransforming) return;
+
+        isPCTransforming = true;
         EventsManager.TriggerNarratorAudio("VRIntro", "WaitForPC", true);
         StartCoroutine(DelayPCSpawn());
     }
