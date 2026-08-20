@@ -64,7 +64,7 @@ public class Health : NetworkBehaviour
         {
             if (this.CompareTag("PCPlayer") || this.CompareTag("VRPlayer"))
             {
-                EventsManager.GameOver();
+                EventsManager.GameOver(true);
             }
             else if (this.CompareTag("Enemy"))
             {

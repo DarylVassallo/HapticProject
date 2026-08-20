@@ -195,9 +195,9 @@ public class MenuManager : NetworkBehaviour
 
     //This toggles the pause menu, and pausing the scene when the menu is shown
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void TogglePauseMenuRpc()
+    public void TogglePauseMenuRpc(bool _toggle)
     {
-        _showPauseMenu = !_showPauseMenu;
+        _showPauseMenu = _toggle;
 
         for (int i = 0; i < pauseMenu.transform.childCount; i++)
         {
@@ -210,9 +210,9 @@ public class MenuManager : NetworkBehaviour
 
     //This toggles the settings menu (with UI Buttons too)
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void ToggleSettingsMenuRpc()
+    public void ToggleSettingsMenuRpc(bool _toggle)
     {
-        _showSettingsMenu = !_showSettingsMenu;
+        _showSettingsMenu = _toggle;
 
         for (int i = 0; i < settingsMenu.transform.childCount; i++)
         {
@@ -225,9 +225,9 @@ public class MenuManager : NetworkBehaviour
     
     //Toggles the game over screen (using UI Buttons), stopping the game when the menu is active
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void ToggleGameOverMenuRpc()
+    public void ToggleGameOverMenuRpc(bool _toggle)
     {
-        _showGameOverMenu = !_showGameOverMenu;
+        _showGameOverMenu = _toggle;
 
         for (int i = 0; i < gameOverMenu.transform.childCount; i++)
         {
@@ -240,9 +240,9 @@ public class MenuManager : NetworkBehaviour
 
     //Toggles the win screen, stopping the game when the menu is active
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ToggleWinMenuRpc()
+    private void ToggleWinMenuRpc(bool _toggle)
     {
-        _showWinMenu = !_showWinMenu;
+        _showWinMenu = _toggle;
 
         for (int i = 0; i < winMenu.transform.childCount; i++)
         {

@@ -42,8 +42,8 @@ public class EventsManager : MonoBehaviour
 
 
     //GameOver Events=============================================
-    public static event Action OnGameOver;
-    public static void GameOver() => OnGameOver?.Invoke();
+    public static event Action<bool> OnGameOver;
+    public static void GameOver(bool _toggle) => OnGameOver?.Invoke(_toggle);
     public static event Action<bool> OnToggleAll;
     public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
     public static event Action<string, bool> OnToggleRestriction;
@@ -251,8 +251,8 @@ public class EventsManager : MonoBehaviour
     public static void Fire(InputAction.CallbackContext ctx) => OnFire?.Invoke(ctx);
     public static event Action OnFire2;
     public static void Fire2() => OnFire2?.Invoke();
-    public static event Action OnCancel;
-    public static void Cancel() => OnCancel?.Invoke();
+    public static event Action<bool> OnCancel;
+    public static void Cancel(bool _toggle) => OnCancel?.Invoke(_toggle);
 
     public static event Action<float> OnEntityChangedFlashlightRange;
     public static void EntityChangedFlashlightRange(float newFlashlightRange) => OnEntityChangedFlashlightRange?.Invoke(newFlashlightRange);
@@ -280,6 +280,6 @@ public class EventsManager : MonoBehaviour
 
 
     //Ending Events=============================================
-    public static event Action OnEnteredTemple;
-    public static void EnteredTemple() => OnEnteredTemple?.Invoke();
+    public static event Action<bool> OnEnteredTemple;
+    public static void EnteredTemple(bool _toggle) => OnEnteredTemple?.Invoke(_toggle);
 }

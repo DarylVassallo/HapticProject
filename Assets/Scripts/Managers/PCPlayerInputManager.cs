@@ -184,13 +184,13 @@ public class PCPlayerInputManager : MonoBehaviour
     //Controls the cancel controls (toggles the pause menu) of the PC Player
     private void HandleCancel(InputAction.CallbackContext ctx)
     {
-        if (canCancel) EventsManager.Cancel();
+        if (canCancel) EventsManager.Cancel(true);
 
         // if (canFire2) EventsManager.Fire2();
     }
 
     public void HandleCancelUsingUIButtons()
     {
-        if (canCancel) EventsManager.Cancel();
+        if (canCancel) EventsManager.Cancel(true);
     }
 }

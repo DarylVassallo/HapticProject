@@ -12,7 +12,7 @@ public class ZoneTrigger : MonoBehaviour
         { 
             if(chargeTutorial) EventsManager.TriggerPCChargeTutorial();
             if(interactTutorial) EventsManager.TriggerPCInteractTutorial();
-            if(enteredTemple) EventsManager.EnteredTemple();
+            if(enteredTemple) EventsManager.EnteredTemple(true);
         }
     }
 }
