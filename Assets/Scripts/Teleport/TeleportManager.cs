@@ -269,6 +269,8 @@ public class TeleportManager : NetworkBehaviour
                     _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
                                                         _barList[i].localScale.y, 
                                                         Mathf.Lerp(0.95f, 0f, t));
+
+                    Debug.Log("Mathf.Lerp(0.95f, 0f, " + t + "): " + Mathf.Lerp(0.95f, 0f, t)); 
                 }
             }
 
