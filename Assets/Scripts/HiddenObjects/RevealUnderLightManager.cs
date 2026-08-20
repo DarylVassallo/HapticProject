@@ -120,7 +120,7 @@ public class RevealUnderLightManager : NetworkBehaviour
                             isEffectedByLight = newIsEffectedByLight,
                             isReversed = newIsReversed,
                             _isInteractable = false
-                        });;
+                        });
     }
 
     //This removes a specific object from the hidden object list

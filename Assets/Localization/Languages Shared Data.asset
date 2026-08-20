@@ -131,6 +131,38 @@ MonoBehaviour:
     m_Key: Reset
     m_Metadata:
       m_Items: []
+  - m_Id: 41304898681409536
+    m_Key: Movement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41305078117928960
+    m_Key: WASD Keys
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41305504766726144
+    m_Key: Charge Flashlight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41305880203071488
+    m_Key: Left Mouse Click
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41306048646320128
+    m_Key: Interact
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41306123233628160
+    m_Key: E Key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41321112518496256
+    m_Key: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41321256198574080
+    m_Key: Enter
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

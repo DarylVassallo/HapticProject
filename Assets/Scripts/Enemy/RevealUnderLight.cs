@@ -22,12 +22,16 @@ public class RevealUnderLight : NetworkBehaviour
     {
         if(isForSecondCheckpoint) EventsManager.OnActivateSecondCheckpointHiddenObjects += AddHiddenObject;
         if(isForThirdCheckpoint) EventsManager.OnActivateThirdCheckpointHiddenObjects += AddHiddenObject;
+
+        EventsManager.OnAddSpecificHiddenObject += AddSpecificHiddenObject;
     }
 
     private void OnDisable()
     {
         if(isForSecondCheckpoint) EventsManager.OnActivateSecondCheckpointHiddenObjects -= AddHiddenObject;
         if(isForThirdCheckpoint) EventsManager.OnActivateThirdCheckpointHiddenObjects -= AddHiddenObject;
+
+        EventsManager.OnAddSpecificHiddenObject -= AddSpecificHiddenObject;
     }
 
     public override void OnNetworkSpawn()
@@ -46,5 +50,11 @@ public class RevealUnderLight : NetworkBehaviour
     private void AddHiddenObject()
     {
         EventsManager.AddNewHiddenObject(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
+    }
+
+    private void AddSpecificHiddenObject(GameObject _entity)
+    {
+        if(_entity != this.gameObject) return;
+        AddHiddenObject(); 
     }
 }

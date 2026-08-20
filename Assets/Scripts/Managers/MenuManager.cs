@@ -100,64 +100,6 @@ public class MenuManager : NetworkBehaviour
         EventsManager.OnChangeChargeBar -= ChangeChargeBar;
     }
 
-    [System.Serializable]
-    private struct LanguageButton
-    {
-        public Button button;
-        public Locale locale;
-    }
-    [SerializeField] private LanguageButton[] languageButtons;
-    
-    IEnumerator Start()
-    {
-        yield return LocalizationSettings.InitializationOperation;
-
-        LoadSavedLanguage();
-
-        foreach (var langBtn in languageButtons)
-        {
-            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
-        }
-    }
-
-    //This loads the chosen language, and applies it to the scene
-    private void LoadSavedLanguage()
-    {
-        string savedLangCode = PlayerPrefs.GetString("SelectedLanguage", "");
-
-        if (!string.IsNullOrEmpty(savedLangCode))
-        {
-            Locale savedLocale = LocalizationSettings.AvailableLocales.GetLocale(
-                new LocaleIdentifier(savedLangCode)
-            );
-            if (savedLocale != null)
-            {
-                LocalizationSettings.SelectedLocale = savedLocale;
-                return;
-            }
-        }
-
-        Locale deviceLocale = LocalizationSettings.AvailableLocales.GetLocale(
-            Application.systemLanguage
-        );
-        if (deviceLocale != null)
-        {
-            LocalizationSettings.SelectedLocale = deviceLocale;
-        }
-        else
-        {
-            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
-        }
-    }
-
-    //Changes the language used for the scene
-    private void ChangeLanguage(Locale targetLocale)
-    {
-        LocalizationSettings.SelectedLocale = targetLocale;
-        PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);        
-        PlayerPrefs.Save();
-    }
-
     //This toggles the pause menu, and pausing the scene when the menu is shown
     public void TogglePauseMenu()
     {
@@ -248,6 +190,7 @@ public class MenuManager : NetworkBehaviour
         }
 
         _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
+        _barImage.color = originalColour;
         previousHealth = _newValue;
     }
     

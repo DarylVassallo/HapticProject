@@ -10,6 +10,9 @@ public class NarratorManager : NetworkBehaviour
     private ulong _pcPlayerID;
     private ulong _vrPlayerID;
 
+    private bool _isEnglish;
+    private bool _isFrench;
+
     [System.Serializable]
     private struct NarratorSection
     {
@@ -21,7 +24,8 @@ public class NarratorManager : NetworkBehaviour
     private struct NarratorAudio
     {
         public string audioName;
-        public AudioClip audioClip;
+        public AudioClip englishAudioClip;
+        public AudioClip frenchAudioClip;
     }
     [SerializeField] private NarratorSection[] narratorLines;
 
@@ -40,6 +44,9 @@ public class NarratorManager : NetworkBehaviour
         EventsManager.OnSetVRPlayerID += SetVRPlayerIDRpc;
 
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
+
+        EventsManager.OnUseEnglishNarrator += UseEnglishNarrator;
+        EventsManager.OnUseFrenchNarrator += UseFrenchNarrator;
     }
 
     private void OnDisable()
@@ -49,6 +56,21 @@ public class NarratorManager : NetworkBehaviour
         EventsManager.OnSetVRPlayerID -= SetVRPlayerIDRpc;
 
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+
+        EventsManager.OnUseEnglishNarrator -= UseEnglishNarrator;
+        EventsManager.OnUseFrenchNarrator -= UseFrenchNarrator;
+    }
+
+    private void UseEnglishNarrator()
+    {
+        _isEnglish = true;
+        _isFrench = false;
+    }
+
+    private void UseFrenchNarrator()
+    {
+       _isFrench = true;
+       _isEnglish = false;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -93,7 +115,10 @@ public class NarratorManager : NetworkBehaviour
                     if(narratorLines[i].narratorAudio[j].audioName == _currentAudio)
                     {
                         _audioSource.Stop();
-                        _audioSource.clip = narratorLines[i].narratorAudio[j].audioClip;
+                        
+                        if(_isEnglish) _audioSource.clip = narratorLines[i].narratorAudio[j].englishAudioClip;
+                        if(_isFrench) _audioSource.clip = narratorLines[i].narratorAudio[j].frenchAudioClip;
+                        
                         _audioSource.Play();
                         _isPlaying = true;
                         _audioSource.enabled = true; 

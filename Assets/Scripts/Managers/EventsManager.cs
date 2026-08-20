@@ -154,6 +154,9 @@ public class EventsManager : MonoBehaviour
                                                                                             _isVRInteractable, 
                                                                                             _isEffectedByLight, 
                                                                                             _isReverse);
+    public static event Action<GameObject> OnAddSpecificHiddenObject;
+    public static void AddSpecificHiddenObject(GameObject _hiddenObject) => OnAddSpecificHiddenObject?.Invoke(_hiddenObject);
+    
 
 
 
@@ -265,6 +268,12 @@ public class EventsManager : MonoBehaviour
     public static void NarratorStopped() => OnNarratorStopped?.Invoke();
     public static event Action<bool> OnTogglePauseManagerAudio;
     public static void TogglePauseManagerAudio(bool _toggle) => OnTogglePauseManagerAudio?.Invoke(_toggle);
+
+    public static event Action OnUseEnglishNarrator;
+    public static void UseEnglishNarrator() => OnUseEnglishNarrator?.Invoke();
+    public static event Action OnUseFrenchNarrator;
+    public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
+    
 
 
 
