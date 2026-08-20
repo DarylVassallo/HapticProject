@@ -57,17 +57,7 @@ public class MenuManager : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        _showPauseMenu = true;
-        TogglePauseMenu();
-        
-        _showSettingsMenu = true;
-        ToggleSettingsMenu();
-
-        _showGameOverMenu = true;
-        ToggleGameOverMenu();
-
-        _showWinMenu = true;
-        ToggleWinMenu();
+        DisableAllMenusRpc();
 
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
 
@@ -86,50 +76,22 @@ public class MenuManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCancel += TogglePauseMenu;
+        EventsManager.OnCancel += TogglePauseMenuRpc;
         
-        EventsManager.OnGameOver += ToggleGameOverMenu;
-        EventsManager.OnEnteredTemple += ToggleWinMenu;
+        EventsManager.OnGameOver += ToggleGameOverMenuRpc;
+        EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar += ChangeHealthBar;
         EventsManager.OnChangeChargeBar += ChangeChargeBar;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnCancel -= TogglePauseMenu;
+        EventsManager.OnCancel -= TogglePauseMenuRpc;
 
-        EventsManager.OnGameOver -= ToggleGameOverMenu;
-        EventsManager.OnEnteredTemple -= ToggleWinMenu;
+        EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
+        EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar -= ChangeHealthBar;
         EventsManager.OnChangeChargeBar -= ChangeChargeBar;
-    }
-
-    //This toggles the pause menu, and pausing the scene when the menu is shown
-    public void TogglePauseMenu()
-    {
-        _showPauseMenu = !_showPauseMenu;
-
-        for (int i = 0; i < pauseMenu.transform.childCount; i++)
-        {
-            if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
-        }
-
-        CheckCursorTimeScale();
-        CheckTimeScale();
-    }
-
-    //This toggles the settings menu (with UI Buttons too)
-    public void ToggleSettingsMenu()
-    {
-        _showSettingsMenu = !_showSettingsMenu;
-
-        for (int i = 0; i < settingsMenu.transform.childCount; i++)
-        {
-            if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
-        }
-
-        CheckCursorTimeScale();
-        CheckTimeScale();
     }
 
     //This changes the length of the  PC Player health bar, to represent the total health
@@ -197,16 +159,73 @@ public class MenuManager : NetworkBehaviour
         _barImage.color = originalColour;
         previousHealth = _newValue;
     }
-    
-    //Toggles the game over screen (using UI Buttons)
+
+    //This toggles the pause menu, and pausing the scene when the menu is shown
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void ToggleGameOverMenuRpc()
+    public void DisableAllMenusRpc()
     {
-        ToggleGameOverMenu();
+        _showPauseMenu = false;
+        _showSettingsMenu = false;
+        _showGameOverMenu = false;
+        _showWinMenu = !_showWinMenu;
+
+        for (int i = 0; i < pauseMenu.transform.childCount; i++)
+        {
+            if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
+        }
+
+        for (int i = 0; i < settingsMenu.transform.childCount; i++)
+        {
+            if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
+        }
+
+        for (int i = 0; i < gameOverMenu.transform.childCount; i++)
+        {
+            if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
+        }
+
+        for (int i = 0; i < winMenu.transform.childCount; i++)
+        {
+            if (winMenu.transform.GetChild(i).gameObject != null)  winMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
+        }
+
+        CheckCursorTimeScale();
+        CheckTimeScale();
     }
 
-    //Toggles the game over screen, stopping the game when the menu is active
-    private void ToggleGameOverMenu()
+    //This toggles the pause menu, and pausing the scene when the menu is shown
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void TogglePauseMenuRpc()
+    {
+        _showPauseMenu = !_showPauseMenu;
+
+        for (int i = 0; i < pauseMenu.transform.childCount; i++)
+        {
+            if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
+        }
+
+        CheckCursorTimeScale();
+        CheckTimeScale();
+    }
+
+    //This toggles the settings menu (with UI Buttons too)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ToggleSettingsMenuRpc()
+    {
+        _showSettingsMenu = !_showSettingsMenu;
+
+        for (int i = 0; i < settingsMenu.transform.childCount; i++)
+        {
+            if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
+        }
+
+        CheckCursorTimeScale();
+        CheckTimeScale();
+    }
+    
+    //Toggles the game over screen (using UI Buttons), stopping the game when the menu is active
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ToggleGameOverMenuRpc()
     {
         _showGameOverMenu = !_showGameOverMenu;
 
@@ -220,7 +239,8 @@ public class MenuManager : NetworkBehaviour
     }
 
     //Toggles the win screen, stopping the game when the menu is active
-    private void ToggleWinMenu()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleWinMenuRpc()
     {
         _showWinMenu = !_showWinMenu;
 

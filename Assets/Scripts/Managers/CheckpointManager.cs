@@ -65,10 +65,8 @@ public class CheckpointManager : NetworkBehaviour
     // the first checkpoint will be set as the active checkpoint
     private void CompleteTutorial()
     {
-        if(!_hasCompleteTutorial)
-        {
-            ActivateFirstCheckpointClientRpc();
-        }
+        _hasCompleteTutorial = true;
+        ActivateFirstCheckpointClientRpc();
     }
     
     //If the PC Player reaches a teleport pad for the first time, 
@@ -102,7 +100,6 @@ public class CheckpointManager : NetworkBehaviour
     [ClientRpc]
     public void ActivateFirstCheckpointClientRpc()
     {
-        _hasCompleteTutorial = true;
         currentCheckpoint = firstCheckpoint;
     }
     

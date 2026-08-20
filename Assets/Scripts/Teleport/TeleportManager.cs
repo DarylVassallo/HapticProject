@@ -110,7 +110,6 @@ public class TeleportManager : NetworkBehaviour
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
             EventsManager.FreezePCPlayer(true);
-            // EventsManager.ToggleRestriction("Move", false);
 
             _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
             _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
