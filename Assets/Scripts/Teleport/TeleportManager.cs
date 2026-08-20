@@ -107,6 +107,8 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TutorialTeleportRpc()
     {        
+        EventsManager.TogglePCTrigger(false);
+
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
             EventsManager.FreezePCPlayer(true);
@@ -146,6 +148,7 @@ public class TeleportManager : NetworkBehaviour
         {
             _audioSource.Stop();
 
+            EventsManager.TogglePCTrigger(true);
             EventsManager.FreezePCPlayer(false);
             // EventsManager.ToggleRestriction("Move", true);
 

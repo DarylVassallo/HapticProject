@@ -184,6 +184,9 @@ public class EventsManager : MonoBehaviour
     public static event Action OnTutorialTeleport;
     public static void TutorialTeleport() => OnTutorialTeleport?.Invoke();
 
+    public static event Action<bool> OnTogglePCTrigger;
+    public static void TogglePCTrigger(bool _toggle) => OnTogglePCTrigger?.Invoke(_toggle);
+
 
 
 
