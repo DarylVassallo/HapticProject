@@ -50,6 +50,8 @@ public class MenuManager : NetworkBehaviour
 
     private float previousHealth;
 
+    private AudioSource _audioSource;
+
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -78,6 +80,8 @@ public class MenuManager : NetworkBehaviour
         _maxChargeBarLength = pcChargeBarTransform.localScale.y;
 
         previousHealth = 1f;
+
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -264,6 +268,10 @@ public class MenuManager : NetworkBehaviour
         EventsManager.ToggleAll(false);
         AudioListener.volume = 0;
         Time.timeScale = 0;
+
+        _audioSource.pitch = 1f;
+        _audioSource.Stop();
+        EventsManager.FixTeleportEffect(0, true);
     }
 
     //This resumes the game
