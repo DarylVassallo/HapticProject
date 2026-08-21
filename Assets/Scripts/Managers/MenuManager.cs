@@ -105,6 +105,7 @@ public class MenuManager : NetworkBehaviour
         Debug.Log("ChangeHealthBarRpc: " + _currentHealth);
         if(IsOwner) return;
 
+        Debug.Log("IsOwner: " + IsOwner);
         Debug.Log("Start ChangeBar: " + _currentHealth);
         StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarOriginalColour, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
