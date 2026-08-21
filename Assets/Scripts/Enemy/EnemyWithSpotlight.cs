@@ -117,24 +117,28 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayWalkAudioRpc()
     {
+        _audioSource.volume = 0.5f;
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 1);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayAttackAudioRpc()
     {
+        _audioSource.volume = 1f;
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 3);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayDamageAudioRpc()
     {
+        _audioSource.volume = 1 - (_notifiedHealth / 100);
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 0);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlPlayDeathAudioRpc()
+    private void PlayDeathAudioRpc()
     {
+        _audioSource.volume = 1;
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 2);
     }
 
@@ -172,23 +176,23 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _animator.speed = 0;
     }
 
-    [ClientRpc]
-    public void WalkAudioVolumeClientRpc()
-    {
-        _audioSource.volume = 0.5f;
-    }
+    // [ClientRpc]
+    // public void WalkAudioVolumeClientRpc()
+    // {
+    //     _audioSource.volume = 0.5f;
+    // }
 
-    [ClientRpc]
-    public void DamageAudioClientRpc()
-    {
-        _audioSource.volume = 1 - (_notifiedHealth / 100);
-    }
+    // [ClientRpc]
+    // public void DamageAudioClientRpc()
+    // {
+    //     _audioSource.volume = 1 - (_notifiedHealth / 100);
+    // }
 
-    [ClientRpc]
-    public void DeathAudioVolumeClientRpc()
-    {
-        _audioSource.volume = 1;
-    }
+    // [ClientRpc]
+    // public void DeathAudioVolumeClientRpc()
+    // {
+    //     _audioSource.volume = 1;
+    // }
 
     private void GetPCPlayerData()
     {
@@ -282,7 +286,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         if (_currentAudioNum != 1 || !_audioSource.isPlaying)
         {
             PlayWalkAudioRpc();
-            WalkAudioVolumeClientRpc();
+            // WalkAudioVolumeClientRpc();
         }
         _currentAudioNum = 1;
 
@@ -322,7 +326,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
             if (_currentAudioNum != 0 || !_audioSource.isPlaying) PlayDamageAudioRpc();
             _currentAudioNum = 0;
             
-            DamageAudioClientRpc();
+            // DamageAudioClientRpc();
 
             //This damages to the enemy in increments
             if(_canBeDamaged)
@@ -338,8 +342,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
             _currentAudioNum = 2;
 
-            PlPlayDeathAudioRpc();
-            DeathAudioVolumeClientRpc();
+            PlayDeathAudioRpc();
+            // DeathAudioVolumeClientRpc();
         }
     }
 
