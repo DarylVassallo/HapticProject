@@ -36,6 +36,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private bool _notifiedOfDeath;
     private float _notifiedHealth;
+    private float _unofficialHealth;
     private float _notifiedFlashlightRange;
 
     [Header("Audio")]
@@ -80,6 +81,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         _notifiedOfDeath = false;
         _notifiedHealth = 100f;
+        _unofficialHealth = 100f;
         _notifiedFlashlightRange = 0;
 
         _damageMultiplier = 0f;
@@ -131,7 +133,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayDamageAudioRpc()
     {
-        _audioSource.volume = 1 - (_notifiedHealth / 100);
+        _audioSource.volume = 1 - (_unofficialHealth / 100);
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 0);
     }
 
@@ -333,6 +335,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
             {
                 _canBeDamaged = false;
                 EventsManager.ChangeHealthForEntity(this.gameObject, -damageToAngel * _damageMultiplier);
+                _unofficialHealth = _unofficialHealth - (damageToAngel * _damageMultiplier);
                 StartCoroutine(DelayDamage());
             }
 

@@ -2,9 +2,12 @@ using UnityEngine;
 using TMPro;
 using System;
 
+using System.Collections;
+
 public class TeleportNumPad : MonoBehaviour
 {
     private TMP_Text codeText;
+    private bool _canAddNumber;
 
     void Awake()
     {
@@ -25,7 +28,18 @@ public class TeleportNumPad : MonoBehaviour
     //Adds the inputted number to the current visible code
     public void AddNumber(int _newNumber)
     {
-        codeText.text = codeText.text + "" + _newNumber + "";
+        if (_canAddNumber)
+        {
+            _canAddNumber = false;
+            codeText.text = codeText.text + "" + _newNumber + "";
+            StartCoroutine(DelayAddNumber());
+        } 
+    }
+
+    IEnumerator DelayAddNumber()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _canAddNumber = true;
     }
 
     //Resets the current visible code
