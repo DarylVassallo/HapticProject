@@ -84,8 +84,8 @@ public class MenuManager : NetworkBehaviour
         
         EventsManager.OnGameOver += ToggleGameOverMenuRpc;
         EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
-        EventsManager.OnChangeHealthBar += ChangeHealthBarServerRpc;
-        EventsManager.OnChangeChargeBar += ChangeChargeBarServerRpc;
+        EventsManager.OnChangeHealthBar += ChangeHealthBarRpc;
+        EventsManager.OnChangeChargeBar += ChangeChargeBarRpc;
     }
 
     private void OnDisable()
@@ -94,21 +94,25 @@ public class MenuManager : NetworkBehaviour
 
         EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
         EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
-        EventsManager.OnChangeHealthBar -= ChangeHealthBarServerRpc;
-        EventsManager.OnChangeChargeBar -= ChangeChargeBarServerRpc;
+        EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
+        EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
     }
 
     //This changes the length of the  PC Player health bar, to represent the total health
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ChangeHealthBarServerRpc(float _currentHealth)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeHealthBarRpc(float _currentHealth)
     {
+        if(IsOwner) return;
+
         StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarOriginalColour, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
 
     //This changes the length of the  PC Player charge bar, to represent the total charge
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ChangeChargeBarServerRpc(float _currentCharge)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeChargeBarRpc(float _currentCharge)
     {
+        if(IsOwner) return;
+        
         ConstantChangeBar(pcChargeBarTransform, pcChargeBarImage, pcChargeBarOriginalColour, _maxChargeBarLength, _currentCharge / 100f);
     }
     
@@ -122,6 +126,7 @@ public class MenuManager : NetworkBehaviour
     IEnumerator ChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue, float _delay)
     {
         Debug.Log("ChangeBar");
+
         float elapsed = 0f;
         Material chargingMaterial;
 
