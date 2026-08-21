@@ -102,8 +102,10 @@ public class MenuManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeHealthBarRpc(float _currentHealth)
     {
+        Debug.Log("ChangeHealthBarRpc: " + _currentHealth);
         if(IsOwner) return;
 
+        Debug.Log("Start ChangeBar: " + _currentHealth);
         StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarOriginalColour, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
 
