@@ -17,8 +17,7 @@ public class TeleportManager : NetworkBehaviour
     [SerializeField] private Material finalMap;
 
     [SerializeField] private Renderer mapRenderer;
-    private NetworkVariable<int> _currentMap = new (-1);
-    private NetworkVariable<bool> _canChangeMap = new (true);
+    int _currentMap = -1;
 
     [SerializeField] private float minDelay;
     [SerializeField] private float maxDelay;
@@ -62,7 +61,6 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnTriggerHiddenButton += GainCollectable;
         EventsManager.OnResetHiddenButtons += RemoveCollectable;
-        _currentMap.OnValueChanged += ChangeMap;
 
         EventsManager.OnAddNewBar += AddNewBar;
 
@@ -77,7 +75,6 @@ public class TeleportManager : NetworkBehaviour
     {
         EventsManager.OnTriggerHiddenButton -= GainCollectable;
         EventsManager.OnResetHiddenButtons -= RemoveCollectable;
-        _currentMap.OnValueChanged -= ChangeMap;
 
         EventsManager.OnAddNewBar -= AddNewBar;
 
@@ -186,10 +183,12 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void CurrentMapServerRpc(bool _foundAllCollectables, bool _canChange)
     {
+        Debug.Log("CurrentMapServerRpc: " + _foundAllCollectables + " : " + _canChange);
+
         //If the PC Player has found all the collectables, then the final map and teleport connections are set
         if(_foundAllCollectables)
         {
-            _currentMap.Value = 999;
+            _currentMap = 999;
         }
 
         //If not all collectables have been found, then a random map is chosen to replace the current one
@@ -197,32 +196,27 @@ public class TeleportManager : NetworkBehaviour
         {
             if(!_foundAllCollectables)
             {
-                _currentMap.Value = UnityEngine.Random.Range(0, maps.Length);
-                Debug.Log("_currentMap.Value: " + _currentMap.Value);
-                mapRenderer.material = maps[_currentMap.Value];
+                _currentMap = UnityEngine.Random.Range(0, maps.Length);
+                Debug.Log("_currentMap: " + _currentMap);
+                mapRenderer.material = maps[_currentMap];
+                ChangeMapRpc(_currentMap);
             }
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void CanChangeMapServerRpc(bool canChange)
-    {
-        _canChangeMap.Value = canChange;
-    }
-
-    private void ChangeMap(int previous, int current)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeMapRpc(int _newMap)
     {
         if(!IsOwner) return;
 
         EventsManager.ClearTeleportNumPad();
 
-        Debug.Log("ChangeMap current: " + current);
+        Debug.Log("ChangeMap _newMap: " + _newMap);
 
         //If the final map is called, the final teleport connections are set up
-        if(current == 999)
+        if(_newMap == 999)
         {
             mapRenderer.material = finalMap;
-            CanChangeMapServerRpc(false);
 
             for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
             {
@@ -233,20 +227,20 @@ public class TeleportManager : NetworkBehaviour
         //This sets up the correct map for the VR Player, and set up the correct teleport connections.
         // It also sets up a random time limit before the next time the map changes again
         } else {
-            mapRenderer.material = maps[current];
-            CanChangeMapServerRpc(false);
+            mapRenderer.material = maps[_newMap];
 
-            for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
+            for(int i = 0; i < teleportConnections[_newMap].teleportPairs.Length; i++)
             {
-                Debug.Log("_currentMap.Value: " + _currentMap.Value);
-                if(IsOwner) SetExitPadRpc(i, _currentMap.Value);   
+                Debug.Log("_newMap: " + _newMap);
+                if(IsOwner) SetExitPadRpc(i, _newMap);   
             }
             
-            _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
-
-            Debug.Log("Teleport Delay: " + _timeLimit);
-
-            if(IsOwner) StartCoroutine(ChangeMapDelay(_timeLimit));
+            if(IsOwner)
+            {
+                _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
+                Debug.Log("Teleport Delay: " + _timeLimit);
+                StartCoroutine(ChangeMapDelay(_timeLimit));
+            }
         }
     }
 
@@ -286,7 +280,6 @@ public class TeleportManager : NetworkBehaviour
         }
 
         //This changes the current map
-        CanChangeMapServerRpc(true);
         CurrentMapServerRpc(false, true);
 
         //The teleport bars are reset to their full size
