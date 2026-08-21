@@ -112,7 +112,7 @@ public class MenuManager : NetworkBehaviour
     private void ChangeChargeBarRpc(float _currentCharge)
     {
         if(IsOwner) return;
-        
+
         ConstantChangeBar(pcChargeBarTransform, pcChargeBarImage, pcChargeBarOriginalColour, _maxChargeBarLength, _currentCharge / 100f);
     }
     
@@ -145,7 +145,7 @@ public class MenuManager : NetworkBehaviour
         {
             elapsed += Time.deltaTime;
             _barTransform.localScale = new Vector3(_maxBarLength * (previousHealth + ((_newValue - previousHealth)  * (elapsed / _delay))), _barTransform.localScale.y, _barTransform.localScale.z);
-            
+            Debug.Log("size: " + (previousHealth + ((_newValue - previousHealth)  * (elapsed / _delay))));
             if(elapsed <= _delay/4)
             {
                 _barImage.color =   Color.Lerp(
@@ -170,7 +170,12 @@ public class MenuManager : NetworkBehaviour
         }
 
         previousHealth = _newValue;
-        ConstantChangeBar(_barTransform, _barImage, originalColour, _maxBarLength, _newValue);
+
+        _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
+        Debug.Log("size 2: " + (_maxBarLength * _newValue));
+        _barImage.color = originalColour;
+
+        // ConstantChangeBar(_barTransform, _barImage, originalColour, _maxBarLength, _newValue);
     }
 
     //This toggles the pause menu, and pausing the scene when the menu is shown
