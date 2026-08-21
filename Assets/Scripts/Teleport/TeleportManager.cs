@@ -264,16 +264,15 @@ public class TeleportManager : NetworkBehaviour
 
             if(!_isEverythingCollected)
             {
-                for(int i = 0; i < _barList.Count; i++)
-                {
-                    // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
-                    //                                     _barList[i].localScale.y, 
-                    //                                     Mathf.Lerp(0.95f, 0f, t));
+                ChangeBarSizeServerRpc(t); 
+                // for(int i = 0; i < _barList.Count; i++)
+                // {
+                //     // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+                //     //                                     _barList[i].localScale.y, 
+                //     //                                     Mathf.Lerp(0.95f, 0f, t));
 
-                    // Debug.Log("Mathf.Lerp(0.95f, 0f, " + t + "): " + Mathf.Lerp(0.95f, 0f, t));
-
-                    ChangeBarSizeServerRpc(t); 
-                }
+                //     // Debug.Log("Mathf.Lerp(0.95f, 0f, " + t + "): " + Mathf.Lerp(0.95f, 0f, t));
+                // }
             }
 
             yield return null;
@@ -283,15 +282,16 @@ public class TeleportManager : NetworkBehaviour
         CanChangeMapServerRpc(true);
         CurrentMapServerRpc(false);
 
+        ChangeBarSizeServerRpc(0.95f); 
         //The teleport bars are reset to their full size
-        for(int i = 0; i < _barList.Count; i++)
-        {
-            // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
-            //                                     _barList[i].localScale.y, 
-            //                                     0.95f);
+        // for(int i = 0; i < _barList.Count; i++)
+        // {
+        //     // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+        //     //                                     _barList[i].localScale.y, 
+        //     //                                     0.95f);
 
-            ChangeBarSizeServerRpc(0.95f); 
-        }
+            
+        // }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
