@@ -11,6 +11,7 @@ public class TeleportNumPad : MonoBehaviour
 
     void Awake()
     {
+        _canAddNumber = true;
         codeText = this.GetComponentInChildren<TMP_Text>();
         codeText.text = "";
     }
