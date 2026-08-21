@@ -99,7 +99,7 @@ public class TeleportManager : NetworkBehaviour
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            CurrentMapServerRpc(false);
+            CurrentMapServerRpc(false, true);
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         }
     }
@@ -184,7 +184,7 @@ public class TeleportManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void CurrentMapServerRpc(bool _foundAllCollectables)
+    public void CurrentMapServerRpc(bool _foundAllCollectables, bool _canChange)
     {
         //If the PC Player has found all the collectables, then the final map and teleport connections are set
         if(_foundAllCollectables)
@@ -193,7 +193,7 @@ public class TeleportManager : NetworkBehaviour
         }
 
         //If not all collectables have been found, then a random map is chosen to replace the current one
-        if(_canChangeMap.Value)
+        if(_canChange)
         {
             if(!_foundAllCollectables)
             {
@@ -287,7 +287,7 @@ public class TeleportManager : NetworkBehaviour
 
         //This changes the current map
         CanChangeMapServerRpc(true);
-        CurrentMapServerRpc(false);
+        CurrentMapServerRpc(false, true);
 
         //The teleport bars are reset to their full size
         ChangeBarSizeRpc(0.95f); 
@@ -317,7 +317,7 @@ public class TeleportManager : NetworkBehaviour
             _barList = null;
             _isEverythingCollected = true;
             EventsManager.EverythingCollected();
-            CurrentMapServerRpc(true);
+            CurrentMapServerRpc(true, false);
         }
     }
 
