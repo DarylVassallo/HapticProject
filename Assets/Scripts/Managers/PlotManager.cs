@@ -80,7 +80,7 @@ public class PlotManager : NetworkBehaviour
     private void TriggerPCChargeTutorial()
     {
         Debug.Log("TriggerPCChargeTutorial");
-        EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), -25);
+        if(IsOwner) EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), -25);
 
         if(!_hasSeenChargeTutorial)
         {
@@ -94,7 +94,7 @@ public class PlotManager : NetworkBehaviour
     private void TriggerPCInteractTutorial()
     {
         Debug.Log("TriggerPCInteractTutorial");
-        EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25);
+        if(IsOwner) EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25);
 
         if(!_hasSeenInteractTutorial)
         {
