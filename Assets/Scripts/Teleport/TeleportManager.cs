@@ -248,7 +248,7 @@ public class TeleportManager : NetworkBehaviour
             }
             
             _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
-            StartCoroutine(ChangeMapDelay(_timeLimit));
+            if(IsOwner) StartCoroutine(ChangeMapDelay(_timeLimit));
         }
     }
 
