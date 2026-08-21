@@ -198,6 +198,7 @@ public class TeleportManager : NetworkBehaviour
             if(!_foundAllCollectables)
             {
                 _currentMap.Value = UnityEngine.Random.Range(0, maps.Length);
+                Debug.Log("_currentMap.Value: " + _currentMap.Value);
                 mapRenderer.material = maps[_currentMap.Value];
             }
         }
@@ -214,6 +215,8 @@ public class TeleportManager : NetworkBehaviour
         if(!IsOwner) return;
 
         EventsManager.ClearTeleportNumPad();
+
+        Debug.Log("ChangeMap current: " + current);
 
         //If the final map is called, the final teleport connections are set up
         if(current == 999)
@@ -235,8 +238,7 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
             {
-                EventsManager.SetExitPadTransform(  teleportConnections[_currentMap.Value].teleportPairs[i].entrancePad.gameObject, 
-                                                    teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
+                SetExitPadRpc(i);   
             }
             
             _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
@@ -245,6 +247,15 @@ public class TeleportManager : NetworkBehaviour
 
             if(IsOwner) StartCoroutine(ChangeMapDelay(_timeLimit));
         }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetExitPadRpc(int _index)
+    {
+        Debug.Log("EntrancePad: " + teleportConnections[_currentMap.Value].teleportPairs[_index].entrancePad.gameObject);
+        Debug.Log("ExitPad: " +  teleportConnections[_currentMap.Value].teleportPairs[_index].exitPad.gameObject);
+        EventsManager.SetExitPadTransform(  teleportConnections[_currentMap.Value].teleportPairs[_index].entrancePad.gameObject, 
+                                                    teleportConnections[_currentMap.Value].teleportPairs[_index].exitPad);
     }
 
     IEnumerator ChangeMapDelay(float delay)

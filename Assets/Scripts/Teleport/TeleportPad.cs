@@ -116,6 +116,7 @@ public class TeleportPad : NetworkBehaviour
     {
         if(_pad == this.gameObject)
         {
+            Debug.Log("SetExitPadTransform : " + _pad + " : " + _newExitPadTransform);
             exitTeleportPad = _newExitPadTransform;
             ChangeSecretCodePadServerRpc();
         }

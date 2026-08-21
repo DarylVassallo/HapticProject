@@ -38,7 +38,6 @@ public class Health : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetHealthServerRpc(float _newHealth)
     {
-        Debug.Log("SetHealthServerRpc: " + _newHealth);
         _health.Value = _newHealth;
         EventsManager.EntityChangedHealth(this.gameObject, _health.Value);
     }
@@ -48,7 +47,6 @@ public class Health : NetworkBehaviour
     {
         if(entity == this.gameObject)
         {
-            Debug.Log("ChangeHealth: " + entity + " : " + _healthChange);
             SetHealthServerRpc(_health.Value + _healthChange);
             if(_health.Value > _maxHealth) SetHealthServerRpc(_maxHealth);
         }
@@ -81,7 +79,6 @@ public class Health : NetworkBehaviour
         } else {
             if (this.CompareTag("PCPlayer"))
             {
-                Debug.Log("OnHealthChanged : PCPlayer : " + newValue);
                 EventsManager.ChangeHealthBar(newValue);
                 EventsManager.ChangeHealthCamera(newValue);
             }else if (this.CompareTag("Enemy"))

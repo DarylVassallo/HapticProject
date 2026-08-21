@@ -114,26 +114,26 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _shuttingDown = true;
     }
 
-    [ClientRpc]
-    private void PlayWalkAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayWalkAudioRpc()
     {
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 1);
     }
 
-    [ClientRpc]
-    private void PlayAttackAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayAttackAudioRpc()
     {
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 3);
     }
 
-    [ClientRpc]
-    private void PlayDamageAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayDamageAudioRpc()
     {
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 0);
     }
 
-    [ClientRpc]
-    private void PlayDeathAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlPlayDeathAudioRpc()
     {
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 2);
     }
@@ -281,7 +281,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         if (_currentAudioNum != 1 || !_audioSource.isPlaying)
         {
-            PlayWalkAudioClientRpc();
+            PlayWalkAudioRpc();
             WalkAudioVolumeClientRpc();
         }
         _currentAudioNum = 1;
@@ -300,7 +300,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         
         if(!_shuttingDown)
         {
-            if (_currentAudioNum != 3 || !_audioSource.isPlaying) PlayAttackAudioClientRpc();
+            if (_currentAudioNum != 3 || !_audioSource.isPlaying) PlayAttackAudioRpc();
             _currentAudioNum = 3;
         }
         
@@ -319,7 +319,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
         {             
             if(_animator.speed != 0) FreezeAnimationClientRpc();
 
-            if (_currentAudioNum != 0 || !_audioSource.isPlaying) PlayDamageAudioClientRpc();
+            if (_currentAudioNum != 0 || !_audioSource.isPlaying) PlayDamageAudioRpc();
             _currentAudioNum = 0;
             
             DamageAudioClientRpc();
@@ -338,7 +338,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
             _currentAudioNum = 2;
 
-            PlayDeathAudioClientRpc();
+            PlPlayDeathAudioRpc();
             DeathAudioVolumeClientRpc();
         }
     }
