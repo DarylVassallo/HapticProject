@@ -272,7 +272,7 @@ public class TeleportManager : NetworkBehaviour
 
                     // Debug.Log("Mathf.Lerp(0.95f, 0f, " + t + "): " + Mathf.Lerp(0.95f, 0f, t));
 
-                    ChangeBarSizeRpc(t); 
+                    ChangeBarSizeServerRpc(t); 
                 }
             }
 
@@ -290,12 +290,12 @@ public class TeleportManager : NetworkBehaviour
             //                                     _barList[i].localScale.y, 
             //                                     0.95f);
 
-            ChangeBarSizeRpc(0.95f); 
+            ChangeBarSizeServerRpc(0.95f); 
         }
     }
 
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ChangeBarSizeRpc(float _newSize)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeBarSizeServerRpc(float _newSize)
     {
         for(int i = 0; i < _barList.Count; i++)
         {
