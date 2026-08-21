@@ -263,11 +263,19 @@ public class TeleportManager : NetworkBehaviour
     {
         float elapsed = 0f;
 
+        Debug.Log("elapsed: " + elapsed);
+        Debug.Log("delay: " + delay);
+        Debug.Log("starting time: " + (elapsed / delay));
+
         //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / delay;
+
+            Debug.Log("in while elapsed: " + elapsed);
+            Debug.Log("in while delay: " + delay);
+            Debug.Log("in while current time: " + (elapsed / delay));
 
             if(!_isEverythingCollected)
             {
@@ -288,6 +296,7 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
+        Debug.Log("ChangeBarSizeRpc : " + _newSize);
         for(int i = 0; i < _barList.Count; i++)
         {
             _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
