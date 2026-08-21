@@ -264,7 +264,7 @@ public class TeleportManager : NetworkBehaviour
 
             if(!_isEverythingCollected)
             {
-                ChangeBarSizeServerRpc(t); 
+                ChangeBarSizeRpc(t); 
                 // for(int i = 0; i < _barList.Count; i++)
                 // {
                 //     // _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
@@ -282,7 +282,7 @@ public class TeleportManager : NetworkBehaviour
         CanChangeMapServerRpc(true);
         CurrentMapServerRpc(false);
 
-        ChangeBarSizeServerRpc(0.95f); 
+        ChangeBarSizeRpc(0.95f); 
         //The teleport bars are reset to their full size
         // for(int i = 0; i < _barList.Count; i++)
         // {
@@ -294,8 +294,8 @@ public class TeleportManager : NetworkBehaviour
         // }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ChangeBarSizeServerRpc(float _newSize)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeBarSizeRpc(float _newSize)
     {
         for(int i = 0; i < _barList.Count; i++)
         {
