@@ -4,92 +4,117 @@ using System;
 using System.Collections;
 using Unity.Netcode;
 
+using UnityEngine.SceneManagement;
+using System.IO;
+
 public class CheckpointManager : NetworkBehaviour
 {
+    [Header("Checkpoints")]
+    [SerializeField] private Transform tutorialCheckpoint;
     [SerializeField] private Transform firstCheckpoint;
     [SerializeField] private Transform secondCheckpoint;
     [SerializeField] private Transform thirdCheckpoint;
     [SerializeField] private Transform fourthCheckpoint;
     private Transform currentCheckpoint;
 
-    private Transform _pcPlayerTransform;
-    private Health _pcPlayerHealth;
+    private GameObject _pcPlayer;
     private bool _canPCFunction;
 
+    private bool _hasCompleteTutorial;
     private bool _hasUsedTeleporter;
     private bool _hasCollectedEverything;
     private bool _hasCrossedCrookedBridges;
 
-    public static event Action OnResetHiddenSwitches;
-    public static event Action OnResetHiddenButtons;
-    public static event Action OnResetTeleportPads;
-    public static event Action OnDestroyAllEnemies;
-    public static event Action OnDisableEnemySpawning;
-
-    public static event Action OnActivateSecondCheckpointHiddenObjects;
-    public static event Action OnActivateThirdCheckpointHiddenObjects;
-
     [SerializeField] private Transform hiddenButtons;
     [SerializeField] private Transform hiddenArrows;
-    [SerializeField] private Transform hiddenCrookedBridgePieces;
+
+    private NetworkVariable<int> nextScene = new (-1);
 
     private void OnEnable()
     {
-        currentCheckpoint = firstCheckpoint;
-        Debug.Log("1 currentCheckpoint : " + currentCheckpoint);
+        Debug.Log("Checkpoint Tutorial");
+        currentCheckpoint = tutorialCheckpoint;
 
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
-        TeleportManager.OnEverythingCollected += EverythingCollected;
-        TeleportPad.OnCrossedCrookedBridges += CrossedCrookedBridges;
+        EventsManager.OnTutorialTeleport += CompleteTutorialRpc;
+        EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
+        EventsManager.OnEverythingCollected += EverythingCollected;
+        EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
+
+        nextScene.OnValueChanged += OnNextSceneChanged;
     }
 
     private void OnDisable()
     {
-        TeleportPad.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
-        TeleportManager.OnEverythingCollected -= EverythingCollected;
-        TeleportPad.OnCrossedCrookedBridges -= CrossedCrookedBridges;
+        EventsManager.OnTutorialTeleport -= CompleteTutorialRpc;
+        EventsManager.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
+        EventsManager.OnEverythingCollected -= EverythingCollected;
+        EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
+
+        nextScene.OnValueChanged -= OnNextSceneChanged;
     }
 
     private void GetPCPlayerData()
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;   
-            _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();   
+            _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");   
             _canPCFunction = true;
         }
     }
 
+    //If the PC Player completes the tutorial, and starts the game, 
+    // the first checkpoint will be set as the active checkpoint
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void CompleteTutorialRpc()
+    {
+        _hasCompleteTutorial = true;
+        ActivateFirstCheckpointRpc();
+    }
+    
+    //If the PC Player reaches a teleport pad for the first time, 
+    // the second checkpoint will be set as the active checkpoint
     private void UsedTeleporter(float _chance)
     {
         if(!_hasUsedTeleporter)
         {
-            ActivateSecondCheckpointClientRpc();
+            ActivateSecondCheckpointRpc();
         }
     }
 
+    //If the PC Player has collected all the collectables, 
+    // the third checkpoint will be set as the active checkpoint
     private void EverythingCollected()
     {
-        if(!_hasCollectedEverything)
-        {
-            ActivateThirdCheckpointClientRpc();
-        }
+        if(!_hasCollectedEverything) ActivateThirdCheckpointRpc();
     }
 
+    //If the PC Player has crossed the crooked bridges, 
+    // the fourth checkpoint will be set as the active checkpoint
     private void CrossedCrookedBridges()
     {
         if(!_hasCrossedCrookedBridges)
         {
-            ActivateFourthCheckpointClientRpc();
+            ActivateFourthCheckpointRpc();
         }
     }
 
-    [ClientRpc]
-    public void ActivateSecondCheckpointClientRpc()
+    //This activates the first checkpoint
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateFirstCheckpointRpc()
+    {
+        Debug.Log("First Checkpoint");
+        currentCheckpoint = firstCheckpoint;
+    }
+    
+    //Once the second checkpoint is activated, 
+    // all the collectable and hidden arrows are activated
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateSecondCheckpointRpc()
     {
         _hasUsedTeleporter = true;
+
+        Debug.Log("Second Checkpoint");
         currentCheckpoint = secondCheckpoint;
-        Debug.Log("2 currentCheckpoint : " + currentCheckpoint);
 
         for (int i = 0; i < hiddenButtons.childCount; i++)
         {
@@ -104,72 +129,123 @@ public class CheckpointManager : NetworkBehaviour
         StartCoroutine(ActivateCheckpoint(2));
     }
 
-    [ClientRpc]
-    public void ActivateThirdCheckpointClientRpc()
+    //Once the third checkpoint is activated, 
+    // all enemies are removed and are unable to spawn
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateThirdCheckpointRpc()
     {
         _hasCollectedEverything = true;
+
+        Debug.Log("Third Checkpoint");
         currentCheckpoint = thirdCheckpoint;
-        Debug.Log("3 currentCheckpoint : " + currentCheckpoint);
 
-        for (int i = 0; i < hiddenCrookedBridgePieces.childCount; i++)
-        {
-            hiddenCrookedBridgePieces.GetChild(i).gameObject.SetActive(true);
-        }
-
-        OnDestroyAllEnemies?.Invoke();
-        OnDisableEnemySpawning?.Invoke();
+        EventsManager.DestroyAllEnemies();
+        EventsManager.DisableEnemySpawning();
 
         StartCoroutine(ActivateCheckpoint(3));
     }
 
-    [ClientRpc]
-    public void ActivateFourthCheckpointClientRpc()
+    //This activates the fourth checkpoint
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ActivateFourthCheckpointRpc()
     {
         _hasCrossedCrookedBridges = true;
+
+        Debug.Log("Fourth Checkpoint");
         currentCheckpoint = fourthCheckpoint;
-        Debug.Log("4 currentCheckpoint : " + currentCheckpoint);
     }
 
+    //Once the checkpoint has been set, 
+    // an event is invoked to inform other scripts that depend on this
     IEnumerator ActivateCheckpoint(int checkpointNum)
     {
         yield return new WaitForSeconds(0.5f);
 
-        Debug.Log("checkpointNum: " + checkpointNum);
-
         switch(checkpointNum)
         {
             case 2:
-                OnActivateSecondCheckpointHiddenObjects?.Invoke();
+                EventsManager.ActivateSecondCheckpointHiddenObjects();
                 break;
             case 3:
-                OnActivateThirdCheckpointHiddenObjects?.Invoke();
+                EventsManager.ActivateThirdCheckpointHiddenObjects();
                 break;
             
         }        
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    //If the PC Player dies, this sets them to their latest checkpoint, 
+    // and reset's various objects depending on the progress made
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RespawnPCPlayerRpc()
     {
         if(!_canPCFunction) GetPCPlayerData();
 
         if(_canPCFunction) 
         {
-            OnDestroyAllEnemies?.Invoke();
+            EventsManager.DestroyAllEnemies();
 
+            //If the PC Player has not completed the tutorial, then tutorial audio cues are reset
+            if(!_hasCompleteTutorial)
+            {
+                EventsManager.ResetPCTutorial();
+            }
+            
+            //If the PC Player has not reached a teleport pad, then progress made with the switches are reset
             if(!_hasUsedTeleporter)
             {
-                OnResetHiddenSwitches?.Invoke();
+                EventsManager.ResetHiddenSwitches();
             }
 
+            //If the PC Player has not collected all the collectables, then all collectables and teleport pads are reset
             if(!_hasCollectedEverything)
             {
-                OnResetHiddenButtons?.Invoke();
-                OnResetTeleportPads?.Invoke();
+                EventsManager.ResetHiddenButtons();
+                EventsManager.ResetTeleportPads();
             }
 
-            _pcPlayerHealth.ResetHealth();
-            _pcPlayerTransform.position = currentCheckpoint.position;
+            //The PC Player's health and position are reset
+            EventsManager.ResetHealth(_pcPlayer);
+            _pcPlayer.transform.position = currentCheckpoint.position;
         }
+    }
+
+    //Used by UI Button to change the scene
+    public void PlayLevelClient(string _sceneName)
+    {
+        SetNextSceneServerRpc(GetSceneIndex(_sceneName));
+    }
+
+    //Gets the correct scene number
+    private int GetSceneIndex(string sceneName)
+    {
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+        {
+            string path = SceneUtility.GetScenePathByBuildIndex(i);
+            string name = Path.GetFileNameWithoutExtension(path);
+
+            if (name == sceneName) return i;
+        }
+
+        return -1;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetNextSceneServerRpc(int _newScene)
+    {
+        nextScene.Value = _newScene;
+    }
+
+    private void OnNextSceneChanged(int previousValue, int newValue)
+    {
+        PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
+    }
+
+    //Loads the correct scene
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayLevelServerRpc(string _sceneName)
+    {
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 }

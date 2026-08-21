@@ -4196,6 +4196,7 @@ GameObject:
   - component: {fileID: 5054346844029561856}
   - component: {fileID: 9024288449394549724}
   - component: {fileID: 6032687902799646836}
+  - component: {fileID: 8969474613219136632}
   - component: {fileID: 8886497973134998129}
   - component: {fileID: 1819800556801636534}
   m_Layer: 5
@@ -4295,6 +4296,31 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8969474613219136632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6667321200601220357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 894836242
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!114 &8886497973134998129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4307,17 +4333,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b44f285358b99cb4fad884b29e1757e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ConnectUIScript
+  ShowTopMostFoldoutHeaderGroup: 1
+  levelCamera: {fileID: 0}
   hostButton: {fileID: 9100256308241624551}
   clientButton: {fileID: 1945755694070153543}
+  pcPlayerStatue: {fileID: 0}
   pcPlayerWithBody: {fileID: 3297056328194405524, guid: de6ff769be5ddce4aa84d0039581e685, type: 3}
   pcPlayerWithoutBody: {fileID: 3297056328194405524, guid: 671d34ee4712d274fbe89233361dc167, type: 3}
   currentPCPlayer: {fileID: 3297056328194405524, guid: de6ff769be5ddce4aa84d0039581e685, type: 3}
   pcSpawnPoint: {fileID: 0}
   vrPlayer: {fileID: 2377951386485336311, guid: ce9f56de89425414982d139ce263abd8, type: 3}
   vrSpawnPoint: {fileID: 0}
-  isUsingPlayMode: 1
-  isUsingOnlyPCPlayer: 0
-  isUsingOnlyVRPlayer: 0
+  vrRig: {fileID: 0}
+  vrLeftHandMesh: {fileID: 0}
+  vrRightHandMesh: {fileID: 0}
 --- !u!114 &1819800556801636534
 MonoBehaviour:
   m_ObjectHideFlags: 0

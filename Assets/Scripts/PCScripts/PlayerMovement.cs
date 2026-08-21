@@ -6,25 +6,18 @@ using Unity.Cinemachine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 
-//This script allows the PC Player to move, sprint, jump, and crouch (modified to using input actions from an input manager script).
+//This script allows the PC Player to move and jump (modified to use input actions from an input manager script).
 //Source: https://www.youtube.com/watch?v=ZjNmndbbT44
 public class PlayerMovement : NetworkBehaviour
 {
     [Header("Speed")]
     [SerializeField] private float walkSpeed = 5f;
-    [SerializeField] private float runSpeed = 8f;
-    [SerializeField] private float crouchSpeed = 2f;
 
     [Header("Jump and Fall")]
     [SerializeField] private float jumpForce = 7f;
     [SerializeField] private float gravity = -12f;
+    private bool _isGravityEnabled;
     [SerializeField] private float initialFallVelocity = -2f;
-
-    [Header("Crouching")]
-    [SerializeField] private float standingHeight = 2f;
-    [SerializeField] private float crouchingHeight = 1f;
-    [SerializeField] private float crouchTransitionSpeed = 10f;
-    [SerializeField] private float cameraOffset = 0.4f;
 
 
     [Header("References")]
@@ -35,10 +28,7 @@ public class PlayerMovement : NetworkBehaviour
     private CharacterController _characterController;
     private Vector2 _moveInput;
     private bool _isGrounded;
-    private bool _isRunning;
-    private bool _isCrouching;
     private float _verticalVelocity;
-    private float _targetHeight;
 
     [SerializeField] private float bobSpeed = 7f;
     [SerializeField] private float bobAmount = 0.2f;
@@ -53,10 +43,11 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Awake()
     {
-        _characterController = GetComponent<CharacterController>();
-        _targetHeight = standingHeight;
+        _isGravityEnabled = true;
 
-        CinemachineCore.GetInputAxis = HandleAxisInput;
+        _characterController = GetComponent<CharacterController>();
+
+        // CinemachineCore.GetInputAxis = HandleAxisInput;
 
         _inputAxisController = cameraTransform.GetComponent<CinemachineInputAxisController>();
 
@@ -81,9 +72,7 @@ public class PlayerMovement : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         if (!IsOwner)
-        {
-            // _animator.gameObject.SetActive(true);    
-            
+        {            
             if (pcFlashlight != null)
             {
                 foreach (MeshRenderer mesh in pcFlashlight.GetComponentsInChildren<MeshRenderer>())
@@ -97,9 +86,6 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            // _animator.gameObject.SetActive(true); 
-            // _animator.gameObject.SetActive(false); 
-
             if (pcFlashlight != null)
             {
                 foreach (MeshRenderer mesh in pcFlashlight.GetComponentsInChildren<MeshRenderer>())
@@ -111,27 +97,15 @@ public class PlayerMovement : NetworkBehaviour
             cameraTransform.GetComponent<CinemachineCamera>().enabled = true;
         }
     }
-
-    private float HandleAxisInput(string axisName)
-    {
-        Debug.Log("HandleAxisInput");
-        // if (axisName == "Mouse X")
-        //     return Mouse.current.delta.x.ReadValue();
-
-        // if (axisName == "Mouse Y")
-        //     return Mouse.current.delta.y.ReadValue();
-
-        return 0;
-    }
     
     private void OnEnable()
     {
-        PCPlayerInputManager.OnMove += ChangeMotion;
-        PCPlayerInputManager.OnJump += Jump;
-        PCPlayerInputManager.OnCrouch += Crouch;
-        PCPlayerInputManager.OnSprint += Sprint;
+        EventsManager.OnFreezePCPlayer += FreezePlayer;
 
-        Health.OnChangeHealthCamera += ChangeHealthCamera;
+        EventsManager.OnMove += ChangeMotion;
+        EventsManager.OnJump += Jump;
+
+        EventsManager.OnChangeHealthCamera += ChangeHealthCamera;
 
         isWalking.OnValueChanged += ChangeWalkingAnimation;
         bodyYRotation.OnValueChanged += SetBodyYRotation;
@@ -139,24 +113,34 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnMove -= ChangeMotion;
-        PCPlayerInputManager.OnJump -= Jump;
-        PCPlayerInputManager.OnCrouch -= Crouch;
-        PCPlayerInputManager.OnSprint -= Sprint;
+        EventsManager.OnFreezePCPlayer -= FreezePlayer;
 
-        Health.OnChangeHealthCamera -= ChangeHealthCamera;
+        EventsManager.OnMove -= ChangeMotion;
+        EventsManager.OnJump -= Jump;
+
+        EventsManager.OnChangeHealthCamera -= ChangeHealthCamera;
 
         isWalking.OnValueChanged -= ChangeWalkingAnimation;
         bodyYRotation.OnValueChanged -= SetBodyYRotation;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    private void FreezePlayer(bool _toggle)
+    {
+        _isGravityEnabled = !_toggle;
+
+        if(!_isGravityEnabled)
+        {
+            _characterController.Move(new Vector3(0, 0, 0) * Time.deltaTime);
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsWalkingServerRpc(bool _walk)
     {
         isWalking.Value = _walk;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetBodyYRotationServerRpc(float _newYRotation)
     {
         bodyYRotation.Value = _newYRotation;
@@ -172,12 +156,14 @@ public class PlayerMovement : NetworkBehaviour
         bodyTransform.rotation = Quaternion.Euler(0, current, 0);
     }
 
+    //Changes the PC Player's motion based on the input
     private void ChangeMotion(Vector2 input)
     {
         if(!IsOwner) return;
 
         _moveInput = input;
     }
+
     private void FixedUpdate()
     {
         if (!IsOwner)   return;
@@ -185,9 +171,9 @@ public class PlayerMovement : NetworkBehaviour
         _isGrounded = _characterController.isGrounded;
         HandleGravity();
         HandleMovement();
-        HandleCrouchTransition();
     }
 
+    //Applies the jump force if on the ground
     private void Jump()
     {
         if(!IsOwner) return;
@@ -198,65 +184,39 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-    private void Crouch()
-    {
-        if(!IsOwner) return;
-
-        if (_isCrouching)
-        {
-            if (!CanStandUp())
-            {
-                return;
-            }
-            _targetHeight = standingHeight;
-        }
-        else
-        {
-            _targetHeight = crouchingHeight;
-        }
-        _isCrouching = !_isCrouching;
-    }
-
-    private bool CanStandUp()
-    {
-        return !Physics.CapsuleCast(
-            transform.position + _characterController.center,
-            transform.position + (Vector3.up * _characterController.height / 2),
-            _characterController.radius,
-            Vector3.up
-        );
-    }
-    private void Sprint(InputAction.CallbackContext context)
-    {
-        if(!IsOwner) return;
-
-        _isRunning = context.performed;
-    }
-
+    //Changes the amount of head bobbing (how much the camera shakes during motion) based on the amount of health (the lower the health the more the head bobbing)
     private void ChangeHealthCamera(float _currentHealth)
     {
         healthBobAmount = _currentHealth / 100f;
     }
 
+    //Controls the gravity applied to the PC Player
     private void HandleGravity()
     {
-        if(_isGrounded && _verticalVelocity < 0)
+        if(_isGravityEnabled)
         {
-            _verticalVelocity = initialFallVelocity;
-        }
+            if(_isGrounded && _verticalVelocity < 0)
+            {
+                _verticalVelocity = initialFallVelocity;
+            }
 
-        _verticalVelocity += gravity * Time.deltaTime;
+            _verticalVelocity += gravity * Time.deltaTime;
+        }
+        else
+        {
+            _verticalVelocity = 0;
+        }
     }
+
 
     private void HandleMovement()
     {
         var move = cameraTransform.TransformDirection(new Vector3(_moveInput.x, 0, _moveInput.y)).normalized;
         SetBodyYRotationServerRpc(cameraTransform.eulerAngles.y);
-        // bodyTransform.rotation = Quaternion.Euler(0, cameraTransform.eulerAngles.y, 0);
         
+        //If moving, the head bobbing effect will apply
         if(move != new Vector3(0, 0, 0))
         {
-            // _animator.SetBool("IsWalking", true);
             SetIsWalkingServerRpc(true);
 
             //Used ChatGPT to generate initial bobbing logic
@@ -267,12 +227,11 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            // _animator.SetBool("IsWalking", false);
             SetIsWalkingServerRpc(false);
         }
         
-        var currentSpeed = _isCrouching ? crouchSpeed : _isRunning ? runSpeed : walkSpeed;
-        var finalMove = move * currentSpeed;
+        //Calculates the final movement velocity
+        var finalMove = move * walkSpeed;
 
         finalMove.y = _verticalVelocity;
 
@@ -282,27 +241,4 @@ public class PlayerMovement : NetworkBehaviour
             _verticalVelocity = initialFallVelocity;
         }
     }
-
-    private void HandleCrouchTransition()
-    {
-        var currentHeight = _characterController.height;
-        if (Mathf.Abs(currentHeight - _targetHeight) < 0.01f)
-        {
-            _characterController.height = _targetHeight;
-            return;
-        }
-        
-        var newHeight = Mathf.Lerp(currentHeight, _targetHeight, crouchTransitionSpeed * Time.deltaTime);
-
-        _characterController.height = newHeight;
-        _characterController.center = new Vector3(0f, (newHeight * 0.5f) - 1f, 0f);
-
-        var cameraTargetPosition = cameraTransform.localPosition;
-        cameraTargetPosition.y = (_targetHeight / 2) - cameraOffset;
-        cameraTransform.localPosition = Vector3.Lerp(
-            cameraTransform.localPosition,
-            cameraTargetPosition,
-            crouchTransitionSpeed * Time.deltaTime);
-    }
-
 }

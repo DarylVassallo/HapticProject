@@ -27,175 +27,172 @@ public class MenuManager : NetworkBehaviour
     [SerializeField] private GameObject gameOverMenu;
     private bool _showGameOverMenu;
 
-    [SerializeField] private GameObject winGameMenu;
-    private bool _showWinGameMenu;
+    [SerializeField] private GameObject winMenu;
+    private bool _showWinMenu;
 
     [SerializeField] private GameObject pcPlayerUI;
-    [SerializeField] private Transform pcHealthBar;
+
+    [SerializeField] private GameObject pcHealthBar;
+    private Transform pcHealthBarTransform;
+    private Image pcHealthBarImage;
+    private Color pcHealthBarOriginalColour;
+
     private float _maxHealthBarLength;
-    [SerializeField] private Transform pcChargeBar;
+
+    [SerializeField] private GameObject pcChargeBar;
+    private Transform pcChargeBarTransform;
+    private Image pcChargeBarImage;
+    private Color pcChargeBarOriginalColour;
+
     private float _maxChargeBarLength;
     private TMP_Text _scoreUI;
 
-    public static event Action<bool> OnToggleAll;
+    [SerializeField] private Material increaseMaterial;
+    [SerializeField] private Material decreaseMaterial;
 
-    private NetworkVariable<int> nextScene = new (-1);
+    private float previousHealth;
+
+    private AudioSource _audioSource;
 
     private void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        _showPauseMenu = true;
-        TogglePauseMenu();
-        
-        _showSettingsMenu = true;
-        ToggleSettingsMenu();
-
-        _showGameOverMenu = true;
-        ToggleGameOverMenu();
-
-        _showWinGameMenu = true;
-        ToggleWinGameMenu();
+        DisableAllMenusRpc();
 
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
 
-        _maxHealthBarLength = pcHealthBar.localScale.y;
-        _maxChargeBarLength = pcChargeBar.localScale.y;
+        pcHealthBarTransform = pcHealthBar.transform;
+        _maxHealthBarLength = pcHealthBarTransform.localScale.y;
+        pcHealthBarImage = pcHealthBar.GetComponent<Image>();
+        pcHealthBarOriginalColour = pcHealthBarImage.color;
+
+        pcChargeBarTransform = pcChargeBar.transform;
+        _maxChargeBarLength = pcChargeBarTransform.localScale.y;
+        pcChargeBarImage = pcChargeBar.GetComponent<Image>();
+        pcChargeBarOriginalColour = pcChargeBarImage.color;
+
+        previousHealth = 1f;
+
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
     private void OnEnable()
     {
-        PCPlayerInputManager.OnCancel += TogglePauseMenu;
+        EventsManager.OnCancel += TogglePauseMenuRpc;
         
-        Health.OnGameOver += ToggleGameOverMenu;
-        Health.OnChangeHealthBar += ChangeHealthBar;
-        FlashlightCharge.OnChangeChargeBar += ChangeChargeBar;
-
-        WinPlatform.OnWinGame += ToggleWinGameMenu;
-        PlayerProfileManager.OnUpdateScore += UpdateUIScore;
+        EventsManager.OnGameOver += ToggleGameOverMenuRpc;
+        EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
+        EventsManager.OnChangeHealthBar += ChangeHealthBarRpc;
+        EventsManager.OnChangeChargeBar += ChangeChargeBarRpc;
     }
 
     private void OnDisable()
     {
-        PCPlayerInputManager.OnCancel -= TogglePauseMenu;
+        EventsManager.OnCancel -= TogglePauseMenuRpc;
 
-        Health.OnGameOver -= ToggleGameOverMenu;
-        Health.OnChangeHealthBar -= ChangeHealthBar;
-        FlashlightCharge.OnChangeChargeBar -= ChangeChargeBar;
-
-        WinPlatform.OnWinGame -= ToggleWinGameMenu;
-        PlayerProfileManager.OnUpdateScore -= UpdateUIScore;
+        EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
+        EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
+        EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
+        EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
     }
 
-    public override void OnNetworkSpawn()
+    //This changes the length of the  PC Player health bar, to represent the total health
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeHealthBarRpc(float _currentHealth)
     {
-        nextScene.OnValueChanged += OnNextSceneChanged;
+        Debug.Log("ChangeHealthBarRpc: " + _currentHealth);
+        if(IsOwner) return;
+
+        Debug.Log("IsOwner: " + IsOwner);
+        Debug.Log("Start ChangeBar: " + _currentHealth);
+        StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarOriginalColour, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
 
-    private void OnNetworkDespawn()
+    //This changes the length of the  PC Player charge bar, to represent the total charge
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeChargeBarRpc(float _currentCharge)
     {
-        nextScene.OnValueChanged -= OnNextSceneChanged;
-    }
+        if(IsOwner) return;
 
-    private void OnNextSceneChanged(int previousValue, int newValue)
-    {
-        PlayLevelServerRpc(Path.GetFileNameWithoutExtension(SceneUtility.GetScenePathByBuildIndex(newValue)));
+        ConstantChangeBar(pcChargeBarTransform, pcChargeBarImage, pcChargeBarOriginalColour, _maxChargeBarLength, _currentCharge / 100f);
     }
-
-
-    [System.Serializable]
-    public struct LanguageButton
-    {
-        public Button button;
-        public Locale locale;
-    }
-    public LanguageButton[] languageButtons;
     
-    IEnumerator Start()
+    //Changes the size of the specified bar
+    private void ConstantChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue)
     {
-        yield return LocalizationSettings.InitializationOperation;
-
-        LoadSavedLanguage();
-
-        foreach (var langBtn in languageButtons)
-        {
-            langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
-        }
+        _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
+        _barImage.color = originalColour;
     }
 
-    private void LoadSavedLanguage()
+    IEnumerator ChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue, float _delay)
     {
-        string savedLangCode = PlayerPrefs.GetString("SelectedLanguage", "");
+        Debug.Log("ChangeBar");
 
-        if (!string.IsNullOrEmpty(savedLangCode))
+        float elapsed = 0f;
+        Material chargingMaterial;
+
+        if(previousHealth > _newValue)
         {
-            Locale savedLocale = LocalizationSettings.AvailableLocales.GetLocale(
-                new LocaleIdentifier(savedLangCode)
-            );
-            if (savedLocale != null)
+            chargingMaterial = decreaseMaterial;
+        }
+        else
+        {
+            chargingMaterial = increaseMaterial;
+        }
+
+
+        // _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            _barTransform.localScale = new Vector3(_maxBarLength * (previousHealth + ((_newValue - previousHealth)  * (elapsed / _delay))), _barTransform.localScale.y, _barTransform.localScale.z);
+            Debug.Log("size: " + (previousHealth + ((_newValue - previousHealth)  * (elapsed / _delay))));
+            if(elapsed <= _delay/4)
             {
-                LocalizationSettings.SelectedLocale = savedLocale;
-                return;
+                _barImage.color =   Color.Lerp(
+                                        originalColour,
+                                        chargingMaterial.color,
+                                        (elapsed / _delay) * 4
+                                    );
             }
+            
+            if(elapsed >= _delay/4)
+            {
+                _barImage.color = Color.Lerp(
+                                        chargingMaterial.color,
+                                        originalColour,
+                                        ((elapsed - (_delay * 0.75f)) / _delay) * 4
+                                    );
+            }
+
+            Debug.Log("_barImage.color: " + _barImage.color);
+
+            yield return null;
         }
 
-        Locale deviceLocale = LocalizationSettings.AvailableLocales.GetLocale(
-            Application.systemLanguage
-        );
-        if (deviceLocale != null)
-        {
-            LocalizationSettings.SelectedLocale = deviceLocale;
-        }
-        else
-        {
-            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
-        }
+        previousHealth = _newValue;
+
+        _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
+        Debug.Log("size 2: " + (_maxBarLength * _newValue));
+        _barImage.color = originalColour;
+
+        // ConstantChangeBar(_barTransform, _barImage, originalColour, _maxBarLength, _newValue);
     }
 
-    private void ChangeLanguage(Locale targetLocale)
+    //This toggles the pause menu, and pausing the scene when the menu is shown
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void DisableAllMenusRpc()
     {
-        LocalizationSettings.SelectedLocale = targetLocale;
-        PlayerPrefs.SetString("SelectedLanguage", targetLocale.Identifier.Code);        
-        PlayerPrefs.Save();
-    }
-
-    public void TogglePauseMenu()
-    {
-        _showPauseMenu = !_showPauseMenu;
-
-        if (_showPauseMenu)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        _showPauseMenu = false;
+        _showSettingsMenu = false;
+        _showGameOverMenu = false;
+        _showWinMenu = !_showWinMenu;
 
         for (int i = 0; i < pauseMenu.transform.childCount; i++)
         {
             if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
-        }
-
-        CheckTimeScale();
-    }
-
-    public void ToggleSettingsMenu()
-    {
-        _showSettingsMenu = !_showSettingsMenu;
-
-        if (_showSettingsMenu)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
         }
 
         for (int i = 0; i < settingsMenu.transform.childCount; i++)
@@ -203,99 +200,99 @@ public class MenuManager : NetworkBehaviour
             if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
         }
 
+        for (int i = 0; i < gameOverMenu.transform.childCount; i++)
+        {
+            if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
+        }
+
+        for (int i = 0; i < winMenu.transform.childCount; i++)
+        {
+            if (winMenu.transform.GetChild(i).gameObject != null)  winMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
+        }
+
+        CheckCursorTimeScale();
         CheckTimeScale();
     }
 
-    private void ChangeHealthBar(float _currentHealth)
+    //This toggles the pause menu, and pausing the scene when the menu is shown
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void TogglePauseMenuRpc(bool _toggle)
     {
-        ChangeBar(pcHealthBar, _maxHealthBarLength, _currentHealth / 100f);
+        _showPauseMenu = _toggle;
+
+        for (int i = 0; i < pauseMenu.transform.childCount; i++)
+        {
+            if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
+        }
+
+        CheckCursorTimeScale();
+        CheckTimeScale();
     }
 
-    private void ChangeChargeBar(float _currentCharge)
+    //This toggles the settings menu (with UI Buttons too)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ToggleSettingsMenuRpc(bool _toggle)
     {
-       ChangeBar(pcChargeBar, _maxChargeBarLength, _currentCharge / 100f);
+        _showSettingsMenu = _toggle;
+
+        for (int i = 0; i < settingsMenu.transform.childCount; i++)
+        {
+            if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
+        }
+
+        CheckCursorTimeScale();
+        CheckTimeScale();
     }
     
-    private void ChangeBar(Transform _bar, float _maxBarLength, float _newValue)
+    //Toggles the game over screen (using UI Buttons), stopping the game when the menu is active
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ToggleGameOverMenuRpc(bool _toggle)
     {
-        _bar.localScale = new Vector3(_maxBarLength * _newValue, _bar.localScale.y, _bar.localScale.z);
-    }
-    
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void ToggleGameOverMenuRpc()
-    {
-        ToggleGameOverMenu();
-    }
-
-    public void ToggleGameOverMenu()
-    {
-        Debug.Log("ToggleGameOverMenu _showGameOverMenu: " + _showGameOverMenu);
-        _showGameOverMenu = !_showGameOverMenu;
-
-        if(_showGameOverMenu)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-
-            // PlayLevelServerRpc("GameOverScene");
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        _showGameOverMenu = _toggle;
 
         for (int i = 0; i < gameOverMenu.transform.childCount; i++)
         {
             if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
         }
 
+        CheckCursorTimeScale();
         CheckTimeScale();
     }
 
-    public void ToggleWinGameMenu()
+    //Toggles the win screen, stopping the game when the menu is active
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleWinMenuRpc(bool _toggle)
     {
-        _showWinGameMenu = !_showWinGameMenu;
+        _showWinMenu = _toggle;
 
-        if(_showWinGameMenu)
+        for (int i = 0; i < winMenu.transform.childCount; i++)
+        {
+            if (winMenu.transform.GetChild(i).gameObject != null)  winMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
+        }
+
+        CheckCursorTimeScale();
+        CheckTimeScale();
+    }
+
+    //This can disable/enable the cursor when required
+    private void CheckCursorTimeScale()
+    {
+        if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu || _showWinMenu)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-
-            for (int i = 0; i < winGameMenu.transform.childCount; i++)
-            {
-                if (winGameMenu.transform.GetChild(i).gameObject != null)
-                {
-                    if (winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>() != null && winGameMenu.transform.GetChild(i).GetComponentInChildren<TMP_Text>().text == $"You Win")
-                    {
-                        var localized = winGameMenu.transform.GetChild(i)
-                                .GetChild(0)
-                                .GetComponentInChildren<LocalizeStringEvent>()
-                                .StringReference;
-
-                        localized.Arguments = new object[] 
-                        { 
-                            new { score = PlayerProfileManager.GetScore(0) } 
-                        };
-
-                        localized.RefreshString();
-                    }
-                    winGameMenu.transform.GetChild(i).gameObject.SetActive(_showWinGameMenu);
-                }  
-            }
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-
-        CheckTimeScale();
     }
-
+    
+    //This can stop/resume the game when required
     private void CheckTimeScale()
     {
-        if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu || _showWinGameMenu)
+        if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu || _showWinMenu)
         {
             FreezeGame();
         }
@@ -304,61 +301,25 @@ public class MenuManager : NetworkBehaviour
             ResumeGame();
         }
     }
-    public void UpdateUIScore()
-    {
-        _scoreUI.text = $"{PlayerProfileManager.GetScore(0)}";
-    }
-    
-    private int GetSceneIndex(string sceneName)
-    {
-        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
-        {
-            string path = SceneUtility.GetScenePathByBuildIndex(i);
-            string name = Path.GetFileNameWithoutExtension(path);
 
-            if (name == sceneName) return i;
-        }
-
-        return -1;
-    }
-
-    public void PlayLevelClient(string _sceneName)
-    {
-        SetNextSceneServerRpc(GetSceneIndex(_sceneName));
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void SetNextSceneServerRpc(int _newScene)
-    {
-        nextScene.Value = _newScene;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void PlayLevelServerRpc(string _sceneName)
-    {
-        if (!NetworkManager.Singleton.IsServer) return;
-
-        foreach (var netObj in FindObjectsOfType<NetworkObject>())
-        {
-            if (netObj.IsSpawned)
-            {
-                netObj.Despawn(true);
-            }
-        }
-
-        NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
-    }
-
+    //This stops the game
     private void FreezeGame()
     {
-        OnToggleAll?.Invoke(false);
+        EventsManager.TogglePauseManagerAudio(true);
+        EventsManager.ToggleAll(false);
         AudioListener.volume = 0;
         Time.timeScale = 0;
+
+        _audioSource.pitch = 1f;
+        _audioSource.Stop();
+        EventsManager.FixTeleportEffect(0, true);
     }
 
+    //This resumes the game
     private void ResumeGame()
     {
-        OnToggleAll?.Invoke(true);
+        EventsManager.TogglePauseManagerAudio(false);
+        EventsManager.ToggleAll(true);
         AudioListener.volume = 1;
         Time.timeScale = 1;
     }

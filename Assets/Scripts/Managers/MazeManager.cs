@@ -12,86 +12,63 @@ using Unity.Netcode;
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : NetworkBehaviour
 {
-    [SerializeField] private Transform signs;
+    private AudioSource _audioSource;
 
-    private bool _isMovingObject;
-    private Transform movingObject;
-    [SerializeField] private float bridgeRotateSpeed;
+    [Header("Switches")]
+    [SerializeField] private HiddenSwitches[] hiddenSwitches;
 
+    //This is the Switch wall, recording the specific type of switch, 
+    // and the button order required to activate it
     [System.Serializable]
-    public struct HiddenSwitches
+    private struct HiddenSwitches
     {
-        public ShapeType shape;
-        public ButtonType[] buttonOrder;
+        public EventsManager.ShapeType shape;
+        public EventsManager.ButtonType[] buttonOrder;
         public UnityEvent activateMethod;
     }
-    public HiddenSwitches[] hiddenSwitches;
 
-    public enum ShapeType { None, Health, Spin, Defense }
-    public enum ButtonType { None, Square, Circle, Triangle, Cross, Star }
-    public enum InteractiveObject { SpinWheel, HealthLever, DefenseButton }
+    private enum InteractiveObject { SpinWheel, HealthBall, DefenseButton }
 
-    private ShapeType[] currentShapeOrder = new ShapeType[5];
-    private ButtonType[] currentButtonOrder = new ButtonType[5];
+    private EventsManager.ShapeType[] currentShapeOrder = new EventsManager.ShapeType[5];
+    private EventsManager.ButtonType[] currentButtonOrder = new EventsManager.ButtonType[5];
     private int entryNum = 0;
 
-    public static event Action EnableDrainFlashlight;
-    public static event Action DisableDrainFlashlight;
-    public static event Action GivePCPlayerHealth;
+    [SerializeField] private Material activeMaterial;
+    [SerializeField] private Material deactiveMaterial;
+    [SerializeField] private AudioClip correctAudio;
+    [SerializeField] private AudioClip incorrectAudio;
 
-    public static event Action OnResetButtons;
 
-    public static event Action<int> OnCreateRandomEnemy;
 
-    [SerializeField] private Transform[] rotateBridges;
-    [SerializeField] private Transform[] reverseRotateBridges;
 
+    [Header("Spin Bridges")]
     [SerializeField] private Transform spinWheelObject;
+    [SerializeField] private AudioClip wheelAudio;
+    [SerializeField] private int maxWheelCheckCount;
+    private NetworkVariable<int> _networkAudioNum = new (-1);
+    private int wheelCheckCount;
     private NetworkVariable<bool> hasSpinWheelBeenUsed = new (false);
     private NetworkVariable<bool> isSpinWheelActive = new (false);
     private XRKnob spinWheelKnob;
     private float prevSpinWheelKnobValue = 0;
     private float spinWheelKnobValueDiff = 0;
 
-    [SerializeField] private Transform healthLeverObject;
-    private NetworkVariable<bool> hasHealthLeverBeenUsed = new (false);
-    private NetworkVariable<bool> isHealthLeverActive = new (false);
+    [SerializeField] private float bridgeRotateSpeed;
+    [SerializeField] private Transform[] rotateBridges;
+    [SerializeField] private Transform[] reverseRotateBridges;   
 
+    private bool _isNewNavMeshAvailable;
+    [SerializeField] private NavMeshSurface levelGround; 
+
+    [Header("Health Ball")]
+    [SerializeField] private Transform healthBallObject;
+    private NetworkVariable<bool> hasHealthBallBeenUsed = new (false);
+    private NetworkVariable<bool> isHealthBallActive = new (false);
+
+    [Header("Defense Button")]
     [SerializeField] private Transform defenseButtonObject;
     private NetworkVariable<bool> hasDefenseButtonBeenUsed = new (false);
     private NetworkVariable<bool> isDefenseButtonActive = new (false);
-    
-    [SerializeField] private Material activeMaterial;
-    [SerializeField] private Material deactiveMaterial;
-
-    [SerializeField] private GameObject[] secretBridges;
-
-    private bool _isNewNavMeshAvailable;
-
-    [SerializeField] private NavMeshSurface levelGround;
-
-    private bool isFunctioningWheelRotating;
-
-    [SerializeField] private AudioClip correctAudio;
-    [SerializeField] private AudioClip incorrectAudio;
-    [SerializeField] private AudioClip wheelAudio;
-    [SerializeField] private AudioClip switchOnLeverAudio;
-    [SerializeField] private AudioClip switchOffLeverAudio;
-    private AudioSource _audioSource;
-
-    private NetworkVariable<bool> _secretBridgeToggle = new (false);
-    private bool prevSecretBridgeToggle = true;
-
-    [SerializeField] private int maxWheelCheckCount;
-    private int wheelCheckCount;
-
-    [SerializeField] private bool startWithActivatedSpinWheel;
-    [SerializeField] private bool startWithActivatedHealthLever;
-    [SerializeField] private bool startWithActivatedDefenseButton;
-
-    private NetworkVariable<int> _networkAudioNum = new (-1);
-
-    public float testSpeed;
 
     void Awake()
     {        
@@ -101,48 +78,53 @@ public class MazeManager : NetworkBehaviour
 
         spinWheelKnob = spinWheelObject.GetComponentInChildren<XRKnob>();
 
-        isFunctioningWheelRotating = false;
-
         wheelCheckCount = 0;
     }
 
     private void OnEnable()
     {
-        ButtonInteract.OnTriggerButton += PressedButton;
-        ButtonInteract.OnActivateReset += ResetButtons;
+        EventsManager.OnTriggerButton += PressedButton;
+        EventsManager.OnActivateReset += ResetButtons;
 
         _networkAudioNum.OnValueChanged += PlayAudio;
 
-        CheckpointManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
+        EventsManager.OnResetHiddenSwitches += DeactivateAllServerRpc;
 
-        HealthBallTargeting.GivePCPlayerHealth += GivePCPlayerHealthByLever;
+        EventsManager.OnGivePCPlayerHealth += GivePCPlayerHealthUsingBall;
 
-        // TeleportManager.OnEveythingCollected += ActivateCrookedBridges
+        EventsManager.OnActivateSpinWheel += ActivateSpinWheel;
+        EventsManager.OnActivateHealthBall += ActivateHealthBall;
+        EventsManager.OnActivateDefenseButton += ActivateDefenseButton;
     }
 
     private void OnDisable()
     {
-        ButtonInteract.OnTriggerButton -= PressedButton;
-        ButtonInteract.OnActivateReset -= ResetButtons;
+        EventsManager.OnTriggerButton -= PressedButton;
+        EventsManager.OnActivateReset -= ResetButtons;
 
         _networkAudioNum.OnValueChanged -= PlayAudio;
 
-        CheckpointManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
+        EventsManager.OnResetHiddenSwitches -= DeactivateAllServerRpc;
+
+        EventsManager.OnGivePCPlayerHealth -= GivePCPlayerHealthUsingBall;
+
+        EventsManager.OnActivateSpinWheel -= ActivateSpinWheel;
+        EventsManager.OnActivateHealthBall -= ActivateHealthBall;
+        EventsManager.OnActivateDefenseButton -= ActivateDefenseButton;
     }
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("OnNetworkSpawn");
         isSpinWheelActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.SpinWheel, p, c);
         if(isSpinWheelActive.Value)
         {
             ActivateObjectLight(spinWheelObject);
         }
 
-        isHealthLeverActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.HealthLever, p, c);
-        if(isHealthLeverActive.Value)
+        isHealthBallActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.HealthBall, p, c);
+        if(isHealthBallActive.Value)
         {
-            ActivateObjectLight(healthLeverObject);
+            ActivateObjectLight(healthBallObject);
         }
 
         isDefenseButtonActive.OnValueChanged += (p, c) => OnObjectChanged(InteractiveObject.DefenseButton, p, c);
@@ -152,38 +134,33 @@ public class MazeManager : NetworkBehaviour
         }
 
         base.OnNetworkSpawn();
+    }
 
-        Debug.Log("OnNetworkSpawn 2");
-        if(startWithActivatedSpinWheel) ActivateSpinWheel();
-        if(startWithActivatedHealthLever) ActivateHealthLever();
-        if(startWithActivatedDefenseButton) ActivateDefenseButton();
+    //Triggered by inputting correct sequence to activate the spin wheel
+    public void ActivateSpinWheel()
+    {
+        ActivateServerRpc(InteractiveObject.SpinWheel);
+    }
+
+    //Triggered by inputting correct sequence to activate the health ball
+    public void ActivateHealthBall()
+    {
+        ActivateServerRpc(InteractiveObject.HealthBall);
+    }
+
+    //Triggered by inputting correct sequence to activate the defense button
+    public void ActivateDefenseButton()
+    {
+        ActivateServerRpc(InteractiveObject.DefenseButton);
     }
 
     void FixedUpdate()
     {
+        //Resets the audio number if audio is no longer being used
         if(!_audioSource.isPlaying && _networkAudioNum.Value != -1) SetAudioNumServerRpc(-1);
         
-        if (prevSecretBridgeToggle != _secretBridgeToggle.Value)
-        {
-            prevSecretBridgeToggle = _secretBridgeToggle.Value;
-
-            for(int i = 0; i < secretBridges.Length; i++)
-            {
-                foreach (Transform child in secretBridges[i].transform.GetComponentsInChildren<Transform>(true))
-                {
-                    MeshRenderer renderer = child.GetComponent<MeshRenderer>();
-                    if (renderer != null) renderer.enabled = _secretBridgeToggle.Value;
-
-                    MeshCollider collider = child.GetComponent<MeshCollider>();
-                    if (collider != null) collider.enabled = _secretBridgeToggle.Value;
-
-                    RevealUnderLight reveal = child.GetComponent<RevealUnderLight>();
-                    if (reveal != null) reveal.enabled = _secretBridgeToggle.Value;
-                }
-            }
-        }
-        
-
+        //Rotates the bridges if the VR Player rotates the wheel, 
+        // and the wheel is active
         if(isSpinWheelActive.Value)
         {
             CheckSpinWheel();
@@ -198,18 +175,9 @@ public class MazeManager : NetworkBehaviour
                 reverseRotateBridges[i].Rotate(0.0f, -spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
             }
         }
-
-        // for(int i = 0; i < rotateBridges.Length; i++)
-        // {
-        //     rotateBridges[i].Rotate(0.0f, testSpeed * bridgeRotateSpeed, 0.0f, Space.Self);
-        // }
-
-        // for(int i = 0; i < reverseRotateBridges.Length; i++)
-        // {
-        //     reverseRotateBridges[i].Rotate(0.0f, -testSpeed * bridgeRotateSpeed, 0.0f, Space.Self);
-        // }
     }
 
+    //Players / Stops the audio if requested (-1 means to stop audio, while other numbers refer to specific audio clips)
     private void PlayAudio(int previous, int current)
     {
         if(current == -1)
@@ -230,12 +198,6 @@ public class MazeManager : NetworkBehaviour
             case 2:
                 _currentAudio = wheelAudio;
                 break;
-            case 3:
-                _currentAudio = switchOnLeverAudio;
-                break;
-            case 4:
-                _currentAudio = switchOffLeverAudio;
-                break;
         }
 
         if(!_audioSource.isPlaying)
@@ -253,15 +215,19 @@ public class MazeManager : NetworkBehaviour
         _audioSource.Stop();
     }
 
+    //Creates a set number of enemies if the Defense Button is pressed (and if it is active)
     public void PressedDefenseButton(int maxEnemies)
     {
         if(isDefenseButtonActive.Value)
         {
             if(!hasDefenseButtonBeenUsed.Value) SetDefenseButtonBeenUsedServerRpc(true);
 
-            OnCreateRandomEnemy?.Invoke(maxEnemies);
+            EventsManager.CreateRandomEnemy(maxEnemies);
         }
     }
+
+    //Checks if the wheel is rotating (plays rotating audio if it is rotating), 
+    // or if it is idle
     private void CheckSpinWheel()
     {
         spinWheelKnobValueDiff = spinWheelKnob.value - prevSpinWheelKnobValue;
@@ -269,81 +235,58 @@ public class MazeManager : NetworkBehaviour
         if(spinWheelKnobValueDiff != 0 && wheelCheckCount <= 0)
         {
             SetAudioNumServerRpc(2);
-            // PlayAudio(2);
-
             _isNewNavMeshAvailable = true;
-            // SetSpinWheelEnemyActiveServerRpc(true);
-            // SetChanceOfEnemysServerRpc(0.01f);
-
             wheelCheckCount = maxWheelCheckCount;
 
-            if(!hasSpinWheelBeenUsed.Value)
-            {
-                Debug.Log("CheckSpinWheel " + spinWheelKnobValueDiff + " : " + wheelCheckCount);
-                SetSpinWheelBeenUsedServerRpc(true);
-            }
+            if(!hasSpinWheelBeenUsed.Value) SetSpinWheelBeenUsedServerRpc(true);
         }
         else if(spinWheelKnobValueDiff == 0 && _isNewNavMeshAvailable && wheelCheckCount <= 0)
         {
-            // StopAudioClientRpc();
             SetAudioNumServerRpc(-1);
-
             _isNewNavMeshAvailable = false;
-            // levelGround.RemoveData();
-            // levelGround.BuildNavMesh();
-
-            // SetSpinWheelEnemyActiveServerRpc(false);
-            // SetChanceOfEnemysServerRpc(-0.01f);
         }
 
         prevSpinWheelKnobValue = spinWheelKnob.value;
         if(wheelCheckCount > 0) wheelCheckCount--;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetSpinWheelBeenUsedServerRpc(bool _newValue)
     {
-        Debug.Log("SetSpinWheelBeenUsedServerRpc: " + _newValue);
         hasSpinWheelBeenUsed.Value = _newValue;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetHealthLeverBeenUsedServerRpc(bool _newValue)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetHealthBallBeenUsedServerRpc(bool _newValue)
     {
-        hasHealthLeverBeenUsed.Value = _newValue;
+        hasHealthBallBeenUsed.Value = _newValue;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetDefenseButtonBeenUsedServerRpc(bool _newValue)
     {
         hasDefenseButtonBeenUsed.Value = _newValue;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void SetSecretBridgeEnableServerRpc()
-    {
-        _secretBridgeToggle.Value = !_secretBridgeToggle.Value;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetAudioNumServerRpc(int newAudioNum)
     {
         _networkAudioNum.Value = newAudioNum;
     }
     
-    [ServerRpc(RequireOwnership = false)]
+    //Activates a required interactive object (wheel, ball, or button), 
+    // which allows them to effect the level
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
-        Debug.Log("ActivateServerRpc: " + interactiveObject);
-
         switch(interactiveObject)
         {
             case InteractiveObject.SpinWheel:
                 isSpinWheelActive.Value = true;
                 break;
 
-            case InteractiveObject.HealthLever:
-                isHealthLeverActive.Value = true;
+            case InteractiveObject.HealthBall:
+                isHealthBallActive.Value = true;
                 break;
 
             case InteractiveObject.DefenseButton:
@@ -352,57 +295,27 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    //Deactivates all interactive objects (wheel, ball, button), 
+    // which prevents them from being able to effect the level
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void DeactivateAllServerRpc()
     {
         isSpinWheelActive.Value = false;
         DeactivateObjectLight(spinWheelObject);
 
-        isHealthLeverActive.Value = false;
-        DeactivateObjectLight(healthLeverObject);
+        isHealthBallActive.Value = false;
+        DeactivateObjectLight(healthBallObject);
 
         isDefenseButtonActive.Value = false;
         DeactivateObjectLight(defenseButtonObject);
 
-        ResetButtons();
+        TrueResetButtons();
     }
-
-    // private void UpdateChancesOfEnemy(bool previous, bool current)
-    // {
-    //     float newChances =  0.01f * (spinWheelEnemyActive.Value ? 1 : 0);
-
-    //     SetChanceOfEnemysServerRpc(newChances);
-    // }
-
-    // [ServerRpc(RequireOwnership = false)]
-    // private void SetChanceOfEnemysServerRpc(float _chance)
-    // {
-    //     chancesOfEnemy.Value = _chance;
-    // }
-
-    // [ServerRpc(RequireOwnership = false)]
-    // private void SetSpinWheelEnemyActiveServerRpc(bool _isEnemyActive)
-    // {
-    //     spinWheelEnemyActive.Value = _isEnemyActive;
-    // }
-
-    // [ServerRpc(RequireOwnership = false)]
-    // private void SetHealthLeverEnemyActiveServerRpc(bool _isEnemyActive)
-    // {
-    //     healthLeverEnemyActive.Value = _isEnemyActive;
-    // }
-
-    // [ServerRpc(RequireOwnership = false)]
-    // private void SetDefenseButtonEnemyActiveServerRpc(bool _isEnemyActive)
-    // {
-    //     defenseButtonEnemyActive.Value = _isEnemyActive;
-    // }
-
-
     
+    //Upon an interactive object being active, 
+    // this causes its connected symbol to being switching color (between green and red) until the VR Player interacts with the object
     private void OnObjectChanged(InteractiveObject interactiveObject, bool previous, bool current)
     {
-        Debug.Log("OnObjectChanged: " + interactiveObject + " : " + current);
         if (!current) return;
 
         switch(interactiveObject)
@@ -411,8 +324,8 @@ public class MazeManager : NetworkBehaviour
                 ActivateObjectLight(spinWheelObject);
                 break;
 
-            case InteractiveObject.HealthLever:
-                ActivateObjectLight(healthLeverObject);
+            case InteractiveObject.HealthBall:
+                ActivateObjectLight(healthBallObject);
                 break;
 
             case InteractiveObject.DefenseButton:
@@ -420,57 +333,42 @@ public class MazeManager : NetworkBehaviour
                 break;
         }
     }
-    
-    public void ActivateSpinWheel()
-    {
-        Debug.Log("ActivateSpinWheel");
-        ActivateServerRpc(InteractiveObject.SpinWheel);
-    }
 
-    public void ActivateHealthLever()
-    {
-        ActivateServerRpc(InteractiveObject.HealthLever);
-    }
-
-    public void ActivateDefenseButton()
-    {
-        ActivateServerRpc(InteractiveObject.DefenseButton);
-    }
-
+    //Switches the interactive object's symbol to green, 
+    // then waits until the symbol can be switched to red
     private void ActivateObjectLight(Transform interactiveObject)
     {
-        Debug.Log("ActivateObjectLight: " + interactiveObject);
         foreach (Renderer rend in interactiveObject.GetComponentsInChildren<Renderer>(true))
         {
-            Debug.Log("ActivateObjectLight foreach");
             if (rend.CompareTag("ActiveLight"))
             {
-                Debug.Log("ActivateObjectLight tag");
-                // rend.material = activeMaterial;
                 rend.material.SetColor("_BaseColor", Color.green);
-                Debug.Log("ObjectLightFlicker 1");
                 StartCoroutine(ObjectLightFlicker(false, rend.material, interactiveObject));
                 break;
             }
         }
     }
 
+    //Switches the interactive object's symbol to red, 
+    // then waits until the symbol can be switched to green
     private void DeactivateObjectLight(Transform interactiveObject)
     {
         foreach (Renderer rend in interactiveObject.GetComponentsInChildren<Renderer>(true))
         {
             if (rend.CompareTag("ActiveLight"))
             {
-                // rend.material = deactiveMaterial;
                 rend.material.SetColor("_BaseColor", Color.red);
                 break;
             }
         }
     }
 
+    //Upon an object's symbol switching colour, 
+    // this triggers a delay where after 1 second checks if the object has been used yet, 
+    // and if not continues switching the symbol's colour. 
+    // If the object has been used then the colour is set to green.
     private IEnumerator ObjectLightFlicker(bool isOn, Material objectLight, Transform interactiveObject)
     {
-        Debug.Log("Running ObjectLightFlicker: " + isOn + " : " + objectLight + " : " + interactiveObject);
         bool hasBeenUsed = false;
 
         yield return new WaitForSeconds(1f);
@@ -478,9 +376,9 @@ public class MazeManager : NetworkBehaviour
         if(interactiveObject == spinWheelObject)
         {
             hasBeenUsed = hasSpinWheelBeenUsed.Value;
-        }else if(interactiveObject == healthLeverObject)
+        }else if(interactiveObject == healthBallObject)
         {
-            hasBeenUsed = hasHealthLeverBeenUsed.Value;
+            hasBeenUsed = hasHealthBallBeenUsed.Value;
         }else if(interactiveObject == defenseButtonObject)
         {
             hasBeenUsed = hasDefenseButtonBeenUsed.Value;
@@ -491,13 +389,11 @@ public class MazeManager : NetworkBehaviour
             if(isOn)
             {
                 objectLight.SetColor("_BaseColor", Color.red);
-                Debug.Log("ObjectLightFlicker 2");
                 StartCoroutine(ObjectLightFlicker(false, objectLight, interactiveObject));
             }
             else
             {
                 objectLight.SetColor("_BaseColor", Color.green);
-                Debug.Log("ObjectLightFlicker 3");
                 StartCoroutine(ObjectLightFlicker(true, objectLight, interactiveObject));
             }
         }
@@ -507,121 +403,118 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
-    public void EnableDrainFlashlightCharge()
+    //If the health ball (interactive ball) collides with the PC Player (and is active), 
+    // this function will give the PC Player some health
+    private void GivePCPlayerHealthUsingBall()
     {
         SetAudioNumServerRpc(3);
-        // PlayAudio(3);
 
-        if(_secretBridgeToggle.Value == false) SetSecretBridgeEnableServerRpc();
-
-        levelGround.RemoveData();
-        levelGround.BuildNavMesh();
-
-        EnableDrainFlashlight?.Invoke();
-    }
-
-    public void DisableDrainFlashlightCharge()
-    {
-        SetAudioNumServerRpc(4);
-        // PlayAudio(4);
-        
-        if(_secretBridgeToggle.Value == true) SetSecretBridgeEnableServerRpc();
-        
-        levelGround.RemoveData();
-        levelGround.BuildNavMesh();
-
-        DisableDrainFlashlight?.Invoke();
-    }
-
-    public void GivePCPlayerHealthByLever()
-    {
-        SetAudioNumServerRpc(3);
-        // PlayAudio(3);
-
-        if(isHealthLeverActive.Value)
+        if(isHealthBallActive.Value)
         {
-            if(!hasHealthLeverBeenUsed.Value) SetHealthLeverBeenUsedServerRpc(true);
-            GameObject.FindGameObjectWithTag("PCPlayer").GetComponent<Health>().ChangeHealth(6f, -1);
+            if(!hasHealthBallBeenUsed.Value) SetHealthBallBeenUsedServerRpc(true);
+
+            EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25f);
         }
     }
 
+    //Resets the recorded inputted buttons of the switch
     private void ResetButtons()
     {
-        currentShapeOrder = new ShapeType[5];
-        currentButtonOrder = new ButtonType[5];
+        currentShapeOrder = new EventsManager.ShapeType[5];
+        currentButtonOrder = new EventsManager.ButtonType[5];
         entryNum = 0;
 
-        OnResetButtons?.Invoke();
+        EventsManager.ResetButtons();
 
         //Wrong
         return;
     }
 
-    private void PressedButton(ShapeType _shape, ButtonType _button)
+    //Resets the recorded inputted buttons of the switch and deactives correctly inputted buttons
+    private void TrueResetButtons()
     {
-        // InstantiateRandomEnemyServerRpc();
-        OnCreateRandomEnemy?.Invoke(1);
+        currentShapeOrder = new EventsManager.ShapeType[5];
+        currentButtonOrder = new EventsManager.ButtonType[5];
+        entryNum = 0;
+
+        EventsManager.TrueResetButtons();
+
+        //Wrong
+        return;
+    }
+
+    //Resets the recorded inputted buttons of the switch, and freezes the correct buttons
+    private void FreezeCorrectButtons(EventsManager.ShapeType _shape)
+    {
+        currentShapeOrder = new EventsManager.ShapeType[5];
+        currentButtonOrder = new EventsManager.ButtonType[5];
+        entryNum = 0;
+
+        EventsManager.FreezeCorrectButtons(_shape);
+
+        //Wrong
+        return;
+    }
+
+    //Records the new inputted button of the switch, 
+    // Checks if the button matches the switches order, 
+    // Checks if the button belongs to the current switch,
+    // Spawns one enemy nearby
+    private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
+    {
+        //Spawns one enemy nearby 
+        EventsManager.CreateRandomEnemy(1);
+
+        //Checks if buttons have already been inputted. 
+        // If they have been, it checks if all buttons belong to the same switch. 
+        // If they do not, then the entry is reset.
         for(int i = 0; i < currentShapeOrder.Length; i++)
         {
-            if(currentShapeOrder[i] == ShapeType.None)
-            {
-                break;
-            } 
+            if(currentShapeOrder[i] == EventsManager.ShapeType.None) break;
 
             if(currentShapeOrder[i] != _shape)
             {
-                currentShapeOrder = new ShapeType[5];
-                currentButtonOrder = new ButtonType[5];
-                entryNum = 0;
+                ResetButtons();
                 break;
             }
         }
 
+        //Adds the new input to the current order
         currentShapeOrder[entryNum] = _shape;
         currentButtonOrder[entryNum] = _button;
         entryNum++;
 
+        //Checks if the current order is correct. 
+        // If it is wrong, then the buttons are reset. 
+        // If the order is correct and complete, then the connected interactive object is activated
         for (int i = 0; i < hiddenSwitches.Length; i++)
         {
             if(hiddenSwitches[i].shape == _shape)
             {
-                //Continue
-                if(currentButtonOrder[currentButtonOrder.Length - 1] == ButtonType.None) return;
+                //The checked switch is the one being used
+
+                //Checks if the current order is complete
+                if(currentButtonOrder[currentButtonOrder.Length - 1] == EventsManager.ButtonType.None) return;
 
                 for (int j = 0; j < hiddenSwitches[i].buttonOrder.Length; j++)
                 {
                     if (hiddenSwitches[i].buttonOrder[j] != currentButtonOrder[j])
                     {
-                        currentShapeOrder = new ShapeType[5];
-                        currentButtonOrder = new ButtonType[5];
-                        entryNum = 0;
+                        //Current order does not match the switch's order
 
-                        OnResetButtons?.Invoke();
-
+                        ResetButtons();
                         SetAudioNumServerRpc(0);
-                        // PlayAudio(0);
-
-                        //Wrong
                         return;
                     }
                 }
 
-                currentShapeOrder = new ShapeType[5];
-                currentButtonOrder = new ButtonType[5];
-                entryNum = 0;
+                //The current order is complete and correct
+                FreezeCorrectButtons(_shape);
                 hiddenSwitches[i].activateMethod.Invoke();
-
-                //Correct
                 SetAudioNumServerRpc(1);
-                // PlayAudio(1);
 
                 return;
             }
         }
-    }
-
-    private void DisableMotion()
-    {
-        PCPlayerInputManager.ToggleRestriction("Move", false);
     }
 }

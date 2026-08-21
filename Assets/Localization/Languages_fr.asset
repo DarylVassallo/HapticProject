@@ -136,6 +136,38 @@ MonoBehaviour:
     m_Localized: "R\xE9initialisation"
     m_Metadata:
       m_Items: []
+  - m_Id: 41304898681409536
+    m_Localized: Mouvement
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41305078117928960
+    m_Localized: "WASD Cl\xE9s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41305504766726144
+    m_Localized: Charger La Lampe De Poche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41305880203071488
+    m_Localized: Clic Gauche De La Souris
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41306048646320128
+    m_Localized: Interagir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41306123233628160
+    m_Localized: "E Cl\xE9"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41321112518496256
+    m_Localized: Annuler
+    m_Metadata:
+      m_Items: []
+  - m_Id: 41321256198574080
+    m_Localized: Entrer
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

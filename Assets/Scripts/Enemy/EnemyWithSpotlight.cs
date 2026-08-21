@@ -11,9 +11,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
 {
     private NavMeshAgent _agent;
 
-    private Transform _pcPlayerTransform;
+    private GameObject _pcPlayer;
     private Health _pcPlayerHealth;
-    private FlashlightCharge _pcFlashlightCharge;
 
     private Transform _pcPlayerSpotLight;
     private bool _isPCTooClose;
@@ -29,18 +28,16 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private Vector3 _positionDifference;
 
-    [Header("Shake")]
-    [SerializeField] private float shakeSpeed;
-    [SerializeField] private float shakeAmount;
-
-
     [Header("Damage")]
     [SerializeField] private float damageToAngel;
     [SerializeField] private float damageToPlayer;
     [SerializeField] private float _tooCloseDistance;
     [SerializeField] private float _tooFarDistance;
-     private Health health;
 
+    private bool _notifiedOfDeath;
+    private float _notifiedHealth;
+    private float _unofficialHealth;
+    private float _notifiedFlashlightRange;
 
     [Header("Audio")]
     [SerializeField] private AudioClip[] burningAudios;
@@ -58,23 +55,18 @@ public class EnemyWithSpotlight : NetworkBehaviour
     private Animator _animator;
 
     [SerializeField] private float damageDelay;
-    private bool canBeDamaged = true;
+    private bool _canBeDamaged;
 
-    private int currentAudioNum = -1;
-
-    private EnemyManager enemyManager;
+    private EnemyManager _enemyManager;
 
     private AudioClip _currentAudio;
     private int _currentAudioNum;
 
-    public static event Action<GameObject> OnRemoveEnemy;
-
-    private float damageMultiplier = 0f;
+    private float _damageMultiplier;
 
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
-        health = this.gameObject.GetComponent<Health>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
@@ -83,19 +75,40 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         _attackCount = maxAttackDelay;
 
-        enemyManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<EnemyManager>();
+        _enemyManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<EnemyManager>();
+
+        _canBeDamaged = true;
+
+        _notifiedOfDeath = false;
+        _notifiedHealth = 100f;
+        _unofficialHealth = 100f;
+        _notifiedFlashlightRange = 0;
+
+        _damageMultiplier = 0f;
     }
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerData;
-        CheckpointManager.OnDestroyAllEnemies += DestroyEnemy;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerData;
+        EventsManager.OnDestroyAllEnemies += DestroyEnemy;
+
+        EventsManager.OnEntityKilled += RecieveDeath;
+        EventsManager.OnEntityChangedHealth += RecieveChangedHealth;
+        EventsManager.OnEntityChangedFlashlightRange += RecieveFlashlightRange;
+
+        EventsManager.OnSendAppropriateEnemyAudio += PlayAudio;
     }
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerData;
-        CheckpointManager.OnDestroyAllEnemies -= DestroyEnemy;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerData;
+        EventsManager.OnDestroyAllEnemies -= DestroyEnemy;
+
+        EventsManager.OnEntityKilled -= RecieveDeath;
+        EventsManager.OnEntityChangedHealth -= RecieveChangedHealth;
+        EventsManager.OnEntityChangedFlashlightRange -= RecieveFlashlightRange;
+
+        EventsManager.OnSendAppropriateEnemyAudio -= PlayAudio;
     }
 
     public override void OnNetworkDespawn()
@@ -103,33 +116,37 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _shuttingDown = true;
     }
 
-    [ClientRpc]
-    private void PlayWalkAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayWalkAudioRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(1));
+        _audioSource.volume = 0.5f;
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 1);
     }
 
-    [ClientRpc]
-    private void PlayAttackAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayAttackAudioRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(3));
+        _audioSource.volume = 1f;
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 3);
     }
 
-    [ClientRpc]
-    private void PlayDamageAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayDamageAudioRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(0));
+        _audioSource.volume = 1 - (_unofficialHealth / 100);
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 0);
     }
 
-    [ClientRpc]
-    private void PlayDeathAudioClientRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayDeathAudioRpc()
     {
-        PlayAudio(enemyManager.GetAppropriateAudio(2));
+        _audioSource.volume = 1;
+        EventsManager.GetAppropriateEnemyAudio(this.gameObject, 2);
     }
 
-    private void PlayAudio(AudioClip _newAudio)
+    private void PlayAudio(GameObject enemy, AudioClip _newAudio)
     {
-        if(_audioSource.isPlaying) return;
+        if(_audioSource.isPlaying || enemy != this.gameObject) return;
 
         _audioSource.Stop();
         _audioSource.clip = _newAudio;
@@ -140,7 +157,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [ClientRpc]
     public void RemoveEnemyClientRpc()
     {
-        OnRemoveEnemy?.Invoke(this.gameObject);
+        EventsManager.RemoveEnemy(this.gameObject);
     }
 
     [ClientRpc]
@@ -161,32 +178,30 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _animator.speed = 0;
     }
 
-    [ClientRpc]
-    public void WalkAudioVolumeClientRpc()
-    {
-        _audioSource.volume = 0.5f;
-    }
+    // [ClientRpc]
+    // public void WalkAudioVolumeClientRpc()
+    // {
+    //     _audioSource.volume = 0.5f;
+    // }
 
-    [ClientRpc]
-    public void DamageAudioClientRpc()
-    {
-        _audioSource.volume = 1 - (health.GetHealth() / 100);
-    }
+    // [ClientRpc]
+    // public void DamageAudioClientRpc()
+    // {
+    //     _audioSource.volume = 1 - (_notifiedHealth / 100);
+    // }
 
-    [ClientRpc]
-    public void DeathAudioVolumeClientRpc()
-    {
-        _audioSource.volume = 1;
-    }
+    // [ClientRpc]
+    // public void DeathAudioVolumeClientRpc()
+    // {
+    //     _audioSource.volume = 1;
+    // }
 
     private void GetPCPlayerData()
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-            _pcPlayerHealth = _pcPlayerTransform.GetComponent<Health>();
+            _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
             _pcPlayerSpotLight = GameObject.FindGameObjectWithTag("PCFlashLight").transform;
-            _pcFlashlightCharge = _pcPlayerSpotLight.GetComponent<FlashlightCharge>();
         }
     }
 
@@ -196,28 +211,36 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
         if(_attackCount > 0) _attackCount--;
 
-        (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayerTransform);
+        (_isPCTooClose, _isPCTooFar) = IsCloseToPlayer(_pcPlayer.transform);
 
+        //The enemy does not move if it is too far from the PC Player
         if (_isPCTooFar)
         {
             StandBy();
         }else{    
-            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight, _pcFlashlightCharge); 
+            _isInsidePCSpotLight = IsInsideSpotLight(_pcPlayerSpotLight); 
 
+            //Freezes and damages the enemy if it is within the PC Player's flashlight's light
             if (_isInsidePCSpotLight)
             {
-                DamageAndFreeze(0);
+                DamageAndFreeze();
             }
             else
             {
-                if(health.isDead)
+                //Removes the enemy if it is dead
+                if(_notifiedOfDeath)
                 {
                     RemoveEnemyClientRpc();
+
+                //The enemy stops and attacks the player if it is close enough to the PC Player,
+                //  and not within their light
                 }else if (_isPCTooClose && _attackCount <= 0)
                 {
                     StopAndAttack(damageToPlayer);  
-                }
-                else if(!_isPCTooClose)
+                
+                //The enemy walks towards the  PC Player if it is not too far from them, 
+                // and not within their light
+                }else if(!_isPCTooClose)
                 {
                     Walk();
                 }
@@ -225,11 +248,28 @@ public class EnemyWithSpotlight : NetworkBehaviour
         }
     }
 
+    private void RecieveDeath(GameObject entity)
+    {
+        if(entity == this.gameObject) _notifiedOfDeath = true;
+    }
+
+    private void RecieveChangedHealth(GameObject entity, float newHealth)
+    {
+        if(entity == this.gameObject) _notifiedHealth = newHealth;
+    }
+    
+    private void RecieveFlashlightRange(float newFlashlightRange)
+    {
+        _notifiedFlashlightRange = newFlashlightRange;
+    }
+
+    // This triggers the funciton to properly remove the enemy
     private void DestroyEnemy()
     {
         RemoveEnemyClientRpc();
     }
 
+    //This stops the enemy from moving
     private void StandBy()
     {
         _agent.speed = 0;
@@ -237,28 +277,27 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _agent.SetDestination(transform.position);
     }
 
+    //This causes the enemy to move towards the PC Player
     private void Walk()
     {
         _agent.speed = agentSpeed;
         _agent.isStopped = false;
 
         if(_animator.speed != 1) MoveAnimationClientRpc();
-        // _animator.speed = 1;
 
         if (_currentAudioNum != 1 || !_audioSource.isPlaying)
         {
-            // _currentAudio = enemyManager.GetAppropriateAudio(1);
-            PlayWalkAudioClientRpc();
-            WalkAudioVolumeClientRpc();
+            PlayWalkAudioRpc();
+            // WalkAudioVolumeClientRpc();
         }
         _currentAudioNum = 1;
 
-        _destination = _pcPlayerTransform.position;
-        // _agent.destination = _destination;
+        _destination = _pcPlayer.transform.position;
 
         if(_agent.isOnNavMesh) _agent.SetDestination(_destination);
     }
 
+    //This stops the enemy, and reduces the PC Player's health
     private void StopAndAttack(float _damage)
     {
         _attackCount = maxAttackDelay;
@@ -267,77 +306,60 @@ public class EnemyWithSpotlight : NetworkBehaviour
         
         if(!_shuttingDown)
         {
-            if (_currentAudioNum != 3 || !_audioSource.isPlaying)
-            {
-                // _currentAudio = enemyManager.GetAppropriateAudio(3);
-                PlayAttackAudioClientRpc();
-            }
+            if (_currentAudioNum != 3 || !_audioSource.isPlaying) PlayAttackAudioRpc();
             _currentAudioNum = 3;
         }
         
         _agent.SetDestination(transform.position);
 
-        _pcPlayerHealth.ChangeHealth(-_damage, -1);
+        EventsManager.ChangeHealthForEntity(_pcPlayer, -_damage);
     }
 
-    private void DamageAndFreeze(int _playerType)
+    //This stops the enemy, and reduces the enemy's health
+    private void DamageAndFreeze()
     {
         _agent.speed = 0;
 
-        if(!health.isDead)
+        //Reduces the enemy's health if it is not dead
+        if(!_notifiedOfDeath)
         {             
             if(_animator.speed != 0) FreezeAnimationClientRpc();
-            // _animator.speed = 0;
 
-            if (_currentAudioNum != 0 || !_audioSource.isPlaying)
-            {
-                // _currentAudio = enemyManager.GetAppropriateAudio(0);
-                PlayDamageAudioClientRpc();
-            }
+            if (_currentAudioNum != 0 || !_audioSource.isPlaying) PlayDamageAudioRpc();
             _currentAudioNum = 0;
             
-            if(IsServer) DamageAudioClientRpc();
+            // DamageAudioClientRpc();
 
-            // _agent.SetDestination(transform.position);
-
-            if(canBeDamaged)
+            //This damages to the enemy in increments
+            if(_canBeDamaged)
             {
-                canBeDamaged = false;
-                health.ChangeHealth(-damageToAngel * damageMultiplier, _playerType);
+                _canBeDamaged = false;
+                EventsManager.ChangeHealthForEntity(this.gameObject, -damageToAngel * _damageMultiplier);
+                _unofficialHealth = _unofficialHealth - (damageToAngel * _damageMultiplier);
                 StartCoroutine(DelayDamage());
             }
-        }
-        else
-        {
-            if(_animator.speed != 1) MoveAnimationClientRpc();
-            // _animator.speed = 1;
 
-            // if (_currentAudioNum != 2)
-            // {
-            //     _currentAudio = enemyManager.GetAppropriateAudio(2);
-            // }
+        //Properly removes the enemy if it has no more health
+        } else {
+            if(_animator.speed != 1) MoveAnimationClientRpc();
+
             _currentAudioNum = 2;
 
-            PlayDeathAudioClientRpc();
-            DeathAudioVolumeClientRpc();
+            PlayDeathAudioRpc();
+            // DeathAudioVolumeClientRpc();
         }
-
-        // transform.position = new Vector3(   
-        //                                 transform.position.x + 
-        //                                 Mathf.Sin(shakeSpeed * Time.time * (1 - (health.GetHealth() / 100))) * shakeAmount * (1 - (health.GetHealth() / 100)),
-        //                                 transform.position.y, 
-        //                                 transform.position.z
-        //                             );
     }
 
+    //After a delay, the enemy is able to be damaged again by the PC Player's light
     IEnumerator DelayDamage()
     {
         yield return new WaitForSeconds(damageDelay);
-        canBeDamaged = true;
+        _canBeDamaged = true;
     }
     
+    //This checks if the enemy is within the PC Player's flashlights range and angle (which depends on its strength)
     //Used ChatGPT here
-    bool IsInsideSpotLight(Transform _playerSpotLight, FlashlightCharge _playerFlashlightCharge)
+    bool IsInsideSpotLight(Transform _playerSpotLight)
     {
         if (_playerSpotLight == null) return false;
         if (!_playerSpotLight.gameObject.activeSelf) return false;
@@ -345,22 +367,20 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _positionDifference = transform.position - _playerSpotLight.position;
         _spotLightDistance = _positionDifference.magnitude;
 
-        if (_spotLightDistance > (_playerFlashlightCharge.currentFlashLightRange * 0.5f))
-        {
-            return false;
-        }
+        //Returns false if the enemy is outside of the flashlight's range
+        if (_spotLightDistance > (_notifiedFlashlightRange * 0.5f)) return false;
 
         _spotLightAngle = Vector3.Angle(_playerSpotLight.forward, _positionDifference);
 
-        if (_spotLightAngle > 55 * 0.5f)
-        {
-            return false;
-        }
+        //Returns fals if the enemy is outside of the falshlight's angle (the angle remains unchanged)
+        if (_spotLightAngle > 55 * 0.5f) return false;
 
-        damageMultiplier = 1 - (_spotLightDistance / (_playerFlashlightCharge.currentFlashLightRange * 0.5f));
+        //The damage applied to the PC Player depends on the distance between the enemy and flashlight (the closer they are, the greater the damage)
+        _damageMultiplier = 1 - (_spotLightDistance / (_notifiedFlashlightRange * 0.5f));
         return true;
     }
 
+    //This checks if the enemy is too close or too far from the PC Player
     (bool _isTooClose, bool _isTooFar) IsCloseToPlayer(Transform _playerTransform)
     {
         float distance = (transform.position - _playerTransform.position).magnitude;

@@ -6,14 +6,11 @@ using Unity.Netcode;
 
 public class HealthBallTargeting : NetworkBehaviour
 {
-     private Vector3 _startingPosition;
-    private Quaternion _startingRotation;
-
     private Rigidbody _rb;
 
     [SerializeField] private float respawnDelay;
 
-    private bool isRespawning;  
+    // private bool isRespawning;  
 
     private Transform pcPlayer;
     private bool _canPCFunction;
@@ -27,7 +24,6 @@ public class HealthBallTargeting : NetworkBehaviour
     private Vector3 newDirection;
     private float currentDistance;
     [SerializeField] private float minDistance;
-    public static event Action GivePCPlayerHealth;
 
     [SerializeField] private Material pcPlayerPipes;
     private Color baseColor = Color.orange;
@@ -38,10 +34,6 @@ public class HealthBallTargeting : NetworkBehaviour
 
     void Awake()
     {
-        _startingPosition = this.transform.position;
-        _startingRotation = this.transform.rotation;
-        isRespawning = false;
-
         _canPCFunction = false;
 
         _isThrown = false;
@@ -57,16 +49,18 @@ public class HealthBallTargeting : NetworkBehaviour
 
     private void OnEnable()
     {
-        ConnectUIScript.OnCreatedPCPlayer += GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
+        EventsManager.OnObjectRespawned += Respawned;
     }
 
     private void OnDisable()
     {
-        ConnectUIScript.OnCreatedPCPlayer -= GetPCPlayerDataRpc;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
+        EventsManager.OnObjectRespawned -= Respawned;
     }
     
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
-    public void GetPCPlayerDataRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void GetPCPlayerBodyDataRpc()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
@@ -75,15 +69,15 @@ public class HealthBallTargeting : NetworkBehaviour
         }
     }
 
+    //This detects if the ball has been grabbed by the VR Player
     public void grabbedHealthBall()
     {
-        Debug.Log("grabbedHealthBall: " + _canPCFunction);
         if(_canPCFunction) _isSelected = true;
     }
     
+    //This detects if the ball has been released by the VR Player
     public void releasedHealthBall()
     {
-        Debug.Log("releasedHealthBall: " + _canPCFunction);
         if(_canPCFunction)
         {
             _isThrown = true;
@@ -95,26 +89,9 @@ public class HealthBallTargeting : NetworkBehaviour
         }
     }
 
-    private IEnumerator RespawnDelayAfterCollision()
+    private void Respawned(GameObject entity)
     {
-        yield return new WaitForSeconds(respawnDelay);
-        RespawnNow();
-    }
-
-    private void RespawnNow()
-    {
-        _isThrown = false;
-
-        this.transform.position = _startingPosition;
-        this.transform.rotation = _startingRotation;
-                
-        _rb = GetComponent<Rigidbody>();
-        if(_rb != null)
-        {
-            _rb.linearVelocity = Vector3.zero;
-        }
-
-        isRespawning = false;
+        if(entity == this.gameObject) _isThrown = false;
     }
 
     private void FixedUpdate()
@@ -125,6 +102,8 @@ public class HealthBallTargeting : NetworkBehaviour
         if(_isThrown) Thrown();
     }
 
+    //Once grabbed, this causes the pipes on the PC Player to pulse lighting, 
+    // with them slowly glowing brighter and darker
     private void Selected()
     {
         if(_isEmitting)
@@ -150,14 +129,15 @@ public class HealthBallTargeting : NetworkBehaviour
         pcPlayerPipes.SetColor("_EmissionColor", finalColor);
     }
 
+    //Once thrown, the ball will change its direction of motion slowly towards the PC Player, 
+    // and therefore seemingly naturally hit them
     private void Thrown()
     {
         currentDistance = (transform.position - pcPlayer.transform.position).magnitude;
-        if(currentDistance <= minDistance)
-        {
-            
-            currentDistance *= 3;
-        }
+        
+        //If the ball is close to the PC Player, it will increase the intensity of the directional pull
+        if(currentDistance <= minDistance) currentDistance *= 3;
+
         currentDistance = (70 - currentDistance) * 1.1f;
         if(currentDistance < 0) currentDistance = 0;
 
@@ -169,21 +149,13 @@ public class HealthBallTargeting : NetworkBehaviour
         rb.linearVelocity = newDirection * rb.linearVelocity.magnitude;
     }
 
+    //If the ball collides with an object, the ball will be reset back to their spawn point. 
+    // In addition, if the collided object was the PC Player, it will trigger them to gain health.
     private void OnTriggerEnter(Collider other)
     {        
-        Debug.Log("other: " + other);
-        Debug.Log("other.tag: " + other.tag);
-
         if (other.CompareTag("PCPlayer"))
         { 
-            GivePCPlayerHealth?.Invoke();
-            RespawnNow();
-        }
-
-        if (!other.CompareTag("HealthBowl") && !isRespawning)
-        { 
-            isRespawning = true;
-            StartCoroutine(RespawnDelayAfterCollision());
+            EventsManager.GivePCPlayerHealth();
         }
     }
 }

@@ -132,8 +132,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StatueWithSpotlight
   ShowTopMostFoldoutHeaderGroup: 1
   agentSpeed: 3
-  shakeSpeed: 64
-  shakeAmount: 0.08
   damageToAngel: 10
   damageToPlayer: 3
   _tooCloseDistance: 2.2

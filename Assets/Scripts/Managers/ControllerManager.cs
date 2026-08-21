@@ -10,9 +10,9 @@ public class ControllerManager : NetworkBehaviour
     //2 RightHand
     //3 RightController
 
-    public static event Action OnChangedControllers;
-    public static event Action OnCheckControllers;
     [SerializeField] private GameObject[] controllers;
+    [SerializeField] private SkinnedMeshRenderer[] controllerVisuals;
+    private bool[] activeControllers = new bool[4];
 
     private NetworkVariable<int> activateControllerNum = new(-1);
     private NetworkVariable<int> deactivateControllerNum = new(-1);
@@ -26,10 +26,8 @@ public class ControllerManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("ControllerManager OnNetworkSpawn");
-
         isInNetwork = true;
-        OnCheckControllers?.Invoke();
+        EventsManager.CheckControllers();
 
         if(isLeftHandActive.Value) ActivateLeftHandRpc();
         if(isLeftControllerActive.Value) ActivateLeftControllerRpc();
@@ -39,11 +37,9 @@ public class ControllerManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("ControllerManager OnEnable");
-
-        TogglePhysicsControllers.OnActivateController += ActivateController;
-        TogglePhysicsControllers.OnDeactivateController += DeactivateController;
-        MenuManager.OnToggleAll += ToggleHands;
+        EventsManager.OnActivateController += ActivateController;
+        EventsManager.OnDeactivateController += DeactivateController;
+        EventsManager.OnToggleAll += ToggleHands;
 
         activateControllerNum.OnValueChanged += ActivateControllerChanged;
         deactivateControllerNum.OnValueChanged += DeactivateControllerChanged;
@@ -51,11 +47,9 @@ public class ControllerManager : NetworkBehaviour
 
     private void OnDisable()
     {
-        Debug.Log("ControllerManager OnDisable");
-
-        TogglePhysicsControllers.OnActivateController -= ActivateController;
-        TogglePhysicsControllers.OnDeactivateController -= DeactivateController;
-        MenuManager.OnToggleAll -= ToggleHands;
+        EventsManager.OnActivateController -= ActivateController;
+        EventsManager.OnDeactivateController -= DeactivateController;
+        EventsManager.OnToggleAll -= ToggleHands;
 
         activateControllerNum.OnValueChanged -= ActivateControllerChanged;
         deactivateControllerNum.OnValueChanged -= DeactivateControllerChanged;
@@ -63,49 +57,46 @@ public class ControllerManager : NetworkBehaviour
 
     private void ActivateController(int _newActivateControllerNum)
     {
-        // Debug.Log("ControllerManager ActivateController: " + _newActivateControllerNum);
         if(isInNetwork) SetActivateControllerNumServerRpc(_newActivateControllerNum);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetActivateControllerNumServerRpc(int _newController)
     {
-        // Debug.Log("ControllerManager SetActivateControllerNumServerRpc: " + _newController);
         activateControllerNum.Value = _newController;
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsLeftHandActiveServerRpc(bool _isActive)
     {
         isLeftHandActive.Value = _isActive;
         if(_isActive) SetIsLeftControllerActiveServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsLeftControllerActiveServerRpc(bool _isActive)
     {
         isLeftControllerActive.Value = _isActive;
         if(_isActive) SetIsLeftHandActiveServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsRightHandActiveServerRpc(bool _isActive)
     {
         isRightHandActive.Value = _isActive;
         if(_isActive) SetIsRightControllerActiveServerRpc(false);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetIsRightControllerActiveServerRpc(bool _isActive)
     {
         isRightControllerActive.Value = _isActive;
         if(_isActive) SetIsRightHandActiveServerRpc(false);
     }
 
+    //Activates the specified controller (based on the number used)
     private void ActivateControllerChanged(int previous, int current)
     {
-        Debug.Log("ControllerManager ActivateControllerChanged: " + current);
-
         switch(current)
         {
             case 0:
@@ -123,34 +114,30 @@ public class ControllerManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateLeftHandRpc()
     {
-        Debug.Log("ControllerManager ActivateLeftHandRpc");
         SetIsLeftHandActiveServerRpc(true);
         ToggleControllers(0, true);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateLeftControllerRpc()
     {
-        Debug.Log("ControllerManager ActivateLeftControllerRpc");
         SetIsLeftControllerActiveServerRpc(true);
         ToggleControllers(1, true);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateRightHandRpc()
     {
-        Debug.Log("ControllerManager ActivateRightHandRpc");
         SetIsRightHandActiveServerRpc(true);
         ToggleControllers(2, true);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateRightControllerRpc()
     {
-        Debug.Log("ControllerManager ActivateRightControllerRpc");
         SetIsRightControllerActiveServerRpc(true);
         ToggleControllers(3, true);
     }
@@ -159,21 +146,18 @@ public class ControllerManager : NetworkBehaviour
 
     private void DeactivateController(int _newDeactivateControllerNum)
     {
-        // Debug.Log("ControllerManager DeactivateController: " + deactivateControllerNum);
         if(isInNetwork) SetDeactivateControllerNumServerRpc(_newDeactivateControllerNum);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetDeactivateControllerNumServerRpc(int _newController)
     {
-        // Debug.Log("ControllerManager SetDeactivateControllerNumServerRpc: " + _newController);
         deactivateControllerNum.Value = _newController;
     }
 
+    //Deactivates the specified controller (based on the number used)
     private void DeactivateControllerChanged(int previous, int current)
     {
-        Debug.Log("ControllerManager DeactivateControllerChanged: " + current);
-
         switch(current)
         {
             case 0:
@@ -191,67 +175,65 @@ public class ControllerManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateLeftHandRpc()
     {
-        Debug.Log("ControllerManager DeactivateLeftHandRpc");
         ToggleControllers(0, false);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateLeftControllerRpc()
     {
-        Debug.Log("ControllerManager DeactivateLeftControllerRpc");
         ToggleControllers(1, false);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateRightHandRpc()
     {
-        Debug.Log("ControllerManager DeactivateRightHandRpc");
         ToggleControllers(2, false);
     }
 
-    [Rpc(SendTo.Everyone, RequireOwnership = false)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateRightControllerRpc()
     {
-        Debug.Log("ControllerManager DeactivateRightControllerRpc");
         ToggleControllers(3, false);
     }
 
+    //Deactivates controllers if alternate controllers are used (for example, the Left Controller will be deactivated, if the Left Hand is activated)
     private void ToggleControllers(int _controllerNum, bool _activate)
     {
-        Debug.Log("ControllerManager ToggleControllers: " + _controllerNum + " : " + _activate);
-        Debug.Log("ControllerManager ToggleControllers: controllers["  +_controllerNum +"]: " + controllers[_controllerNum]);
-
-        Debug.Log("ControllerManager ToggleControllers: old controllers["  +_controllerNum +"].active: " + controllers[_controllerNum].active);
         controllers[_controllerNum].SetActive(_activate);
-        Debug.Log("ControllerManager ToggleControllers: new controllers["  +_controllerNum +"].active: " + controllers[_controllerNum].active);
+        activeControllers[_controllerNum] = _activate;
         
         if((_controllerNum == 0 || _controllerNum == 2) && _activate)
         {
-            Debug.Log("ControllerManager ToggleControllers: other controllers["  + (_controllerNum + 1) +"]: " + controllers[(_controllerNum + 1)]);
-            Debug.Log("ControllerManager ToggleControllers: old other controllers["  + (_controllerNum + 1) +"].active: " + controllers[(_controllerNum + 1)].active);
             controllers[_controllerNum + 1].SetActive(false);
-            Debug.Log("ControllerManager ToggleControllers: new other controllers["  + (_controllerNum + 1) +"].active: " + controllers[(_controllerNum + 1)].active);
+            activeControllers[_controllerNum + 1] = false;
         }else if((_controllerNum == 1 || _controllerNum == 3) && _activate)
         {
-            Debug.Log("ControllerManager ToggleControllers: other controllers["  + (_controllerNum - 1) +"]: " + controllers[(_controllerNum - 1)]);
-            Debug.Log("ControllerManager ToggleControllers: old other controllers["  + (_controllerNum - 1) +"].active: " + controllers[(_controllerNum - 1)].active);
             controllers[_controllerNum - 1].SetActive(false);
-            Debug.Log("ControllerManager ToggleControllers: new other controllers["  + (_controllerNum - 1) +"].active: " + controllers[(_controllerNum - 1)].active);
+            activeControllers[_controllerNum - 1] = false;
         }
 
-        OnChangedControllers?.Invoke();
+        EventsManager.ChangedControllers();
     }
 
+    //Deactivates / Activates all controllers
     private void ToggleHands(bool toggle)
     {
-        Debug.Log("ControllerManager ToggleHands: " + toggle);
-
-        for(int i = 0; i < controllers.Length; i++)
+        if(toggle)
         {
-            controllers[i].SetActive(false);
+            for(int i = 0; i < controllers.Length; i++)
+            {
+                controllers[i].SetActive(activeControllers[i]);
+                if(controllerVisuals[i] != null) controllerVisuals[i].enabled = true;
+            }
+        }else{
+            for(int i = 0; i < controllers.Length; i++)
+            {
+                controllers[i].SetActive(false);
+                if(controllerVisuals[i] != null) controllerVisuals[i].enabled = false;
+            }
         }
     }
 }

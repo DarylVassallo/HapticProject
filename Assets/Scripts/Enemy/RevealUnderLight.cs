@@ -13,8 +13,6 @@ public class RevealUnderLight : NetworkBehaviour
     [SerializeField] private bool isVRInteractable;
     [SerializeField] private bool isEffectedByLight;
     [SerializeField] private bool isReversed;
-
-    public static event Action<GameObject, bool, bool, bool, bool> OnAddNewHiddenObject;
     
     [SerializeField] private bool isImmediatelyNeeded;
     [SerializeField] private bool isForSecondCheckpoint;
@@ -22,14 +20,18 @@ public class RevealUnderLight : NetworkBehaviour
 
     private void OnEnable()
     {
-        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects += AddObject;
-        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects += AddObject;
+        if(isForSecondCheckpoint) EventsManager.OnActivateSecondCheckpointHiddenObjects += AddHiddenObject;
+        if(isForThirdCheckpoint) EventsManager.OnActivateThirdCheckpointHiddenObjects += AddHiddenObject;
+
+        EventsManager.OnAddSpecificHiddenObject += AddSpecificHiddenObject;
     }
 
     private void OnDisable()
     {
-        if(isForSecondCheckpoint) CheckpointManager.OnActivateSecondCheckpointHiddenObjects -= AddObject;
-        if(isForThirdCheckpoint) CheckpointManager.OnActivateThirdCheckpointHiddenObjects -= AddObject;
+        if(isForSecondCheckpoint) EventsManager.OnActivateSecondCheckpointHiddenObjects -= AddHiddenObject;
+        if(isForThirdCheckpoint) EventsManager.OnActivateThirdCheckpointHiddenObjects -= AddHiddenObject;
+
+        EventsManager.OnAddSpecificHiddenObject -= AddSpecificHiddenObject;
     }
 
     public override void OnNetworkSpawn()
@@ -38,19 +40,21 @@ public class RevealUnderLight : NetworkBehaviour
         if(!isImmediatelyNeeded) this.gameObject.SetActive(false);
     }
 
+    //Upon spawning, the object is added to a hidden object list
     IEnumerator RequestNewHiddenObject()
     {
         yield return new WaitForSeconds(0.5f);
-        AddObject();
-    }
-
-    public void AddObject()
-    {
         AddHiddenObject();
     }
 
-    public void AddHiddenObject()
+    private void AddHiddenObject()
     {
-        OnAddNewHiddenObject?.Invoke(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
+        EventsManager.AddNewHiddenObject(this.gameObject, isPCInteractable, isVRInteractable, isEffectedByLight, isReversed);
+    }
+
+    private void AddSpecificHiddenObject(GameObject _entity)
+    {
+        if(_entity != this.gameObject) return;
+        AddHiddenObject(); 
     }
 }

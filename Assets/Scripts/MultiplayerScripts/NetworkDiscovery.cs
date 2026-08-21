@@ -25,6 +25,7 @@ public class NetworkDiscovery : MonoBehaviour
         StopListening();
     }
 
+    //Begins broadcasting message
     public void StartBroadcasting()
     {
         if(isBroadcasting) return;
@@ -36,6 +37,7 @@ public class NetworkDiscovery : MonoBehaviour
         _ = BroadcastLoop();
     }
 
+    //Stops broadcasting message
     public void StopBroadcasting()
     {
         isBroadcasting = false;
@@ -43,6 +45,7 @@ public class NetworkDiscovery : MonoBehaviour
         serverUdp = null;
     }
 
+    //Repeated broadcasts a unique message only the client would know
     private async Task BroadcastLoop()
     {
         var endPoint = new IPEndPoint(IPAddress.Broadcast, discoveryPort);
@@ -55,9 +58,7 @@ public class NetworkDiscovery : MonoBehaviour
         }
     }
 
-
-
-
+    //Begins listening for message
     public void StartListening()
     {
         if(isListening) return;
@@ -67,6 +68,7 @@ public class NetworkDiscovery : MonoBehaviour
         _ = ListenLoop();
     }
 
+    //Stops listening for message
     public void StopListening()
     {
         isListening = false;
@@ -74,11 +76,11 @@ public class NetworkDiscovery : MonoBehaviour
         clientUdp = null;
     }
 
+    //Listens for unique message being broadcast by the host
     private async Task ListenLoop()
     {
         while(isListening)
         {
-            Debug.Log("NetworkDiscovery ListenLoop loop");
             try
             {
                 var result = await clientUdp.ReceiveAsync();
@@ -91,16 +93,9 @@ public class NetworkDiscovery : MonoBehaviour
                     StopListening();
                 }
             }
-            catch (ObjectDisposedException)
-            {
-                break;
-            }
-            catch(SocketException se)
-            {
-                break;
-            }
             catch (Exception e)
             {
+                Debug.Log("Error: " + e);
                 break;
             }
         }
