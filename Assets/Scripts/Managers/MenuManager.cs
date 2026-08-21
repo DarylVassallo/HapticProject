@@ -35,12 +35,14 @@ public class MenuManager : NetworkBehaviour
     [SerializeField] private GameObject pcHealthBar;
     private Transform pcHealthBarTransform;
     private Image pcHealthBarImage;
+    private Color pcHealthBarOriginalColour;
 
     private float _maxHealthBarLength;
 
     [SerializeField] private GameObject pcChargeBar;
     private Transform pcChargeBarTransform;
     private Image pcChargeBarImage;
+    private Color pcChargeBarOriginalColour;
 
     private float _maxChargeBarLength;
     private TMP_Text _scoreUI;
@@ -62,12 +64,14 @@ public class MenuManager : NetworkBehaviour
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
 
         pcHealthBarTransform = pcHealthBar.transform;
-        pcHealthBarImage = pcHealthBar.GetComponent<Image>();
         _maxHealthBarLength = pcHealthBarTransform.localScale.y;
+        pcHealthBarImage = pcHealthBar.GetComponent<Image>();
+        pcHealthBarOriginalColour = pcChargeBarImage.color;
 
         pcChargeBarTransform = pcChargeBar.transform;
-        pcChargeBarImage = pcChargeBar.GetComponent<Image>();
         _maxChargeBarLength = pcChargeBarTransform.localScale.y;
+        pcChargeBarImage = pcChargeBar.GetComponent<Image>();
+        pcChargeBarOriginalColour = pcChargeBarImage.color;
 
         previousHealth = 1f;
 
@@ -80,8 +84,8 @@ public class MenuManager : NetworkBehaviour
         
         EventsManager.OnGameOver += ToggleGameOverMenuRpc;
         EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
-        EventsManager.OnChangeHealthBar += ChangeHealthBarRpc;
-        EventsManager.OnChangeChargeBar += ChangeChargeBarRpc;
+        EventsManager.OnChangeHealthBar += ChangeHealthBarServerRpc;
+        EventsManager.OnChangeChargeBar += ChangeChargeBarServerRpc;
     }
 
     private void OnDisable()
@@ -90,22 +94,22 @@ public class MenuManager : NetworkBehaviour
 
         EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
         EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
-        EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
-        EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
+        EventsManager.OnChangeHealthBar -= ChangeHealthBarServerRpc;
+        EventsManager.OnChangeChargeBar -= ChangeChargeBarServerRpc;
     }
 
     //This changes the length of the  PC Player health bar, to represent the total health
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ChangeHealthBarRpc(float _currentHealth)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeHealthBarServerRpc(float _currentHealth)
     {
-        StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarImage.color, _maxHealthBarLength, _currentHealth / 100f, 1f));
+        StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarOriginalColour, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
 
     //This changes the length of the  PC Player charge bar, to represent the total charge
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ChangeChargeBarRpc(float _currentCharge)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeChargeBarServerRpc(float _currentCharge)
     {
-        ConstantChangeBar(pcChargeBarTransform, pcChargeBarImage, pcChargeBarImage.color, _maxChargeBarLength, _currentCharge / 100f);
+        ConstantChangeBar(pcChargeBarTransform, pcChargeBarImage, pcChargeBarOriginalColour, _maxChargeBarLength, _currentCharge / 100f);
     }
     
     //Changes the size of the specified bar
