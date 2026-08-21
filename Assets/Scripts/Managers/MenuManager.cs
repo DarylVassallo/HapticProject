@@ -66,7 +66,7 @@ public class MenuManager : NetworkBehaviour
         pcHealthBarTransform = pcHealthBar.transform;
         _maxHealthBarLength = pcHealthBarTransform.localScale.y;
         pcHealthBarImage = pcHealthBar.GetComponent<Image>();
-        pcHealthBarOriginalColour = pcChargeBarImage.color;
+        pcHealthBarOriginalColour = pcHealthBarImage.color;
 
         pcChargeBarTransform = pcChargeBar.transform;
         _maxChargeBarLength = pcChargeBarTransform.localScale.y;
@@ -121,6 +121,7 @@ public class MenuManager : NetworkBehaviour
 
     IEnumerator ChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue, float _delay)
     {
+        Debug.Log("ChangeBar");
         float elapsed = 0f;
         Material chargingMaterial;
 
@@ -157,6 +158,8 @@ public class MenuManager : NetworkBehaviour
                                         ((elapsed - (_delay * 0.75f)) / _delay) * 4
                                     );
             }
+
+            Debug.Log("_barImage.color: " + _barImage.color);
 
             yield return null;
         }
