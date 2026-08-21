@@ -238,7 +238,8 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
             {
-                SetExitPadRpc(i);   
+                Debug.Log("_currentMap.Value: " + _currentMap.Value);
+                if(IsOwner) SetExitPadRpc(i, _currentMap.Value);   
             }
             
             _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
@@ -250,12 +251,12 @@ public class TeleportManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void SetExitPadRpc(int _index)
+    private void SetExitPadRpc(int _index, int _newMap)
     {
-        Debug.Log("EntrancePad: " + teleportConnections[_currentMap.Value].teleportPairs[_index].entrancePad.gameObject);
-        Debug.Log("ExitPad: " +  teleportConnections[_currentMap.Value].teleportPairs[_index].exitPad.gameObject);
-        EventsManager.SetExitPadTransform(  teleportConnections[_currentMap.Value].teleportPairs[_index].entrancePad.gameObject, 
-                                                    teleportConnections[_currentMap.Value].teleportPairs[_index].exitPad);
+        Debug.Log("EntrancePad: " + teleportConnections[_newMap].teleportPairs[_index].entrancePad.gameObject);
+        Debug.Log("ExitPad: " +  teleportConnections[_newMap].teleportPairs[_index].exitPad.gameObject);
+        EventsManager.SetExitPadTransform(  teleportConnections[_newMap].teleportPairs[_index].entrancePad.gameObject, 
+                                                    teleportConnections[_newMap].teleportPairs[_index].exitPad);
     }
 
     IEnumerator ChangeMapDelay(float delay)
