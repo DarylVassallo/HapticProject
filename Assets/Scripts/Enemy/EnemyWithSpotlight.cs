@@ -322,7 +322,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
             if (_currentAudioNum != 0 || !_audioSource.isPlaying) PlayDamageAudioClientRpc();
             _currentAudioNum = 0;
             
-            if(IsServer) DamageAudioClientRpc();
+            DamageAudioClientRpc();
 
             //This damages to the enemy in increments
             if(_canBeDamaged)

@@ -189,6 +189,9 @@ public class EventsManager : MonoBehaviour
     public static event Action<bool> OnTogglePCTrigger;
     public static void TogglePCTrigger(bool _toggle) => OnTogglePCTrigger?.Invoke(_toggle);
 
+    public static event Action OnClearTeleportNumPad;
+    public static void ClearTeleportNumPad() => OnClearTeleportNumPad?.Invoke();
+
 
 
 

@@ -12,6 +12,16 @@ public class TeleportNumPad : MonoBehaviour
         codeText.text = "";
     }
 
+    private void OnEnable()
+    {
+        EventsManager.OnClearTeleportNumPad += ClearCode;
+    }
+
+    private void OnDisable()
+    {
+        EventsManager.OnClearTeleportNumPad -= ClearCode;
+    }
+
     //Adds the inputted number to the current visible code
     public void AddNumber(int _newNumber)
     {
@@ -20,6 +30,11 @@ public class TeleportNumPad : MonoBehaviour
 
     //Resets the current visible code
     public void ResetCode()
+    {
+        if(codeText.text.Length > 0) codeText.text = codeText.text.Substring(0, codeText.text.Length - 1);
+    }
+
+    private void ClearCode()
     {
         codeText.text = "";
     }

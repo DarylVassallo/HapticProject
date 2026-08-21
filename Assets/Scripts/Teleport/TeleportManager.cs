@@ -211,6 +211,10 @@ public class TeleportManager : NetworkBehaviour
 
     private void ChangeMap(int previous, int current)
     {
+        if(!IsOwner) return;
+
+        EventsManager.ClearTeleportNumPad();
+
         //If the final map is called, the final teleport connections are set up
         if(current == 999)
         {
@@ -219,14 +223,6 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
             {
-                // finalTeleportConnections.teleportPairs[i].
-                //     entrancePad.GetComponent<TeleportPad>().
-                //     SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
-
-                // finalTeleportConnections.teleportPairs[i].
-                //     entrancePad.GetComponent<TeleportPad>().
-                //     SetExitPadTransform(finalTeleportConnections.teleportPairs[i].exitPad);
-
                 EventsManager.SetExitPadTransform(  finalTeleportConnections.teleportPairs[i].entrancePad.gameObject, 
                                                     finalTeleportConnections.teleportPairs[i].exitPad);
             }
@@ -239,15 +235,14 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < teleportConnections[_currentMap.Value].teleportPairs.Length; i++)
             {
-                // teleportConnections[_currentMap.Value].teleportPairs[i].
-                //     entrancePad.GetComponent<TeleportPad>().
-                //     SetExitPadTransform(teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
-
                 EventsManager.SetExitPadTransform(  teleportConnections[_currentMap.Value].teleportPairs[i].entrancePad.gameObject, 
                                                     teleportConnections[_currentMap.Value].teleportPairs[i].exitPad);
             }
             
             _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
+
+            Debug.Log("Teleport Delay: " + _timeLimit);
+
             if(IsOwner) StartCoroutine(ChangeMapDelay(_timeLimit));
         }
     }
