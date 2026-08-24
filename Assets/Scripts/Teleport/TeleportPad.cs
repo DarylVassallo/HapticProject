@@ -11,10 +11,6 @@ public class TeleportPad : NetworkBehaviour
 
     private Vector3 _positionDifference;
 
-    private TMP_Text _codeText;
-    private NetworkVariable<int> _secretCode = new (0);
-    [SerializeField] private int numLimit;
-
     private NetworkVariable<bool> _isPlayerOnPad = new (false);
     private Transform _pcPlayerTransform;
 
@@ -49,10 +45,54 @@ public class TeleportPad : NetworkBehaviour
 
     private bool _isTutorialTeleport;
 
+    [Header("General")]
+    [SerializeField] private Transform parentDisplay;
+    private String _stringSecretCode;
+    
+    [Header("Symbols")]
+    [SerializeField] private bool usesSymbols;
+    private Renderer[] displayedSymbols;
+    [SerializeField] private Material clearSymbol;
+    [SerializeField] private Material[] potentialSymbols;
+
+    [Header("Levers")]
+    [SerializeField] private bool usesLevers;
+    private float neutralYPos;
+    [SerializeField] private float topYPos;
+    [SerializeField] private float bottomYPos;
+    private Transform[] displayedNotches;
+
     void Awake()
     {
-        _codeText = this.GetComponentInChildren<TMP_Text>();
-        if(_codeText != null) _codeText.text = "";
+        _stringSecretCode = "";
+
+        if(parentDisplay != null)
+        {
+            if(usesSymbols)
+            {
+                displayedSymbols = new Renderer[parentDisplay.childCount];
+                for (int i = 0; i < parentDisplay.childCount; i++)
+                {
+                    displayedSymbols[i] = parentDisplay.GetChild(i).GetComponent<Renderer>();
+                    displayedSymbols[i].material = clearSymbol;
+                } 
+            }else if(usesLevers)
+            {
+                displayedNotches = new Transform[parentDisplay.childCount];
+                for (int i = 0; i < parentDisplay.childCount; i++)
+                {
+                    displayedNotches[i] = parentDisplay.GetChild(i);
+
+                    if(i == 0)
+                    {
+                        neutralYPos = displayedNotches[i].position.y;
+                        topYPos = neutralYPos + topYPos;
+                        bottomYPos = neutralYPos + bottomYPos;
+                    }
+                } 
+            }
+        }
+
 
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
 
@@ -61,6 +101,8 @@ public class TeleportPad : NetworkBehaviour
         restRotation = ring.rotation;
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+
+        
     }
 
     void Start()
@@ -79,8 +121,6 @@ public class TeleportPad : NetworkBehaviour
         EventsManager.OnTriggerTeleportButton += CheckPad;
 
         EventsManager.OnSetExitPadTransform += SetExitPadTransform;
-
-        _secretCode.OnValueChanged += ChangeCodeText;
     }
 
     private void OnDisable()
@@ -94,8 +134,6 @@ public class TeleportPad : NetworkBehaviour
         EventsManager.OnTriggerTeleportButton -= CheckPad;
 
         EventsManager.OnSetExitPadTransform -= SetExitPadTransform;
-
-        _secretCode.OnValueChanged -= ChangeCodeText;
     }
 
     //Resets the teleport pad, so the PC Player can use it 'for the first time' again
@@ -116,7 +154,6 @@ public class TeleportPad : NetworkBehaviour
     {
         if(_pad == this.gameObject)
         {
-            Debug.Log("SetExitPadTransform : " + _pad + " : " + _newExitPadTransform);
             exitTeleportPad = _newExitPadTransform;
             ChangeSecretCodePadServerRpc();
         }
@@ -126,7 +163,39 @@ public class TeleportPad : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void  ChangeSecretCodePadServerRpc()
     {
-        _secretCode.Value = UnityEngine.Random.Range(0, numLimit);
+        Debug.Log(this.gameObject + " : ChangeSecretCodePadServerRpc");
+
+        if(usesSymbols)
+        {
+            _stringSecretCode = "";
+            for(int i = 0; i < 4; i++)
+            {
+                int _newNum = UnityEngine.Random.Range(0, 4);
+                _stringSecretCode = _stringSecretCode + "" + (_newNum + 1);
+                displayedSymbols[i].material = potentialSymbols[_newNum];
+            }
+        }else if(usesLevers)
+        {
+            _stringSecretCode = "";
+            for(int i = 0; i < 5; i++)
+            {
+                int _newNum = UnityEngine.Random.Range(0, 2);
+                _stringSecretCode = _stringSecretCode + "" + (_newNum + 1);
+
+                Debug.Log(this.gameObject + " : _newNum: " + _newNum);
+                Debug.Log(this.gameObject + " : displayedNotches[" + i + "]: " + displayedNotches[i]);
+
+                switch(_newNum)
+                {
+                    case 0:
+                        displayedNotches[i].position = new Vector3(displayedNotches[i].position.x, bottomYPos, displayedNotches[i].position.z);
+                        break;
+                    case 1:
+                        displayedNotches[i].position = new Vector3(displayedNotches[i].position.x, topYPos, displayedNotches[i].position.z);
+                        break;
+                }
+            }
+        }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -135,16 +204,14 @@ public class TeleportPad : NetworkBehaviour
         _isPlayerOnPad.Value = _newOnPad;
     }
 
-    //Changes the code written on the teleport pad, to the correct code
-    private void ChangeCodeText(int _previous, int _current)
-    {
-        _codeText.text = "" + _current + "";
-    }
-
     //If the inputted code is correct, then the teleportation sequence can begin
     private void CheckInputtedCode(int _inputtedCode)
     {
-        if(_inputtedCode == _secretCode.Value && _isPlayerOnPad.Value)
+        if(_stringSecretCode == "") return;
+
+        int _intSecretCode = int.Parse(_stringSecretCode);
+        
+        if(_inputtedCode == _intSecretCode && _isPlayerOnPad.Value)
         {
             StartRingRotationRpc();
         }
@@ -168,7 +235,6 @@ public class TeleportPad : NetworkBehaviour
             _hasBeenUsed = true;
             if(_effectsEnemies)
             {
-                Debug.Log("IncreaseChanceOfSpawningEnemy : " + this.gameObject);
                 EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
             }
 

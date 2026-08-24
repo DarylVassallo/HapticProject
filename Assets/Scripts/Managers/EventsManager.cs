@@ -285,7 +285,18 @@ public class EventsManager : MonoBehaviour
     public static void UseEnglishNarrator() => OnUseEnglishNarrator?.Invoke();
     public static event Action OnUseFrenchNarrator;
     public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
-    
+
+
+
+
+
+    //VR Teleport Table Events=============================================
+    public static event Action<int> OnAddSymbolNumber;
+    public static void AddSymbolNumber(int _number) => OnAddSymbolNumber?.Invoke(_number);
+    public static event Action OnRemoveSymbol;
+    public static void RemoveSymbol() => OnRemoveSymbol?.Invoke();
+    public static event Action OnInputSymbols;
+    public static void InputSymbols() => OnInputSymbols?.Invoke();
 
 
 

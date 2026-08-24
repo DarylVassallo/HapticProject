@@ -85,6 +85,11 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnDisableTeleportChange -= DisableTeleportChange;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        CurrentMapServerRpc(false, true);
+    }
+
     private void DisableTeleportChange()
     {
         minDelay *= 1000;
@@ -96,7 +101,7 @@ public class TeleportManager : NetworkBehaviour
     {
         if( GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
-            CurrentMapServerRpc(false, true);
+            // CurrentMapServerRpc(false, true);
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         }
     }
@@ -183,8 +188,6 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void CurrentMapServerRpc(bool _foundAllCollectables, bool _canChange)
     {
-        Debug.Log("CurrentMapServerRpc: " + _foundAllCollectables + " : " + _canChange);
-
         //If the PC Player has found all the collectables, then the final map and teleport connections are set
         if(_foundAllCollectables)
         {
@@ -197,7 +200,6 @@ public class TeleportManager : NetworkBehaviour
             if(!_foundAllCollectables)
             {
                 _currentMap = UnityEngine.Random.Range(0, maps.Length);
-                Debug.Log("_currentMap: " + _currentMap);
                 mapRenderer.material = maps[_currentMap];
                 ChangeMapRpc(_currentMap);
             }
@@ -210,8 +212,6 @@ public class TeleportManager : NetworkBehaviour
         if(!IsOwner) return;
 
         EventsManager.ClearTeleportNumPad();
-
-        Debug.Log("ChangeMap _newMap: " + _newMap);
 
         //If the final map is called, the final teleport connections are set up
         if(_newMap == 999)
@@ -231,14 +231,12 @@ public class TeleportManager : NetworkBehaviour
 
             for(int i = 0; i < teleportConnections[_newMap].teleportPairs.Length; i++)
             {
-                Debug.Log("_newMap: " + _newMap);
                 if(IsOwner) SetExitPadRpc(i, _newMap);   
             }
             
             if(IsOwner)
             {
                 _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
-                Debug.Log("Teleport Delay: " + _timeLimit);
                 StartCoroutine(ChangeMapDelay(_timeLimit));
             }
         }
@@ -247,8 +245,6 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetExitPadRpc(int _index, int _newMap)
     {
-        Debug.Log("EntrancePad: " + teleportConnections[_newMap].teleportPairs[_index].entrancePad.gameObject);
-        Debug.Log("ExitPad: " +  teleportConnections[_newMap].teleportPairs[_index].exitPad.gameObject);
         EventsManager.SetExitPadTransform(  teleportConnections[_newMap].teleportPairs[_index].entrancePad.gameObject, 
                                                     teleportConnections[_newMap].teleportPairs[_index].exitPad);
     }
@@ -257,19 +253,11 @@ public class TeleportManager : NetworkBehaviour
     {
         float elapsed = 0f;
 
-        Debug.Log("elapsed: " + elapsed);
-        Debug.Log("delay: " + delay);
-        Debug.Log("starting time: " + (elapsed / delay));
-
         //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / delay;
-
-            Debug.Log("in while elapsed: " + elapsed);
-            Debug.Log("in while delay: " + delay);
-            Debug.Log("in while current time: " + (elapsed / delay));
 
             if(!_isEverythingCollected)
             {
@@ -289,7 +277,6 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
-        Debug.Log("ChangeBarSizeRpc : " + _newSize);
         for(int i = 0; i < _barList.Count; i++)
         {
             _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
