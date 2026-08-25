@@ -57,10 +57,17 @@ public class TeleportPad : NetworkBehaviour
 
     [Header("Levers")]
     [SerializeField] private bool usesLevers;
+    private Transform[] displayedNotches;
+    [SerializeField] private Transform inputDisplay;
+    private Transform[] inputNotches;
     private float neutralYPos;
     [SerializeField] private float topYPos;
     [SerializeField] private float bottomYPos;
-    private Transform[] displayedNotches;
+    private bool[] inputLevers;
+    private bool[] answerLevers;
+    
+    [Header("Rope")]
+    [SerializeField] private bool usesRope;
 
     void Awake()
     {
@@ -90,19 +97,30 @@ public class TeleportPad : NetworkBehaviour
                         bottomYPos = neutralYPos + bottomYPos;
                     }
                 } 
+
+                inputNotches = new Transform[inputDisplay.childCount];
+                for (int i = 0; i < inputDisplay.childCount; i++)
+                {
+                    inputNotches[i] = inputDisplay.GetChild(i);
+                    StartCoroutine(MoveNotch(1f, inputNotches[i], new Vector3(inputNotches[i].position.x, bottomYPos, inputNotches[i].position.z)));
+                } 
+
+                inputLevers = new bool[5];
+                answerLevers = new bool[5];
+                for(int i = 0; i < inputLevers.Length; i++)
+                {
+                    inputLevers[i] = false;
+                    answerLevers[i] = false;
+                }
             }
         }
 
 
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
 
-        // _instantTeleport = false;
-
         restRotation = ring.rotation;
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
-
-        
     }
 
     void Start()
@@ -121,6 +139,12 @@ public class TeleportPad : NetworkBehaviour
         EventsManager.OnTriggerTeleportButton += CheckPad;
 
         EventsManager.OnSetExitPadTransform += SetExitPadTransform;
+
+        if(usesLevers)
+        {
+            EventsManager.OnActivateLever += ActivateInputNotchServerRpc;
+            EventsManager.OnDeactivateLever += DeactivateInputNotchServerRpc;
+        }
     }
 
     private void OnDisable()
@@ -134,6 +158,12 @@ public class TeleportPad : NetworkBehaviour
         EventsManager.OnTriggerTeleportButton -= CheckPad;
 
         EventsManager.OnSetExitPadTransform -= SetExitPadTransform;
+
+        if(usesLevers)
+        {
+            EventsManager.OnActivateLever -= ActivateInputNotchServerRpc;
+            EventsManager.OnDeactivateLever -= DeactivateInputNotchServerRpc;
+        }
     }
 
     //Resets the teleport pad, so the PC Player can use it 'for the first time' again
@@ -163,8 +193,6 @@ public class TeleportPad : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void  ChangeSecretCodePadServerRpc()
     {
-        Debug.Log(this.gameObject + " : ChangeSecretCodePadServerRpc");
-
         if(usesSymbols)
         {
             _stringSecretCode = "";
@@ -176,26 +204,59 @@ public class TeleportPad : NetworkBehaviour
             }
         }else if(usesLevers)
         {
-            _stringSecretCode = "";
             for(int i = 0; i < 5; i++)
             {
                 int _newNum = UnityEngine.Random.Range(0, 2);
-                _stringSecretCode = _stringSecretCode + "" + (_newNum + 1);
-
-                Debug.Log(this.gameObject + " : _newNum: " + _newNum);
-                Debug.Log(this.gameObject + " : displayedNotches[" + i + "]: " + displayedNotches[i]);
 
                 switch(_newNum)
                 {
                     case 0:
-                        displayedNotches[i].position = new Vector3(displayedNotches[i].position.x, bottomYPos, displayedNotches[i].position.z);
+                        StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, bottomYPos, displayedNotches[i].position.z)));
+                        answerLevers[i] = false;
                         break;
                     case 1:
-                        displayedNotches[i].position = new Vector3(displayedNotches[i].position.x, topYPos, displayedNotches[i].position.z);
+                        StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, topYPos, displayedNotches[i].position.z)));
+                        answerLevers[i] = true;
                         break;
                 }
             }
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  ActivateInputNotchServerRpc(int _leverIndex)
+    {
+        inputLevers[_leverIndex] = true;
+        // inputNotches[_leverIndex].position = new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z);
+        StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z)));
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  DeactivateInputNotchServerRpc(int _leverIndex)
+    {
+        inputLevers[_leverIndex] = false;
+        // inputNotches[_leverIndex].position = new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z);
+        StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z)));
+    }
+
+    IEnumerator MoveNotch(float _delay, Transform notch, Vector3 newPos)
+    {
+        float elapsed = 0f;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+
+            notch.position = Vector3.Lerp(
+                notch.position,
+                newPos,
+                elapsed / _delay
+            );
+
+            yield return null;
+        }
+
+        notch.position = newPos;
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -207,13 +268,34 @@ public class TeleportPad : NetworkBehaviour
     //If the inputted code is correct, then the teleportation sequence can begin
     private void CheckInputtedCode(int _inputtedCode)
     {
-        if(_stringSecretCode == "") return;
-
-        int _intSecretCode = int.Parse(_stringSecretCode);
-        
-        if(_inputtedCode == _intSecretCode && _isPlayerOnPad.Value)
+        if(usesSymbols)
         {
-            StartRingRotationRpc();
+            if(_stringSecretCode == "") return;
+
+            int _intSecretCode = int.Parse(_stringSecretCode);
+            
+            if(_inputtedCode == _intSecretCode && _isPlayerOnPad.Value)
+            {
+                StartRingRotationRpc();
+            }
+        }else if(usesLevers)
+        {
+            bool _leversMatch = true;
+
+            for(int i = 0; i < 5; i++)
+            {
+                if(inputLevers[i] != answerLevers[i]) _leversMatch = false;
+            }
+            
+            if(_leversMatch)
+            {
+                Debug.Log(this.gameObject + " : Levers Match");
+            }
+            
+            if(_leversMatch && _isPlayerOnPad.Value)
+            {
+                StartRingRotationRpc();
+            }
         }
     }
 

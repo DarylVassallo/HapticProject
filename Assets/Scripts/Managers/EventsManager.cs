@@ -298,6 +298,11 @@ public class EventsManager : MonoBehaviour
     public static event Action OnInputSymbols;
     public static void InputSymbols() => OnInputSymbols?.Invoke();
 
+    public static event Action<int> OnActivateLever;
+    public static void ActivateLever(int _leverIndex) => OnActivateLever?.Invoke(_leverIndex);
+    public static event Action<int> OnDeactivateLever;
+    public static void DeactivateLever(int _leverIndex) => OnDeactivateLever?.Invoke(_leverIndex);
+
 
 
 

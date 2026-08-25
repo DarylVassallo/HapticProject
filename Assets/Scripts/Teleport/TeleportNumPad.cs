@@ -3,6 +3,7 @@ using TMPro;
 using System;
 
 using System.Collections;
+using UnityEngine.XR.Content.Interaction;
 
 public class TeleportNumPad : MonoBehaviour
 {
@@ -16,7 +17,15 @@ public class TeleportNumPad : MonoBehaviour
     private bool _canAddNumber;
 
     [Header("Levers")]
+    [SerializeField] private XRLever[] xrLevers;
     private bool[] activeLevers;
+
+    [Header("Rope")]
+    [SerializeField] private Transform ropeHandle;
+    [SerializeField] private Transform ropeHandleEndPoint;
+    private Rigidbody rbRopeHandle;
+    private bool pullRope;
+    private Vector3 originalRopeHandlePosition;
 
     void Awake()
     {
@@ -37,6 +46,12 @@ public class TeleportNumPad : MonoBehaviour
         {
             activeLevers[i] = false;
         }
+
+
+
+        rbRopeHandle = ropeHandle.GetComponent<Rigidbody>();
+        pullRope = true;
+        originalRopeHandlePosition = ropeHandle.position;
     }
 
     private void OnEnable()
@@ -97,14 +112,20 @@ public class TeleportNumPad : MonoBehaviour
 
         inputtedCode = "";
         currentSymbolIndex = 0;
+
+        for (int i = 0; i < xrLevers.Length; i++)
+        {
+            xrLevers[i].value = false;
+        }
     }
 
     //Sends the current code to be compared to existing correct codes.
     // It also resets the current code
     private void InputCode()
     {
-        int _inputtedIntCode = int.Parse(inputtedCode);
-        if(inputtedCode != "") EventsManager.SendCodeToTeleportPads(_inputtedIntCode);
+        int _inputtedIntCode = -1;
+        if(inputtedCode != "") _inputtedIntCode = int.Parse(inputtedCode);
+        EventsManager.SendCodeToTeleportPads(_inputtedIntCode);
         ClearInputtedSymbols();
     }
 
@@ -113,20 +134,36 @@ public class TeleportNumPad : MonoBehaviour
     public void ActivateLever(int _leverIndex)
     {
         activeLevers[_leverIndex] = true;
-
-        for(int i = 0; i < activeLevers.Length; i++)
-        {
-            Debug.Log("activate activeLevers[" + i + "]: " + activeLevers[i]);
-        }
+        EventsManager.ActivateLever(_leverIndex);
     }
 
     public void DeactivateLever(int _leverIndex)
     {
         activeLevers[_leverIndex] = false;
+        EventsManager.DeactivateLever(_leverIndex);
+    }
 
-        for(int i = 0; i < activeLevers.Length; i++)
+    private void FixedUpdate()
+    {
+        if(!pullRope) return;
+
+        if(ropeHandle.position.x >= originalRopeHandlePosition.x)
         {
-            Debug.Log("deactivate activeLevers[" + i + "]: " + activeLevers[i]);
+            pullRope = false;
+            rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
         }
+        
+        rbRopeHandle.linearVelocity = new Vector3(2, 0, 0);
+    }
+
+    public void GrabbedRope()
+    {
+        rbRopeHandle.constraints = RigidbodyConstraints.None;
+        pullRope = false;
+    }
+    
+    public void ReleasedRope()
+    {
+        pullRope = true;        
     }
 }

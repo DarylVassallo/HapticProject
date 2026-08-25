@@ -13225,8 +13225,10 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 3d72be95b240eb044b97534e60b7e727, type: 2}
   - {fileID: 2100000, guid: a68b0957874cc9847b90fb8b33f60200, type: 2}
   usesLevers: 0
+  inputDisplay: {fileID: 0}
   topYPos: 0
   bottomYPos: 0
+  usesRope: 0
 --- !u!114 &7559035749889809452
 MonoBehaviour:
   m_ObjectHideFlags: 0
