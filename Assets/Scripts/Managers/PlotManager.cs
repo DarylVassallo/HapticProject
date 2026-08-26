@@ -6,6 +6,7 @@ public class PlotManager : NetworkBehaviour
 {
     private bool _constantlyCheck;
     private bool _checkRoof;
+    private bool _skipTutorial;
 
     [Header("VR Head")]
     private Transform vrPlayerCamera;
@@ -50,6 +51,7 @@ public class PlotManager : NetworkBehaviour
         EventsManager.OnTutorialTeleport += DisableTutorials;
 
         EventsManager.OnUsingOnlyPCPlayer += UseOnlyPCPlayer;
+        EventsManager.OnSkipTutorial += SkipTutorial;
     }
 
     private void OnDisable()
@@ -63,6 +65,13 @@ public class PlotManager : NetworkBehaviour
        EventsManager.OnTutorialTeleport -= DisableTutorials;
 
        EventsManager.OnUsingOnlyPCPlayer -= UseOnlyPCPlayer;
+       EventsManager.OnSkipTutorial -= SkipTutorial;
+       
+    }
+
+    private void SkipTutorial()
+    {
+        _skipTutorial = true;
     }
 
     private void UseOnlyPCPlayer()
@@ -79,7 +88,6 @@ public class PlotManager : NetworkBehaviour
 
     private void TriggerPCChargeTutorial()
     {
-        Debug.Log("TriggerPCChargeTutorial");
         if(IsOwner) EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), -25);
 
         if(!_hasSeenChargeTutorial)
@@ -93,7 +101,6 @@ public class PlotManager : NetworkBehaviour
 
     private void TriggerPCInteractTutorial()
     {
-        Debug.Log("TriggerPCInteractTutorial");
         if(IsOwner) EventsManager.ChangeHealthForEntity(GameObject.FindGameObjectWithTag("PCPlayer"), 25);
 
         if(!_hasSeenInteractTutorial)
@@ -165,7 +172,7 @@ public class PlotManager : NetworkBehaviour
 
         yield return new WaitForSeconds(pcSpawnDelay);
 
-        if(visiblePCPipes >= pcPipes.Length)
+        if(visiblePCPipes >= pcPipes.Length || _skipTutorial)
         {
             // Destroy(pcStatue);
             EventsManager.AddPCPlayerBody();
@@ -215,9 +222,18 @@ public class PlotManager : NetworkBehaviour
         {
             elapsed += Time.deltaTime;
             
-            Color colour = vrPlayerCameraCover.color;
-            colour.a = (_delay - elapsed) / _delay;
-            vrPlayerCameraCover.color = colour;
+            if(_skipTutorial)
+            {
+                Color colour = vrPlayerCameraCover.color;
+                colour.a = 0;
+                vrPlayerCameraCover.color = colour;
+
+                elapsed = 999f;
+            }else{
+                Color colour = vrPlayerCameraCover.color;
+                colour.a = (_delay - elapsed) / _delay;
+                vrPlayerCameraCover.color = colour;
+            }            
 
             yield return null;
         }

@@ -8,6 +8,7 @@ public class TeleportButton : NetworkBehaviour, IInteractable
     private bool _isInteractable = true;    
 
     [SerializeField] private AudioClip buttonAudio;
+    [SerializeField] private bool isForRope;
     private AudioSource _audioSource;
 
     private Vector3 targetPosition;
@@ -31,13 +32,17 @@ public class TeleportButton : NetworkBehaviour, IInteractable
     //Triggers interaction, if the PCPlayer selects the collectable
     public void TriggerInteraction()
     {
-        Debug.Log("TriggerInteraction");
-
         if (_isInteractable)
         {
-            Debug.Log("_isInteractable: " + _isInteractable);
-
-            EventsManager.TriggerTeleportButton(this.transform.parent.gameObject);
+            if(isForRope)
+            {
+                EventsManager.TriggerRopeButton(this.transform);
+            }
+            else
+            {
+                EventsManager.TriggerTeleportButton(this.transform.parent.gameObject);
+            }
+            
             PushButtonRpc(0.5f, true);
 
             if(!_audioSource.isPlaying)
@@ -90,6 +95,9 @@ public class TeleportButton : NetworkBehaviour, IInteractable
             yield return null;
         }
 
-        if(_goDown) StartCoroutine(PushButton(0.5f, false));
+        if(_goDown)
+        { 
+            StartCoroutine(PushButton(0.5f, false));
+        }
     }
 }

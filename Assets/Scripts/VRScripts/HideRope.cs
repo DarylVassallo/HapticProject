@@ -17,27 +17,34 @@ public class HideRope : MonoBehaviour
             CheckMesh(pieces[i]);
         }
     }
-    private void OnTriggerStay(Collider _other)
+
+    private void OnEnable()
     {
-        Debug.Log(this.gameObject + " : Stay Collided with : " + _other.gameObject);       
+        EventsManager.OnUpdateHiddenBar += UpdateRope;
     }
 
-    private void OnTriggerEnter(Collider _other)
+    private void OnDisable()
     {
-        Debug.Log(this.gameObject + " : Enter Collided with : " + _other.gameObject);     
+        EventsManager.OnUpdateHiddenBar -= UpdateRope;
     }
     
     private void OnTriggerExit(Collider _other)
     {
-        Debug.Log(this.gameObject + " : Exit Collided with : " + _other.gameObject); 
         for (int i = 0; i < pieces.Length; i++)
         {
             if(_other.transform == pieces[i])
             {        
-                Debug.Log(this.gameObject + " : piece : " + pieces[i]);        
                 CheckMesh(pieces[i]);
             }
         }        
+    }
+
+    private void UpdateRope()
+    {
+        // for (int i = 0; i < pieces.Length; i++)
+        // {
+        //     CheckMesh(pieces[i]);
+        // }  
     }
 
     private void CheckMesh(Transform piece)

@@ -13229,6 +13229,16 @@ MonoBehaviour:
   topYPos: 0
   bottomYPos: 0
   usesRope: 0
+  hidingBar: {fileID: 0}
+  leftHidingTransform: {fileID: 0}
+  middleHidingTransform: {fileID: 0}
+  rightHidingTransform: {fileID: 0}
+  buttonParentsObject: {fileID: 0}
+  neutralButtonMaterial: {fileID: 0}
+  activeButtonMaterial: {fileID: 0}
+  lightsParentsObject: {fileID: 0}
+  deactiveLightMaterial: {fileID: 0}
+  activeLightMaterial: {fileID: 0}
 --- !u!114 &7559035749889809452
 MonoBehaviour:
   m_ObjectHideFlags: 0

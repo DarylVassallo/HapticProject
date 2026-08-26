@@ -69,6 +69,27 @@ public class TeleportPad : NetworkBehaviour
     [Header("Rope")]
     [SerializeField] private bool usesRope;
 
+    private int[] answerButtons;
+    private int currentButtonCount;
+
+    [SerializeField] private Transform hidingBar;
+    private Transform[] pieces;
+    [SerializeField] private Transform leftHidingTransform;
+    [SerializeField] private Transform middleHidingTransform;
+    [SerializeField] private Transform rightHidingTransform;
+
+    [SerializeField] private Transform buttonParentsObject;
+    [SerializeField] private Material neutralButtonMaterial;
+    [SerializeField] private Material activeButtonMaterial;
+    private Transform[] buttons;
+
+    [SerializeField] private Transform lightsParentsObject;
+    [SerializeField] private Material deactiveLightMaterial;
+    [SerializeField] private Material activeLightMaterial;
+    private Transform[] lights;
+    
+    private float hidingBarBasePosX;
+
     void Awake()
     {
         _stringSecretCode = "";
@@ -112,14 +133,39 @@ public class TeleportPad : NetworkBehaviour
                     inputLevers[i] = false;
                     answerLevers[i] = false;
                 }
+            }else if(usesRope)
+            {
+                buttons = new Transform[buttonParentsObject.childCount];
+                answerButtons = new int[buttonParentsObject.childCount];
+
+                lights = new Transform[lightsParentsObject.childCount];
+
+                currentButtonCount = 0;
+
+                for (int i = 0; i < buttonParentsObject.childCount; i++)
+                {
+                    buttons[i] = buttonParentsObject.GetChild(i);
+                    buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
+                    answerButtons[i] = -1;
+
+                    lights[i] = lightsParentsObject.GetChild(i);
+                    lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
+                } 
+
+                hidingBarBasePosX = hidingBar.localPosition.x;
+
+                pieces = new Transform[hidingBar.childCount];
+                for (int i = 0; i < hidingBar.childCount; i++)
+                {
+                    pieces[i] = hidingBar.GetChild(i);
+                }
+
+                CheckMesh();
             }
         }
 
-
         _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
-
         restRotation = ring.rotation;
-
         _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
@@ -145,6 +191,12 @@ public class TeleportPad : NetworkBehaviour
             EventsManager.OnActivateLever += ActivateInputNotchServerRpc;
             EventsManager.OnDeactivateLever += DeactivateInputNotchServerRpc;
         }
+
+        if(usesRope)
+        {
+            EventsManager.OnChangeHideBarPosition += ChangeHideBarPositionServerRpc;
+            EventsManager.OnTriggerRopeButton += TriggerRopeButton;
+        }
     }
 
     private void OnDisable()
@@ -163,6 +215,12 @@ public class TeleportPad : NetworkBehaviour
         {
             EventsManager.OnActivateLever -= ActivateInputNotchServerRpc;
             EventsManager.OnDeactivateLever -= DeactivateInputNotchServerRpc;
+        }
+
+        if(usesRope)
+        {
+            EventsManager.OnChangeHideBarPosition -= ChangeHideBarPositionServerRpc;
+            EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
         }
     }
 
@@ -220,6 +278,36 @@ public class TeleportPad : NetworkBehaviour
                         break;
                 }
             }
+        }else if(usesRope)
+        {
+            currentButtonCount = 0;
+
+            int _newNum;
+            for (int i = 0; i < answerButtons.Length; i++)
+            {
+                answerButtons[i] = -1;
+                buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
+                lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
+            }
+
+            for (int i = 0; i < answerButtons.Length; i++)
+            {
+                answerButtons[i] = UnityEngine.Random.Range(0, 5);
+
+                for (int j = 0; j < answerButtons.Length; j++)
+                {
+                    if(i != j && answerButtons[i] == answerButtons[j])
+                    {
+                        i--;
+                        j = answerButtons.Length;
+                    }else if(j == -1)
+                    {
+                        j = answerButtons.Length;
+                    }
+                }
+            } 
+
+            buttons[answerButtons[0]].GetComponent<Renderer>().material = activeButtonMaterial;
         }
     }
 
@@ -260,6 +348,42 @@ public class TeleportPad : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  ChangeHideBarPositionServerRpc(float _hideBarPosition)
+    {
+        hidingBar.position = Vector3.Lerp(
+                leftHidingTransform.position,
+                rightHidingTransform.position,
+                _hideBarPosition
+            );
+
+        CheckMesh();
+        // StartCoroutine(UpdateHiddenBarDelay());
+    }
+
+    // IEnumerator UpdateHiddenBarDelay()
+    // {
+    //     yield return new WaitForSeconds(3f);
+    //     EventsManager.UpdateHiddenBar();
+    // }
+
+    private void CheckMesh()
+    {
+        float distance;
+        for(int i = 0; i < pieces.Length; i++)
+        {
+            distance = Vector3.Distance(pieces[i].position, middleHidingTransform.position);
+            if(distance >= 1f || distance <= -1f)
+            {
+                pieces[i].GetComponent<MeshRenderer>().enabled = false;
+            }
+            else
+            {
+                pieces[i].GetComponent<MeshRenderer>().enabled = true;
+            }
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void  ChangeIsPlayerOnPadServerRpc(bool _newOnPad)
     {
         _isPlayerOnPad.Value = _newOnPad;
@@ -287,16 +411,51 @@ public class TeleportPad : NetworkBehaviour
                 if(inputLevers[i] != answerLevers[i]) _leversMatch = false;
             }
             
-            if(_leversMatch)
-            {
-                Debug.Log(this.gameObject + " : Levers Match");
-            }
-            
             if(_leversMatch && _isPlayerOnPad.Value)
             {
                 StartRingRotationRpc();
             }
         }
+    }
+
+    private void TriggerRopeButton(Transform button)
+    {
+        for(int i = 0; i < buttons.Length; i++)
+        {
+            if(buttons[i] == button && answerButtons[currentButtonCount] == i)
+            {
+                lights[currentButtonCount].GetComponent<Renderer>().material = activeButtonMaterial;
+                buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
+
+                if(currentButtonCount >= (buttons.Length - 1) && _isPlayerOnPad.Value)
+                {
+                    ClearRopeButtons();
+                    StartRingRotationRpc();
+                }
+                else
+                {
+                    currentButtonCount++;
+                    buttons[answerButtons[currentButtonCount]].GetComponent<Renderer>().material = activeButtonMaterial; 
+                }
+
+                return;
+            }
+        }
+
+        ClearRopeButtons();
+    }
+
+    private void ClearRopeButtons()
+    {
+        currentButtonCount = 0;
+
+        for (int i = 0; i < answerButtons.Length; i++)
+        {
+            buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
+            lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
+        }
+
+        buttons[answerButtons[0]].GetComponent<Renderer>().material = activeButtonMaterial;
     }
 
     //If the inputted code is correct, then the teleportation sequence can begin

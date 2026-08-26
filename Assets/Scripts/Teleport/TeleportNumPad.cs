@@ -26,6 +26,10 @@ public class TeleportNumPad : MonoBehaviour
     private Rigidbody rbRopeHandle;
     private bool pullRope;
     private Vector3 originalRopeHandlePosition;
+    private float minDistance;
+    private float maxDistance;
+    private float prevDistance;
+    private float currDistance;
 
     void Awake()
     {
@@ -52,6 +56,9 @@ public class TeleportNumPad : MonoBehaviour
         rbRopeHandle = ropeHandle.GetComponent<Rigidbody>();
         pullRope = true;
         originalRopeHandlePosition = ropeHandle.position;
+
+        maxDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
+        prevDistance = maxDistance;
     }
 
     private void OnEnable()
@@ -145,6 +152,13 @@ public class TeleportNumPad : MonoBehaviour
 
     private void FixedUpdate()
     {
+        currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
+        if(prevDistance != currDistance)
+        {
+            EventsManager.ChangeHideBarPosition(currDistance / maxDistance);
+        }
+        prevDistance = currDistance;
+
         if(!pullRope) return;
 
         if(ropeHandle.position.x >= originalRopeHandlePosition.x)
