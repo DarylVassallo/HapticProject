@@ -185,7 +185,7 @@ public class PlotManager : NetworkBehaviour
     {
         if(_skipTutorial)
         {
-            StartCoroutine(FadeVRPlayerIntoGame(2f));
+            UncoverVRPlayer();
         }
         else
         {
