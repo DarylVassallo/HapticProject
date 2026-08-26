@@ -34932,6 +34932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 130b57249e539a24eaf2c049a1ef4240, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
   potentialSymbols:
   - {fileID: 2100000, guid: 465dd8eda88abda48ab1aad8b20be904, type: 2}
   - {fileID: 2100000, guid: 0493f54608801ae43bfb9b27149292bf, type: 2}
