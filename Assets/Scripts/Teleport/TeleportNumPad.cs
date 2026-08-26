@@ -161,8 +161,9 @@ public class TeleportNumPad : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        Debug.Log("isInNetwork: " + isInNetwork);
         if(!isInNetwork) return;
-        
+        Debug.Log("isInNetwork GO");
         currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
         Debug.Log("currDistance: " + currDistance);
         if(prevDistance != currDistance)
