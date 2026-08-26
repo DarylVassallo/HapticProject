@@ -164,6 +164,7 @@ public class TeleportNumPad : NetworkBehaviour
         if(!isInNetwork) return;
         
         currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
+        Debug.Log("currDistance: " + currDistance);
         if(prevDistance != currDistance)
         {
             EventsManager.ChangeHidingBarPosition(currDistance / maxDistance);
@@ -183,12 +184,14 @@ public class TeleportNumPad : NetworkBehaviour
 
     public void GrabbedRope()
     {
+        Debug.Log("GrabbedRope");
         rbRopeHandle.constraints = RigidbodyConstraints.None;
         pullRope = false;
     }
     
     public void ReleasedRope()
     {
+        Debug.Log("ReleasedRope");
         pullRope = true;        
     }
 }
