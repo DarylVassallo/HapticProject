@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Unity.Netcode;
 public class TeleportManager : NetworkBehaviour
 {
+    private void isInNetwork;
+
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
     private bool _isEverythingCollected;
@@ -87,6 +89,7 @@ public class TeleportManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        isInNetwork = true;
         CurrentMapServerRpc(false, true);
     }
 
@@ -261,7 +264,7 @@ public class TeleportManager : NetworkBehaviour
 
             if(!_isEverythingCollected)
             {
-                ChangeBarSizeRpc(t); 
+                if(isInNetwork) ChangeBarSizeRpc(t); 
             }
 
             yield return null;
@@ -271,7 +274,7 @@ public class TeleportManager : NetworkBehaviour
         CurrentMapServerRpc(false, true);
 
         //The teleport bars are reset to their full size
-        ChangeBarSizeRpc(0.95f); 
+        if(isInNetwork) ChangeBarSizeRpc(0.95f); 
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
