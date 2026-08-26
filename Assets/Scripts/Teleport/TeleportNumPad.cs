@@ -5,8 +5,12 @@ using System;
 using System.Collections;
 using UnityEngine.XR.Content.Interaction;
 
-public class TeleportNumPad : MonoBehaviour
+using Unity.Netcode;
+
+public class TeleportNumPad : NetworkBehaviour
 {
+    private bool isInNetwork;
+
     [Header("Symbols")]
     [SerializeField] private Material[] potentialSymbols;
     [SerializeField] private Material clearSymbol;
@@ -77,6 +81,11 @@ public class TeleportNumPad : MonoBehaviour
 
         EventsManager.OnRemoveSymbol -= RemoveLastSymbol;
         EventsManager.OnInputSymbols -= InputCode;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        isInNetwork = true;
     }
 
     //Adds the inputted symbol to the current visible inputted symbols
@@ -152,6 +161,8 @@ public class TeleportNumPad : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(!isInNetwork) return;
+        
         currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
         if(prevDistance != currDistance)
         {
