@@ -191,7 +191,7 @@ public class MenuManager : NetworkBehaviour
         _showPauseMenu = false;
         _showSettingsMenu = false;
         _showGameOverMenu = false;
-        _showWinMenu = !_showWinMenu;
+        _showWinMenu = false;
 
         for (int i = 0; i < pauseMenu.transform.childCount; i++)
         {
