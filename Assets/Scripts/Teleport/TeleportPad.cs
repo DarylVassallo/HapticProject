@@ -352,6 +352,8 @@ public class TeleportPad : NetworkBehaviour
                 _hidingbarPosition
             );
 
+        Debug.Log("New hidingbar pos: " + hidingBar.position);
+
         CheckMesh();
         // StartCoroutine(UpdateHidingBarDelay());
     }
