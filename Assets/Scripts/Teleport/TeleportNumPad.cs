@@ -166,7 +166,7 @@ public class TeleportNumPad : NetworkBehaviour
         currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
         if(prevDistance != currDistance)
         {
-            EventsManager.ChangeHideBarPosition(currDistance / maxDistance);
+            EventsManager.ChangeHidingBarPosition(currDistance / maxDistance);
         }
         prevDistance = currDistance;
 

@@ -196,10 +196,10 @@ public class EventsManager : MonoBehaviour
     public static event Action OnClearTeleportNumPad;
     public static void ClearTeleportNumPad() => OnClearTeleportNumPad?.Invoke();
 
-    public static event Action<float> OnChangeHideBarPosition;
-    public static void ChangeHideBarPosition(float _position) => OnChangeHideBarPosition?.Invoke(_position);
-    public static event Action OnUpdateHiddenBar;
-    public static void UpdateHiddenBar() => OnUpdateHiddenBar?.Invoke();
+    public static event Action<float> OnChangeHidingBarPosition;
+    public static void ChangeHidingBarPosition(float _position) => OnChangeHidingBarPosition?.Invoke(_position);
+    public static event Action OnUpdateHidingBar;
+    public static void UpdateHidingBar() => OnUpdateHidingBar?.Invoke();
     public static event Action<Transform> OnTriggerRopeButton;
     public static void TriggerRopeButton(Transform _button) => OnTriggerRopeButton?.Invoke(_button);
 

@@ -256,6 +256,7 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 1");
             SetPCPlayerID(0);
             EventsManager.CreatedPCPlayer();
+            if(_skipTutorial) CreatePCPlayerBody();
         }
         else
         {
@@ -282,6 +283,7 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("Create PCPlayer 2");
                     SetPCPlayerID(clientId);
                     EventsManager.CreatedPCPlayer();
+                    if(_skipTutorial) CreatePCPlayerBody();
                 }
             }
 
@@ -313,6 +315,7 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 3");
             SetPCPlayerID(clientId);
             EventsManager.CreatedPCPlayer();
+            if(_skipTutorial) CreatePCPlayerBody();
 
         //Creates a VR Player for the host player, playing alone
         }else if (_isTestingVRPlayer)
@@ -352,6 +355,7 @@ public class ConnectUIScript : NetworkBehaviour
                 Debug.Log("Create PCPlayer 4");
                 SetPCPlayerID(clientId);
                 EventsManager.CreatedPCPlayer();
+                if(_skipTutorial) CreatePCPlayerBody();
             }
         }
     }

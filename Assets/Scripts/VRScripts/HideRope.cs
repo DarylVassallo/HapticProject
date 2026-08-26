@@ -20,12 +20,12 @@ public class HideRope : MonoBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnUpdateHiddenBar += UpdateRope;
+        EventsManager.OnUpdateHidingBar += UpdateRope;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnUpdateHiddenBar -= UpdateRope;
+        EventsManager.OnUpdateHidingBar -= UpdateRope;
     }
     
     private void OnTriggerExit(Collider _other)

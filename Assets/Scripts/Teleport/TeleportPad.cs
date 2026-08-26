@@ -88,8 +88,6 @@ public class TeleportPad : NetworkBehaviour
     [SerializeField] private Material activeLightMaterial;
     private Transform[] lights;
     
-    private float hidingBarBasePosX;
-
     void Awake()
     {
         _stringSecretCode = "";
@@ -152,8 +150,6 @@ public class TeleportPad : NetworkBehaviour
                     lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
                 } 
 
-                hidingBarBasePosX = hidingBar.localPosition.x;
-
                 pieces = new Transform[hidingBar.childCount];
                 for (int i = 0; i < hidingBar.childCount; i++)
                 {
@@ -194,7 +190,7 @@ public class TeleportPad : NetworkBehaviour
 
         if(usesRope)
         {
-            EventsManager.OnChangeHideBarPosition += ChangeHideBarPositionServerRpc;
+            EventsManager.OnChangeHidingBarPosition += ChangeHidingBarPositionRpc;
             EventsManager.OnTriggerRopeButton += TriggerRopeButton;
         }
     }
@@ -219,7 +215,7 @@ public class TeleportPad : NetworkBehaviour
 
         if(usesRope)
         {
-            EventsManager.OnChangeHideBarPosition -= ChangeHideBarPositionServerRpc;
+            EventsManager.OnChangeHidingBarPosition -= ChangeHidingBarPositionRpc;
             EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
         }
     }
@@ -347,23 +343,23 @@ public class TeleportPad : NetworkBehaviour
         notch.position = newPos;
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public void  ChangeHideBarPositionServerRpc(float _hideBarPosition)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  ChangeHidingBarPositionRpc(float _hidingbarPosition)
     {
         hidingBar.position = Vector3.Lerp(
                 leftHidingTransform.position,
                 rightHidingTransform.position,
-                _hideBarPosition
+                _hidingbarPosition
             );
 
         CheckMesh();
-        // StartCoroutine(UpdateHiddenBarDelay());
+        // StartCoroutine(UpdateHidingBarDelay());
     }
 
-    // IEnumerator UpdateHiddenBarDelay()
+    // IEnumerator UpdateHidingBarDelay()
     // {
     //     yield return new WaitForSeconds(3f);
-    //     EventsManager.UpdateHiddenBar();
+    //     EventsManager.UpdateHidingBar();
     // }
 
     private void CheckMesh()

@@ -183,7 +183,12 @@ public class PlotManager : NetworkBehaviour
 
     private void GetVRPlayerData()
     {
-        VRIntroEvent();
+        if(!_skipTutorial) VRIntroEvent();
+    }
+
+    private void GetPCPlayerData()
+    {
+        EventsManager.AddPCPlayerBody();
     }
 
     private void VRIntroEvent()
