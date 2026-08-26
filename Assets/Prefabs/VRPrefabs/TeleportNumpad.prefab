@@ -8588,7 +8588,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1491
+  m_VersionIndex: 1500
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -9969,7 +9969,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1429
+  m_VersionIndex: 1438
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -11209,7 +11209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2579189856
+  GlobalObjectIdHash: 445856463
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -12463,7 +12463,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13655,7 +13655,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -14068,8 +14068,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259217520193682822}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.06666667, y: -0.000000019868216, z: -0.000000014901161}
+  m_LocalRotation: {x: -0, y: -0.000000014901159, z: 0.000000029802319, w: 1}
+  m_LocalPosition: {x: 0.10000001, y: 0.000000019868216, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22623,7 +22623,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1428
+  m_VersionIndex: 1437
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -24137,7 +24137,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -32826,7 +32826,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2643
+  m_VersionIndex: 2652
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -32901,6 +32901,8 @@ GameObject:
   - component: {fileID: 566652537885169364}
   - component: {fileID: 8662318369637353052}
   - component: {fileID: 8182790320641375444}
+  - component: {fileID: 4924086621581042133}
+  - component: {fileID: 2215803183587745786}
   m_Layer: 0
   m_Name: PullRope
   m_TagString: Untagged
@@ -33220,6 +33222,77 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GrabbableLayerControl
   isAttachable: 0
+--- !u!114 &4924086621581042133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2327426230704851583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1412824204
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
+--- !u!114 &2215803183587745786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2327426230704851583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 1
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 1
+  SyncPositionY: 1
+  SyncPositionZ: 1
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
+  SyncRotAngleZ: 0
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!1 &2385913966239523724
 GameObject:
   m_ObjectHideFlags: 0
@@ -34308,7 +34381,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -34867,6 +34940,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4617888762118253733}
   - component: {fileID: 7796607645439962214}
+  - component: {fileID: 4410202578640245744}
   m_Layer: 0
   m_Name: TeleportNumpad
   m_TagString: Untagged
@@ -34948,6 +35022,31 @@ MonoBehaviour:
   - {fileID: 2389683695252764297}
   ropeHandle: {fileID: 4948703602729290929}
   ropeHandleEndPoint: {fileID: 2807759003315480411}
+--- !u!114 &4410202578640245744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2796878706051266359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 1673952882
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &2851534704289431426
 GameObject:
   m_ObjectHideFlags: 0
@@ -44316,7 +44415,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1491
+  m_VersionIndex: 1500
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -46487,7 +46586,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1522
+  m_VersionIndex: 1531
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -57816,7 +57915,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1491
+  m_VersionIndex: 1500
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -62704,7 +62803,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 927
+  m_VersionIndex: 936
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -65795,7 +65894,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4181827567
+  GlobalObjectIdHash: 4070059638
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -74279,7 +74378,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1397
+  m_VersionIndex: 1406
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -76607,7 +76706,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1379
+  m_VersionIndex: 1388
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -94386,7 +94485,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1491
+  m_VersionIndex: 1500
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -95672,7 +95771,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -96864,7 +96963,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -116207,7 +116306,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1428
+  m_VersionIndex: 1437
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -116566,7 +116665,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1436
+  m_VersionIndex: 1445
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -125266,7 +125365,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1491
+  m_VersionIndex: 1500
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -127437,7 +127536,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1540
+  m_VersionIndex: 1549
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -128038,8 +128137,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7333174442114732542}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.09999999, y: -0.000000009934108, z: 0.000000014901161}
+  m_LocalRotation: {x: -0, y: -0.000000014901159, z: 0.000000029802319, w: 1}
+  m_LocalPosition: {x: -0.06666677, y: 0.000000007761022, z: -0.000000112379595}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -128436,7 +128535,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1397
+  m_VersionIndex: 1406
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -129775,7 +129874,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -130248,7 +130347,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1397
+  m_VersionIndex: 1406
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -132902,7 +133001,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1522
+  m_VersionIndex: 1531
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -134439,7 +134538,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1393
+  m_VersionIndex: 1402
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -136703,7 +136802,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1540
+  m_VersionIndex: 1549
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -145780,7 +145879,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1491
+  m_VersionIndex: 1500
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -146152,7 +146251,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1397
+  m_VersionIndex: 1406
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -147442,15 +147541,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000023841858
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.022000004
+      value: 0.02199998
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.000000047683717
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: inputSymbols
@@ -148384,15 +148483,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000001519072
+      value: 0.000000022201823
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.034503836
+      value: 0.034503844
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.000000009348136
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: addSymbolToCode
@@ -148644,6 +148743,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4617888762118253733}
     m_Modifications:
+    - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -148889,15 +148992,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000036808284
+      value: 0.000000006426843
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.034503818
+      value: 0.034503862
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000000025707372
+      value: 0.000000028044408
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: addSymbolToCode
@@ -149229,11 +149332,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.000000011920929
+      value: -0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.022000015
+      value: 0.021999968
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -149541,7 +149644,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.y
@@ -149549,7 +149652,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 2397676642098698959, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_Layer
@@ -150733,6 +150836,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4617888762118253733}
     m_Modifications:
+    - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -150978,15 +151085,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000027460148
+      value: -0.000000016943495
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03450381
+      value: 0.03450384
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.000000025707372
+      value: 0.000000025123114
       objectReference: {fileID: 0}
     - target: {fileID: 5919843269273517913, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_Name
@@ -151691,6 +151798,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4617888762118253733}
     m_Modifications:
+    - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -152100,15 +152211,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000018696271
+      value: 0.00000003856106
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03450384
+      value: 0.034503862
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.000000028044408
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: addSymbolToCode
@@ -152196,6 +152307,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4617888762118253733}
     m_Modifications:
+    - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -152513,6 +152628,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4617888762118253733}
     m_Modifications:
+    - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -153580,7 +153699,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000000011920929
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.y
@@ -153588,7 +153707,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 2397676642098698959, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_Layer

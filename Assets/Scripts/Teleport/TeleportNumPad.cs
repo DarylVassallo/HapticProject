@@ -85,6 +85,7 @@ public class TeleportNumPad : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        Debug.Log("OnNetworkSpawn");
         isInNetwork = true;
     }
 
