@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 public class TeleportManager : NetworkBehaviour
 {
-    private void isInNetwork;
+    private bool isInNetwork;
 
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
