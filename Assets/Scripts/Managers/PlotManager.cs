@@ -183,7 +183,14 @@ public class PlotManager : NetworkBehaviour
 
     private void GetVRPlayerData()
     {
-        if(!_skipTutorial) VRIntroEvent();
+        if(_skipTutorial)
+        {
+            StartCoroutine(FadeVRPlayerIntoGame(2f));
+        }
+        else
+        {
+            VRIntroEvent();
+        }
     }
 
     private void GetPCPlayerData()
