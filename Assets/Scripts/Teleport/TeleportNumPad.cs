@@ -85,7 +85,6 @@ public class TeleportNumPad : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        Debug.Log("OnNetworkSpawn");
         isInNetwork = true;
     }
 
@@ -162,11 +161,9 @@ public class TeleportNumPad : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log("isInNetwork: " + isInNetwork);
         if(!isInNetwork) return;
-        Debug.Log("isInNetwork GO");
+        
         currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
-        Debug.Log("currDistance: " + currDistance);
         if(prevDistance != currDistance)
         {
             EventsManager.ChangeHidingBarPosition(currDistance / maxDistance);
@@ -186,14 +183,12 @@ public class TeleportNumPad : NetworkBehaviour
 
     public void GrabbedRope()
     {
-        Debug.Log("GrabbedRope");
         rbRopeHandle.constraints = RigidbodyConstraints.None;
         pullRope = false;
     }
     
     public void ReleasedRope()
     {
-        Debug.Log("ReleasedRope");
         pullRope = true;        
     }
 }
