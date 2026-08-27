@@ -121,7 +121,9 @@ public class TeleportPad : NetworkBehaviour
                 for (int i = 0; i < inputDisplay.childCount; i++)
                 {
                     inputNotches[i] = inputDisplay.GetChild(i);
-                    StartCoroutine(MoveNotch(1f, inputNotches[i], new Vector3(inputNotches[i].position.x, bottomYPos, inputNotches[i].position.z)));
+
+                    // StartCoroutine(MoveNotch(1f, inputNotches[i], new Vector3(inputNotches[i].position.x, bottomYPos, inputNotches[i].position.z)));
+                    MoveNotchRpc(true, i, true);
                 } 
 
                 inputLevers = new bool[5];
@@ -265,11 +267,15 @@ public class TeleportPad : NetworkBehaviour
                 switch(_newNum)
                 {
                     case 0:
-                        StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, bottomYPos, displayedNotches[i].position.z)));
+                        // StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, bottomYPos, displayedNotches[i].position.z)));
+                        MoveNotchRpc(false, i, true);
+                        
                         answerLevers[i] = false;
                         break;
                     case 1:
-                        StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, topYPos, displayedNotches[i].position.z)));
+                        // StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, topYPos, displayedNotches[i].position.z)));
+                        MoveNotchRpc(false, i, false);
+
                         answerLevers[i] = true;
                         break;
                 }
@@ -296,6 +302,27 @@ public class TeleportPad : NetworkBehaviour
             } 
 
             ClearRopeButtons();
+        }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void MoveNotchRpc(bool isInputNotch, int _index, bool _toTheBottom)
+    {
+        float yPos;
+        if(_toTheBottom)
+        {
+            yPos = bottomYPos;
+        }
+        else
+        {
+            yPos = topYPos;
+        }
+
+        if(isInputNotch)
+        {
+            StartCoroutine(MoveNotch(1f, inputNotches[_index], new Vector3(inputNotches[_index].position.x, yPos, inputNotches[_index].position.z)));
+        }else{
+            StartCoroutine(MoveNotch(1f, displayedNotches[_index], new Vector3(displayedNotches[_index].position.x, yPos, displayedNotches[_index].position.z)));
         }
     }
 
@@ -347,14 +374,18 @@ public class TeleportPad : NetworkBehaviour
     public void  ActivateInputNotchServerRpc(int _leverIndex)
     {
         inputLevers[_leverIndex] = true;
-        StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z)));
+
+        // StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z)));
+        MoveNotchRpc(true, _leverIndex, false);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void  DeactivateInputNotchServerRpc(int _leverIndex)
     {
         inputLevers[_leverIndex] = false;
-        StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z)));
+
+        // StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z)));
+        MoveNotchRpc(true, _leverIndex, true);
     }
 
     IEnumerator MoveNotch(float _delay, Transform notch, Vector3 newPos)
