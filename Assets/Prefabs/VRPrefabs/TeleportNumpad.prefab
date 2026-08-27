@@ -8588,7 +8588,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1659
+  m_VersionIndex: 1689
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -9675,7 +9675,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7b7a5459fa4ceba4a996941215f688c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9969,7 +9969,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1597
+  m_VersionIndex: 1627
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -11209,7 +11209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2579189856
+  GlobalObjectIdHash: 445856463
   InScenePlacedSourceGlobalObjectIdHash: 3982171679
   DeferredDespawnTick: 0
   Ownership: 1
@@ -12463,7 +12463,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13655,7 +13655,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -22623,7 +22623,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1596
+  m_VersionIndex: 1626
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -23049,6 +23049,118 @@ Transform:
   - {fileID: 1400605620080266216}
   m_Father: {fileID: 1743734079111934576}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1579299602319113316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5490166316213795879}
+  - component: {fileID: 7525879957976964292}
+  - component: {fileID: 7413072124353511661}
+  - component: {fileID: 5241610020903354789}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5490166316213795879
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579299602319113316}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.3826834, w: 0.9238796}
+  m_LocalPosition: {x: 2.7622635, y: 0.637738, z: -0.24999997}
+  m_LocalScale: {x: 1.1, y: 0.7875, z: 4.1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4617888762118253733}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &7525879957976964292
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579299602319113316}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &7413072124353511661
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579299602319113316}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 7b7a5459fa4ceba4a996941215f688c9, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5241610020903354789
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579299602319113316}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1627942341502550776
 GameObject:
   m_ObjectHideFlags: 0
@@ -24137,7 +24249,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -32826,7 +32938,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 2811
+  m_VersionIndex: 2841
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -33234,7 +33346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 2494609125
+  GlobalObjectIdHash: 2753369979
   InScenePlacedSourceGlobalObjectIdHash: 3982171679
   DeferredDespawnTick: 0
   Ownership: 1
@@ -34381,7 +34493,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -34964,6 +35076,7 @@ Transform:
   - {fileID: 1743734079111934576}
   - {fileID: 3490054321481571229}
   - {fileID: 7293462708764084895}
+  - {fileID: 5490166316213795879}
   - {fileID: 2200994634581016440}
   - {fileID: 6263746831781079143}
   - {fileID: 6528054310918602834}
@@ -35006,7 +35119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3982171679
+  GlobalObjectIdHash: 1660871752
   InScenePlacedSourceGlobalObjectIdHash: 3982171679
   DeferredDespawnTick: 0
   Ownership: 1
@@ -44415,7 +44528,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1659
+  m_VersionIndex: 1689
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -46586,7 +46699,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1690
+  m_VersionIndex: 1720
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -47998,7 +48111,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7b7a5459fa4ceba4a996941215f688c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -57915,7 +58028,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1659
+  m_VersionIndex: 1689
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -62803,7 +62916,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1095
+  m_VersionIndex: 1125
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -64285,7 +64398,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7b7a5459fa4ceba4a996941215f688c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -65894,7 +66007,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4181827567
+  GlobalObjectIdHash: 4070059638
   InScenePlacedSourceGlobalObjectIdHash: 3982171679
   DeferredDespawnTick: 0
   Ownership: 1
@@ -74084,7 +74197,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7b7a5459fa4ceba4a996941215f688c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -74378,7 +74491,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1565
+  m_VersionIndex: 1595
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -76706,7 +76819,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1547
+  m_VersionIndex: 1577
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -94485,7 +94598,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1659
+  m_VersionIndex: 1689
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -95771,7 +95884,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -96963,7 +97076,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -116306,7 +116419,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1596
+  m_VersionIndex: 1626
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -116665,7 +116778,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1604
+  m_VersionIndex: 1634
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -125365,7 +125478,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1659
+  m_VersionIndex: 1689
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -127536,7 +127649,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1708
+  m_VersionIndex: 1738
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -128535,7 +128648,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1565
+  m_VersionIndex: 1595
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -129874,7 +129987,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -130347,7 +130460,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1565
+  m_VersionIndex: 1595
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -133001,7 +133114,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1690
+  m_VersionIndex: 1720
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -134538,7 +134651,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1561
+  m_VersionIndex: 1591
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -134709,7 +134822,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 7b7a5459fa4ceba4a996941215f688c9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -136802,7 +136915,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1708
+  m_VersionIndex: 1738
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -145879,7 +145992,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1659
+  m_VersionIndex: 1689
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -146251,7 +146364,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1565
+  m_VersionIndex: 1595
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -147541,15 +147654,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000023841858
+      value: -0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.022000004
+      value: 0.02199998
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.00000009536743
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: inputSymbols
@@ -148483,15 +148596,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.00000001519072
+      value: -0.00000010984059
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.034503836
+      value: 0.034503926
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.000000018696271
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: addSymbolToCode
@@ -148747,6 +148860,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3245496379
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3982171679
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -148992,15 +149117,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000036808284
+      value: -0.00000008705451
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.034503818
+      value: 0.034503955
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.000000025707372
+      value: 0.000000001168517
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: addSymbolToCode
@@ -149332,15 +149457,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.000000011920929
+      value: 0.00000003576279
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.022000015
+      value: 0.021999968
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.00000009536743
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: removeSymbol
@@ -149644,7 +149769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.y
@@ -149652,7 +149777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.000000047683717
       objectReference: {fileID: 0}
     - target: {fileID: 2397676642098698959, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_Layer
@@ -150840,6 +150965,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3173085548
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3982171679
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -151085,15 +151222,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000027460148
+      value: -0.00000006485269
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03450381
+      value: 0.03450394
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.000000025707372
+      value: -0.000000027460148
       objectReference: {fileID: 0}
     - target: {fileID: 5919843269273517913, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_Name
@@ -151802,6 +151939,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2340085160
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3982171679
+      objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
       value: 7
@@ -152211,15 +152360,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.000000018696271
+      value: -0.000000093481354
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03450384
+      value: 0.03450394
       objectReference: {fileID: 0}
     - target: {fileID: 2412302163521970912, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.00000006543695
       objectReference: {fileID: 0}
     - target: {fileID: 4217319791900788873, guid: 3234a0062d155834fa90f15422acaab7, type: 3}
       propertyPath: addSymbolToCode
@@ -152310,6 +152459,18 @@ PrefabInstance:
     - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3617566105
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3982171679
       objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
@@ -152631,6 +152792,18 @@ PrefabInstance:
     - target: {fileID: 181313968651555345, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 650431130
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: SceneMigrationSynchronization
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: InScenePlacedSourceGlobalObjectIdHash
+      value: 3982171679
       objectReference: {fileID: 0}
     - target: {fileID: 5202211970501327854, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_LocalScale.x
@@ -153699,7 +153872,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.000000023841858
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.y
@@ -153707,7 +153880,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1811122272821274886, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.000000047683717
       objectReference: {fileID: 0}
     - target: {fileID: 2397676642098698959, guid: 76f3439a0ae796e4b81bee3f91f888ee, type: 3}
       propertyPath: m_Layer

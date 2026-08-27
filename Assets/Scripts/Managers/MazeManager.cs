@@ -95,6 +95,8 @@ public class MazeManager : NetworkBehaviour
         EventsManager.OnActivateSpinWheel += ActivateSpinWheel;
         EventsManager.OnActivateHealthBall += ActivateHealthBall;
         EventsManager.OnActivateDefenseButton += ActivateDefenseButton;
+
+        EventsManager.OnPressedDefenseButton += PressedDefenseButton;
     }
 
     private void OnDisable()
@@ -111,6 +113,8 @@ public class MazeManager : NetworkBehaviour
         EventsManager.OnActivateSpinWheel -= ActivateSpinWheel;
         EventsManager.OnActivateHealthBall -= ActivateHealthBall;
         EventsManager.OnActivateDefenseButton -= ActivateDefenseButton;
+
+        EventsManager.OnPressedDefenseButton -= PressedDefenseButton;
     }
 
     public override void OnNetworkSpawn()
@@ -216,7 +220,7 @@ public class MazeManager : NetworkBehaviour
     }
 
     //Creates a set number of enemies if the Defense Button is pressed (and if it is active)
-    public void PressedDefenseButton(int maxEnemies)
+    private void PressedDefenseButton(int maxEnemies)
     {
         if(isDefenseButtonActive.Value)
         {

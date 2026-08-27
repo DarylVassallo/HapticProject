@@ -21,6 +21,8 @@ public class EventsManager : MonoBehaviour
     public static void ActivateHealthBall() => OnActivateHealthBall?.Invoke();
     public static event Action OnActivateDefenseButton;
     public static void ActivateDefenseButton() => OnActivateDefenseButton?.Invoke();
+    public static event Action<int> OnPressedDefenseButton;
+    public static void PressedDefenseButton(int _enemyCount) => OnPressedDefenseButton?.Invoke(_enemyCount);
 
     public static event Action OnDisableEnemySpawning;
     public static void DisableEnemySpawning() => OnDisableEnemySpawning?.Invoke();
