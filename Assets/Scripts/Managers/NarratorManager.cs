@@ -119,6 +119,7 @@ public class NarratorManager : NetworkBehaviour
                         if(_isEnglish) _audioSource.clip = narratorLines[i].narratorAudio[j].englishAudioClip;
                         if(_isFrench) _audioSource.clip = narratorLines[i].narratorAudio[j].frenchAudioClip;
                         
+                        _audioSource.pitch = 1f;
                         _audioSource.Play();
                         _isPlaying = true;
                         _audioSource.enabled = true; 
