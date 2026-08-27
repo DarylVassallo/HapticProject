@@ -177,7 +177,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   ShowTopMostFoldoutHeaderGroup: 1
-  isDead: 0
 --- !u!82 &4360777513105819023
 AudioSource:
   m_ObjectHideFlags: 0
