@@ -313,7 +313,7 @@ public class TeleportPad : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void ClearRopeButtonsRpc()
+    public void ClearRopeButtonsRpc()
     {
         Debug.Log("ClearRopeButtonsRpc");
         currentButtonCount = 0;
