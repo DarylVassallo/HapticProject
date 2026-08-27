@@ -146,6 +146,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private void PlayAudio(GameObject enemy, AudioClip _newAudio)
     {
+        Debug.Log("PlayAudio");
         if(_audioSource.isPlaying || enemy != this.gameObject) return;
 
         _audioSource.Stop();
