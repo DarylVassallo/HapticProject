@@ -283,6 +283,7 @@ public class TeleportPad : NetworkBehaviour
             for (int i = 0; i < answerButtons.Length; i++)
             {
                 answerButtons[i] = -1;
+                Debug.Log("ChangeSecretCodePadServerRpc Reset answerButtons[" + i + "]: " + answerButtons[i]);
             }
 
             for (int i = 0; i < answerButtons.Length; i++)
@@ -298,6 +299,11 @@ public class TeleportPad : NetworkBehaviour
                     }else if(j == -1)
                     {
                         j = answerButtons.Length;
+                        Debug.Log("ChangeSecretCodePadServerRpc Cont 1 answerButtons[" + i + "]: " + answerButtons[i]);
+                    }
+                    else
+                    {
+                        Debug.Log("ChangeSecretCodePadServerRpc Cont 2 answerButtons[" + i + "]: " + answerButtons[i]);
                     }
                 }
             } 
@@ -314,6 +320,7 @@ public class TeleportPad : NetworkBehaviour
 
         for (int i = 0; i < answerButtons.Length; i++)
         {
+            Debug.Log("ClearRopeButtonsRpc answerButtons[" + i + "]: " + answerButtons[i]);
             buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
             lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
         }
