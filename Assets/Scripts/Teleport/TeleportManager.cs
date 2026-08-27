@@ -113,6 +113,9 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TutorialTeleportRpc()
     {        
+        Debug.Log("tutorialTeleportCount: " + tutorialTeleportCount);
+        Debug.Log("tutorialTeleportPads.Length: " + tutorialTeleportPads.Length);
+
         EventsManager.TogglePCTrigger(false);
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
@@ -159,6 +162,8 @@ public class TeleportManager : NetworkBehaviour
             // EventsManager.ToggleRestriction("Move", true);
 
             EventsManager.FixTeleportEffect(0, true);
+
+            Debug.Log("ReachedSwitches Audio");
             EventsManager.ReachedSwitches();
         }
     }
