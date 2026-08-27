@@ -337,7 +337,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
             {
                 _canBeDamaged = false;
                 EventsManager.ChangeHealthForEntity(this.gameObject, -damageToAngel * _damageMultiplier);
-                _unofficialHealth = _unofficialHealth - (damageToAngel * _damageMultiplier);
+                SetUnofficialHealthRpc(_unofficialHealth - (damageToAngel * _damageMultiplier));
                 StartCoroutine(DelayDamage());
             }
 
@@ -350,6 +350,12 @@ public class EnemyWithSpotlight : NetworkBehaviour
             PlayDeathAudioRpc();
             // DeathAudioVolumeClientRpc();
         }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetUnofficialHealthRpc(float _newHealth)
+    {
+        _unofficialHealth = _newHealth;
     }
 
     //After a delay, the enemy is able to be damaged again by the PC Player's light
