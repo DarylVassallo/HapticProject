@@ -148,6 +148,8 @@ public class TeleportPad : NetworkBehaviour
 
                     lights[i] = lightsParentsObject.GetChild(i);
                     lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
+
+                    Debug.Log("Button " + i + " Awake");
                 } 
 
                 pieces = new Transform[hidingBar.childCount];
@@ -276,6 +278,7 @@ public class TeleportPad : NetworkBehaviour
             }
         }else if(usesRope)
         {
+            Debug.Log("ChangeSecretCodePadServerRpc usesRope");
             currentButtonCount = 0;
 
             int _newNum;
@@ -352,17 +355,8 @@ public class TeleportPad : NetworkBehaviour
                 _hidingbarPosition
             );
 
-        Debug.Log("New hidingbar pos: " + hidingBar.position);
-
         CheckMesh();
-        // StartCoroutine(UpdateHidingBarDelay());
     }
-
-    // IEnumerator UpdateHidingBarDelay()
-    // {
-    //     yield return new WaitForSeconds(3f);
-    //     EventsManager.UpdateHidingBar();
-    // }
 
     private void CheckMesh()
     {
@@ -418,6 +412,7 @@ public class TeleportPad : NetworkBehaviour
 
     private void TriggerRopeButton(Transform button)
     {
+        Debug.Log("TriggerRopeButton");
         for(int i = 0; i < buttons.Length; i++)
         {
             if(buttons[i] == button && answerButtons[currentButtonCount] == i)
@@ -445,6 +440,7 @@ public class TeleportPad : NetworkBehaviour
 
     private void ClearRopeButtons()
     {
+        Debug.Log("ClearRopeButtons");
         currentButtonCount = 0;
 
         for (int i = 0; i < answerButtons.Length; i++)
