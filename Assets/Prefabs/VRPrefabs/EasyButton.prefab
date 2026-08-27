@@ -448,6 +448,7 @@ MonoBehaviour:
   addSymbolToCode: 0
   removeSymbol: 0
   inputSymbols: 0
+  defenseButtonCount: 0
 --- !u!1 &6501816254312174692
 GameObject:
   m_ObjectHideFlags: 0
