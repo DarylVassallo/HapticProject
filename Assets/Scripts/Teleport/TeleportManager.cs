@@ -165,7 +165,7 @@ public class TeleportManager : NetworkBehaviour
 
             if(IsOwner)
             {
-                Debug.Log("ReachedSwitches Audio");
+                Debug.Log("ReachedSwitches Audio ==== tutorialTeleportCount : " + tutorialTeleportCount + " : tutorialTeleportPads.Length : " + tutorialTeleportPads.Length);
                 EventsManager.ReachedSwitches();
             }
         }
