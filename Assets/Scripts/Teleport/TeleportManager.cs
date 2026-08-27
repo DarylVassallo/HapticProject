@@ -153,7 +153,7 @@ public class TeleportManager : NetworkBehaviour
             
         }
         
-        if(tutorialTeleportCount == tutorialTeleportPads.Length)
+        if(tutorialTeleportCount >= tutorialTeleportPads.Length)
         {
             _audioSource.Stop();
 
@@ -163,8 +163,11 @@ public class TeleportManager : NetworkBehaviour
 
             EventsManager.FixTeleportEffect(0, true);
 
-            Debug.Log("ReachedSwitches Audio");
-            EventsManager.ReachedSwitches();
+            if(IsOwner)
+            {
+                Debug.Log("ReachedSwitches Audio");
+                EventsManager.ReachedSwitches();
+            }
         }
     }
 
