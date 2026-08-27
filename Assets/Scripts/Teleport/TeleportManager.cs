@@ -159,6 +159,7 @@ public class TeleportManager : NetworkBehaviour
             // EventsManager.ToggleRestriction("Move", true);
 
             EventsManager.FixTeleportEffect(0, true);
+            EventsManager.ReachedSwitches();
         }
     }
 

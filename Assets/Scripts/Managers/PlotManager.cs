@@ -52,7 +52,8 @@ public class PlotManager : NetworkBehaviour
 
         EventsManager.OnUsingOnlyPCPlayer += UseOnlyPCPlayer;
         EventsManager.OnSkipTutorial += SkipTutorial;
-
+        
+        EventsManager.OnReachedSwitches += ReachedSwitches;
         EventsManager.OnFirstEnemyCreated += FirstEnemyCreated;
         EventsManager.OnFirstActiveInteractiveObject += FirstActiveInteractiveObject;
     }
@@ -69,7 +70,8 @@ public class PlotManager : NetworkBehaviour
 
        EventsManager.OnUsingOnlyPCPlayer -= UseOnlyPCPlayer;
        EventsManager.OnSkipTutorial -= SkipTutorial;
-       
+
+       EventsManager.OnReachedSwitches -= ReachedSwitches;
        EventsManager.OnFirstEnemyCreated -= FirstEnemyCreated;
        EventsManager.OnFirstActiveInteractiveObject -= FirstActiveInteractiveObject;
     }
@@ -184,6 +186,11 @@ public class PlotManager : NetworkBehaviour
         } else {
             StartCoroutine(DelayPCSpawn());
         }
+    }
+
+    private void ReachedSwitches()
+    {
+        EventsManager.TriggerNarratorAudio("PCSwitchSection", "IntroduceSwitchPC", false);
     }
 
     private void FirstEnemyCreated()

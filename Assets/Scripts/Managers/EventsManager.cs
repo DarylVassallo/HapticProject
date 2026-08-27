@@ -231,6 +231,8 @@ public class EventsManager : MonoBehaviour
 
 
     //Plot Events=============================================
+    public static event Action OnReachedSwitches;
+    public static void ReachedSwitches() => OnReachedSwitches?.Invoke();
     public static event Action OnFirstEnemyCreated;
     public static void FirstEnemyCreated() => OnFirstEnemyCreated?.Invoke();
     public static event Action OnFirstActiveInteractiveObject;
