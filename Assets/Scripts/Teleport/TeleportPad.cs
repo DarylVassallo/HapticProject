@@ -148,8 +148,6 @@ public class TeleportPad : NetworkBehaviour
 
                     lights[i] = lightsParentsObject.GetChild(i);
                     lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
-
-                    Debug.Log("Button " + i + " Awake");
                 } 
 
                 pieces = new Transform[hidingBar.childCount];
@@ -277,13 +275,10 @@ public class TeleportPad : NetworkBehaviour
                 }
             }
         }else if(usesRope)
-        {
-            Debug.Log("ChangeSecretCodePadServerRpc usesRope");
-            
+        {            
             for (int i = 0; i < answerButtons.Length; i++)
             {
                 answerButtons[i] = -1;
-                Debug.Log("ChangeSecretCodePadServerRpc Reset answerButtons[" + i + "]: " + answerButtons[i]);
             }
 
             for (int i = 0; i < answerButtons.Length; i++)
@@ -296,14 +291,6 @@ public class TeleportPad : NetworkBehaviour
                     {
                         i--;
                         j = answerButtons.Length;
-                    }else if(j == -1)
-                    {
-                        j = answerButtons.Length;
-                        Debug.Log("ChangeSecretCodePadServerRpc Cont 1 answerButtons[" + i + "]: " + answerButtons[i]);
-                    }
-                    else
-                    {
-                        Debug.Log("ChangeSecretCodePadServerRpc Cont 2 answerButtons[" + i + "]: " + answerButtons[i]);
                     }
                 }
             } 
@@ -314,20 +301,14 @@ public class TeleportPad : NetworkBehaviour
 
     private void ClearRopeButtons()
     {
-        Debug.Log("ClearRopeButtons");
         currentButtonCount = 0;
 
         for (int i = 0; i < answerButtons.Length; i++)
         {
-            Debug.Log("ClearRopeButtons answerButtons[" + i + "]: " + answerButtons[i]);
-            // buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
             ChangeRopeButtonMaterialRpc(0, i, 0);
-            
-            // lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
             ChangeRopeButtonMaterialRpc(1, i, 0);
         }
 
-        // buttons[answerButtons[0]].GetComponent<Renderer>().material = activeButtonMaterial;
         ChangeRopeButtonMaterialRpc(0, answerButtons[0], 1);
     }
 
@@ -366,7 +347,6 @@ public class TeleportPad : NetworkBehaviour
     public void  ActivateInputNotchServerRpc(int _leverIndex)
     {
         inputLevers[_leverIndex] = true;
-        // inputNotches[_leverIndex].position = new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z);
         StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z)));
     }
 
@@ -374,7 +354,6 @@ public class TeleportPad : NetworkBehaviour
     public void  DeactivateInputNotchServerRpc(int _leverIndex)
     {
         inputLevers[_leverIndex] = false;
-        // inputNotches[_leverIndex].position = new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z);
         StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z)));
     }
 
@@ -464,7 +443,6 @@ public class TeleportPad : NetworkBehaviour
 
     private void TriggerRopeButton(Transform button)
     {
-        Debug.Log("TriggerRopeButton");
         for(int i = 0; i < buttons.Length; i++)
         {
             if(buttons[i] == button)
@@ -482,10 +460,7 @@ public class TeleportPad : NetworkBehaviour
     {
         if(answerButtons[currentButtonCount] == _index)
         {
-            // lights[currentButtonCount].GetComponent<Renderer>().material = activeButtonMaterial;
             ChangeRopeButtonMaterialRpc(1, currentButtonCount, 1);
-
-            // buttons[_index].GetComponent<Renderer>().material = neutralButtonMaterial;
             ChangeRopeButtonMaterialRpc(0, _index, 0);
 
             if(currentButtonCount >= (buttons.Length - 1) && _isPlayerOnPad.Value)
@@ -496,7 +471,6 @@ public class TeleportPad : NetworkBehaviour
             else
             {
                 currentButtonCount++;
-                // buttons[answerButtons[currentButtonCount]].GetComponent<Renderer>().material = activeButtonMaterial;
                 ChangeRopeButtonMaterialRpc(0, answerButtons[currentButtonCount], 1);
             }
 
