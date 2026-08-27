@@ -279,14 +279,10 @@ public class TeleportPad : NetworkBehaviour
         }else if(usesRope)
         {
             Debug.Log("ChangeSecretCodePadServerRpc usesRope");
-            currentButtonCount = 0;
-
-            int _newNum;
+            
             for (int i = 0; i < answerButtons.Length; i++)
             {
                 answerButtons[i] = -1;
-                buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
-                lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
             }
 
             for (int i = 0; i < answerButtons.Length; i++)
@@ -306,8 +302,23 @@ public class TeleportPad : NetworkBehaviour
                 }
             } 
 
-            buttons[answerButtons[0]].GetComponent<Renderer>().material = activeButtonMaterial;
+            ClearRopeButtonsRpc();
         }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ClearRopeButtonsRpc()
+    {
+        Debug.Log("ClearRopeButtonsRpc");
+        currentButtonCount = 0;
+
+        for (int i = 0; i < answerButtons.Length; i++)
+        {
+            buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
+            lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
+        }
+
+        buttons[answerButtons[0]].GetComponent<Renderer>().material = activeButtonMaterial;
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -422,7 +433,7 @@ public class TeleportPad : NetworkBehaviour
 
                 if(currentButtonCount >= (buttons.Length - 1) && _isPlayerOnPad.Value)
                 {
-                    ClearRopeButtons();
+                    ClearRopeButtonsRpc();
                     StartRingRotationRpc();
                 }
                 else
@@ -435,21 +446,7 @@ public class TeleportPad : NetworkBehaviour
             }
         }
 
-        ClearRopeButtons();
-    }
-
-    private void ClearRopeButtons()
-    {
-        Debug.Log("ClearRopeButtons");
-        currentButtonCount = 0;
-
-        for (int i = 0; i < answerButtons.Length; i++)
-        {
-            buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
-            lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
-        }
-
-        buttons[answerButtons[0]].GetComponent<Renderer>().material = activeButtonMaterial;
+        ClearRopeButtonsRpc();
     }
 
     //If the inputted code is correct, then the teleportation sequence can begin
