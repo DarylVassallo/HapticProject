@@ -90,7 +90,6 @@ public class TeleportManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         isInNetwork = true;
-        CurrentMapServerRpc(false, true);
     }
 
     private void DisableTeleportChange()
@@ -106,6 +105,8 @@ public class TeleportManager : NetworkBehaviour
         {
             // CurrentMapServerRpc(false, true);
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+
+            CurrentMapServerRpc(false, true);
         }
     }
 
