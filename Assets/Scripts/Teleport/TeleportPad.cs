@@ -90,6 +90,66 @@ public class TeleportPad : NetworkBehaviour
     
     void Awake()
     {
+        
+    }
+
+    void Start()
+    {
+        if(bar != null) EventsManager.AddNewBar(bar);
+    }
+
+    private void OnEnable()
+    {
+        EventsManager.OnSendCodeToTeleportPads += CheckInputtedCode;
+        EventsManager.OnEverythingCollected += ActivateInstantTeleport;
+        EventsManager.OnResetTeleportPads += ResetTeleportPad;
+
+        EventsManager.OnChangePadsReady += ChangePadsReady;
+
+        EventsManager.OnTriggerTeleportButton += CheckPad;
+
+        EventsManager.OnSetExitPadTransform += SetExitPadTransform;
+
+        if(usesLevers)
+        {
+            EventsManager.OnActivateLever += ActivateInputNotchServerRpc;
+            EventsManager.OnDeactivateLever += DeactivateInputNotchServerRpc;
+        }
+
+        if(usesRope)
+        {
+            EventsManager.OnChangeHidingBarPosition += ChangeHidingBarPositionRpc;
+            EventsManager.OnTriggerRopeButton += TriggerRopeButton;
+        }
+    }
+
+    private void OnDisable()
+    {
+        EventsManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
+        EventsManager.OnEverythingCollected -= ActivateInstantTeleport;
+        EventsManager.OnResetTeleportPads -= ResetTeleportPad;
+
+        EventsManager.OnChangePadsReady -= ChangePadsReady;
+
+        EventsManager.OnTriggerTeleportButton -= CheckPad;
+
+        EventsManager.OnSetExitPadTransform -= SetExitPadTransform;
+
+        if(usesLevers)
+        {
+            EventsManager.OnActivateLever -= ActivateInputNotchServerRpc;
+            EventsManager.OnDeactivateLever -= DeactivateInputNotchServerRpc;
+        }
+
+        if(usesRope)
+        {
+            EventsManager.OnChangeHidingBarPosition -= ChangeHidingBarPositionRpc;
+            EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
+        }
+    }
+
+    public override void OnNetworkSpawn()
+    {
         _stringSecretCode = "";
 
         if(parentDisplay != null)
@@ -167,60 +227,6 @@ public class TeleportPad : NetworkBehaviour
         _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
-    void Start()
-    {
-        if(bar != null) EventsManager.AddNewBar(bar);
-    }
-
-    private void OnEnable()
-    {
-        EventsManager.OnSendCodeToTeleportPads += CheckInputtedCode;
-        EventsManager.OnEverythingCollected += ActivateInstantTeleport;
-        EventsManager.OnResetTeleportPads += ResetTeleportPad;
-
-        EventsManager.OnChangePadsReady += ChangePadsReady;
-
-        EventsManager.OnTriggerTeleportButton += CheckPad;
-
-        EventsManager.OnSetExitPadTransform += SetExitPadTransform;
-
-        if(usesLevers)
-        {
-            EventsManager.OnActivateLever += ActivateInputNotchServerRpc;
-            EventsManager.OnDeactivateLever += DeactivateInputNotchServerRpc;
-        }
-
-        if(usesRope)
-        {
-            EventsManager.OnChangeHidingBarPosition += ChangeHidingBarPositionRpc;
-            EventsManager.OnTriggerRopeButton += TriggerRopeButton;
-        }
-    }
-
-    private void OnDisable()
-    {
-        EventsManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
-        EventsManager.OnEverythingCollected -= ActivateInstantTeleport;
-        EventsManager.OnResetTeleportPads -= ResetTeleportPad;
-
-        EventsManager.OnChangePadsReady -= ChangePadsReady;
-
-        EventsManager.OnTriggerTeleportButton -= CheckPad;
-
-        EventsManager.OnSetExitPadTransform -= SetExitPadTransform;
-
-        if(usesLevers)
-        {
-            EventsManager.OnActivateLever -= ActivateInputNotchServerRpc;
-            EventsManager.OnDeactivateLever -= DeactivateInputNotchServerRpc;
-        }
-
-        if(usesRope)
-        {
-            EventsManager.OnChangeHidingBarPosition -= ChangeHidingBarPositionRpc;
-            EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
-        }
-    }
 
     //Resets the teleport pad, so the PC Player can use it 'for the first time' again
     private void ResetTeleportPad()
