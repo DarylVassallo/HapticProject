@@ -153,8 +153,9 @@ public class TeleportManager : NetworkBehaviour
             
         }
         
-        if(tutorialTeleportCount >= tutorialTeleportPads.Length)
+        if(tutorialTeleportCount == tutorialTeleportPads.Length)
         {
+            tutorialTeleportCount++;
             _audioSource.Stop();
 
             EventsManager.TogglePCTrigger(true);
