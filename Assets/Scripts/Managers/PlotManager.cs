@@ -52,6 +52,9 @@ public class PlotManager : NetworkBehaviour
 
         EventsManager.OnUsingOnlyPCPlayer += UseOnlyPCPlayer;
         EventsManager.OnSkipTutorial += SkipTutorial;
+
+        EventsManager.OnFirstEnemyCreated += FirstEnemyCreated;
+        EventsManager.OnFirstActiveInteractiveObject += FirstActiveInteractiveObject;
     }
 
     private void OnDisable()
@@ -67,6 +70,8 @@ public class PlotManager : NetworkBehaviour
        EventsManager.OnUsingOnlyPCPlayer -= UseOnlyPCPlayer;
        EventsManager.OnSkipTutorial -= SkipTutorial;
        
+       EventsManager.OnFirstEnemyCreated -= FirstEnemyCreated;
+       EventsManager.OnFirstActiveInteractiveObject -= FirstActiveInteractiveObject;
     }
 
     private void SkipTutorial()
@@ -179,6 +184,16 @@ public class PlotManager : NetworkBehaviour
         } else {
             StartCoroutine(DelayPCSpawn());
         }
+    }
+
+    private void FirstEnemyCreated()
+    {
+        EventsManager.TriggerNarratorAudio("PCSwitchSection", "FirstEnemyCreated", false);
+    }
+
+    private void FirstActiveInteractiveObject()
+    {
+        EventsManager.TriggerNarratorAudio("VRSwitchSection", "FirstActiveInteractiveObject", true);
     }
 
     private void GetVRPlayerData()

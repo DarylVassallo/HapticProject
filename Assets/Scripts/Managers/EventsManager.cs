@@ -225,7 +225,16 @@ public class EventsManager : MonoBehaviour
     public static void TriggerPCInteractTutorial() => OnTriggerPCInteractTutorial?.Invoke();
     public static event Action OnResetPCTutorial;
     public static void ResetPCTutorial() => OnResetPCTutorial?.Invoke();
+
     
+
+
+
+    //Plot Events=============================================
+    public static event Action OnFirstEnemyCreated;
+    public static void FirstEnemyCreated() => OnFirstEnemyCreated?.Invoke();
+    public static event Action OnFirstActiveInteractiveObject;
+    public static void FirstActiveInteractiveObject() => OnFirstActiveInteractiveObject?.Invoke();
     
 
 

@@ -13,6 +13,7 @@ using Unity.Netcode;
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
+    private bool _activatedInteractiveObject;
 
     [Header("Switches")]
     [SerializeField] private HiddenSwitches[] hiddenSwitches;
@@ -79,6 +80,8 @@ public class MazeManager : NetworkBehaviour
         spinWheelKnob = spinWheelObject.GetComponentInChildren<XRKnob>();
 
         wheelCheckCount = 0;
+
+        _activatedInteractiveObject = false;
     }
 
     private void OnEnable()
@@ -143,19 +146,31 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the spin wheel
     public void ActivateSpinWheel()
     {
+        CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.SpinWheel);
     }
 
     //Triggered by inputting correct sequence to activate the health ball
     public void ActivateHealthBall()
     {
+        CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.HealthBall);
     }
 
     //Triggered by inputting correct sequence to activate the defense button
     public void ActivateDefenseButton()
     {
+        CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.DefenseButton);
+    }
+
+    private void CheckInteractiveObject()
+    {
+        if(!_activatedInteractiveObject)
+        {
+            _activatedInteractiveObject = true;
+            EventsManager.FirstActiveInteractiveObject();
+        }
     }
 
     void FixedUpdate()

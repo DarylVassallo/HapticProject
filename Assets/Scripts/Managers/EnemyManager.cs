@@ -46,6 +46,7 @@ public class EnemyManager : NetworkBehaviour
     private bool _isEnemySpawningDisabled = false;
 
     private bool disableEnemies;
+    private bool createdAnEnemy;
 
     void Awake()
     {
@@ -59,6 +60,8 @@ public class EnemyManager : NetworkBehaviour
 
         enemyList = new List<GameObject>();
         _closeSpawnPoints = new List<Transform>();
+
+        createdAnEnemy = false;
     }
 
     private void OnEnable()
@@ -195,6 +198,16 @@ public class EnemyManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void InstantiateNearbyRandomEnemyServerRpc()
     {
+        float multiplier = 1f;
+        if(!createdAnEnemy)
+        {
+            createdAnEnemy = true;
+            EventsManager.FirstEnemyCreated();
+            
+            multiplier = 0.5f;
+        }
+
+
         if(disableEnemies) return;
 
         if(enemyList.Count < enemyNumLimit)
@@ -204,7 +217,7 @@ public class EnemyManager : NetworkBehaviour
             {
                 distance = (enemySpawnPoints.GetChild(i).position - _pcPlayer.position).magnitude;
 
-                if (distance > spawnTooCloseRange && distance <= spawnTooFarRange)
+                if (distance > (spawnTooCloseRange * multiplier) && distance <= (spawnTooFarRange * multiplier))
                 {
                     _closeSpawnPoints.Add(enemySpawnPoints.GetChild(i));
                 }
