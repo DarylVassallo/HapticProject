@@ -87,11 +87,6 @@ public class TeleportPad : NetworkBehaviour
     [SerializeField] private Material deactiveLightMaterial;
     [SerializeField] private Material activeLightMaterial;
     private Transform[] lights;
-    
-    void Awake()
-    {
-        
-    }
 
     void Start()
     {
@@ -181,8 +176,6 @@ public class TeleportPad : NetworkBehaviour
                 for (int i = 0; i < inputDisplay.childCount; i++)
                 {
                     inputNotches[i] = inputDisplay.GetChild(i);
-
-                    // StartCoroutine(MoveNotch(1f, inputNotches[i], new Vector3(inputNotches[i].position.x, bottomYPos, inputNotches[i].position.z)));
                     MoveNotchRpc(true, i, true);
                 } 
 
@@ -262,7 +255,9 @@ public class TeleportPad : NetworkBehaviour
             {
                 int _newNum = UnityEngine.Random.Range(0, 4);
                 _stringSecretCode = _stringSecretCode + "" + (_newNum + 1);
-                displayedSymbols[i].material = potentialSymbols[_newNum];
+
+                // displayedSymbols[i].material = potentialSymbols[_newNum];
+                ChangeSymbolMaterialRpc(i, _newNum);
             }
         }else if(usesLevers)
         {
@@ -273,15 +268,11 @@ public class TeleportPad : NetworkBehaviour
                 switch(_newNum)
                 {
                     case 0:
-                        // StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, bottomYPos, displayedNotches[i].position.z)));
                         MoveNotchRpc(false, i, true);
-                        
                         answerLevers[i] = false;
                         break;
                     case 1:
-                        // StartCoroutine(MoveNotch(1f, displayedNotches[i], new Vector3(displayedNotches[i].position.x, topYPos, displayedNotches[i].position.z)));
                         MoveNotchRpc(false, i, false);
-
                         answerLevers[i] = true;
                         break;
                 }
@@ -346,6 +337,12 @@ public class TeleportPad : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ChangeSymbolMaterialRpc(int _displayIndex, int _potentialIndex)
+    {
+        displayedSymbols[_displayIndex].material = potentialSymbols[_potentialIndex];
+    }
+    
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ChangeRopeButtonMaterialRpc(int _objectType, int _buttonIndex, int _materialIndex)
     {
         switch(_objectType)
@@ -380,8 +377,6 @@ public class TeleportPad : NetworkBehaviour
     public void  ActivateInputNotchServerRpc(int _leverIndex)
     {
         inputLevers[_leverIndex] = true;
-
-        // StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, topYPos, inputNotches[_leverIndex].position.z)));
         MoveNotchRpc(true, _leverIndex, false);
     }
 
@@ -389,8 +384,6 @@ public class TeleportPad : NetworkBehaviour
     public void  DeactivateInputNotchServerRpc(int _leverIndex)
     {
         inputLevers[_leverIndex] = false;
-
-        // StartCoroutine(MoveNotch(1f, inputNotches[_leverIndex], new Vector3(inputNotches[_leverIndex].position.x, bottomYPos, inputNotches[_leverIndex].position.z)));
         MoveNotchRpc(true, _leverIndex, true);
     }
 
