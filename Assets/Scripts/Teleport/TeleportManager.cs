@@ -153,7 +153,7 @@ public class TeleportManager : NetworkBehaviour
             
         }
         
-        if(tutorialTeleportCount >= tutorialTeleportPads.Length)
+        if(tutorialTeleportCount == tutorialTeleportPads.Length)
         {
             _audioSource.Stop();
 
