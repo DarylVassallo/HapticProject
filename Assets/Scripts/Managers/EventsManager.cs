@@ -34,6 +34,11 @@ public class EventsManager : MonoBehaviour
 
 
     //Network Events=============================================
+    public static event Action OnClientButton;
+    public static void ClientButton() => OnClientButton?.Invoke();
+    public static event Action OnHostButton;
+    public static void HostButton() => OnHostButton?.Invoke();
+
     public static event Action OnCreatedPCPlayer;
     public static void CreatedPCPlayer() => OnCreatedPCPlayer?.Invoke();
     public static event Action OnAddPCPlayerBody;
@@ -47,6 +52,27 @@ public class EventsManager : MonoBehaviour
     public static void SetPCPlayerID(ulong _clientID) => OnSetPCPlayerID?.Invoke(_clientID);
     public static event Action<ulong> OnSetVRPlayerID;
     public static void SetVRPlayerID(ulong _clientID) => OnSetVRPlayerID?.Invoke(_clientID);
+
+
+
+
+
+    //MainMenu Events=============================================
+    public static event Action<int> OnSetMenuWithoutNetwork;
+    public static void SetMenuWithoutNetwork(int _menuNum) => OnSetMenuWithoutNetwork?.Invoke(_menuNum);
+    public static event Action<int> OnSetMenu;
+    public static void SetMenu(int _menuNum) => OnSetMenu?.Invoke(_menuNum);
+
+    public static event Action<string> OnPlayLevel;
+    public static void PlayLevel(string _sceneName) => OnPlayLevel?.Invoke(_sceneName);
+    public static event Action OnQuit;
+    public static void Quit() => OnQuit?.Invoke();
+
+    public static event Action OnRevealTemple;
+    public static void RevealTemple() => OnRevealTemple?.Invoke();
+
+    public static event Action<int> OnChangeLanguage;
+    public static void ChangeLanguage(int _languageNum) => OnChangeLanguage?.Invoke(_languageNum);
 
 
 

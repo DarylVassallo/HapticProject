@@ -15,7 +15,14 @@ using Unity.Netcode;
 //This script controls all the options in the Main Menu
 public class MainMenu : NetworkBehaviour
 {
-    [SerializeField] private TextMeshProUGUI ipText;
+    [SerializeField] private GameObject temple;
+    
+    [SerializeField] private Camera vrCamera;
+    [SerializeField] private Camera pcCamera;
+
+    [SerializeField] private Locale engLocale;
+    [SerializeField] private Locale frenchLocale;
+    
     [SerializeField] private GameObject[] menuList;
     [SerializeField] private GameObject[] vrMenuList;
 
@@ -31,6 +38,13 @@ public class MainMenu : NetworkBehaviour
 
     private void Awake()
     {
+        StartCoroutine(SetupCamera());
+
+        foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
+        {
+            rend.enabled = false;
+        }
+
         for (int i = 0; i < menuList.Length; i++)
         {
             if (i == 0)
@@ -43,6 +57,54 @@ public class MainMenu : NetworkBehaviour
                 menuList[i].SetActive(false);
                 vrMenuList[i].SetActive(false);
             }
+        }
+    }
+
+    void OnEnable()
+    {
+        EventsManager.OnSetMenuWithoutNetwork += SetMenuNumberWithoutNetwork;
+        EventsManager.OnSetMenu += SetMenuNumber;
+        EventsManager.OnRevealTemple += RevealTemple;
+
+        EventsManager.OnPlayLevel += PlayLevelClient;
+        EventsManager.OnQuit += Quit;
+
+        EventsManager.OnChangeLanguage += ChangeLanguageNum;
+    }
+
+    void OnDisable()
+    {
+        EventsManager.OnSetMenuWithoutNetwork -= SetMenuNumberWithoutNetwork;
+        EventsManager.OnSetMenu -= SetMenuNumber;
+        EventsManager.OnRevealTemple -= RevealTemple;
+
+        EventsManager.OnPlayLevel -= PlayLevelClient;
+        EventsManager.OnQuit -= Quit;
+
+        EventsManager.OnChangeLanguage -= ChangeLanguageNum;
+    }
+
+    private IEnumerator SetupCamera()
+    {
+        yield return new WaitForSeconds(0.5f);
+        
+        if(UnityEngine.XR.XRSettings.isDeviceActive)
+        {
+            vrCamera.depth = 1;
+            pcCamera.depth = -1;
+        }
+        else
+        {
+            vrCamera.depth = -1;
+            pcCamera.depth = 1;
+        }
+    }
+
+    public void RevealTemple()
+    {
+        foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
+        {
+            rend.enabled = true;
         }
     }
 
@@ -124,6 +186,20 @@ public class MainMenu : NetworkBehaviour
         else
         {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[0];
+        }
+    }
+
+
+    private void ChangeLanguageNum(int languageNum)
+    {
+        switch(languageNum)
+        {
+            case 0:
+                ChangeLanguage(engLocale);
+                break;
+            case 1:
+                ChangeLanguage(frenchLocale);
+                break;
         }
     }
 
