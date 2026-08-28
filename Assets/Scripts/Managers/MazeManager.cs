@@ -206,15 +206,19 @@ public class MazeManager : NetworkBehaviour
         }
         
         AudioClip _currentAudio = incorrectAudio;
+        float _volume = 0f;
         switch (current)
         {
             case 0:
+                _volume = 0.8f;
                 _currentAudio = incorrectAudio;
                 break;
             case 1:
+                _volume = 0.8f;
                 _currentAudio = correctAudio;
                 break;
             case 2:
+                _volume = 0.5f;
                 _currentAudio = wheelAudio;
                 break;
         }
