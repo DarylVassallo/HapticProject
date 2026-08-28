@@ -9,6 +9,9 @@ public class DebugManager : MonoBehaviour
     [SerializeField] private bool isUsingOnlyVRPlayer;
     [SerializeField] private bool isUsingOnlyPCPlayer;
 
+    [Header("Tutorial Debugging")]
+    [SerializeField] private bool skipTutorial;
+
     [Header("Maze Debugging")]
     [SerializeField] private bool startWithActivatedSpinWheel;
     [SerializeField] private bool startWithActivatedHealthBall;
@@ -32,6 +35,8 @@ public class DebugManager : MonoBehaviour
         if(isUsingPlayMode) EventsManager.UsingPlayMode();
         if(isUsingOnlyVRPlayer) EventsManager.UsingOnlyVRPlayer();
         if(isUsingOnlyPCPlayer) EventsManager.UsingOnlyPCPlayer();
+
+        if(skipTutorial) EventsManager.SkipTutorial();
 
         if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
         if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();

@@ -3,62 +3,192 @@ using TMPro;
 using System;
 
 using System.Collections;
+using UnityEngine.XR.Content.Interaction;
 
-public class TeleportNumPad : MonoBehaviour
+using Unity.Netcode;
+
+public class TeleportNumPad : NetworkBehaviour
 {
-    private TMP_Text codeText;
+    private bool isInNetwork;
+
+    [Header("Symbols")]
+    [SerializeField] private Material[] potentialSymbols;
+    [SerializeField] private Material clearSymbol;
+    [SerializeField] private Transform symbolsDisplay;
+    private Renderer[] inputtedSymbols;
+    private String inputtedCode;
+    private int currentSymbolIndex;
     private bool _canAddNumber;
+
+    [Header("Levers")]
+    [SerializeField] private XRLever[] xrLevers;
+    private bool[] activeLevers;
+
+    [Header("Rope")]
+    [SerializeField] private Transform ropeHandle;
+    [SerializeField] private Transform ropeHandleEndPoint;
+    private Rigidbody rbRopeHandle;
+    private bool pullRope;
+    private Vector3 originalRopeHandlePosition;
+    private float minDistance;
+    private float maxDistance;
+    private float prevDistance;
+    private float currDistance;
 
     void Awake()
     {
+        currentSymbolIndex = 0;
+        inputtedSymbols = new Renderer[symbolsDisplay.childCount];
+        for (int i = 0; i < symbolsDisplay.childCount; i++)
+        {
+            inputtedSymbols[i] = symbolsDisplay.GetChild(i).GetComponent<Renderer>();
+            inputtedSymbols[i].material = clearSymbol;
+        }
+        inputtedCode = "";
         _canAddNumber = true;
-        codeText = this.GetComponentInChildren<TMP_Text>();
-        codeText.text = "";
+
+
+
+        activeLevers = new bool[5];
+        for(int i = 0; i < activeLevers.Length; i++)
+        {
+            activeLevers[i] = false;
+        }
+
+
+
+        rbRopeHandle = ropeHandle.GetComponent<Rigidbody>();
+        pullRope = true;
+        originalRopeHandlePosition = ropeHandle.position;
+
+        maxDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
+        prevDistance = maxDistance;
     }
 
     private void OnEnable()
     {
-        EventsManager.OnClearTeleportNumPad += ClearCode;
+        EventsManager.OnAddSymbolNumber += AddSymbol;
+        EventsManager.OnClearTeleportNumPad += ClearInputtedSymbols;
+
+        EventsManager.OnRemoveSymbol += RemoveLastSymbol;
+        EventsManager.OnInputSymbols += InputCode;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnClearTeleportNumPad -= ClearCode;
+        EventsManager.OnAddSymbolNumber -= AddSymbol;
+        EventsManager.OnClearTeleportNumPad -= ClearInputtedSymbols;
+
+        EventsManager.OnRemoveSymbol -= RemoveLastSymbol;
+        EventsManager.OnInputSymbols -= InputCode;
     }
 
-    //Adds the inputted number to the current visible code
-    public void AddNumber(int _newNumber)
+    public override void OnNetworkSpawn()
     {
-        if (_canAddNumber)
-        {
-            _canAddNumber = false;
-            codeText.text = codeText.text + "" + _newNumber + "";
-            StartCoroutine(DelayAddNumber());
-        } 
+        isInNetwork = true;
+    }
+
+    //Adds the inputted symbol to the current visible inputted symbols
+    private void AddSymbol(int _newNumber)
+    {
+        if((currentSymbolIndex >= inputtedSymbols.Length) || !_canAddNumber) return;
+
+        _canAddNumber = false;
+
+        inputtedSymbols[currentSymbolIndex].material = potentialSymbols[_newNumber];
+        inputtedCode = inputtedCode + "" + (_newNumber + 1);
+        
+        currentSymbolIndex++;
+
+        StartCoroutine(DelayAddNumber());
     }
 
     IEnumerator DelayAddNumber()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.25f);
         _canAddNumber = true;
     }
 
-    //Resets the current visible code
-    public void ResetCode()
+    //Removes the last inputted symbol
+    private void RemoveLastSymbol()
     {
-        if(codeText.text.Length > 0) codeText.text = codeText.text.Substring(0, codeText.text.Length - 1);
+        if(currentSymbolIndex <= 0) return;
+        currentSymbolIndex--;
+        
+        inputtedSymbols[currentSymbolIndex].material = clearSymbol;
+        inputtedCode = inputtedCode.Substring(0, inputtedCode.Length - 1);
     }
 
-    private void ClearCode()
+    private void ClearInputtedSymbols()
     {
-        codeText.text = "";
+        for (int i = 0; i < inputtedSymbols.Length; i++)
+        {
+            inputtedSymbols[i].material = clearSymbol;
+        }
+
+        inputtedCode = "";
+        currentSymbolIndex = 0;
+
+        for (int i = 0; i < xrLevers.Length; i++)
+        {
+            xrLevers[i].value = false;
+        }
     }
 
     //Sends the current code to be compared to existing correct codes.
     // It also resets the current code
-    public void InputCode()
+    private void InputCode()
     {
-        if(codeText.text != "") EventsManager.SendCodeToTeleportPads(int.Parse(codeText.text));
-        codeText.text = "";
+        int _inputtedIntCode = -1;
+        if(inputtedCode != "") _inputtedIntCode = int.Parse(inputtedCode);
+        EventsManager.SendCodeToTeleportPads(_inputtedIntCode);
+        ClearInputtedSymbols();
+    }
+
+
+
+    public void ActivateLever(int _leverIndex)
+    {
+        activeLevers[_leverIndex] = true;
+        EventsManager.ActivateLever(_leverIndex);
+    }
+
+    public void DeactivateLever(int _leverIndex)
+    {
+        activeLevers[_leverIndex] = false;
+        EventsManager.DeactivateLever(_leverIndex);
+    }
+
+    private void FixedUpdate()
+    {
+        if(!isInNetwork) return;
+        
+        currDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
+        if(prevDistance != currDistance)
+        {
+            EventsManager.ChangeHidingBarPosition(currDistance / maxDistance);
+        }
+        prevDistance = currDistance;
+
+        if(!pullRope) return;
+
+        if(ropeHandle.position.x >= originalRopeHandlePosition.x)
+        {
+            pullRope = false;
+            rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
+        }
+        
+        rbRopeHandle.linearVelocity = new Vector3(2, 0, 0);
+    }
+
+    public void GrabbedRope()
+    {
+        rbRopeHandle.constraints = RigidbodyConstraints.None;
+        pullRope = false;
+    }
+    
+    public void ReleasedRope()
+    {
+        pullRope = true;        
     }
 }

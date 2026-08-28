@@ -19,6 +19,8 @@ public class ConnectUIScript : NetworkBehaviour
     private bool hasSceneLoaded = false;
     private NetworkDiscovery networkDiscovery;
 
+    private bool _skipTutorial;
+
 
 
     
@@ -35,6 +37,7 @@ public class ConnectUIScript : NetworkBehaviour
     [SerializeField] private GameObject pcPlayerWithoutBody;
     [SerializeField] private GameObject currentPCPlayer;
     [SerializeField] private Transform pcSpawnPoint;
+    [SerializeField] private Transform pcDebugSpawnPoint;
     private ulong pcPlayerClientID;
     
 
@@ -110,6 +113,8 @@ public class ConnectUIScript : NetworkBehaviour
         EventsManager.OnUsingOnlyVRPlayer += UsingOnlyVRPlayer;
         EventsManager.OnUsingOnlyPCPlayer += UsingOnlyPCPlayer;
 
+        EventsManager.OnSkipTutorial += SkipTutorial;
+
         if(NetworkManager.Singleton != null)
         {
             Debug.Log("ConnectUIScript OnEnable hasSceneLoaded: " + hasSceneLoaded);
@@ -152,6 +157,17 @@ public class ConnectUIScript : NetworkBehaviour
         if (NetworkManager.Singleton != null)  NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
 
         EventsManager.OnAddPCPlayerBody -= CreatePCPlayerBody;
+
+        EventsManager.OnUsingPlayMode -= UsingPlayMode;
+        EventsManager.OnUsingOnlyVRPlayer -= UsingOnlyVRPlayer;
+        EventsManager.OnUsingOnlyPCPlayer -= UsingOnlyPCPlayer;
+
+        EventsManager.OnSkipTutorial -= SkipTutorial;
+    }
+
+    private void SkipTutorial()
+    {
+        _skipTutorial = true;
     }
 
     private void UsingPlayMode()
@@ -240,6 +256,7 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 1");
             SetPCPlayerID(0);
             EventsManager.CreatedPCPlayer();
+            if(_skipTutorial) CreatePCPlayerBody();
         }
         else
         {
@@ -266,6 +283,7 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("Create PCPlayer 2");
                     SetPCPlayerID(clientId);
                     EventsManager.CreatedPCPlayer();
+                    if(_skipTutorial) CreatePCPlayerBody();
                 }
             }
 
@@ -297,6 +315,7 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 3");
             SetPCPlayerID(clientId);
             EventsManager.CreatedPCPlayer();
+            if(_skipTutorial) CreatePCPlayerBody();
 
         //Creates a VR Player for the host player, playing alone
         }else if (_isTestingVRPlayer)
@@ -336,6 +355,7 @@ public class ConnectUIScript : NetworkBehaviour
                 Debug.Log("Create PCPlayer 4");
                 SetPCPlayerID(clientId);
                 EventsManager.CreatedPCPlayer();
+                if(_skipTutorial) CreatePCPlayerBody();
             }
         }
     }
@@ -343,7 +363,17 @@ public class ConnectUIScript : NetworkBehaviour
     private void CreatePCPlayerBody()
     {
         DestroyPCPlayerStatueRpc();
-        GameObject _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.Euler(0f, pcSpawnPoint.eulerAngles.y, 0f));
+
+        GameObject _newPCPlayer;
+        if(_skipTutorial)
+        {
+            _newPCPlayer = Instantiate(currentPCPlayer, pcDebugSpawnPoint.position, Quaternion.Euler(0f, pcSpawnPoint.eulerAngles.y, 0f));
+        }
+        else
+        {
+            _newPCPlayer = Instantiate(currentPCPlayer, pcSpawnPoint.position, Quaternion.Euler(0f, pcSpawnPoint.eulerAngles.y, 0f));
+        }
+        
         NetworkObject _pcNetObj = _newPCPlayer.GetComponent<NetworkObject>();
         _pcNetObj.SpawnAsPlayerObject(pcPlayerClientID, true);
 

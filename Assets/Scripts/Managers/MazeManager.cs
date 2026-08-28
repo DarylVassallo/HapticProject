@@ -13,6 +13,7 @@ using Unity.Netcode;
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
+    private bool _activatedInteractiveObject;
 
     [Header("Switches")]
     [SerializeField] private HiddenSwitches[] hiddenSwitches;
@@ -79,6 +80,8 @@ public class MazeManager : NetworkBehaviour
         spinWheelKnob = spinWheelObject.GetComponentInChildren<XRKnob>();
 
         wheelCheckCount = 0;
+
+        _activatedInteractiveObject = false;
     }
 
     private void OnEnable()
@@ -95,6 +98,8 @@ public class MazeManager : NetworkBehaviour
         EventsManager.OnActivateSpinWheel += ActivateSpinWheel;
         EventsManager.OnActivateHealthBall += ActivateHealthBall;
         EventsManager.OnActivateDefenseButton += ActivateDefenseButton;
+
+        EventsManager.OnPressedDefenseButton += PressedDefenseButton;
     }
 
     private void OnDisable()
@@ -111,6 +116,8 @@ public class MazeManager : NetworkBehaviour
         EventsManager.OnActivateSpinWheel -= ActivateSpinWheel;
         EventsManager.OnActivateHealthBall -= ActivateHealthBall;
         EventsManager.OnActivateDefenseButton -= ActivateDefenseButton;
+
+        EventsManager.OnPressedDefenseButton -= PressedDefenseButton;
     }
 
     public override void OnNetworkSpawn()
@@ -139,19 +146,31 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the spin wheel
     public void ActivateSpinWheel()
     {
+        CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.SpinWheel);
     }
 
     //Triggered by inputting correct sequence to activate the health ball
     public void ActivateHealthBall()
     {
+        CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.HealthBall);
     }
 
     //Triggered by inputting correct sequence to activate the defense button
     public void ActivateDefenseButton()
     {
+        CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.DefenseButton);
+    }
+
+    private void CheckInteractiveObject()
+    {
+        if(!_activatedInteractiveObject)
+        {
+            _activatedInteractiveObject = true;
+            EventsManager.FirstActiveInteractiveObject();
+        }
     }
 
     void FixedUpdate()
@@ -187,15 +206,19 @@ public class MazeManager : NetworkBehaviour
         }
         
         AudioClip _currentAudio = incorrectAudio;
+        float _volume = 0f;
         switch (current)
         {
             case 0:
+                _volume = 0.8f;
                 _currentAudio = incorrectAudio;
                 break;
             case 1:
+                _volume = 0.8f;
                 _currentAudio = correctAudio;
                 break;
             case 2:
+                _volume = 0.5f;
                 _currentAudio = wheelAudio;
                 break;
         }
@@ -216,7 +239,7 @@ public class MazeManager : NetworkBehaviour
     }
 
     //Creates a set number of enemies if the Defense Button is pressed (and if it is active)
-    public void PressedDefenseButton(int maxEnemies)
+    private void PressedDefenseButton(int maxEnemies)
     {
         if(isDefenseButtonActive.Value)
         {

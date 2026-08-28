@@ -12,12 +12,23 @@ public class EventsManager : MonoBehaviour
     public static event Action OnUsingOnlyPCPlayer;
     public static void UsingOnlyPCPlayer() => OnUsingOnlyPCPlayer?.Invoke();
 
+    public static event Action OnSkipTutorial;
+    public static void SkipTutorial() => OnSkipTutorial?.Invoke();
+
     public static event Action OnActivateSpinWheel;
     public static void ActivateSpinWheel() => OnActivateSpinWheel?.Invoke();
     public static event Action OnActivateHealthBall;
     public static void ActivateHealthBall() => OnActivateHealthBall?.Invoke();
     public static event Action OnActivateDefenseButton;
     public static void ActivateDefenseButton() => OnActivateDefenseButton?.Invoke();
+    public static event Action<int> OnPressedDefenseButton;
+    public static void PressedDefenseButton(int _enemyCount) => OnPressedDefenseButton?.Invoke(_enemyCount);
+
+    public static event Action OnDisableEnemySpawning;
+    public static void DisableEnemySpawning() => OnDisableEnemySpawning?.Invoke();
+
+    public static event Action OnDisableTeleportChange;
+    public static void DisableTeleportChange() => OnDisableTeleportChange?.Invoke();
 
 
 
@@ -57,8 +68,6 @@ public class EventsManager : MonoBehaviour
 
 
     //Enemy Events=============================================
-    public static event Action OnDisableEnemySpawning;
-    public static void DisableEnemySpawning() => OnDisableEnemySpawning?.Invoke();
     public static event Action OnDestroyAllEnemies;
     public static void DestroyAllEnemies() => OnDestroyAllEnemies?.Invoke();
     public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
@@ -75,9 +84,6 @@ public class EventsManager : MonoBehaviour
 
     public static event Action OnDisableEnemies;
     public static void DisableEnemies() => OnDisableEnemies?.Invoke();
-
-    public static event Action OnDisableTeleportChange;
-    public static void DisableTeleportChange() => OnDisableTeleportChange?.Invoke();
 
 
 
@@ -192,6 +198,13 @@ public class EventsManager : MonoBehaviour
     public static event Action OnClearTeleportNumPad;
     public static void ClearTeleportNumPad() => OnClearTeleportNumPad?.Invoke();
 
+    public static event Action<float> OnChangeHidingBarPosition;
+    public static void ChangeHidingBarPosition(float _position) => OnChangeHidingBarPosition?.Invoke(_position);
+    public static event Action OnUpdateHidingBar;
+    public static void UpdateHidingBar() => OnUpdateHidingBar?.Invoke();
+    public static event Action<Transform> OnTriggerRopeButton;
+    public static void TriggerRopeButton(Transform _button) => OnTriggerRopeButton?.Invoke(_button);
+
 
 
 
@@ -212,7 +225,18 @@ public class EventsManager : MonoBehaviour
     public static void TriggerPCInteractTutorial() => OnTriggerPCInteractTutorial?.Invoke();
     public static event Action OnResetPCTutorial;
     public static void ResetPCTutorial() => OnResetPCTutorial?.Invoke();
+
     
+
+
+
+    //Plot Events=============================================
+    public static event Action OnReachedSwitches;
+    public static void ReachedSwitches() => OnReachedSwitches?.Invoke();
+    public static event Action OnFirstEnemyCreated;
+    public static void FirstEnemyCreated() => OnFirstEnemyCreated?.Invoke();
+    public static event Action OnFirstActiveInteractiveObject;
+    public static void FirstActiveInteractiveObject() => OnFirstActiveInteractiveObject?.Invoke();
     
 
 
@@ -285,7 +309,23 @@ public class EventsManager : MonoBehaviour
     public static void UseEnglishNarrator() => OnUseEnglishNarrator?.Invoke();
     public static event Action OnUseFrenchNarrator;
     public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
-    
+
+
+
+
+
+    //VR Teleport Table Events=============================================
+    public static event Action<int> OnAddSymbolNumber;
+    public static void AddSymbolNumber(int _number) => OnAddSymbolNumber?.Invoke(_number);
+    public static event Action OnRemoveSymbol;
+    public static void RemoveSymbol() => OnRemoveSymbol?.Invoke();
+    public static event Action OnInputSymbols;
+    public static void InputSymbols() => OnInputSymbols?.Invoke();
+
+    public static event Action<int> OnActivateLever;
+    public static void ActivateLever(int _leverIndex) => OnActivateLever?.Invoke(_leverIndex);
+    public static event Action<int> OnDeactivateLever;
+    public static void DeactivateLever(int _leverIndex) => OnDeactivateLever?.Invoke(_leverIndex);
 
 
 

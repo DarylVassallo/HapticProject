@@ -59,8 +59,6 @@ public class MenuManager : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        DisableAllMenusRpc();
-
         _scoreUI = pcPlayerUI.GetComponentInChildren<TMP_Text>();
 
         pcHealthBarTransform = pcHealthBar.transform;
@@ -96,6 +94,11 @@ public class MenuManager : NetworkBehaviour
         EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
         EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        DisableAllMenusRpc();
     }
 
     //This changes the length of the  PC Player health bar, to represent the total health
@@ -188,7 +191,7 @@ public class MenuManager : NetworkBehaviour
         _showPauseMenu = false;
         _showSettingsMenu = false;
         _showGameOverMenu = false;
-        _showWinMenu = !_showWinMenu;
+        _showWinMenu = false;
 
         for (int i = 0; i < pauseMenu.transform.childCount; i++)
         {

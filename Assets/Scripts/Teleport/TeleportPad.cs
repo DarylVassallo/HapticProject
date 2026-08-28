@@ -11,10 +11,6 @@ public class TeleportPad : NetworkBehaviour
 
     private Vector3 _positionDifference;
 
-    private TMP_Text _codeText;
-    private NetworkVariable<int> _secretCode = new (0);
-    [SerializeField] private int numLimit;
-
     private NetworkVariable<bool> _isPlayerOnPad = new (false);
     private Transform _pcPlayerTransform;
 
@@ -49,19 +45,48 @@ public class TeleportPad : NetworkBehaviour
 
     private bool _isTutorialTeleport;
 
-    void Awake()
-    {
-        _codeText = this.GetComponentInChildren<TMP_Text>();
-        if(_codeText != null) _codeText.text = "";
+    [Header("General")]
+    [SerializeField] private Transform parentDisplay;
+    private String _stringSecretCode;
+    
+    [Header("Symbols")]
+    [SerializeField] private bool usesSymbols;
+    private Renderer[] displayedSymbols;
+    [SerializeField] private Material clearSymbol;
+    [SerializeField] private Material[] potentialSymbols;
 
-        _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
+    [Header("Levers")]
+    [SerializeField] private bool usesLevers;
+    private Transform[] displayedNotches;
+    [SerializeField] private Transform inputDisplay;
+    private Transform[] inputNotches;
+    private float neutralYPos;
+    [SerializeField] private float topYPos;
+    [SerializeField] private float bottomYPos;
+    private bool[] inputLevers;
+    private bool[] answerLevers;
+    
+    [Header("Rope")]
+    [SerializeField] private bool usesRope;
 
-        // _instantTeleport = false;
+    private int[] answerButtons;
+    private int currentButtonCount;
 
-        restRotation = ring.rotation;
+    [SerializeField] private Transform hidingBar;
+    private Transform[] pieces;
+    [SerializeField] private Transform leftHidingTransform;
+    [SerializeField] private Transform middleHidingTransform;
+    [SerializeField] private Transform rightHidingTransform;
 
-        _audioSource = this.gameObject.GetComponent<AudioSource>();
-    }
+    [SerializeField] private Transform buttonParentsObject;
+    [SerializeField] private Material neutralButtonMaterial;
+    [SerializeField] private Material activeButtonMaterial;
+    private Transform[] buttons;
+
+    [SerializeField] private Transform lightsParentsObject;
+    [SerializeField] private Material deactiveLightMaterial;
+    [SerializeField] private Material activeLightMaterial;
+    private Transform[] lights;
 
     void Start()
     {
@@ -80,7 +105,17 @@ public class TeleportPad : NetworkBehaviour
 
         EventsManager.OnSetExitPadTransform += SetExitPadTransform;
 
-        _secretCode.OnValueChanged += ChangeCodeText;
+        if(usesLevers)
+        {
+            EventsManager.OnActivateLever += ActivateInputNotchServerRpc;
+            EventsManager.OnDeactivateLever += DeactivateInputNotchServerRpc;
+        }
+
+        if(usesRope)
+        {
+            EventsManager.OnChangeHidingBarPosition += ChangeHidingBarPositionRpc;
+            EventsManager.OnTriggerRopeButton += TriggerRopeButton;
+        }
     }
 
     private void OnDisable()
@@ -95,8 +130,96 @@ public class TeleportPad : NetworkBehaviour
 
         EventsManager.OnSetExitPadTransform -= SetExitPadTransform;
 
-        _secretCode.OnValueChanged -= ChangeCodeText;
+        if(usesLevers)
+        {
+            EventsManager.OnActivateLever -= ActivateInputNotchServerRpc;
+            EventsManager.OnDeactivateLever -= DeactivateInputNotchServerRpc;
+        }
+
+        if(usesRope)
+        {
+            EventsManager.OnChangeHidingBarPosition -= ChangeHidingBarPositionRpc;
+            EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
+        }
     }
+
+    public override void OnNetworkSpawn()
+    {
+        _stringSecretCode = "";
+
+        if(parentDisplay != null)
+        {
+            if(usesSymbols)
+            {
+                displayedSymbols = new Renderer[parentDisplay.childCount];
+                for (int i = 0; i < parentDisplay.childCount; i++)
+                {
+                    displayedSymbols[i] = parentDisplay.GetChild(i).GetComponent<Renderer>();
+                    displayedSymbols[i].material = clearSymbol;
+                } 
+            }else if(usesLevers)
+            {
+                displayedNotches = new Transform[parentDisplay.childCount];
+                for (int i = 0; i < parentDisplay.childCount; i++)
+                {
+                    displayedNotches[i] = parentDisplay.GetChild(i);
+
+                    if(i == 0)
+                    {
+                        neutralYPos = displayedNotches[i].position.y;
+                        topYPos = neutralYPos + topYPos;
+                        bottomYPos = neutralYPos + bottomYPos;
+                    }
+                } 
+
+                inputNotches = new Transform[inputDisplay.childCount];
+                for (int i = 0; i < inputDisplay.childCount; i++)
+                {
+                    inputNotches[i] = inputDisplay.GetChild(i);
+                    MoveNotchRpc(true, i, true);
+                } 
+
+                inputLevers = new bool[5];
+                answerLevers = new bool[5];
+                for(int i = 0; i < inputLevers.Length; i++)
+                {
+                    inputLevers[i] = false;
+                    answerLevers[i] = false;
+                }
+            }else if(usesRope)
+            {
+                buttons = new Transform[buttonParentsObject.childCount];
+                answerButtons = new int[buttonParentsObject.childCount];
+
+                lights = new Transform[lightsParentsObject.childCount];
+
+                currentButtonCount = 0;
+
+                for (int i = 0; i < buttonParentsObject.childCount; i++)
+                {
+                    buttons[i] = buttonParentsObject.GetChild(i);
+                    buttons[i].GetComponent<Renderer>().material = neutralButtonMaterial;
+                    answerButtons[i] = -1;
+
+                    lights[i] = lightsParentsObject.GetChild(i);
+                    lights[i].GetComponent<Renderer>().material = deactiveLightMaterial;
+                } 
+
+                pieces = new Transform[hidingBar.childCount];
+                for (int i = 0; i < hidingBar.childCount; i++)
+                {
+                    pieces[i] = hidingBar.GetChild(i);
+                }
+
+                CheckMesh();
+            }
+        }
+
+        _teleportManager = GameObject.FindGameObjectWithTag("Manager").GetComponent<TeleportManager>();
+        restRotation = ring.rotation;
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
+    }
+
 
     //Resets the teleport pad, so the PC Player can use it 'for the first time' again
     private void ResetTeleportPad()
@@ -116,7 +239,6 @@ public class TeleportPad : NetworkBehaviour
     {
         if(_pad == this.gameObject)
         {
-            Debug.Log("SetExitPadTransform : " + _pad + " : " + _newExitPadTransform);
             exitTeleportPad = _newExitPadTransform;
             ChangeSecretCodePadServerRpc();
         }
@@ -126,7 +248,192 @@ public class TeleportPad : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void  ChangeSecretCodePadServerRpc()
     {
-        _secretCode.Value = UnityEngine.Random.Range(0, numLimit);
+        if(usesSymbols)
+        {
+            _stringSecretCode = "";
+            for(int i = 0; i < 4; i++)
+            {
+                int _newNum = UnityEngine.Random.Range(0, 4);
+                _stringSecretCode = _stringSecretCode + "" + (_newNum + 1);
+
+                // displayedSymbols[i].material = potentialSymbols[_newNum];
+                ChangeSymbolMaterialRpc(i, _newNum);
+            }
+        }else if(usesLevers)
+        {
+            for(int i = 0; i < 5; i++)
+            {
+                int _newNum = UnityEngine.Random.Range(0, 2);
+
+                switch(_newNum)
+                {
+                    case 0:
+                        MoveNotchRpc(false, i, true);
+                        answerLevers[i] = false;
+                        break;
+                    case 1:
+                        MoveNotchRpc(false, i, false);
+                        answerLevers[i] = true;
+                        break;
+                }
+            }
+        }else if(usesRope)
+        {            
+            for (int i = 0; i < answerButtons.Length; i++)
+            {
+                answerButtons[i] = -1;
+            }
+
+            for (int i = 0; i < answerButtons.Length; i++)
+            {
+                answerButtons[i] = UnityEngine.Random.Range(0, 5);
+
+                for (int j = 0; j < answerButtons.Length; j++)
+                {
+                    if(i != j && answerButtons[i] == answerButtons[j])
+                    {
+                        i--;
+                        j = answerButtons.Length;
+                    }
+                }
+            } 
+
+            ClearRopeButtons();
+        }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void MoveNotchRpc(bool isInputNotch, int _index, bool _toTheBottom)
+    {
+        float yPos;
+        if(_toTheBottom)
+        {
+            yPos = bottomYPos;
+        }
+        else
+        {
+            yPos = topYPos;
+        }
+
+        if(isInputNotch)
+        {
+            StartCoroutine(MoveNotch(1f, inputNotches[_index], new Vector3(inputNotches[_index].position.x, yPos, inputNotches[_index].position.z)));
+        }else{
+            StartCoroutine(MoveNotch(1f, displayedNotches[_index], new Vector3(displayedNotches[_index].position.x, yPos, displayedNotches[_index].position.z)));
+        }
+    }
+
+    private void ClearRopeButtons()
+    {
+        currentButtonCount = 0;
+
+        for (int i = 0; i < answerButtons.Length; i++)
+        {
+            ChangeRopeButtonMaterialRpc(0, i, 0);
+            ChangeRopeButtonMaterialRpc(1, i, 0);
+        }
+
+        ChangeRopeButtonMaterialRpc(0, answerButtons[0], 1);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ChangeSymbolMaterialRpc(int _displayIndex, int _potentialIndex)
+    {
+        displayedSymbols[_displayIndex].material = potentialSymbols[_potentialIndex];
+    }
+    
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ChangeRopeButtonMaterialRpc(int _objectType, int _buttonIndex, int _materialIndex)
+    {
+        switch(_objectType)
+        {
+            case 0:
+                switch(_materialIndex)
+                {
+                    case 0:
+                        buttons[_buttonIndex].GetComponent<Renderer>().material = neutralButtonMaterial;
+                        break;
+                    case 1:
+                        buttons[_buttonIndex].GetComponent<Renderer>().material = activeButtonMaterial;
+                        break;
+                }
+                break;
+            case 1:
+                switch(_materialIndex)
+                {
+                    case 0:
+                        lights[_buttonIndex].GetComponent<Renderer>().material = deactiveLightMaterial;
+                        break;
+                    case 1:
+                        lights[_buttonIndex].GetComponent<Renderer>().material = activeLightMaterial;
+                        break;
+                }
+                break;
+        }
+        
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  ActivateInputNotchServerRpc(int _leverIndex)
+    {
+        inputLevers[_leverIndex] = true;
+        MoveNotchRpc(true, _leverIndex, false);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  DeactivateInputNotchServerRpc(int _leverIndex)
+    {
+        inputLevers[_leverIndex] = false;
+        MoveNotchRpc(true, _leverIndex, true);
+    }
+
+    IEnumerator MoveNotch(float _delay, Transform notch, Vector3 newPos)
+    {
+        float elapsed = 0f;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+
+            notch.position = Vector3.Lerp(
+                notch.position,
+                newPos,
+                elapsed / _delay
+            );
+
+            yield return null;
+        }
+
+        notch.position = newPos;
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void  ChangeHidingBarPositionRpc(float _hidingbarPosition)
+    {
+        hidingBar.position = Vector3.Lerp(
+                leftHidingTransform.position,
+                rightHidingTransform.position,
+                _hidingbarPosition
+            );
+
+        CheckMesh();
+    }
+
+    private void CheckMesh()
+    {
+        float distance;
+        for(int i = 0; i < pieces.Length; i++)
+        {
+            distance = Vector3.Distance(pieces[i].position, middleHidingTransform.position);
+            if(distance >= 1f || distance <= -1f)
+            {
+                pieces[i].GetComponent<MeshRenderer>().enabled = false;
+            }
+            else
+            {
+                pieces[i].GetComponent<MeshRenderer>().enabled = true;
+            }
+        }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -135,18 +442,69 @@ public class TeleportPad : NetworkBehaviour
         _isPlayerOnPad.Value = _newOnPad;
     }
 
-    //Changes the code written on the teleport pad, to the correct code
-    private void ChangeCodeText(int _previous, int _current)
-    {
-        _codeText.text = "" + _current + "";
-    }
-
     //If the inputted code is correct, then the teleportation sequence can begin
     private void CheckInputtedCode(int _inputtedCode)
     {
-        if(_inputtedCode == _secretCode.Value && _isPlayerOnPad.Value)
+        if(usesSymbols)
         {
-            StartRingRotationRpc();
+            if(_stringSecretCode == "") return;
+
+            int _intSecretCode = int.Parse(_stringSecretCode);
+            
+            if(_inputtedCode == _intSecretCode && _isPlayerOnPad.Value)
+            {
+                StartRingRotationRpc();
+            }
+        }else if(usesLevers)
+        {
+            bool _leversMatch = true;
+
+            for(int i = 0; i < 5; i++)
+            {
+                if(inputLevers[i] != answerLevers[i]) _leversMatch = false;
+            }
+            
+            if(_leversMatch && _isPlayerOnPad.Value)
+            {
+                StartRingRotationRpc();
+            }
+        }
+    }
+
+    private void TriggerRopeButton(Transform button)
+    {
+        for(int i = 0; i < buttons.Length; i++)
+        {
+            if(buttons[i] == button)
+            {
+                CheckPressedRopeButtonServerRpc(i);
+                return;
+            }
+        }
+
+        ClearRopeButtons();
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void CheckPressedRopeButtonServerRpc(int _index)
+    {
+        if(answerButtons[currentButtonCount] == _index)
+        {
+            ChangeRopeButtonMaterialRpc(1, currentButtonCount, 1);
+            ChangeRopeButtonMaterialRpc(0, _index, 0);
+
+            if(currentButtonCount >= (buttons.Length - 1) && _isPlayerOnPad.Value)
+            {
+                ClearRopeButtons();
+                StartRingRotationRpc();
+            }
+            else
+            {
+                currentButtonCount++;
+                ChangeRopeButtonMaterialRpc(0, answerButtons[currentButtonCount], 1);
+            }
+
+            return;
         }
     }
 
@@ -168,7 +526,6 @@ public class TeleportPad : NetworkBehaviour
             _hasBeenUsed = true;
             if(_effectsEnemies)
             {
-                Debug.Log("IncreaseChanceOfSpawningEnemy : " + this.gameObject);
                 EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
             }
 
