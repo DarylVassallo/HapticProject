@@ -16,7 +16,7 @@ using Unity.Netcode;
 public class MainMenu : NetworkBehaviour
 {
     // [SerializeField] private GameObject temple;
-    // [SerializeField] private Material cameraCover;
+    [SerializeField] private Material cameraCover;
     
     [SerializeField] private Camera vrCamera;
     [SerializeField] private Camera pcCamera;
@@ -57,22 +57,21 @@ public class MainMenu : NetworkBehaviour
         }
         _prevIsDeviceActive = _currIsDeviceActive;
 
-        // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 0);
-        // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
 
-        // for (int i = 0; i < menuList.Length; i++)
-        // {
-        //     if (i == 0)
-        //     {
-        //         menuList[i].SetActive(true);
-        //         vrMenuList[i].SetActive(true);
-        //     }
-        //     else
-        //     {
-        //         menuList[i].SetActive(false);
-        //         vrMenuList[i].SetActive(false);
-        //     }
-        // }
+        for (int i = 0; i < menuList.Length; i++)
+        {
+            if (i == 0)
+            {
+                menuList[i].SetActive(true);
+                vrMenuList[i].SetActive(true);
+            }
+            else
+            {
+                menuList[i].SetActive(false);
+                vrMenuList[i].SetActive(false);
+            }
+        }
     }
 
     void OnEnable()
@@ -131,19 +130,19 @@ public class MainMenu : NetworkBehaviour
 
     public void RevealTemple()
     {
-        // StartCoroutine(ShiftRevealTemple(4f));
+        StartCoroutine(ShiftRevealTemple(4f));
     }
 
-    // IEnumerator ShiftRevealTemple(float _delay)
-    // {
-    //     float elapsed = 0f;
-    //     while(elapsed < _delay)
-    //     {
-    //         elapsed += Time.deltaTime;
-    //         cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
-    //         yield return null;
-    //     }
-    // }
+    IEnumerator ShiftRevealTemple(float _delay)
+    {
+        float elapsed = 0f;
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
+            yield return null;
+        }
+    }
 
     public override void OnNetworkSpawn()
     {
@@ -267,7 +266,7 @@ public class MainMenu : NetworkBehaviour
     //Used by UI Button to change the scene
     public void PlayLevelClient(string _sceneName)
     {
-        // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
         SetNextSceneServerRpc(GetSceneIndex(_sceneName));
     }
 
@@ -440,59 +439,59 @@ public class MainMenu : NetworkBehaviour
     //Shows the chosen menu for both players
     private void SetCurrentMenuNumber(int _menuNum)
     {        
-        // Cursor.lockState = CursorLockMode.Locked;
-        // Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-        // for (int i = 0; i < menuList.Length; i++)
-        // {
-        //     if (_menuNum == i)
-        //     {
-        //         menuList[i].SetActive(true);
-        //         vrMenuList[i].SetActive(true);
+        for (int i = 0; i < menuList.Length; i++)
+        {
+            if (_menuNum == i)
+            {
+                menuList[i].SetActive(true);
+                vrMenuList[i].SetActive(true);
 
-        //         if(_menuNum == menuList.Length - 1)
-        //         {
-        //             isCreditsScrolling = true;
-        //             ShowCredits();
-        //         }
-        //     }
-        //     else
-        //     {
-        //         menuList[i].SetActive(false);
-        //         vrMenuList[i].SetActive(false);
+                if(_menuNum == menuList.Length - 1)
+                {
+                    isCreditsScrolling = true;
+                    ShowCredits();
+                }
+            }
+            else
+            {
+                menuList[i].SetActive(false);
+                vrMenuList[i].SetActive(false);
 
-        //         if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
-        //     }
-        // }
+                if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
+            }
+        }
 
-        // StartCoroutine(ReturnCursor());
+        StartCoroutine(ReturnCursor());
     }
 
     //Used by UI button to change the visible menu
     public void SetMenuNumberWithoutNetwork(int _menuNum)
     {
-        // Cursor.lockState = CursorLockMode.Locked;
-        // Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-        // for (int i = 0; i < menuList.Length; i++)
-        // {
-        //     if (_menuNum == i)
-        //     {
-        //         menuList[i].SetActive(true);
-        //         vrMenuList[i].SetActive(true);
+        for (int i = 0; i < menuList.Length; i++)
+        {
+            if (_menuNum == i)
+            {
+                menuList[i].SetActive(true);
+                vrMenuList[i].SetActive(true);
 
-        //         if(_menuNum == menuList.Length - 1) isCreditsScrolling = true;
-        //     }
-        //     else
-        //     {
-        //         menuList[i].SetActive(false);
-        //         vrMenuList[i].SetActive(false);
+                if(_menuNum == menuList.Length - 1) isCreditsScrolling = true;
+            }
+            else
+            {
+                menuList[i].SetActive(false);
+                vrMenuList[i].SetActive(false);
 
-        //         if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
-        //     }
-        // }
+                if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
+            }
+        }
 
-        // StartCoroutine(ReturnCursor());
+        StartCoroutine(ReturnCursor());
     }
 
     //Activate the cursor after a delay
