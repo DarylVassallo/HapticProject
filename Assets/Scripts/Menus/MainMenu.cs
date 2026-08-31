@@ -80,7 +80,7 @@ public class MainMenu : NetworkBehaviour
 
         EventsManager.OnSetMenuWithoutNetwork += SetMenuNumberWithoutNetwork;
         EventsManager.OnSetMenu += SetMenuNumber;
-        EventsManager.OnRevealTemple += RevealTemple;
+        EventsManager.OnRevealTemple += RevealTempleServerRpc;
 
         EventsManager.OnPlayLevel += PlayLevelClient;
         EventsManager.OnQuit += Quit;
@@ -94,7 +94,7 @@ public class MainMenu : NetworkBehaviour
 
         EventsManager.OnSetMenuWithoutNetwork -= SetMenuNumberWithoutNetwork;
         EventsManager.OnSetMenu -= SetMenuNumber;
-        EventsManager.OnRevealTemple -= RevealTemple;
+        EventsManager.OnRevealTemple -= RevealTempleServerRpc;
 
         EventsManager.OnPlayLevel -= PlayLevelClient;
         EventsManager.OnQuit -= Quit;
@@ -128,7 +128,8 @@ public class MainMenu : NetworkBehaviour
         _prevIsDeviceActive = _currIsDeviceActive;
     }
 
-    public void RevealTemple()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RevealTempleServerRpc()
     {
         StartCoroutine(ShiftRevealTemple(4f));
     }
