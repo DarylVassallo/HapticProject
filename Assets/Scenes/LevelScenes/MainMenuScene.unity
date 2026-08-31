@@ -14398,6 +14398,10 @@ PrefabInstance:
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 1350739525
       objectReference: {fileID: 0}
+    - target: {fileID: 2060054363731757795, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2187379227155171231, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -14413,6 +14417,18 @@ PrefabInstance:
     - target: {fileID: 3207699551476226454, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
       propertyPath: m_Name
       value: VRPlayerGroup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3837239609510714602, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3837239609510714602, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3837239609510714602, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5304399224234283761, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -14478,7 +14494,8 @@ PrefabInstance:
       propertyPath: m_VersionIndex
       value: 143
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2311972384724138209, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

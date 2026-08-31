@@ -57,12 +57,6 @@ public class MainMenu : NetworkBehaviour
         }
         _prevIsDeviceActive = _currIsDeviceActive;
 
-        // foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
-        // {
-        //     Debug.Log("rend: " + rend);
-        //     rend.material.color = new Color(rend.material.color.r, rend.material.color.g, rend.material.color.b, 0);
-        // }
-
         cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
 
         for (int i = 0; i < menuList.Length; i++)
@@ -136,7 +130,7 @@ public class MainMenu : NetworkBehaviour
 
     public void RevealTemple()
     {
-        StartCoroutine(ShiftRevealTemple(4f));
+        // StartCoroutine(ShiftRevealTemple(4f));
     }
 
     IEnumerator ShiftRevealTemple(float _delay)
