@@ -478,14 +478,14 @@ public class MainMenu : NetworkBehaviour
             if (_menuNum == i)
             {
                 menuList[i].SetActive(true);
-                vrMenuList[i].SetActive(true);
+                // vrMenuList[i].SetActive(true);
 
                 if(_menuNum == menuList.Length - 1) isCreditsScrolling = true;
             }
             else
             {
                 menuList[i].SetActive(false);
-                vrMenuList[i].SetActive(false);
+                // vrMenuList[i].SetActive(false);
 
                 if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
             }
