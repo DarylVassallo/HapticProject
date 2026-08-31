@@ -128,14 +128,16 @@ public class MainMenu : NetworkBehaviour
         _prevIsDeviceActive = _currIsDeviceActive;
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RevealTempleServerRpc()
     {
+        Debug.Log("RevealTempleServerRpc");
         StartCoroutine(ShiftRevealTemple(4f));
     }
 
     IEnumerator ShiftRevealTemple(float _delay)
     {
+        Debug.Log("ShiftRevealTemple: " + _delay);
         float elapsed = 0f;
         while(elapsed < _delay)
         {
@@ -143,6 +145,7 @@ public class MainMenu : NetworkBehaviour
             cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
             yield return null;
         }
+        Debug.Log("ShiftRevealTemple End");
     }
 
     public override void OnNetworkSpawn()
