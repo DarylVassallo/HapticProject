@@ -24,22 +24,13 @@ public class ControllerManager : NetworkBehaviour
 
     private bool isInNetwork = false;
 
-    public override void OnNetworkSpawn()
-    {
-        isInNetwork = true;
-        EventsManager.CheckControllers();
-
-        if(isLeftHandActive.Value) ActivateLeftHandRpc();
-        if(isLeftControllerActive.Value) ActivateLeftControllerRpc();
-        if(isRightHandActive.Value) ActivateRightHandRpc();
-        if(isRightControllerActive.Value) ActivateRightControllerRpc();
-    }
-
     private void OnEnable()
     {
         EventsManager.OnActivateController += ActivateController;
         EventsManager.OnDeactivateController += DeactivateController;
         EventsManager.OnToggleAll += ToggleHands;
+
+        EventsManager.OnCreatedPCPlayer += StartControllers;
 
         activateControllerNum.OnValueChanged += ActivateControllerChanged;
         deactivateControllerNum.OnValueChanged += DeactivateControllerChanged;
@@ -51,8 +42,21 @@ public class ControllerManager : NetworkBehaviour
         EventsManager.OnDeactivateController -= DeactivateController;
         EventsManager.OnToggleAll -= ToggleHands;
 
+        EventsManager.OnCreatedPCPlayer -= StartControllers;
+
         activateControllerNum.OnValueChanged -= ActivateControllerChanged;
         deactivateControllerNum.OnValueChanged -= DeactivateControllerChanged;
+    }
+
+    private void StartControllers()
+    {
+        isInNetwork = true;
+        EventsManager.CheckControllers();
+
+        if(isLeftHandActive.Value) ActivateLeftHandRpc();
+        if(isLeftControllerActive.Value) ActivateLeftControllerRpc();
+        if(isRightHandActive.Value) ActivateRightHandRpc();
+        if(isRightControllerActive.Value) ActivateRightControllerRpc();
     }
 
     private void ActivateController(int _newActivateControllerNum)
@@ -202,38 +206,38 @@ public class ControllerManager : NetworkBehaviour
     //Deactivates controllers if alternate controllers are used (for example, the Left Controller will be deactivated, if the Left Hand is activated)
     private void ToggleControllers(int _controllerNum, bool _activate)
     {
-        controllers[_controllerNum].SetActive(_activate);
-        activeControllers[_controllerNum] = _activate;
+        // controllers[_controllerNum].SetActive(_activate);
+        // activeControllers[_controllerNum] = _activate;
         
-        if((_controllerNum == 0 || _controllerNum == 2) && _activate)
-        {
-            controllers[_controllerNum + 1].SetActive(false);
-            activeControllers[_controllerNum + 1] = false;
-        }else if((_controllerNum == 1 || _controllerNum == 3) && _activate)
-        {
-            controllers[_controllerNum - 1].SetActive(false);
-            activeControllers[_controllerNum - 1] = false;
-        }
+        // if((_controllerNum == 0 || _controllerNum == 2) && _activate)
+        // {
+        //     controllers[_controllerNum + 1].SetActive(false);
+        //     activeControllers[_controllerNum + 1] = false;
+        // }else if((_controllerNum == 1 || _controllerNum == 3) && _activate)
+        // {
+        //     controllers[_controllerNum - 1].SetActive(false);
+        //     activeControllers[_controllerNum - 1] = false;
+        // }
 
-        EventsManager.ChangedControllers();
+        // EventsManager.ChangedControllers();
     }
 
     //Deactivates / Activates all controllers
     private void ToggleHands(bool toggle)
     {
-        if(toggle)
-        {
-            for(int i = 0; i < controllers.Length; i++)
-            {
-                controllers[i].SetActive(activeControllers[i]);
-                if(controllerVisuals[i] != null) controllerVisuals[i].enabled = true;
-            }
-        }else{
-            for(int i = 0; i < controllers.Length; i++)
-            {
-                controllers[i].SetActive(false);
-                if(controllerVisuals[i] != null) controllerVisuals[i].enabled = false;
-            }
-        }
+        // if(toggle)
+        // {
+        //     for(int i = 0; i < controllers.Length; i++)
+        //     {
+        //         controllers[i].SetActive(activeControllers[i]);
+        //         if(controllerVisuals[i] != null) controllerVisuals[i].enabled = true;
+        //     }
+        // }else{
+        //     for(int i = 0; i < controllers.Length; i++)
+        //     {
+        //         controllers[i].SetActive(false);
+        //         if(controllerVisuals[i] != null) controllerVisuals[i].enabled = false;
+        //     }
+        // }
     }
 }
