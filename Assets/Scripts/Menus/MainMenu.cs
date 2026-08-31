@@ -16,7 +16,7 @@ using Unity.Netcode;
 public class MainMenu : NetworkBehaviour
 {
     // [SerializeField] private GameObject temple;
-    [SerializeField] private Material cameraCover;
+    // [SerializeField] private Material cameraCover;
     
     [SerializeField] private Camera vrCamera;
     [SerializeField] private Camera pcCamera;
@@ -57,7 +57,7 @@ public class MainMenu : NetworkBehaviour
         }
         _prevIsDeviceActive = _currIsDeviceActive;
 
-        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 0);
+        // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 0);
         // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
 
         // for (int i = 0; i < menuList.Length; i++)
@@ -267,7 +267,7 @@ public class MainMenu : NetworkBehaviour
     //Used by UI Button to change the scene
     public void PlayLevelClient(string _sceneName)
     {
-        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+        // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
         SetNextSceneServerRpc(GetSceneIndex(_sceneName));
     }
 
