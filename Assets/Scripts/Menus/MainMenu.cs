@@ -57,7 +57,8 @@ public class MainMenu : NetworkBehaviour
         }
         _prevIsDeviceActive = _currIsDeviceActive;
 
-        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 0);
+        // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
 
         for (int i = 0; i < menuList.Length; i++)
         {
@@ -133,16 +134,16 @@ public class MainMenu : NetworkBehaviour
         // StartCoroutine(ShiftRevealTemple(4f));
     }
 
-    IEnumerator ShiftRevealTemple(float _delay)
-    {
-        float elapsed = 0f;
-        while(elapsed < _delay)
-        {
-            elapsed += Time.deltaTime;
-            cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
-            yield return null;
-        }
-    }
+    // IEnumerator ShiftRevealTemple(float _delay)
+    // {
+    //     float elapsed = 0f;
+    //     while(elapsed < _delay)
+    //     {
+    //         elapsed += Time.deltaTime;
+    //         cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
+    //         yield return null;
+    //     }
+    // }
 
     public override void OnNetworkSpawn()
     {
