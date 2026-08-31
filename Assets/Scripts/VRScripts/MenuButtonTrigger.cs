@@ -47,6 +47,8 @@ public class MenuButtonTrigger : MonoBehaviour
 
             }else if(playAlone || playTogether)
             {
+                EventsManager.ChosePlayer();
+
                 EventsManager.HostButton();
                 EventsManager.SetMenuWithoutNetwork(1);
                 _currentMenuNum = 1;

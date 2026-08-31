@@ -58,6 +58,9 @@ public class EventsManager : MonoBehaviour
 
 
     //MainMenu Events=============================================
+    public static event Action OnChosePlayer;
+    public static void ChosePlayer() => OnChosePlayer?.Invoke();
+
     public static event Action<int> OnSetMenuWithoutNetwork;
     public static void SetMenuWithoutNetwork(int _menuNum) => OnSetMenuWithoutNetwork?.Invoke(_menuNum);
     public static event Action<int> OnSetMenu;

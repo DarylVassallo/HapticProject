@@ -37,9 +37,25 @@ public class MainMenu : NetworkBehaviour
     private NetworkVariable<int> nextScene = new (-1);
     private NetworkVariable<int> menuValue = new (-1);
 
+    private bool _chosePlayer;
+    private bool _prevIsDeviceActive;
+    private bool _currIsDeviceActive;
+
     private void Awake()
     {
-        StartCoroutine(SetupCamera());
+        _chosePlayer = false;
+        _currIsDeviceActive = UnityEngine.XR.XRSettings.isDeviceActive;
+        if(_currIsDeviceActive)
+        {
+            vrCamera.depth = 1;
+            pcCamera.depth = -1;
+        }
+        else
+        {
+            vrCamera.depth = -1;
+            pcCamera.depth = 1;
+        }
+        _prevIsDeviceActive = _currIsDeviceActive;
 
         // foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
         // {
@@ -66,6 +82,8 @@ public class MainMenu : NetworkBehaviour
 
     void OnEnable()
     {
+        EventsManager.OnChosePlayer += ChosePlayer;
+
         EventsManager.OnSetMenuWithoutNetwork += SetMenuNumberWithoutNetwork;
         EventsManager.OnSetMenu += SetMenuNumber;
         EventsManager.OnRevealTemple += RevealTemple;
@@ -78,6 +96,8 @@ public class MainMenu : NetworkBehaviour
 
     void OnDisable()
     {
+        EventsManager.OnChosePlayer -= ChosePlayer;
+
         EventsManager.OnSetMenuWithoutNetwork -= SetMenuNumberWithoutNetwork;
         EventsManager.OnSetMenu -= SetMenuNumber;
         EventsManager.OnRevealTemple -= RevealTemple;
@@ -88,11 +108,19 @@ public class MainMenu : NetworkBehaviour
         EventsManager.OnChangeLanguage -= ChangeLanguageNum;
     }
 
-    private IEnumerator SetupCamera()
+    public void ChosePlayer()
     {
-        yield return new WaitForSeconds(0.5f);
-        
-        if(UnityEngine.XR.XRSettings.isDeviceActive)
+        _chosePlayer = true;
+        SetupCamera();
+    }
+
+    private void SetupCamera()
+    {       
+        _currIsDeviceActive = UnityEngine.XR.XRSettings.isDeviceActive;
+
+        if(_prevIsDeviceActive == _currIsDeviceActive) return;
+
+        if(_currIsDeviceActive)
         {
             vrCamera.depth = 1;
             pcCamera.depth = -1;
@@ -102,6 +130,8 @@ public class MainMenu : NetworkBehaviour
             vrCamera.depth = -1;
             pcCamera.depth = 1;
         }
+
+        _prevIsDeviceActive = _currIsDeviceActive;
     }
 
     public void RevealTemple()
@@ -159,6 +189,8 @@ public class MainMenu : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if(!_chosePlayer) SetupCamera();
+
         //If required, this causes the credits page for both players to slowly move upwards
         if (isCreditsScrolling)
         {
