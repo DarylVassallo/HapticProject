@@ -15,7 +15,8 @@ using Unity.Netcode;
 //This script controls all the options in the Main Menu
 public class MainMenu : NetworkBehaviour
 {
-    [SerializeField] private GameObject temple;
+    // [SerializeField] private GameObject temple;
+    [SerializeField] private Material cameraCover;
     
     [SerializeField] private Camera vrCamera;
     [SerializeField] private Camera pcCamera;
@@ -40,10 +41,13 @@ public class MainMenu : NetworkBehaviour
     {
         StartCoroutine(SetupCamera());
 
-        foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
-        {
-            rend.enabled = false;
-        }
+        // foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
+        // {
+        //     Debug.Log("rend: " + rend);
+        //     rend.material.color = new Color(rend.material.color.r, rend.material.color.g, rend.material.color.b, 0);
+        // }
+
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
 
         for (int i = 0; i < menuList.Length; i++)
         {
@@ -102,9 +106,17 @@ public class MainMenu : NetworkBehaviour
 
     public void RevealTemple()
     {
-        foreach (Renderer rend in temple.GetComponentsInChildren<Renderer>(true))
+        StartCoroutine(ShiftRevealTemple(4f));
+    }
+
+    IEnumerator ShiftRevealTemple(float _delay)
+    {
+        float elapsed = 0f;
+        while(elapsed < _delay)
         {
-            rend.enabled = true;
+            elapsed += Time.deltaTime;
+            cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
+            yield return null;
         }
     }
 
@@ -228,6 +240,7 @@ public class MainMenu : NetworkBehaviour
     //Used by UI Button to change the scene
     public void PlayLevelClient(string _sceneName)
     {
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
         SetNextSceneServerRpc(GetSceneIndex(_sceneName));
     }
 
