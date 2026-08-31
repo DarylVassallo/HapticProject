@@ -60,19 +60,19 @@ public class MainMenu : NetworkBehaviour
         cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 0);
         // cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
 
-        for (int i = 0; i < menuList.Length; i++)
-        {
-            if (i == 0)
-            {
-                menuList[i].SetActive(true);
-                vrMenuList[i].SetActive(true);
-            }
-            else
-            {
-                menuList[i].SetActive(false);
-                vrMenuList[i].SetActive(false);
-            }
-        }
+        // for (int i = 0; i < menuList.Length; i++)
+        // {
+        //     if (i == 0)
+        //     {
+        //         menuList[i].SetActive(true);
+        //         vrMenuList[i].SetActive(true);
+        //     }
+        //     else
+        //     {
+        //         menuList[i].SetActive(false);
+        //         vrMenuList[i].SetActive(false);
+        //     }
+        // }
     }
 
     void OnEnable()
@@ -440,32 +440,32 @@ public class MainMenu : NetworkBehaviour
     //Shows the chosen menu for both players
     private void SetCurrentMenuNumber(int _menuNum)
     {        
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.visible = false;
 
-        for (int i = 0; i < menuList.Length; i++)
-        {
-            if (_menuNum == i)
-            {
-                menuList[i].SetActive(true);
-                vrMenuList[i].SetActive(true);
+        // for (int i = 0; i < menuList.Length; i++)
+        // {
+        //     if (_menuNum == i)
+        //     {
+        //         menuList[i].SetActive(true);
+        //         vrMenuList[i].SetActive(true);
 
-                if(_menuNum == menuList.Length - 1)
-                {
-                    isCreditsScrolling = true;
-                    ShowCredits();
-                }
-            }
-            else
-            {
-                menuList[i].SetActive(false);
-                vrMenuList[i].SetActive(false);
+        //         if(_menuNum == menuList.Length - 1)
+        //         {
+        //             isCreditsScrolling = true;
+        //             ShowCredits();
+        //         }
+        //     }
+        //     else
+        //     {
+        //         menuList[i].SetActive(false);
+        //         vrMenuList[i].SetActive(false);
 
-                if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
-            }
-        }
+        //         if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
+        //     }
+        // }
 
-        StartCoroutine(ReturnCursor());
+        // StartCoroutine(ReturnCursor());
     }
 
     //Used by UI button to change the visible menu
