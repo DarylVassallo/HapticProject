@@ -80,6 +80,8 @@ public class MainMenu : NetworkBehaviour
 
         EventsManager.OnSetMenuWithoutNetwork += SetMenuNumberWithoutNetwork;
         EventsManager.OnSetMenu += SetMenuNumber;
+
+        EventsManager.OnCreatedPCPlayer += RevealTempleServerRpc;
         EventsManager.OnRevealTemple += RevealTempleServerRpc;
 
         EventsManager.OnPlayLevel += PlayLevelClient;
@@ -94,6 +96,8 @@ public class MainMenu : NetworkBehaviour
 
         EventsManager.OnSetMenuWithoutNetwork -= SetMenuNumberWithoutNetwork;
         EventsManager.OnSetMenu -= SetMenuNumber;
+
+        EventsManager.OnCreatedPCPlayer -= RevealTempleServerRpc;
         EventsManager.OnRevealTemple -= RevealTempleServerRpc;
 
         EventsManager.OnPlayLevel -= PlayLevelClient;
