@@ -470,28 +470,28 @@ public class MainMenu : NetworkBehaviour
     //Used by UI button to change the visible menu
     public void SetMenuNumberWithoutNetwork(int _menuNum)
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Cursor.lockState = CursorLockMode.Locked;
+        // Cursor.visible = false;
 
-        for (int i = 0; i < menuList.Length; i++)
-        {
-            if (_menuNum == i)
-            {
-                menuList[i].SetActive(true);
-                // vrMenuList[i].SetActive(true);
+        // for (int i = 0; i < menuList.Length; i++)
+        // {
+        //     if (_menuNum == i)
+        //     {
+        //         menuList[i].SetActive(true);
+        //         vrMenuList[i].SetActive(true);
 
-                if(_menuNum == menuList.Length - 1) isCreditsScrolling = true;
-            }
-            else
-            {
-                menuList[i].SetActive(false);
-                // vrMenuList[i].SetActive(false);
+        //         if(_menuNum == menuList.Length - 1) isCreditsScrolling = true;
+        //     }
+        //     else
+        //     {
+        //         menuList[i].SetActive(false);
+        //         vrMenuList[i].SetActive(false);
 
-                if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
-            }
-        }
+        //         if(_menuNum == menuList.Length - 1) isCreditsScrolling = false;
+        //     }
+        // }
 
-        StartCoroutine(ReturnCursor());
+        // StartCoroutine(ReturnCursor());
     }
 
     //Activate the cursor after a delay
