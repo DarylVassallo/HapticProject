@@ -6684,7 +6684,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 6248540552738714578}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: RevealTemple
+        m_MethodName: RevealTempleServerRpc
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -16061,7 +16061,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 6248540552738714578}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: RevealTemple
+        m_MethodName: RevealTempleServerRpc
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
