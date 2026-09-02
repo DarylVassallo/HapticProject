@@ -9,7 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1227584342963194050}
-  m_Layer: 0
+  - component: {fileID: 2221769481719422197}
+  m_Layer: 2
   m_Name: Ring
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,6 +38,52 @@ Transform:
   - {fileID: 5669735116966059594}
   m_Father: {fileID: 2609608742470331765}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+--- !u!114 &2221769481719422197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349109004248606214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 1
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!1 &445451913214945180
 GameObject:
   m_ObjectHideFlags: 0
@@ -50,7 +97,7 @@ GameObject:
   - component: {fileID: 5965887066334009305}
   - component: {fileID: 5209558904831481256}
   - component: {fileID: 8935154466663107235}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2084,7 +2131,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2188,7 +2235,7 @@ GameObject:
   - component: {fileID: 4224198880660814900}
   - component: {fileID: 7203897254078901961}
   - component: {fileID: 4315526438644092282}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4222,7 +4269,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4322,7 +4369,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 933076032463841587}
-  m_Layer: 0
+  - component: {fileID: 5475186798895348699}
+  m_Layer: 2
   m_Name: Ring (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4350,6 +4398,52 @@ Transform:
   - {fileID: 8584722318692085397}
   m_Father: {fileID: 2609608742470331765}
   m_LocalEulerAnglesHint: {x: 0, y: -45, z: 0}
+--- !u!114 &5475186798895348699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1258874706815801229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.Components.NetworkTransform
+  ShowTopMostFoldoutHeaderGroup: 1
+  NetworkTransformExpanded: 0
+  AutoOwnerAuthorityTickOffset: 1
+  PositionInterpolationType: 0
+  RotationInterpolationType: 0
+  ScaleInterpolationType: 0
+  PositionLerpSmoothing: 1
+  PositionMaxInterpolationTime: 0.1
+  RotationLerpSmoothing: 1
+  RotationMaxInterpolationTime: 0.1
+  ScaleLerpSmoothing: 1
+  ScaleMaxInterpolationTime: 0.1
+  AuthorityMode: 1
+  TickSyncChildren: 0
+  UseUnreliableDeltas: 0
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  UseQuaternionSynchronization: 0
+  UseQuaternionCompression: 0
+  UseHalfFloatPrecision: 0
+  InLocalSpace: 0
+  SwitchTransformSpaceWhenParented: 0
+  Interpolate: 1
+  SlerpPosition: 0
 --- !u!1 &1330978143731723841
 GameObject:
   m_ObjectHideFlags: 0
@@ -4364,7 +4458,7 @@ GameObject:
   - component: {fileID: 7303747657290975668}
   - component: {fileID: 348338428002215119}
   - component: {fileID: 7140305107740849749}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4918,7 +5012,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 25
+  m_VersionIndex: 37
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -5042,7 +5136,7 @@ GameObject:
   - component: {fileID: 6387278753892403967}
   - component: {fileID: 6765612968326373691}
   - component: {fileID: 6440767984388190842}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7076,7 +7170,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -7181,7 +7275,7 @@ GameObject:
   - component: {fileID: 7771690510760889719}
   - component: {fileID: 182643020434646399}
   - component: {fileID: 4533271261599751790}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: EyeRing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8673,7 +8767,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 25
+  m_VersionIndex: 37
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -8798,7 +8892,7 @@ GameObject:
   - component: {fileID: 7763850326320361619}
   - component: {fileID: 5590556276509903815}
   - component: {fileID: 2373691539938448324}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10832,7 +10926,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -10937,7 +11031,7 @@ GameObject:
   - component: {fileID: 8973839367066562711}
   - component: {fileID: 1262590509980184680}
   - component: {fileID: 3116775804019040611}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Iris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13279,7 +13373,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 32
+  m_VersionIndex: 44
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -13403,7 +13497,7 @@ GameObject:
   - component: {fileID: 2339377159752912873}
   - component: {fileID: 7420286498413524391}
   - component: {fileID: 2046850980059703101}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15437,7 +15531,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -15541,7 +15635,7 @@ GameObject:
   - component: {fileID: 7887591004615875526}
   - component: {fileID: 1261042939773376609}
   - component: {fileID: 634162192187107795}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17575,7 +17669,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -17679,7 +17773,7 @@ GameObject:
   - component: {fileID: 3379335704198658024}
   - component: {fileID: 7983446252718429782}
   - component: {fileID: 1778508695358918070}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19713,7 +19807,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -19818,7 +19912,8 @@ GameObject:
   - component: {fileID: 1354816931585265855}
   - component: {fileID: 1087197675165280853}
   - component: {fileID: 9062515502399543659}
-  m_Layer: 0
+  - component: {fileID: 7814761137709158441}
+  m_Layer: 2
   m_Name: Narrator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19835,7 +19930,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.71999997, y: 8.849999, z: 6.8199997}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1227584342963194050}
@@ -19856,7 +19951,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 3399163785
+  GlobalObjectIdHash: 1609066297
   InScenePlacedSourceGlobalObjectIdHash: 1609066297
   DeferredDespawnTick: 0
   Ownership: 1
@@ -19889,6 +19984,12 @@ MonoBehaviour:
   silentMaterial: {fileID: 2100000, guid: d39f208eab91d2d49ac45c35657f0787, type: 2}
   loudMaterial: {fileID: 2100000, guid: 059ade02a4d3fd949a8d9e85dae1e23f, type: 2}
   _eyeTarget: {fileID: 0}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 262139
+  narratorViewPoint: {fileID: 0}
+  minFocusTime: 10
+  maxFocusTime: 20
 --- !u!114 &1354816931585265855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19957,9 +20058,9 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 30
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -19992,7 +20093,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -20059,6 +20160,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!135 &7814761137709158441
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7850082071844366777}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8142394691330129947
 GameObject:
   m_ObjectHideFlags: 0
@@ -20072,7 +20194,7 @@ GameObject:
   - component: {fileID: 1174806739139036830}
   - component: {fileID: 3808910286420105423}
   - component: {fileID: 7336727639718468152}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22106,7 +22228,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -22210,7 +22332,7 @@ GameObject:
   - component: {fileID: 8375717022517931539}
   - component: {fileID: 3295406847671639355}
   - component: {fileID: 7009030176847500994}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24244,7 +24366,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -24348,7 +24470,7 @@ GameObject:
   - component: {fileID: 4118038615518951641}
   - component: {fileID: 8452778703037051167}
   - component: {fileID: 2242363790521341238}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26382,7 +26504,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -26486,7 +26608,7 @@ GameObject:
   - component: {fileID: 4852307065508253376}
   - component: {fileID: 6580061631612282705}
   - component: {fileID: 941992974994809906}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28520,7 +28642,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -28625,7 +28747,7 @@ GameObject:
   - component: {fileID: 8957970300693029971}
   - component: {fileID: 1783881309366523848}
   - component: {fileID: 194137111058310805}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -30799,7 +30921,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 67
+  m_VersionIndex: 79
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -30922,7 +31044,7 @@ GameObject:
   - component: {fileID: 6124546199817447581}
   - component: {fileID: 3353993499764045330}
   - component: {fileID: 9126856378005210701}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Arch (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32956,7 +33078,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 133
+  m_VersionIndex: 145
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []

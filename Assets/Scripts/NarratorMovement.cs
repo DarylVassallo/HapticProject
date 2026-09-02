@@ -81,6 +81,7 @@ public class NarratorMovement : NetworkBehaviour
 
     private void GetPCPlayerBodyData()
     {
+        Debug.Log("GetPCPlayerBodyData");
         _pcViewPoint = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _narratorViewPoints.Add(_pcViewPoint);
     }
@@ -100,6 +101,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void LookAtPlayer(int _playerNum, bool _stay)
     {
+        Debug.Log("LookAtPlayer: " + _playerNum + ", " + _stay);
+
         switch(_playerNum)
         {
             case -1:
@@ -113,6 +116,7 @@ public class NarratorMovement : NetworkBehaviour
                 break;
             case 1:
                 this.GetComponent<Collider>().enabled = false;
+                Debug.Log("_pcViewPoint: " + _pcViewPoint);
                 _eyeTarget = _pcViewPoint;
                 _lookAround = false;
                 break;
@@ -218,25 +222,25 @@ public class NarratorMovement : NetworkBehaviour
 
         if(_distance >= 10f)
         {
-            Debug.Log("Move Towards " + _eyeTarget + " , distance: " + _distance);
-
             Vector3 direction = _eyeTarget.position - transform.position;
             _rb.AddForce(direction * _force, ForceMode.Force);
             _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
         }
         else if(_distance < 6f)
         {
-            Debug.Log("Move Away " + _eyeTarget + " , distance: " + _distance);
-
             Vector3 direction = transform.position - _eyeTarget.position;
             _rb.AddForce(direction * _force, ForceMode.Force);
             _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
         }
-        else if(_speakToPlayer)
+        else
         {
-            Debug.Log("Speak");
-
-            PlayerNarratorAudio();
+            if(!this.GetComponent<Collider>().enabled) this.GetComponent<Collider>().enabled = true;
+            
+            if(_speakToPlayer)
+            {
+                Debug.Log("Speak");
+                PlayerNarratorAudio();
+            }
         }
     }
 
