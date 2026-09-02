@@ -327,8 +327,8 @@ public class EventsManager : MonoBehaviour
 
 
     //NarratorManager Events=============================================
-    public static event Action<string, string, bool> OnTriggerNarratorAudio;
-    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer);
+    public static event Action<string, string, bool, bool> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer, bool _stay) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer, _stay);
     public static event Action OnNarratorStopped;
     public static void NarratorStopped() => OnNarratorStopped?.Invoke();
     public static event Action<bool> OnTogglePauseManagerAudio;
@@ -338,6 +338,11 @@ public class EventsManager : MonoBehaviour
     public static void UseEnglishNarrator() => OnUseEnglishNarrator?.Invoke();
     public static event Action OnUseFrenchNarrator;
     public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
+
+    public static event Action<int, bool> OnLookAtPlayer;
+    public static void LookAtPlayer(int _playerNum, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _stay);
+    public static event Action<AudioClip> OnNarratorSays;
+    public static void NarratorSays(AudioClip _clip) => OnNarratorSays?.Invoke(_clip);
 
 
 
