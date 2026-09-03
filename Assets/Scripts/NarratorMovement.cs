@@ -59,7 +59,7 @@ public class NarratorMovement : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
         EventsManager.OnLookAtPlayer += LookAtPlayer;
@@ -70,7 +70,7 @@ public class NarratorMovement : NetworkBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
         EventsManager.OnLookAtPlayer -= LookAtPlayer; 
@@ -79,9 +79,10 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
     }
 
-    private void GetPCPlayerBodyData()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void GetPCPlayerBodyDataRpc()
     {
-        Debug.Log("GetPCPlayerBodyData");
+        Debug.Log("GetPCPlayerBodyDataRpc");
         _pcViewPoint = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _narratorViewPoints.Add(_pcViewPoint);
     }
