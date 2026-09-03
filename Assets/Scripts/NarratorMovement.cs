@@ -214,7 +214,7 @@ public class NarratorMovement : NetworkBehaviour
     IEnumerator IrisFlicker(float _delay, float _flicker)
     {
         _canFlicker = false;
-        if(_delay >= 0.2f) _flicker = 1;
+        if(_delay >= 0.05f) _flicker = 1;
 
         yield return new WaitForSeconds(_delay);
 
