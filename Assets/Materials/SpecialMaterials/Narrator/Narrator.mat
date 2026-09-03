@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NarratorEyeRingSilent
-  m_Shader: {fileID: 4800000, guid: 650dd9526735d5b46b79224bc6e94025, type: 3}
+  m_Name: Narrator
+  m_Shader: {fileID: 4800000, guid: 8d2bb70cbf9db8d4da26e15b26e74248, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -39,9 +39,9 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 0.5, y: 0.5}
-        m_Offset: {x: 0.5, y: 0.5}
+        m_Texture: {fileID: 2800000, guid: f15e9bad26bf01d48addaf89372ee9b5, type: 3}
+        m_Scale: {x: 3, y: 3}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -63,9 +63,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 0.5, y: 0.5}
-        m_Offset: {x: 0.5, y: 0.5}
+        m_Texture: {fileID: 2800000, guid: f15e9bad26bf01d48addaf89372ee9b5, type: 3}
+        m_Scale: {x: 3, y: 3}
+        m_Offset: {x: 0, y: 0}
     - _MainTexture:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -120,7 +120,6 @@ Material:
     - _BUILTIN_ZWriteControl: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BlendOp: 0
     - _BumpScale: 1
     - _CastShadows: 1
     - _ClearCoatMask: 0
@@ -145,7 +144,6 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RimPower: 5
-    - _SampleGI: 0
     - _Shininess: 0
     - _Smoothness: 0
     - _SmoothnessSource: 0
@@ -167,8 +165,8 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+    - _Color: {r: 0.37735847, g: 0.37735847, b: 0.37735847, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _NormalOffset: {r: 0, g: 0, b: 0, a: 0}
     - _NormalTiling: {r: 1, g: 1, b: 0, a: 0}

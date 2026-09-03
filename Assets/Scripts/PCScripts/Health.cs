@@ -70,8 +70,8 @@ public class Health : NetworkBehaviour
             {
                 EventsManager.EntityKilled(this.gameObject);
 
-                _animator.speed = 1;
-                _animator.SetBool("IsDead", true);
+                // _animator.speed = 1;
+                // _animator.SetBool("IsDead", true);
             }
 
         //This applies a more intense health damage visual effect to the PC Player if they are the entity, 

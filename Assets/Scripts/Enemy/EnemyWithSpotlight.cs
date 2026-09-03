@@ -64,6 +64,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private float _damageMultiplier;
 
+    private bool _playingDeath;
+
     void Awake()
     {
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
@@ -85,6 +87,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _notifiedFlashlightRange = 0;
 
         _damageMultiplier = 0f;
+
+        _playingDeath = false;
     }
 
     private void OnEnable()
@@ -140,20 +144,26 @@ public class EnemyWithSpotlight : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayDeathAudioRpc()
     {
+        _playingDeath = true;
+
         _audioSource.volume = 1;
         EventsManager.GetAppropriateEnemyAudio(this.gameObject, 2);
     }
 
-    private void PlayAudio(GameObject enemy, AudioClip _newAudio)
+    private void PlayAudio(GameObject enemy, AudioClip _newAudio, int _audioNum)
     {
-        if(_audioSource.isPlaying || enemy != this.gameObject) return;
-
-        Debug.Log("PlayAudio : _newAudio: " + _newAudio + " : _audioSource.volume : " + _audioSource.volume);
+        if((_audioNum != 2 && _audioSource.isPlaying) || enemy != this.gameObject) return;
 
         _audioSource.Stop();
         _audioSource.clip = _newAudio;
         _audioSource.Play();
         _audioSource.enabled = true; 
+
+        if(_audioNum == 2)
+        {
+            _animator.speed = 1;
+            _animator.SetBool("IsDead", true);
+        }
     }
 
     [ClientRpc]
@@ -342,12 +352,13 @@ public class EnemyWithSpotlight : NetworkBehaviour
             }
 
         //Properly removes the enemy if it has no more health
-        } else {
+        } else if(!_playingDeath) {
             if(_animator.speed != 1) MoveAnimationClientRpc();
 
             _currentAudioNum = 2;
 
             PlayDeathAudioRpc();
+
             // DeathAudioVolumeClientRpc();
         }
     }

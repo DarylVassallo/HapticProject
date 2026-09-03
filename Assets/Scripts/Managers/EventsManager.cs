@@ -108,8 +108,8 @@ public class EventsManager : MonoBehaviour
     
     public static event Action<GameObject, int> OnGetAppropriateEnemyAudio;
     public static void GetAppropriateEnemyAudio(GameObject _enemy, int _audioType) => OnGetAppropriateEnemyAudio?.Invoke(_enemy, _audioType);
-    public static event Action<GameObject, AudioClip> OnSendAppropriateEnemyAudio;
-    public static void SendAppropriateEnemyAudio(GameObject _enemy, AudioClip _audio) => OnSendAppropriateEnemyAudio?.Invoke(_enemy, _audio);
+    public static event Action<GameObject, AudioClip, int> OnSendAppropriateEnemyAudio;
+    public static void SendAppropriateEnemyAudio(GameObject _enemy, AudioClip _audio, int _audioNum) => OnSendAppropriateEnemyAudio?.Invoke(_enemy, _audio, _audioNum);
 
     public static event Action OnDisableEnemies;
     public static void DisableEnemies() => OnDisableEnemies?.Invoke();

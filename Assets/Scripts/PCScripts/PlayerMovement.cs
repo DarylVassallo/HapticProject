@@ -23,6 +23,7 @@ public class PlayerMovement : NetworkBehaviour
     [Header("References")]
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Transform bodyTransform;
+    [SerializeField] private Transform xAxisBodyTransform;
     private CinemachineInputAxisController _inputAxisController;
 
     private CharacterController _characterController;
@@ -40,6 +41,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private NetworkVariable<bool> isWalking = new(false);
     private NetworkVariable<float> bodyYRotation = new(0f);
+    private NetworkVariable<float> bodyXRotation = new(0f);
 
     private void Awake()
     {
@@ -109,6 +111,7 @@ public class PlayerMovement : NetworkBehaviour
 
         isWalking.OnValueChanged += ChangeWalkingAnimation;
         bodyYRotation.OnValueChanged += SetBodyYRotation;
+        bodyXRotation.OnValueChanged += SetBodyXRotation;
     }
 
     private void OnDisable()
@@ -121,7 +124,7 @@ public class PlayerMovement : NetworkBehaviour
         EventsManager.OnChangeHealthCamera -= ChangeHealthCamera;
 
         isWalking.OnValueChanged -= ChangeWalkingAnimation;
-        bodyYRotation.OnValueChanged -= SetBodyYRotation;
+        bodyXRotation.OnValueChanged -= SetBodyXRotation;
     }
 
     private void FreezePlayer(bool _toggle)
@@ -146,6 +149,12 @@ public class PlayerMovement : NetworkBehaviour
         bodyYRotation.Value = _newYRotation;
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetBodyXRotationServerRpc(float _newXRotation)
+    {
+        bodyXRotation.Value = _newXRotation;
+    }
+
     private void ChangeWalkingAnimation(bool previous, bool current)
     {
         _animator.SetBool("IsWalking", current);
@@ -154,6 +163,12 @@ public class PlayerMovement : NetworkBehaviour
     private void SetBodyYRotation(float previous, float current)
     {
         bodyTransform.rotation = Quaternion.Euler(0, current, 0);
+    }
+
+    private void SetBodyXRotation(float previous, float current)
+    {
+        Vector3 eulerRotation = xAxisBodyTransform.eulerAngles;
+        xAxisBodyTransform.rotation = Quaternion.Euler(current, eulerRotation.y, eulerRotation.z);
     }
 
     //Changes the PC Player's motion based on the input
@@ -213,6 +228,7 @@ public class PlayerMovement : NetworkBehaviour
     {
         var move = cameraTransform.TransformDirection(new Vector3(_moveInput.x, 0, _moveInput.y)).normalized;
         SetBodyYRotationServerRpc(cameraTransform.eulerAngles.y);
+        SetBodyXRotationServerRpc(cameraTransform.eulerAngles.x);
         
         //If moving, the head bobbing effect will apply
         if(move != new Vector3(0, 0, 0))

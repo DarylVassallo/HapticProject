@@ -117,7 +117,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -169,7 +169,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -221,7 +221,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -273,7 +273,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -325,7 +325,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -377,7 +377,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -429,7 +429,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -481,7 +481,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -533,7 +533,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -897,7 +897,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -922,7 +922,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -965,7 +965,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1008,7 +1008,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1051,7 +1051,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1094,7 +1094,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1146,7 +1146,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1198,7 +1198,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1223,7 +1223,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1248,7 +1248,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1273,7 +1273,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1298,7 +1298,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
   m_PositionCurves:
   - curve:
       serializedVersion: 2
@@ -1385,7 +1385,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1419,7 +1419,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1453,7 +1453,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1505,7 +1505,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1557,7 +1557,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1609,7 +1609,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1643,7 +1643,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1695,7 +1695,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -1747,7 +1747,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2007,7 +2007,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2032,7 +2032,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2075,7 +2075,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2118,7 +2118,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2161,7 +2161,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2204,7 +2204,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2256,7 +2256,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2308,7 +2308,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2342,7 +2342,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2376,7 +2376,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2410,7 +2410,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2444,7 +2444,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
   m_ScaleCurves:
   - curve:
       serializedVersion: 2
@@ -2461,7 +2461,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
   - curve:
       serializedVersion: 2
       m_Curve:
@@ -2477,7 +2477,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
   m_FloatCurves: []
   m_PPtrCurves: []
   m_SampleRate: 60
@@ -3390,7 +3390,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3429,7 +3429,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3468,7 +3468,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3525,7 +3525,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -3582,7 +3582,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -3639,7 +3639,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -3678,7 +3678,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3717,7 +3717,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3756,7 +3756,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -3813,7 +3813,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -3870,7 +3870,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -3927,7 +3927,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -3966,7 +3966,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4005,7 +4005,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4044,7 +4044,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4101,7 +4101,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4158,7 +4158,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4215,7 +4215,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4272,7 +4272,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4329,7 +4329,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4386,7 +4386,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4443,7 +4443,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4500,7 +4500,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4557,7 +4557,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4614,7 +4614,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4671,7 +4671,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4728,7 +4728,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -4785,7 +4785,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4842,7 +4842,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4899,7 +4899,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -4956,7 +4956,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5013,7 +5013,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5070,7 +5070,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5127,7 +5127,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5184,7 +5184,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5241,7 +5241,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5280,7 +5280,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5319,7 +5319,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5358,7 +5358,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5415,7 +5415,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5472,7 +5472,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5529,7 +5529,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5586,7 +5586,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5643,7 +5643,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5700,7 +5700,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5757,7 +5757,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5814,7 +5814,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5871,7 +5871,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -5928,7 +5928,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -5985,7 +5985,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -6042,7 +6042,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -6099,7 +6099,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -6156,7 +6156,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -6213,7 +6213,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -7980,7 +7980,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -8037,7 +8037,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -8094,7 +8094,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -8151,7 +8151,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8208,7 +8208,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8265,7 +8265,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8295,7 +8295,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8325,7 +8325,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8355,7 +8355,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8385,7 +8385,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -8415,7 +8415,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -8445,7 +8445,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -8493,7 +8493,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8541,7 +8541,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8589,7 +8589,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8637,7 +8637,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8685,7 +8685,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8733,7 +8733,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8781,7 +8781,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8829,7 +8829,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8877,7 +8877,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8925,7 +8925,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -8973,7 +8973,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9021,7 +9021,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9078,7 +9078,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9135,7 +9135,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9192,7 +9192,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9249,7 +9249,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9306,7 +9306,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9363,7 +9363,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -9411,7 +9411,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9459,7 +9459,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9507,7 +9507,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9555,7 +9555,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9603,7 +9603,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9651,7 +9651,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9699,7 +9699,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9747,7 +9747,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9795,7 +9795,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9843,7 +9843,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9891,7 +9891,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9939,7 +9939,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -9996,7 +9996,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10053,7 +10053,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10110,7 +10110,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10167,7 +10167,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10224,7 +10224,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10281,7 +10281,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10320,7 +10320,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10359,7 +10359,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10398,7 +10398,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10428,7 +10428,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10458,7 +10458,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10488,7 +10488,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10509,7 +10509,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10530,7 +10530,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10551,7 +10551,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10590,7 +10590,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10629,7 +10629,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10668,7 +10668,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10698,7 +10698,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10728,7 +10728,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10758,7 +10758,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10797,7 +10797,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10836,7 +10836,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10875,7 +10875,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -10905,7 +10905,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10935,7 +10935,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -10965,7 +10965,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -11004,7 +11004,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11043,7 +11043,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11082,7 +11082,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11112,7 +11112,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -11142,7 +11142,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -11172,7 +11172,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: localEulerAnglesRaw.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 16
@@ -11193,7 +11193,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11214,7 +11214,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11235,7 +11235,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11248,7 +11248,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11260,7 +11260,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11272,7 +11272,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_end
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_end
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11284,7 +11284,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11296,7 +11296,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11308,7 +11308,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11392,7 +11392,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11404,7 +11404,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11416,7 +11416,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck/B-head
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck/B-head
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11428,7 +11428,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11440,7 +11440,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11452,7 +11452,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11572,7 +11572,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11584,7 +11584,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11596,7 +11596,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11608,7 +11608,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11620,7 +11620,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11632,7 +11632,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-neck
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-neck
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11644,7 +11644,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11656,7 +11656,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11668,7 +11668,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L/B-forearm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11680,7 +11680,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11692,7 +11692,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11704,7 +11704,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11716,7 +11716,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11728,7 +11728,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11740,7 +11740,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/B-hand.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11752,7 +11752,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11764,7 +11764,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11776,7 +11776,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11824,7 +11824,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11836,7 +11836,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11848,7 +11848,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/B-upperArm.L
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/B-upperArm.L
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11860,7 +11860,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11872,7 +11872,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11884,7 +11884,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11896,7 +11896,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11908,7 +11908,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11920,7 +11920,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11932,7 +11932,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11944,7 +11944,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11956,7 +11956,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.R/B-upperArm.R/B-forearm.R/PCRigFlashlight
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11968,7 +11968,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11980,7 +11980,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -11992,7 +11992,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Corner_1 (1)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Corner_1 (1)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12040,7 +12040,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12052,7 +12052,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12064,7 +12064,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_2_2
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_2_2
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12076,7 +12076,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12088,7 +12088,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12100,7 +12100,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12112,7 +12112,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12124,7 +12124,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12136,7 +12136,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_4way
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_4way
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12148,7 +12148,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12160,7 +12160,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12172,7 +12172,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (4)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (4)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12184,7 +12184,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12196,7 +12196,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12208,7 +12208,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_90 (5)
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_90 (5)
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12220,7 +12220,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.x
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12232,7 +12232,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.y
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0
@@ -12244,7 +12244,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalEulerAngles.z
-    path: Rig/B-root/B-hips/B-spine/B-chest/B-shoulder.L/Pipe_Connector
+    path: Rig/B-root/B-hips/B-spine/RotateChest/B-chest/B-shoulder.L/Pipe_Connector
     classID: 4
     script: {fileID: 0}
     flags: 0

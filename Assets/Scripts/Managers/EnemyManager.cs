@@ -152,7 +152,6 @@ public class EnemyManager : NetworkBehaviour
             int _currentNum = UnityEngine.Random.Range(0, _length);
             AudioClip currentAudio = _goodAudio[_audioNum][_currentNum];
 
-
             if(_audioNum != 2)
             {
                 _badAudio[_audioNum].Add(currentAudio);
@@ -161,7 +160,7 @@ public class EnemyManager : NetworkBehaviour
                 StartCoroutine(AudioBreak(currentAudio, _audioNum));
             }
 
-            EventsManager.SendAppropriateEnemyAudio(enemy, currentAudio); 
+            EventsManager.SendAppropriateEnemyAudio(enemy, currentAudio, _audioNum); 
         }
     }
 
