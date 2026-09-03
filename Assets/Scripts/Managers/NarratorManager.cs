@@ -104,10 +104,10 @@ public class NarratorManager : NetworkBehaviour
     {
         Debug.Log("TriggerNarratorAudioRpc");
 
-        if( _vrPlayerID == unchecked((ulong)-1) && _isVRPlayer || 
-            _pcPlayerID == unchecked((ulong)-1) && !_isVRPlayer ||
-            !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
-            _isVRPlayer && NetworkManager.Singleton.LocalClientId == _pcPlayerID) return;
+        // if( _vrPlayerID == unchecked((ulong)-1) && _isVRPlayer || 
+        //     _pcPlayerID == unchecked((ulong)-1) && !_isVRPlayer ||
+        //     !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
+        //     _isVRPlayer && NetworkManager.Singleton.LocalClientId == _pcPlayerID) return;
 
         Debug.Log("_isVRPlayer: " + _isVRPlayer);
         if(_isVRPlayer)
