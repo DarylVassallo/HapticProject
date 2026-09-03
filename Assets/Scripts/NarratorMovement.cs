@@ -17,6 +17,9 @@ public class NarratorMovement : NetworkBehaviour
     [SerializeField] private Renderer irisRenderer;
     [SerializeField] private Renderer eyeRingRenderer;
 
+    private bool _canFlicker;
+    [SerializeField] private Material irisMaterial;
+    [SerializeField] private Material irisOffMaterial;
     [SerializeField] private Material silentMaterial;
     [SerializeField] private Material loudMaterial;
 
@@ -42,6 +45,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void Awake()
     {
+        _canFlicker = true;
+
         _speakToPlayer = false;
         _lookAround = false;
 
@@ -183,6 +188,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {        
+        if(_canFlicker) IrisFlickerServerRpc();
+
         Movement();
         RotateRings();
         AudioEyeRing();
@@ -196,6 +203,31 @@ public class NarratorMovement : NetworkBehaviour
 
             if(!_stayWithPlayer) LookAtPlayerRpc(-1, false);
         }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void IrisFlickerServerRpc()
+    {
+        StartCoroutine(IrisFlicker(UnityEngine.Random.Range(0.01f, 0.5f), UnityEngine.Random.Range(0f, 1f)));
+    }
+
+    IEnumerator IrisFlicker(float _delay, float _flicker)
+    {
+        _canFlicker = false;
+        if(_delay >= 0.2f) _flicker = 1;
+
+        yield return new WaitForSeconds(_delay);
+
+        irisRenderer.material.SetColor(
+                "_BaseColor",
+                Color.Lerp(
+                    irisOffMaterial.GetColor("_BaseColor"),
+                    irisMaterial.GetColor("_BaseColor"),
+                    _flicker
+                )
+            );
+
+        _canFlicker = true;
     }
 
     private void RotationControl()
