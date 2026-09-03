@@ -62,7 +62,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
-        EventsManager.OnLookAtPlayer += LookAtPlayer;
+        EventsManager.OnLookAtPlayer += LookAtPlayerRpc;
 
         EventsManager.OnNarratorSays += NarratorSays;
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
@@ -73,7 +73,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
-        EventsManager.OnLookAtPlayer -= LookAtPlayer; 
+        EventsManager.OnLookAtPlayer -= LookAtPlayerRpc; 
 
         EventsManager.OnNarratorSays -= NarratorSays;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
@@ -100,9 +100,10 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    private void LookAtPlayer(int _playerNum, bool _stay)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LookAtPlayerRpc(int _playerNum, bool _stay)
     {
-        Debug.Log("LookAtPlayer: " + _playerNum + ", " + _stay);
+        Debug.Log("LookAtPlayerRpc: " + _playerNum + ", " + _stay);
 
         switch(_playerNum)
         {
@@ -193,7 +194,7 @@ public class NarratorMovement : NetworkBehaviour
             _isPlaying = false;
             EventsManager.NarratorStopped();
 
-            if(!_stayWithPlayer) LookAtPlayer(-1, false);
+            if(!_stayWithPlayer) LookAtPlayerRpc(-1, false);
         }
     }
 
