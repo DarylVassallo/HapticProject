@@ -71,6 +71,8 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
 
         EventsManager.OnDisableTeleportChange += DisableTeleportChange;
+
+        EventsManager.TogglePCTrigger(true);
     }
 
     private void OnDisable()

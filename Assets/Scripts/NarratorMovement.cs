@@ -87,7 +87,6 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void GetPCPlayerBodyDataRpc()
     {
-        Debug.Log("GetPCPlayerBodyDataRpc");
         _pcViewPoint = GameObject.FindGameObjectWithTag("PCPlayer").transform;
         _narratorViewPoints.Add(_pcViewPoint);
     }
@@ -108,8 +107,6 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void LookAtPlayerRpc(int _playerNum, bool _stay)
     {
-        Debug.Log("LookAtPlayerRpc: " + _playerNum + ", " + _stay);
-
         switch(_playerNum)
         {
             case -1:
@@ -123,7 +120,6 @@ public class NarratorMovement : NetworkBehaviour
                 break;
             case 1:
                 this.GetComponent<Collider>().enabled = false;
-                Debug.Log("_pcViewPoint: " + _pcViewPoint);
                 _eyeTarget = _pcViewPoint;
                 _lookAround = false;
                 break;
@@ -166,8 +162,6 @@ public class NarratorMovement : NetworkBehaviour
 
     private void NarratorSays(AudioClip _clip)
     {
-        Debug.Log("NarratorSays: " + _clip);
-
         _audioSource.Stop();
         _audioSource.clip = _clip;
         _audioSource.pitch = 1f;
@@ -177,8 +171,6 @@ public class NarratorMovement : NetworkBehaviour
 
     private void PlayerNarratorAudio()
     {
-        Debug.Log("PlayerNarratorAudio");
-
         _audioSource.Play();
         _isPlaying = true;
         _audioSource.enabled = true; 
@@ -190,7 +182,7 @@ public class NarratorMovement : NetworkBehaviour
     {        
         if(_canFlicker) IrisFlickerServerRpc();
 
-        Movement();
+        if(_eyeTarget != null) Movement();
         RotateRings();
         AudioEyeRing();
 
@@ -270,11 +262,7 @@ public class NarratorMovement : NetworkBehaviour
         {
             if(!this.GetComponent<Collider>().enabled) this.GetComponent<Collider>().enabled = true;
             
-            if(_speakToPlayer)
-            {
-                Debug.Log("Speak");
-                PlayerNarratorAudio();
-            }
+            if(_speakToPlayer) PlayerNarratorAudio();
         }
     }
 
