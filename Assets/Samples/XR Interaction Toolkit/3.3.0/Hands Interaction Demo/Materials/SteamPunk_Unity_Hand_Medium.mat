@@ -37,6 +37,7 @@ Material:
   disabledShaderPasses:
   - DepthOnly
   - MOTIONVECTORS
+  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -100,7 +101,7 @@ Material:
     - _BUILTIN_ZWrite: 0
     - _BUILTIN_ZWriteControl: 0
     - _Blend: 0
-    - _CastShadows: 1
+    - _CastShadows: 0
     - _Cull: 2
     - _DstBlend: 10
     - _DstBlendAlpha: 10
@@ -154,7 +155,7 @@ Material:
     - _ColorBottom: {r: 0.12156857, g: 0.12549016, b: 0.12941167, a: 1}
     - _ColorTop: {r: 0.19607836, g: 0.20392147, b: 0.21176466, a: 1}
     - _Color_1: {r: 0, g: 0, b: 0, a: 0.5803922}
-    - _EdgeColor: {r: 1, g: 0.54901963, b: 0, a: 1}
+    - _EdgeColor: {r: 1, g: 0.5490196, b: 0, a: 0}
     - _FadeCenter: {r: 0, g: 0, b: 0.15, a: 0}
     - _FadeCenter_1: {r: 1, g: 4, b: 1, a: 0}
     - _FadeScale: {r: 10, g: 40, b: 10, a: 0}

@@ -17,6 +17,8 @@ public class MainMenu : NetworkBehaviour
 {
     // [SerializeField] private GameObject temple;
     [SerializeField] private Material cameraCover;
+    [SerializeField] private Transform vrCoverParent;
+    private Renderer[] vrCovers;
     
     [SerializeField] private Camera vrCamera;
     [SerializeField] private Camera pcCamera;
@@ -40,9 +42,12 @@ public class MainMenu : NetworkBehaviour
     private bool _chosePlayer;
     private bool _prevIsDeviceActive;
     private bool _currIsDeviceActive;
+    
+    private bool _changingScene;
 
     private void Awake()
     {
+        _changingScene = false;
         _chosePlayer = false;
         _currIsDeviceActive = UnityEngine.XR.XRSettings.isDeviceActive;
         if(_currIsDeviceActive)
@@ -57,7 +62,14 @@ public class MainMenu : NetworkBehaviour
         }
         _prevIsDeviceActive = _currIsDeviceActive;
 
-        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+        cameraCover.color = new Color(0, 0, 0, 0);
+
+        vrCovers = new Renderer[vrCoverParent.childCount];
+        for (int i = 0; i < vrCoverParent.childCount; i++)
+        {
+            vrCovers[i] = vrCoverParent.GetChild(i).GetComponent<Renderer>();
+            vrCovers[i].material.color = new Color(0, 0, 0, 1f * ((i + 1f) / vrCoverParent.childCount));
+        } 
 
         for (int i = 0; i < menuList.Length; i++)
         {
@@ -135,21 +147,22 @@ public class MainMenu : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RevealTempleServerRpc()
     {
-        Debug.Log("RevealTempleServerRpc");
         StartCoroutine(ShiftRevealTemple(4f));
     }
 
     IEnumerator ShiftRevealTemple(float _delay)
     {
-        Debug.Log("ShiftRevealTemple: " + _delay);
         float elapsed = 0f;
         while(elapsed < _delay)
         {
             elapsed += Time.deltaTime;
-            cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
+            for (int i = 0; i < vrCoverParent.childCount; i++)
+            {
+                vrCovers[i].material.color = new Color(0, 0, 0, (1f - (elapsed / _delay)) * ((i + 1f) / vrCoverParent.childCount));
+            } 
+
             yield return null;
         }
-        Debug.Log("ShiftRevealTemple End");
     }
 
     public override void OnNetworkSpawn()
@@ -274,7 +287,24 @@ public class MainMenu : NetworkBehaviour
     //Used by UI Button to change the scene
     public void PlayLevelClient(string _sceneName)
     {
-        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+        if(_changingScene) return;
+
+        _changingScene = true;    
+        StartCoroutine(MoveToScene(_sceneName, 1f));
+    }
+
+    IEnumerator MoveToScene(string _sceneName, float _delay)
+    {
+        float elapsed = 0f;
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            cameraCover.color = new Color(0, 0, 0, elapsed / _delay);
+
+            yield return null;
+        }
+
+        cameraCover.color = new Color(0, 0, 0, 1);
         SetNextSceneServerRpc(GetSceneIndex(_sceneName));
     }
 
@@ -289,7 +319,8 @@ public class MainMenu : NetworkBehaviour
     private void PlayLevelServerRpc(string _sceneName)
     {
         if (!NetworkManager.Singleton.IsServer) return;
-
+        
+        cameraCover.color = new Color(0, 0, 0, 1);
         NetworkManager.Singleton.SceneManager.LoadScene(_sceneName, LoadSceneMode.Single);
     }
 

@@ -554,7 +554,7 @@ public class TeleportPad : NetworkBehaviour
     {
         if(!arePadsReady) return;
 
-        exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
+        if(exitTeleportPad != null) exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
         rotateRings = true;
 
         _audioSource.Stop();

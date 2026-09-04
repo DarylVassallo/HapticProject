@@ -60,7 +60,7 @@ public class MenuButtonTrigger : MonoBehaviour
 
             }else if(startGame)
             {
-                EventsManager.PlayLevel("SauronLevelScene");
+                EventsManager.PlayLevel("PlayLevelScene");
             }else if(settings)
             {
                 EventsManager.SetMenu(2);
