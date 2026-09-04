@@ -13,7 +13,9 @@ using System.Collections;
 //This script uses UI buttons to create the host, client, and server for the multiplayer network.
 public class ConnectUIScript : NetworkBehaviour
 {
-    [SerializeField] private GameObject levelCamera;
+    [SerializeField] private bool isMainMenu;
+    private bool _isUsingNetwork;
+
     private MultiplayerData multiplayerData;
     private bool isSceneLoaded = false;
     private bool hasSceneLoaded = false;
@@ -65,7 +67,11 @@ public class ConnectUIScript : NetworkBehaviour
 
     void Start()
     {
-        vrRig.transform.GetChild(0).gameObject.SetActive(false);
+        if(!isMainMenu && !_isUsingNetwork)
+        { 
+            Debug.Log("1 VRRig Child Set to False");
+            vrRig.transform.GetChild(0).gameObject.SetActive(false);
+        }
 
         networkDiscovery = this.GetComponent<NetworkDiscovery>();
         Debug.Log("ConnectUIScript Start");
@@ -78,8 +84,8 @@ public class ConnectUIScript : NetworkBehaviour
         }
         else
         {
-            hostButton.onClick.AddListener(HostButtonClick);
-            clientButton.onClick.AddListener(ClientButtonOnClick);
+            // hostButton.onClick.AddListener(HostButtonClick);
+            // clientButton.onClick.AddListener(ClientButtonOnClick);
 
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -106,6 +112,9 @@ public class ConnectUIScript : NetworkBehaviour
     {
         Debug.Log("ConnectUIScript OnEnable");
         Debug.Log("ConnectUIScript OnEnable NetworkManager.Singleton: " + NetworkManager.Singleton);
+
+        EventsManager.OnClientButton += ClientButtonOnClick;
+        EventsManager.OnHostButton += HostButtonClick;
 
         EventsManager.OnAddPCPlayerBody += CreatePCPlayerBody;
 
@@ -135,25 +144,13 @@ public class ConnectUIScript : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn()
-    {
-        // if (!IsOwner) return;
-
-        Debug.Log("ConnectUIScript OnNetworkSpawn");
-
-        levelCamera.SetActive(false);
-        vrRig.transform.GetChild(0).gameObject.SetActive(true);
-    }
-
-    public override void OnDestroy()
-    {
-        Debug.Log("ConnectUIScript OnDestroy");
-        if (NetworkManager.Singleton != null) NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
-    }
-
     void OnDisable()
     {
         Debug.Log("ConnectUIScript OnDisable");
+
+        EventsManager.OnClientButton -= ClientButtonOnClick;
+        EventsManager.OnHostButton -= HostButtonClick;
+
         if (NetworkManager.Singleton != null)  NetworkManager.Singleton.SceneManager.OnLoadEventCompleted -= SceneLoaded;
 
         EventsManager.OnAddPCPlayerBody -= CreatePCPlayerBody;
@@ -163,6 +160,24 @@ public class ConnectUIScript : NetworkBehaviour
         EventsManager.OnUsingOnlyPCPlayer -= UsingOnlyPCPlayer;
 
         EventsManager.OnSkipTutorial -= SkipTutorial;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        // if (!IsOwner) return;
+        _isUsingNetwork = true;
+
+        if(!isMainMenu)
+        {
+            Debug.Log("1 VRRig Child Set to True");
+            vrRig.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    public override void OnDestroy()
+    {
+        Debug.Log("ConnectUIScript OnDestroy");
+        if (NetworkManager.Singleton != null) NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
     }
 
     private void SkipTutorial()
@@ -256,7 +271,8 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 1");
             SetPCPlayerID(0);
             EventsManager.CreatedPCPlayer();
-            if(_skipTutorial) CreatePCPlayerBody();
+            CreatePCPlayerBody();
+            // if(_skipTutorial) CreatePCPlayerBody();
         }
         else
         {
@@ -401,8 +417,8 @@ public class ConnectUIScript : NetworkBehaviour
         hostButton.transform.parent.gameObject.SetActive(false);
     }
 
-    //Immediately creates a PC Player for the host (used in debugging only)
-    private void DebugStartPCPlayer()
+    //Immediately creates a PC Player for the host (can be triggered using UI buttons)
+    public void DebugStartPCPlayer()
     {
         Debug.Log("ConnectUIScript DebugStartPCPlayer");
 
@@ -427,7 +443,7 @@ public class ConnectUIScript : NetworkBehaviour
     // allowing the client player to recieve and connect
 
     //NetworkManager aspect created using Claude
-    private  void HostButtonClick()
+    public  void HostButtonClick()
     {
         Debug.Log("ConnectUIScript HostButtonClick");
 
@@ -448,7 +464,7 @@ public class ConnectUIScript : NetworkBehaviour
     //Upon clicking the client button, 
     // it creates the client and listens to a particular message being broadcasted by the host, 
     // which helps connect them together
-    private void ClientButtonOnClick()
+    public void ClientButtonOnClick()
     {
         Debug.Log("ConnectUIScript ClientButtonOnClick");
 

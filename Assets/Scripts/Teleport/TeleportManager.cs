@@ -71,6 +71,8 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnTutorialTeleport += TutorialTeleportRpc;
 
         EventsManager.OnDisableTeleportChange += DisableTeleportChange;
+
+        EventsManager.TogglePCTrigger(true);
     }
 
     private void OnDisable()
@@ -113,20 +115,19 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TutorialTeleportRpc()
     {        
-        Debug.Log("tutorialTeleportCount: " + tutorialTeleportCount);
-        Debug.Log("tutorialTeleportPads.Length: " + tutorialTeleportPads.Length);
-
         EventsManager.TogglePCTrigger(false);
+
+        if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, false);
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
             EventsManager.FreezePCPlayer(true);
 
-            if(!IsOwner)
-            {
-                _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
-                _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
-            }
+            // if(!IsOwner)
+            // {
+            _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
+            _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+            // }
 
             tutorialTeleportCount++;
 
@@ -150,7 +151,6 @@ public class TeleportManager : NetworkBehaviour
 
                 StartCoroutine(TutorialTeleportDelay(2f));
             }
-            
         }
         
         if(tutorialTeleportCount == tutorialTeleportPads.Length)
@@ -164,11 +164,7 @@ public class TeleportManager : NetworkBehaviour
 
             EventsManager.FixTeleportEffect(0, true);
 
-            if(IsOwner)
-            {
-                Debug.Log("ReachedSwitches Audio ==== tutorialTeleportCount : " + tutorialTeleportCount + " : tutorialTeleportPads.Length : " + tutorialTeleportPads.Length);
-                EventsManager.ReachedSwitches();
-            }
+            if(IsOwner) EventsManager.ReachedSwitches();
         }
     }
 

@@ -19,7 +19,7 @@ public class HandPresencePhysics : MonoBehaviour
     {
         _currentTargetTransform = handTargetTransform;
 
-        if(Vector3.Distance(_currentTargetTransform.position, this.transform.position) >= 5f)
+        if(Vector3.Distance(_currentTargetTransform.position, this.transform.position) >= 3f)
         {
             this.transform.position = _currentTargetTransform.position;
         }else{

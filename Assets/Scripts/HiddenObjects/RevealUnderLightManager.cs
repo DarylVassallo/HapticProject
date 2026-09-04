@@ -139,7 +139,14 @@ public class RevealUnderLightManager : NetworkBehaviour
 
     private void Update()
     {
-        if(_vrFlashLight == null && GameObject.FindGameObjectWithTag("VRRig") != null)   _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+        // if(_vrFlashLight == null && GameObject.FindGameObjectWithTag("VRRig") != null)   _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+        if(_vrFlashLight == null && GameObject.FindGameObjectWithTag("VRRig") != null)
+        {
+            if(GameObject.FindGameObjectWithTag("VRFlashLight") != null)
+            {
+                _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+            }
+        }
 
         for(int i = 0; i < hiddenObjects.Count; i++)
         {

@@ -15,7 +15,15 @@ using Unity.Netcode;
 //This script controls all the options in the Main Menu
 public class MainMenu : NetworkBehaviour
 {
-    [SerializeField] private TextMeshProUGUI ipText;
+    // [SerializeField] private GameObject temple;
+    [SerializeField] private Material cameraCover;
+    
+    [SerializeField] private Camera vrCamera;
+    [SerializeField] private Camera pcCamera;
+
+    [SerializeField] private Locale engLocale;
+    [SerializeField] private Locale frenchLocale;
+    
     [SerializeField] private GameObject[] menuList;
     [SerializeField] private GameObject[] vrMenuList;
 
@@ -29,8 +37,28 @@ public class MainMenu : NetworkBehaviour
     private NetworkVariable<int> nextScene = new (-1);
     private NetworkVariable<int> menuValue = new (-1);
 
+    private bool _chosePlayer;
+    private bool _prevIsDeviceActive;
+    private bool _currIsDeviceActive;
+
     private void Awake()
     {
+        _chosePlayer = false;
+        _currIsDeviceActive = UnityEngine.XR.XRSettings.isDeviceActive;
+        if(_currIsDeviceActive)
+        {
+            vrCamera.depth = 1;
+            pcCamera.depth = -1;
+        }
+        else
+        {
+            vrCamera.depth = -1;
+            pcCamera.depth = 1;
+        }
+        _prevIsDeviceActive = _currIsDeviceActive;
+
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
+
         for (int i = 0; i < menuList.Length; i++)
         {
             if (i == 0)
@@ -44,6 +72,84 @@ public class MainMenu : NetworkBehaviour
                 vrMenuList[i].SetActive(false);
             }
         }
+    }
+
+    void OnEnable()
+    {
+        EventsManager.OnChosePlayer += ChosePlayer;
+
+        EventsManager.OnSetMenuWithoutNetwork += SetMenuNumberWithoutNetwork;
+        EventsManager.OnSetMenu += SetMenuNumber;
+
+        EventsManager.OnCreatedPCPlayer += RevealTempleServerRpc;
+        EventsManager.OnRevealTemple += RevealTempleServerRpc;
+
+        EventsManager.OnPlayLevel += PlayLevelClient;
+        EventsManager.OnQuit += Quit;
+
+        EventsManager.OnChangeLanguage += ChangeLanguageNum;
+    }
+
+    void OnDisable()
+    {
+        EventsManager.OnChosePlayer -= ChosePlayer;
+
+        EventsManager.OnSetMenuWithoutNetwork -= SetMenuNumberWithoutNetwork;
+        EventsManager.OnSetMenu -= SetMenuNumber;
+
+        EventsManager.OnCreatedPCPlayer -= RevealTempleServerRpc;
+        EventsManager.OnRevealTemple -= RevealTempleServerRpc;
+
+        EventsManager.OnPlayLevel -= PlayLevelClient;
+        EventsManager.OnQuit -= Quit;
+
+        EventsManager.OnChangeLanguage -= ChangeLanguageNum;
+    }
+
+    public void ChosePlayer()
+    {
+        _chosePlayer = true;
+        SetupCamera();
+    }
+
+    private void SetupCamera()
+    {       
+        _currIsDeviceActive = UnityEngine.XR.XRSettings.isDeviceActive;
+
+        if(_prevIsDeviceActive == _currIsDeviceActive) return;
+
+        if(_currIsDeviceActive)
+        {
+            vrCamera.depth = 1;
+            pcCamera.depth = -1;
+        }
+        else
+        {
+            vrCamera.depth = -1;
+            pcCamera.depth = 1;
+        }
+
+        _prevIsDeviceActive = _currIsDeviceActive;
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RevealTempleServerRpc()
+    {
+        Debug.Log("RevealTempleServerRpc");
+        StartCoroutine(ShiftRevealTemple(4f));
+    }
+
+    IEnumerator ShiftRevealTemple(float _delay)
+    {
+        Debug.Log("ShiftRevealTemple: " + _delay);
+        float elapsed = 0f;
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1 - (elapsed / _delay));
+            yield return null;
+        }
+        Debug.Log("ShiftRevealTemple End");
     }
 
     public override void OnNetworkSpawn()
@@ -85,6 +191,8 @@ public class MainMenu : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        if(!_chosePlayer) SetupCamera();
+
         //If required, this causes the credits page for both players to slowly move upwards
         if (isCreditsScrolling)
         {
@@ -127,6 +235,20 @@ public class MainMenu : NetworkBehaviour
         }
     }
 
+
+    private void ChangeLanguageNum(int languageNum)
+    {
+        switch(languageNum)
+        {
+            case 0:
+                ChangeLanguage(engLocale);
+                break;
+            case 1:
+                ChangeLanguage(frenchLocale);
+                break;
+        }
+    }
+
     //Used by UI button to change the language used
     public void ChangeLanguage(Locale targetLocale)
     {
@@ -152,6 +274,7 @@ public class MainMenu : NetworkBehaviour
     //Used by UI Button to change the scene
     public void PlayLevelClient(string _sceneName)
     {
+        cameraCover.color = new Color(cameraCover.color.r, cameraCover.color.g, cameraCover.color.b, 1);
         SetNextSceneServerRpc(GetSceneIndex(_sceneName));
     }
 

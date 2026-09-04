@@ -5,7 +5,6 @@ using Unity.Netcode;
 public class NarratorManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
-    private bool _isPlaying;
 
     private ulong _pcPlayerID;
     private ulong _vrPlayerID;
@@ -31,6 +30,8 @@ public class NarratorManager : NetworkBehaviour
 
     private void Awake()
     {
+        UseEnglishNarrator();
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _pcPlayerID = unchecked((ulong)-1);
@@ -99,12 +100,21 @@ public class NarratorManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void TriggerNarratorAudioRpc(string _currentSection, string _currentAudio, bool _isVRPlayer)
+    public void TriggerNarratorAudioRpc(string _currentSection, string _currentAudio, bool _isVRPlayer, bool _stay)
     {
-        if( _vrPlayerID == unchecked((ulong)-1) && _isVRPlayer || 
-            _pcPlayerID == unchecked((ulong)-1) && !_isVRPlayer ||
-            !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
-            _isVRPlayer && NetworkManager.Singleton.LocalClientId == _pcPlayerID) return;
+        // if( _vrPlayerID == unchecked((ulong)-1) && _isVRPlayer || 
+        //     _pcPlayerID == unchecked((ulong)-1) && !_isVRPlayer ||
+        //     !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
+        //     _isVRPlayer && NetworkManager.Singleton.LocalClientId == _pcPlayerID) return;
+
+        if(_isVRPlayer)
+        {
+            EventsManager.LookAtPlayer(0, _stay);
+        }
+        else
+        {
+            EventsManager.LookAtPlayer(1, _stay);
+        }
 
         for(int i = 0; i < narratorLines.Length; i++)
         {
@@ -113,32 +123,14 @@ public class NarratorManager : NetworkBehaviour
                 for(int j = 0; j < narratorLines[i].narratorAudio.Length; j++)
                 {
                     if(narratorLines[i].narratorAudio[j].audioName == _currentAudio)
-                    {
-                        _audioSource.Stop();
-                        
-                        if(_isEnglish) _audioSource.clip = narratorLines[i].narratorAudio[j].englishAudioClip;
-                        if(_isFrench) _audioSource.clip = narratorLines[i].narratorAudio[j].frenchAudioClip;
-                        
-                        _audioSource.pitch = 1f;
-                        _audioSource.Play();
-                        _isPlaying = true;
-                        _audioSource.enabled = true; 
+                    {                        
+                        if(_isEnglish) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].englishAudioClip);
+                        if(_isFrench) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].frenchAudioClip);
 
                         return;
                     }
                 }
             }
-        }
-    }
-
-    private void Update()
-    {
-        if(!_isPlaying) return;
-
-        if(!_audioSource.isPlaying)
-        {
-            _isPlaying = false;
-            EventsManager.NarratorStopped();
         }
     }
 }

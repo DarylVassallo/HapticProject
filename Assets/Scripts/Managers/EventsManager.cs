@@ -34,6 +34,11 @@ public class EventsManager : MonoBehaviour
 
 
     //Network Events=============================================
+    public static event Action OnClientButton;
+    public static void ClientButton() => OnClientButton?.Invoke();
+    public static event Action OnHostButton;
+    public static void HostButton() => OnHostButton?.Invoke();
+
     public static event Action OnCreatedPCPlayer;
     public static void CreatedPCPlayer() => OnCreatedPCPlayer?.Invoke();
     public static event Action OnAddPCPlayerBody;
@@ -47,6 +52,30 @@ public class EventsManager : MonoBehaviour
     public static void SetPCPlayerID(ulong _clientID) => OnSetPCPlayerID?.Invoke(_clientID);
     public static event Action<ulong> OnSetVRPlayerID;
     public static void SetVRPlayerID(ulong _clientID) => OnSetVRPlayerID?.Invoke(_clientID);
+
+
+
+
+
+    //MainMenu Events=============================================
+    public static event Action OnChosePlayer;
+    public static void ChosePlayer() => OnChosePlayer?.Invoke();
+
+    public static event Action<int> OnSetMenuWithoutNetwork;
+    public static void SetMenuWithoutNetwork(int _menuNum) => OnSetMenuWithoutNetwork?.Invoke(_menuNum);
+    public static event Action<int> OnSetMenu;
+    public static void SetMenu(int _menuNum) => OnSetMenu?.Invoke(_menuNum);
+
+    public static event Action<string> OnPlayLevel;
+    public static void PlayLevel(string _sceneName) => OnPlayLevel?.Invoke(_sceneName);
+    public static event Action OnQuit;
+    public static void Quit() => OnQuit?.Invoke();
+
+    public static event Action OnRevealTemple;
+    public static void RevealTemple() => OnRevealTemple?.Invoke();
+
+    public static event Action<int> OnChangeLanguage;
+    public static void ChangeLanguage(int _languageNum) => OnChangeLanguage?.Invoke(_languageNum);
 
 
 
@@ -79,8 +108,8 @@ public class EventsManager : MonoBehaviour
     
     public static event Action<GameObject, int> OnGetAppropriateEnemyAudio;
     public static void GetAppropriateEnemyAudio(GameObject _enemy, int _audioType) => OnGetAppropriateEnemyAudio?.Invoke(_enemy, _audioType);
-    public static event Action<GameObject, AudioClip> OnSendAppropriateEnemyAudio;
-    public static void SendAppropriateEnemyAudio(GameObject _enemy, AudioClip _audio) => OnSendAppropriateEnemyAudio?.Invoke(_enemy, _audio);
+    public static event Action<GameObject, AudioClip, int> OnSendAppropriateEnemyAudio;
+    public static void SendAppropriateEnemyAudio(GameObject _enemy, AudioClip _audio, int _audioNum) => OnSendAppropriateEnemyAudio?.Invoke(_enemy, _audio, _audioNum);
 
     public static event Action OnDisableEnemies;
     public static void DisableEnemies() => OnDisableEnemies?.Invoke();
@@ -298,8 +327,8 @@ public class EventsManager : MonoBehaviour
 
 
     //NarratorManager Events=============================================
-    public static event Action<string, string, bool> OnTriggerNarratorAudio;
-    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer);
+    public static event Action<string, string, bool, bool> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer, bool _stay) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer, _stay);
     public static event Action OnNarratorStopped;
     public static void NarratorStopped() => OnNarratorStopped?.Invoke();
     public static event Action<bool> OnTogglePauseManagerAudio;
@@ -309,6 +338,11 @@ public class EventsManager : MonoBehaviour
     public static void UseEnglishNarrator() => OnUseEnglishNarrator?.Invoke();
     public static event Action OnUseFrenchNarrator;
     public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
+
+    public static event Action<int, bool> OnLookAtPlayer;
+    public static void LookAtPlayer(int _playerNum, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _stay);
+    public static event Action<AudioClip> OnNarratorSays;
+    public static void NarratorSays(AudioClip _clip) => OnNarratorSays?.Invoke(_clip);
 
 
 

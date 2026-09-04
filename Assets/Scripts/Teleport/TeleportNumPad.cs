@@ -58,11 +58,13 @@ public class TeleportNumPad : NetworkBehaviour
 
 
         rbRopeHandle = ropeHandle.GetComponent<Rigidbody>();
+        rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
+
         pullRope = true;
         originalRopeHandlePosition = ropeHandle.position;
 
         maxDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
-        prevDistance = maxDistance;
+        prevDistance = maxDistance;        
     }
 
     private void OnEnable()

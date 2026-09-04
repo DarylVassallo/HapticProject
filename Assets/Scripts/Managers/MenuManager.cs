@@ -251,6 +251,7 @@ public class MenuManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ToggleGameOverMenuRpc(bool _toggle)
     {
+        Debug.Log("ToggleGameOverMenuRpc: " + _toggle);
         _showGameOverMenu = _toggle;
 
         for (int i = 0; i < gameOverMenu.transform.childCount; i++)
