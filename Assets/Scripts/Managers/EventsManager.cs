@@ -327,8 +327,8 @@ public class EventsManager : MonoBehaviour
 
 
     //NarratorManager Events=============================================
-    public static event Action<string, string, bool, bool> OnTriggerNarratorAudio;
-    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer, bool _stay) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer, _stay);
+    public static event Action<string, string, bool, int, bool> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer, int _lookAt, bool _stay) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer, _lookAt, _stay);
     public static event Action OnNarratorStopped;
     public static void NarratorStopped() => OnNarratorStopped?.Invoke();
     public static event Action<bool> OnTogglePauseManagerAudio;
@@ -339,8 +339,8 @@ public class EventsManager : MonoBehaviour
     public static event Action OnUseFrenchNarrator;
     public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
 
-    public static event Action<int, bool> OnLookAtPlayer;
-    public static void LookAtPlayer(int _playerNum, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _stay);
+    public static event Action<int, int, bool> OnLookAtPlayer;
+    public static void LookAtPlayer(int _playerNum, int _lookAt, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _lookAt, _stay);
     public static event Action<AudioClip> OnNarratorSays;
     public static void NarratorSays(AudioClip _clip) => OnNarratorSays?.Invoke(_clip);
 
@@ -368,4 +368,12 @@ public class EventsManager : MonoBehaviour
     //Ending Events=============================================
     public static event Action<bool> OnEnteredTemple;
     public static void EnteredTemple(bool _toggle) => OnEnteredTemple?.Invoke(_toggle);
+
+
+
+
+
+    //StoryBoard Events=============================================
+    public static event Action OnStartStoryBoard;
+    public static void StartStoryBoard() => OnStartStoryBoard?.Invoke();
 }

@@ -60,7 +60,8 @@ public class MenuButtonTrigger : MonoBehaviour
 
             }else if(startGame)
             {
-                EventsManager.PlayLevel("PlayLevelScene");
+                EventsManager.StartStoryBoard();
+                // EventsManager.PlayLevel("PlayLevelScene");
             }else if(settings)
             {
                 EventsManager.SetMenu(2);

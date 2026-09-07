@@ -17,6 +17,7 @@ public class MainMenu : NetworkBehaviour
 {
     // [SerializeField] private GameObject temple;
     [SerializeField] private Material cameraCover;
+    [SerializeField] private Material handMaterial;
     [SerializeField] private Transform vrCoverParent;
     private Renderer[] vrCovers;
     
@@ -36,8 +37,8 @@ public class MainMenu : NetworkBehaviour
 
     private bool isCreditsScrolling;
 
-    private NetworkVariable<int> nextScene = new (-1);
-    private NetworkVariable<int> menuValue = new (-1);
+    private NetworkVariable<int> nextScene = new (-99);
+    private NetworkVariable<int> menuValue = new (-99);
 
     private bool _chosePlayer;
     private bool _prevIsDeviceActive;
@@ -63,6 +64,7 @@ public class MainMenu : NetworkBehaviour
         _prevIsDeviceActive = _currIsDeviceActive;
 
         cameraCover.color = new Color(0, 0, 0, 0);
+        handMaterial.color = new Color(0, 0, 0, 0);
 
         vrCovers = new Renderer[vrCoverParent.childCount];
         for (int i = 0; i < vrCoverParent.childCount; i++)
@@ -477,7 +479,7 @@ public class MainMenu : NetworkBehaviour
 
     //Shows the chosen menu for both players
     private void SetCurrentMenuNumber(int _menuNum)
-    {        
+    {     
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 

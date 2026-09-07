@@ -25,6 +25,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ALPHAMODULATE_ON
   - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - _BUILTIN_SURFACE_TYPE_TRANSPARENT
@@ -35,9 +36,9 @@ Material:
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses:
-  - DepthOnly
-  - MOTIONVECTORS
   - SHADOWCASTER
+  - MOTIONVECTORS
+  - DepthOnly
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -100,11 +101,11 @@ Material:
     - _BUILTIN_ZTest: 4
     - _BUILTIN_ZWrite: 0
     - _BUILTIN_ZWriteControl: 0
-    - _Blend: 0
+    - _Blend: 3
     - _CastShadows: 0
     - _Cull: 2
-    - _DstBlend: 10
-    - _DstBlendAlpha: 10
+    - _DstBlend: 0
+    - _DstBlendAlpha: 1
     - _EdgeHighlightPower: 11.37
     - _FadeSize: 0.02
     - _FadeStart: 0.12
@@ -130,8 +131,8 @@ Material:
     - _QueueControl: 1
     - _QueueOffset: 0
     - _Scale: 0.16
-    - _SrcBlend: 5
-    - _SrcBlendAlpha: 1
+    - _SrcBlend: 2
+    - _SrcBlendAlpha: 0
     - _Surface: 1
     - _TransitionSize: 0.1
     - _WristRange: 0.06
@@ -151,7 +152,7 @@ Material:
     - Vector2_35ca599ce1fc4a0e9beb6851331d34d0: {r: 1, g: 1, b: 1, a: 1}
     - Vector4_a181cf55d95248cd8de84bc8794fab43: {r: 0, g: 0, b: 0, a: 0}
     - Vector4_b4ecd630827d4a4eb3f21c6ac3664540: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.78039217}
+    - _Color: {r: 0, g: 0, b: 0, a: 0}
     - _ColorBottom: {r: 0.12156857, g: 0.12549016, b: 0.12941167, a: 1}
     - _ColorTop: {r: 0.19607836, g: 0.20392147, b: 0.21176466, a: 1}
     - _Color_1: {r: 0, g: 0, b: 0, a: 0.5803922}

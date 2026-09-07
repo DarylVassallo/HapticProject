@@ -5,37 +5,127 @@ using UnityEngine.UI;
 
 public class StoryBoard : MonoBehaviour
 {
-    [SerializeField] private Transform storyBoardParent;
-    private Image[] _storyBoard;
+    private bool _playStoryBoard;
+
+    [SerializeField] private AudioClip[] _storyBoardAudioClips;
+    private AudioSource _audioSource;
+
+    [SerializeField] private Transform pcStoryBoardParent;
+    private Image[] _pcStoryBoard;
+    [SerializeField] private Transform vrStoryBoardParent;
+    private SpriteRenderer[] _vrStoryBoard;
+
     private int _currentStory;
+    private int _maxStoryNum;
 
     private void Awake()
     {
-        _currentStory = 0;
-        _storyBoard = new Image[storyBoardParent.childCount];
-        for (int i = 0; i < storyBoardParent.childCount; i++)
-        {
-            _storyBoard[i] = storyBoardParent.GetChild(i).GetComponent<Image>();
-            _storyBoard[i].color = new Color(1, 1, 1, 0);
-        } 
+        _playStoryBoard = false;
+        _audioSource = this.gameObject.GetComponent<AudioSource>();
 
-        StartCoroutine(ShowStory(1f, _currentStory));
+        _currentStory = 0;
+        _maxStoryNum = pcStoryBoardParent.childCount;
+
+        _pcStoryBoard = new Image[pcStoryBoardParent.childCount];
+        for (int i = 0; i < pcStoryBoardParent.childCount; i++)
+        {
+            _pcStoryBoard[i] = pcStoryBoardParent.GetChild(i).GetComponent<Image>();
+            _pcStoryBoard[i].color = new Color(1, 0, 0, 0);
+        } 
+        pcStoryBoardParent.gameObject.SetActive(false);
+
+        _vrStoryBoard = new SpriteRenderer[vrStoryBoardParent.childCount];
+        for (int i = 0; i < vrStoryBoardParent.childCount; i++)
+        {
+            _vrStoryBoard[i] = vrStoryBoardParent.GetChild(i).GetComponent<SpriteRenderer>();
+            _vrStoryBoard[i].color = new Color(1, 0, 0, 0);
+        } 
+        vrStoryBoardParent.gameObject.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        EventsManager.OnStartStoryBoard += StartStoryBoard;
+    }
+
+    void OnDisable()
+    {
+        EventsManager.OnStartStoryBoard -= StartStoryBoard;
+    }
+
+    //Can be used by UI Buttons
+    public void StartStoryBoard()
+    {
+        EventsManager.SetMenu(-1);
+
+        pcStoryBoardParent.gameObject.SetActive(true);
+        vrStoryBoardParent.gameObject.SetActive(true);
+
+        _playStoryBoard = true;
     }
 
     IEnumerator ShowStory(float _delay, int _storyNum)
     {
-        Debug.Log("ShowStory: " + _storyNum);
+        Debug.Log("_storyNum: " + _storyNum);
+        Debug.Log("_maxStoryNum: " + _maxStoryNum);
+        _audioSource.clip = _storyBoardAudioClips[_storyNum];
+        _audioSource.Play(); 
+
         float elapsed = 0f;
         while(elapsed < _delay)
         {
             elapsed += Time.deltaTime;
-            Debug.Log("_storyBoard[" + _storyNum + "]: " + _storyBoard[_storyNum]);
-            _storyBoard[_storyNum].color = new Color(1, 1, 1, elapsed / _delay);
+            _pcStoryBoard[_storyNum].color = new Color(1, 0, 0, elapsed / _delay);
+            _vrStoryBoard[_storyNum].color = new Color(1, 0, 0, elapsed / _delay);
             yield return null;
         }
 
-        _storyBoard[_storyNum].color = new Color(1, 1, 1, 1);
+        _pcStoryBoard[_storyNum].color = new Color(1, 0, 0, 1);
+        _vrStoryBoard[_storyNum].color = new Color(1, 0, 0, 1);
+
         _currentStory++;
-        StartCoroutine(ShowStory(1f, _currentStory));
+    }
+
+    IEnumerator HideStories(float _delay)
+    {
+        _audioSource.clip = _storyBoardAudioClips[pcStoryBoardParent.childCount - 1];
+        _audioSource.Play(); 
+
+        float elapsed = 0f;
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+
+            for (int i = 0; i < pcStoryBoardParent.childCount; i++)
+            {
+                _pcStoryBoard[i].color = new Color(1, 0, 0, 1f - (elapsed / _delay));
+                _vrStoryBoard[i].color = new Color(1, 0, 0, 1f - (elapsed / _delay));
+            } 
+
+            yield return null;
+        }
+
+        for (int i = 0; i < pcStoryBoardParent.childCount; i++)
+        {
+            _pcStoryBoard[i].color = new Color(1, 0, 0, 0f);
+            _vrStoryBoard[i].color = new Color(1, 0, 0, 0f);
+        } 
+
+        _currentStory++;
+    }
+
+    private void Update()
+    {
+        if(!_playStoryBoard || _audioSource.isPlaying) return;
+
+        if(_currentStory > _maxStoryNum)
+        {
+            _playStoryBoard = false;
+            EventsManager.PlayLevel("PlayLevelScene");
+        }else if(_currentStory == _maxStoryNum){
+            StartCoroutine(HideStories(1f));   
+        }else{
+            StartCoroutine(ShowStory(1f, _currentStory));   
+        }
     }
 }

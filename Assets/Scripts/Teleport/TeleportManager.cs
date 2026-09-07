@@ -117,7 +117,7 @@ public class TeleportManager : NetworkBehaviour
     {        
         EventsManager.TogglePCTrigger(false);
 
-        if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, false);
+        if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, -1, false);
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
