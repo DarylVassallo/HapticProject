@@ -18,10 +18,13 @@ public class NarratorMovement : NetworkBehaviour
     [SerializeField] private Renderer eyeRingRenderer;
 
     private bool _canFlicker;
+
+    [Header("Materials")]
     [SerializeField] private Material irisMaterial;
     [SerializeField] private Material irisOffMaterial;
     [SerializeField] private Material silentMaterial;
     [SerializeField] private Material loudMaterial;
+    [SerializeField] private Material visionMaterial;
 
     [SerializeField] private Transform _moveTarget;
     [SerializeField] private Transform _angleTarget;
@@ -52,10 +55,19 @@ public class NarratorMovement : NetworkBehaviour
     private float _distance;
     private bool _canCollide;
 
+    private ParticleSystem _particle;
+
     private void Awake()
     {
+        _particle = this.GetComponent<ParticleSystem>();
+
+        Color colour = visionMaterial.color;
+        colour.a = 0;
+        visionMaterial.color = colour;  
+
         _canCollide = true;
         this.GetComponent<Collider>().enabled = true;
+        _particle.Stop();
 
         _canFlicker = true;
 
@@ -119,6 +131,8 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void LookAtPlayerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
+        bool _showVision = false;
+
         switch(_playerNum)
         {
             case -1:
@@ -130,6 +144,7 @@ public class NarratorMovement : NetworkBehaviour
                 _moveTarget = _vrViewPoint;
                 _angleTarget = _vrViewPoint;
                 _lookAround = false;
+                _showVision = false;
 
                 _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
                 break;
@@ -138,6 +153,7 @@ public class NarratorMovement : NetworkBehaviour
                 _moveTarget = _pcViewPoint;
                 _angleTarget = _pcViewPoint;
                 _lookAround = false;
+                _showVision = false;
 
                 _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
                 break;
@@ -147,18 +163,49 @@ public class NarratorMovement : NetworkBehaviour
         {
             case 0:
                 _angleTarget = _roofViewPoint;
+                _showVision = true;
                 break;
             case 1:
                 _angleTarget = _tutorialExitViewPoint;
+                _showVision = true;
                 break;
+        }
+
+        if(_showVision)
+        {
+            StartCoroutine(ChangeVision(1f, 1f));
+        }
+        else
+        {
+            StartCoroutine(ChangeVision(1f, 0f));
         }
 
         _stayWithPlayer = _stay;
     }
 
+    IEnumerator ChangeVision(float _delay, float _requiredAlpha)
+    {
+        if(visionMaterial.color.a != _requiredAlpha)
+        {
+            float elapsed = 0f;
+            while(elapsed < _delay)
+            {
+                elapsed += Time.deltaTime;
+                
+                Color colour = visionMaterial.color;
+                colour.a = _requiredAlpha * (elapsed / _delay);
+                visionMaterial.color = colour;           
+
+                yield return null;
+            }
+        }
+    }
+
     IEnumerator ChangeFocus(float delay)
     {
         this.GetComponent<Collider>().enabled = true;
+        _particle.Stop();
+
         bool _foundTarget = false;
         do
         {
@@ -191,6 +238,7 @@ public class NarratorMovement : NetworkBehaviour
 
     private void NarratorSays(AudioClip _clip)
     {
+        _isPlaying = false;
         _audioSource.Stop();
         _audioSource.clip = _clip;
         _audioSource.pitch = 1f;
@@ -217,6 +265,7 @@ public class NarratorMovement : NetworkBehaviour
         if(!_isPlaying)
         {
             _angleTarget = _moveTarget;
+            StartCoroutine(ChangeVision(1f, 0f));
             return;
         }
 
@@ -278,29 +327,43 @@ public class NarratorMovement : NetworkBehaviour
         _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
         float _force = 1f;
 
-        if(_distance >= 10f)
+        if(!_canCollide)
         {
             Vector3 direction = _moveTarget.position - transform.position;
-            _rb.AddForce(direction * _force, ForceMode.Force);
-            _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
-
-            if((_prevDistance - _distance) <= 1 && _canCollide)
+            _rb.AddForce(direction * _force * 10, ForceMode.Force);
+            _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f * 10f);
+        }else{
+            if(_distance >= 10f)
             {
-                Debug.Log("(_prevDistance - _distance): " + (_prevDistance - _distance));
-                StartCoroutine(DisableCollision(0.5f));
+                Vector3 direction = _moveTarget.position - transform.position;
+
+                if(_canCollide)
+                {
+                    _rb.AddForce(direction * _force, ForceMode.Force);
+                    _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+                }
+
+                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide)
+                {
+                    StartCoroutine(DisableCollision(0.4f));
+                }
             }
-        }
-        else if(_distance < 6f)
-        {
-            Vector3 direction = transform.position - _moveTarget.position;
-            _rb.AddForce(direction * _force, ForceMode.Force);
-            _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
-        }
-        else
-        {
-            if(!this.GetComponent<Collider>().enabled) this.GetComponent<Collider>().enabled = true;
-            
-            if(_speakToPlayer) PlayerNarratorAudio();
+            else if(_distance < 6f)
+            {
+                Vector3 direction = transform.position - _moveTarget.position;
+                _rb.AddForce(direction * _force, ForceMode.Force);
+                _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+            }
+            else
+            {
+                if(!this.GetComponent<Collider>().enabled)
+                {
+                    this.GetComponent<Collider>().enabled = true;
+                    _particle.Stop();
+                }
+                
+                if(_speakToPlayer) PlayerNarratorAudio();
+            }
         }
 
         _prevDistance = _distance;
@@ -310,11 +373,13 @@ public class NarratorMovement : NetworkBehaviour
     {
         _canCollide = false;
         this.GetComponent<Collider>().enabled = false;
+        _particle.Play();
 
         yield return new WaitForSeconds(delay);
 
         _canCollide = true;
         this.GetComponent<Collider>().enabled = true;
+        _particle.Stop();
     }
 
     private void RotateRings()

@@ -118,28 +118,28 @@ public class ControllerManager : NetworkBehaviour
     public void ActivateLeftHandRpc()
     {
         SetIsLeftHandActiveServerRpc(true);
-        ToggleControllers(0, true);
+        ToggleControllers(0, true, true);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateLeftControllerRpc()
     {
         SetIsLeftControllerActiveServerRpc(true);
-        ToggleControllers(1, true);
+        ToggleControllers(1, true, true);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateRightHandRpc()
     {
         SetIsRightHandActiveServerRpc(true);
-        ToggleControllers(2, true);
+        ToggleControllers(2, true, false);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateRightControllerRpc()
     {
         SetIsRightControllerActiveServerRpc(true);
-        ToggleControllers(3, true);
+        ToggleControllers(3, true, false);
     }
 
 
@@ -178,29 +178,41 @@ public class ControllerManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateLeftHandRpc()
     {
-        ToggleControllers(0, false);
+        ToggleControllers(0, false, false);
+        ToggleControllers(1, true, true);
+        ToggleControllers(2, false, false);
+        ToggleControllers(3, true, false);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateLeftControllerRpc()
     {
-        ToggleControllers(1, false);
+        ToggleControllers(0, true, true);
+        ToggleControllers(1, false, false);
+        ToggleControllers(2, true, false);
+        ToggleControllers(3, false, false);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateRightHandRpc()
     {
-        ToggleControllers(2, false);
+        ToggleControllers(0, false, false);
+        ToggleControllers(1, true, true);
+        ToggleControllers(2, false, false);
+        ToggleControllers(3, true, false);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void DeactivateRightControllerRpc()
     {
-        ToggleControllers(3, false);
+        ToggleControllers(0, true, true);
+        ToggleControllers(1, false, false);
+        ToggleControllers(2, true, false);
+        ToggleControllers(3, false, false);
     }
 
     //Deactivates controllers if alternate controllers are used (for example, the Left Controller will be deactivated, if the Left Hand is activated)
-    private void ToggleControllers(int _controllerNum, bool _activate)
+    private void ToggleControllers(int _controllerNum, bool _activate, bool _changeVRFlashlight)
     {
         controllers[_controllerNum].SetActive(_activate);
         activeControllers[_controllerNum] = _activate;
@@ -216,6 +228,10 @@ public class ControllerManager : NetworkBehaviour
         }
 
         EventsManager.ChangedControllers();
+
+        if(_changeVRFlashlight) EventsManager.UpdateVRFlashlight();
+
+        Debug.Log("GameObject.FindGameObjectWithTag(VRFlashLight): " + GameObject.FindGameObjectWithTag("VRFlashLight"));
     }
 
     //Deactivates / Activates all controllers

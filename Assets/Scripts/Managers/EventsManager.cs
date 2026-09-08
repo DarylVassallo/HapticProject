@@ -300,6 +300,8 @@ public class EventsManager : MonoBehaviour
     public static void ActivateController(int controllerNum) => OnActivateController?.Invoke(controllerNum);
     public static event Action<int> OnDeactivateController;
     public static void DeactivateController(int controllerNum) => OnDeactivateController?.Invoke(controllerNum);
+    public static event Action OnUpdateVRFlashlight;
+    public static void UpdateVRFlashlight() => OnUpdateVRFlashlight?.Invoke();
 
 
 
