@@ -378,4 +378,18 @@ public class EventsManager : MonoBehaviour
     //StoryBoard Events=============================================
     public static event Action OnStartStoryBoard;
     public static void StartStoryBoard() => OnStartStoryBoard?.Invoke();
+
+
+
+
+
+    //Haptic Events=============================================
+    public static event Action<int> OnPingVRController;
+    public static void PingVRController(int _controllerNum) => OnPingVRController?.Invoke(_controllerNum);
+    public static event Action<bool> OnUseEnemyHaptic;
+    public static void UseEnemyHaptic(bool _useHaptic) => OnUseEnemyHaptic?.Invoke(_useHaptic);
+    public static event Action<float> OnUseBridgeHaptic;
+    public static void UseBridgeHaptic(float _bridgeMovementAmount) => OnUseBridgeHaptic?.Invoke(_bridgeMovementAmount);
+    public static event Action<int, float> OnUseRopeHaptic;
+    public static void UseRopeHaptic(int _controllerNum, float _ropeDistance) => OnUseRopeHaptic?.Invoke(_controllerNum, _ropeDistance);
 }

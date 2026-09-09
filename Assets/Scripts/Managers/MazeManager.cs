@@ -184,6 +184,8 @@ public class MazeManager : NetworkBehaviour
         {
             CheckSpinWheel();
 
+            if(spinWheelKnobValueDiff != 0) EventsManager.UseBridgeHaptic(spinWheelKnobValueDiff);
+
             for(int i = 0; i < rotateBridges.Length; i++)
             {
                 rotateBridges[i].Rotate(0.0f, spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);

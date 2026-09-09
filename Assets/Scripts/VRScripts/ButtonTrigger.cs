@@ -18,6 +18,14 @@ public class ButtonTrigger : MonoBehaviour
     {
         if(_canBePressed && (_other.gameObject.layer == LayerMask.NameToLayer("LeftHandPhysics") || _other.gameObject.layer == LayerMask.NameToLayer("RightHandPhysics")))
         {
+            if(_other.gameObject.layer == LayerMask.NameToLayer("LeftHandPhysics"))
+            {
+                EventsManager.PingVRController(0);
+            }else if(_other.gameObject.layer == LayerMask.NameToLayer("RightHandPhysics"))
+            {
+                EventsManager.PingVRController(1);
+            }
+
             _enteredCollider = _other;
             _canBePressed = false;
 

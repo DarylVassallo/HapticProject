@@ -7,6 +7,10 @@ using UnityEngine.XR.Content.Interaction;
 
 using Unity.Netcode;
 
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+
 public class TeleportNumPad : NetworkBehaviour
 {
     private bool isInNetwork;
@@ -29,6 +33,7 @@ public class TeleportNumPad : NetworkBehaviour
     [SerializeField] private Transform ropeHandleEndPoint;
     private Rigidbody rbRopeHandle;
     private bool pullRope;
+    private int pullingController;
     private Vector3 originalRopeHandlePosition;
     private float minDistance;
     private float maxDistance;
@@ -58,9 +63,12 @@ public class TeleportNumPad : NetworkBehaviour
 
 
         rbRopeHandle = ropeHandle.GetComponent<Rigidbody>();
-        rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
 
         pullRope = true;
+        rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
+
+        pullingController = -1;
+
         originalRopeHandlePosition = ropeHandle.position;
 
         maxDistance = Vector3.Distance(ropeHandle.position, ropeHandleEndPoint.position);
@@ -172,25 +180,38 @@ public class TeleportNumPad : NetworkBehaviour
         }
         prevDistance = currDistance;
 
-        if(!pullRope) return;
-
-        if(ropeHandle.position.x >= originalRopeHandlePosition.x)
+        if(!pullRope)
         {
-            pullRope = false;
-            rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
+            EventsManager.UseRopeHaptic(pullingController, 1f - (currDistance / maxDistance));
+        }else{
+            if(Vector3.Distance(ropeHandle.position, originalRopeHandlePosition) <= 0.5f)
+            {
+                pullRope = false;
+                rbRopeHandle.constraints = RigidbodyConstraints.FreezePosition;
+            }
+            
+            rbRopeHandle.linearVelocity = new Vector3(0, 20f * (1f - (currDistance / maxDistance)), 20f * (1f - (currDistance / maxDistance)));
         }
-        
-        rbRopeHandle.linearVelocity = new Vector3(2, 0, 0);
     }
 
-    public void GrabbedRope()
+    public void GrabbedRope(SelectEnterEventArgs args)
     {
-        rbRopeHandle.constraints = RigidbodyConstraints.None;
+        if (args.interactorObject.transform.CompareTag("LeftHandInteractor"))
+        {
+            pullingController = 0;
+        }else if (args.interactorObject.transform.CompareTag("RightHandInteractor"))
+        {
+            pullingController = 1;
+        }
+
         pullRope = false;
+        rbRopeHandle.constraints = RigidbodyConstraints.None;
     }
     
-    public void ReleasedRope()
+    public void ReleasedRope(SelectExitEventArgs args)
     {
-        pullRope = true;        
+        Debug.Log("Released by: " + args.interactorObject.transform.name);
+        pullRope = true;  
+        pullingController = -1;      
     }
 }

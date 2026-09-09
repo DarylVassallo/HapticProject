@@ -152767,6 +152767,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1205154668562486298, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3245496379
@@ -152915,6 +152919,10 @@ PrefabInstance:
       propertyPath: m_OnLeverDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6140369516414695376, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 64ad62f44531ed64b8409f9af3e74b8e, type: 2}
     - target: {fileID: 7459442142708147920, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_Name
       value: Lever (1)
@@ -152923,6 +152931,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: -0.4226183
       objectReference: {fileID: 0}
+    - target: {fileID: 8308623747617481061, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -154884,6 +154896,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1205154668562486298, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3173085548
@@ -155032,6 +155048,10 @@ PrefabInstance:
       propertyPath: m_OnLeverDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6140369516414695376, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 64ad62f44531ed64b8409f9af3e74b8e, type: 2}
     - target: {fileID: 7459442142708147920, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_Name
       value: Lever (2)
@@ -155040,6 +155060,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: -0.4226183
       objectReference: {fileID: 0}
+    - target: {fileID: 8308623747617481061, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -155870,6 +155894,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1205154668562486298, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 2340085160
@@ -156018,6 +156046,10 @@ PrefabInstance:
       propertyPath: m_OnLeverDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6140369516414695376, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 64ad62f44531ed64b8409f9af3e74b8e, type: 2}
     - target: {fileID: 7459442142708147920, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_Name
       value: Lever (3)
@@ -156026,6 +156058,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: -0.4226183
       objectReference: {fileID: 0}
+    - target: {fileID: 8308623747617481061, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -156403,6 +156439,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1205154668562486298, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 3617566105
@@ -156543,6 +156583,10 @@ PrefabInstance:
       propertyPath: m_OnLeverDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6140369516414695376, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 64ad62f44531ed64b8409f9af3e74b8e, type: 2}
     - target: {fileID: 7459442142708147920, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_Name
       value: Lever (0)
@@ -156551,6 +156595,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: -0.4226183
       objectReference: {fileID: 0}
+    - target: {fileID: 8308623747617481061, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -156748,6 +156796,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1205154668562486298, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     - target: {fileID: 2496538588462697205, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 650431130
@@ -156896,6 +156948,10 @@ PrefabInstance:
       propertyPath: m_OnLeverDeactivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 6140369516414695376, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 64ad62f44531ed64b8409f9af3e74b8e, type: 2}
     - target: {fileID: 7459442142708147920, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
       propertyPath: m_Name
       value: Lever (4)
@@ -156904,6 +156960,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.x
       value: -0.4226183
       objectReference: {fileID: 0}
+    - target: {fileID: 8308623747617481061, guid: a1e09b6e9e46e8046a6d7279857c1a9f, type: 3}
+      propertyPath: m_AffordanceThemeDatum.m_Variable
+      value: 
+      objectReference: {fileID: 11400000, guid: 4b1e63e72a9ae234093697f61c2c70b8, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
