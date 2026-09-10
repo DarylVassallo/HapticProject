@@ -8,6 +8,9 @@ public class TeleportManager : NetworkBehaviour
 {
     private bool isInNetwork;
 
+    [SerializeField] private Transform bubble;
+    private Material _bubbleMaterial;
+
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
     private bool _isEverythingCollected;
@@ -55,6 +58,7 @@ public class TeleportManager : NetworkBehaviour
     private void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+        _bubbleMaterial = bubble.GetComponent<Renderer>().material;
     }
     
     private void OnEnable()
@@ -127,6 +131,9 @@ public class TeleportManager : NetworkBehaviour
             // {
             _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
             _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+
+            bubble.position = tutorialTeleportPads[tutorialTeleportCount].position;
+            bubble.rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
             // }
 
             tutorialTeleportCount++;
@@ -180,6 +187,23 @@ public class TeleportManager : NetworkBehaviour
             {
                 EventsManager.FixTeleportEffect(0, true);
             } else {
+                float _newScale = Mathf.Lerp(
+                    40f,
+                    4f,
+                    1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+                );
+                bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+                float _newAlpha = Mathf.Lerp(
+                    0f,
+                    1f,
+                    1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+                );
+                Color colour = _bubbleMaterial.color;
+                colour.g = 1 - _newAlpha;
+                colour.a = _newAlpha;
+                _bubbleMaterial.color = colour;
+                
                 EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
             }
 

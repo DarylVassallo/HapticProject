@@ -159,14 +159,58 @@ public class TeleportNumPad : NetworkBehaviour
 
     public void ActivateLever(int _leverIndex)
     {
+        Debug.Log("Activate lever");
         activeLevers[_leverIndex] = true;
         EventsManager.ActivateLever(_leverIndex);
+
+        if(pullingController == 0)
+        {
+            EventsManager.PingVRController(0);
+        }else if(pullingController == 1)
+        {
+            EventsManager.PingVRController(1);
+        }
     }
 
     public void DeactivateLever(int _leverIndex)
     {
+        Debug.Log("Deactivate lever");
         activeLevers[_leverIndex] = false;
         EventsManager.DeactivateLever(_leverIndex);
+
+        if(pullingController == 0)
+        {
+            EventsManager.PingVRController(0);
+        }else if(pullingController == 1)
+        {
+            EventsManager.PingVRController(1);
+        }
+    }
+
+    public void GrabbedLever(SelectEnterEventArgs args)
+    {
+        Debug.Log("grabbed lever using: " + args.interactorObject.transform.name);
+
+        if (args.interactorObject.transform.CompareTag("LeftHandInteractor"))
+        {
+            pullingController = 0;
+        }else if (args.interactorObject.transform.CompareTag("RightHandInteractor"))
+        {
+            pullingController = 1;
+        }
+    }
+    
+    public void ReleasedLever(SelectExitEventArgs args)
+    {
+        Debug.Log("released lever using: " + args.interactorObject.transform.name); 
+
+        if (args.interactorObject.transform.CompareTag("LeftHandInteractor"))
+        {
+            pullingController = 0;
+        }else if (args.interactorObject.transform.CompareTag("RightHandInteractor"))
+        {
+            pullingController = 1;
+        }    
     }
 
     private void FixedUpdate()
@@ -210,7 +254,6 @@ public class TeleportNumPad : NetworkBehaviour
     
     public void ReleasedRope(SelectExitEventArgs args)
     {
-        Debug.Log("Released by: " + args.interactorObject.transform.name);
         pullRope = true;  
         pullingController = -1;      
     }

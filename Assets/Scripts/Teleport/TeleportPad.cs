@@ -27,6 +27,9 @@ public class TeleportPad : NetworkBehaviour
 
     private bool rotateRings = false;
 
+    [SerializeField] private Transform bubble;
+    private Material _bubbleMaterial;
+
     [SerializeField] private Transform ring;
     [SerializeField] private Transform reverseRing;
     private float rotateSpeed = 1f;
@@ -90,6 +93,13 @@ public class TeleportPad : NetworkBehaviour
 
     void Start()
     {
+        _bubbleMaterial = bubble.GetComponent<Renderer>().material;
+
+        bubble.localScale = new Vector3(8, 8, 8);
+        Color colour = _bubbleMaterial.color;
+        colour.a = 0;
+        _bubbleMaterial.color = colour;
+
         if(bar != null) EventsManager.AddNewBar(bar);
     }
 
@@ -613,8 +623,34 @@ public class TeleportPad : NetworkBehaviour
         //This increases/decreases the rotation speed and teleportation visual effect (visuals only applied to the PC Player)
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
         {
+            float _newScale = Mathf.Lerp(
+                15f,
+                4f,
+                (rotateSpeed - minRotateSpeed) / (maxRotateSpeed - minRotateSpeed)
+            );
+            bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+            float _newAlpha = Mathf.Lerp(
+                0f,
+                1f,
+                (rotateSpeed - minRotateSpeed) / (maxRotateSpeed - minRotateSpeed)
+            );
+            Color colour = _bubbleMaterial.color;
+            colour.g = 1 - _newAlpha;
+            colour.a = _newAlpha;
+            _bubbleMaterial.color = colour;
+
             rotateSpeed += rotateIncrement;
             EventsManager.ChangeTeleportRotateSpeed(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
+        }
+        else
+        {
+            float _newScale = 80;
+            bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+            Color colour = _bubbleMaterial.color;
+            colour.a = 0f;
+            _bubbleMaterial.color = colour;
         }
     }
 
