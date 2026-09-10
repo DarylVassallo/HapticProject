@@ -163,6 +163,10 @@ MonoBehaviour:
     m_Key: Enter
     m_Metadata:
       m_Items: []
+  - m_Id: 48964915021869056
+    m_Key: Menu
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

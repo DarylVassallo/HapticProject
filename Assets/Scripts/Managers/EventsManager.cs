@@ -57,6 +57,44 @@ public class EventsManager : MonoBehaviour
 
 
 
+    //GameMenu Events=============================================
+    public static event Action OnPlayGameLevel;
+    public static void PlayGameLevel() => OnPlayGameLevel?.Invoke();
+    public static event Action OnPlayMainMenuLevel;
+    public static void PlayMainMenuLevel() => OnPlayMainMenuLevel?.Invoke();
+
+    public static event Action OnChangeLanguageToEnglish;
+    public static void ChangeLanguageToEnglish() => OnChangeLanguageToEnglish?.Invoke();
+    public static event Action OnChangeLanguageToFrench;
+    public static void ChangeLanguageToFrench() => OnChangeLanguageToFrench?.Invoke();
+    
+    public static event Action<bool> OnCancel;
+    public static void Cancel(bool _toggle) => OnCancel?.Invoke(_toggle);
+    public static event Action<bool> OnSettingsMenu;
+    public static void SettingsMenu(bool _toggle) => OnSettingsMenu?.Invoke(_toggle);
+
+    public static event Action<bool> OnGameOver;
+    public static void GameOver(bool _toggle) => OnGameOver?.Invoke(_toggle);
+    public static event Action<bool> OnToggleAll;
+    public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
+    public static event Action<string, bool> OnToggleRestriction;
+    public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
+    public static event Action<bool> OnFreezePCPlayer;
+    public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
+
+
+    public static event Action<bool> OnEnteredTemple;
+    public static void EnteredTemple(bool _toggle) => OnEnteredTemple?.Invoke(_toggle);
+    public static event Action<float> OnChangeHealthBar;
+    public static void ChangeHealthBar(float _newHealth) => OnChangeHealthBar?.Invoke(_newHealth);
+    public static event Action<float> OnChangeChargeBar;
+    public static void ChangeChargeBar(float _newCharge) => OnChangeChargeBar?.Invoke(_newCharge);
+
+
+
+
+
+
     //MainMenu Events=============================================
     public static event Action OnChosePlayer;
     public static void ChosePlayer() => OnChosePlayer?.Invoke();
@@ -76,21 +114,7 @@ public class EventsManager : MonoBehaviour
 
     public static event Action<int> OnChangeLanguage;
     public static void ChangeLanguage(int _languageNum) => OnChangeLanguage?.Invoke(_languageNum);
-
-
-
-
-
-    //GameOver Events=============================================
-    public static event Action<bool> OnGameOver;
-    public static void GameOver(bool _toggle) => OnGameOver?.Invoke(_toggle);
-    public static event Action<bool> OnToggleAll;
-    public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
-    public static event Action<string, bool> OnToggleRestriction;
-    public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
-
-    public static event Action<bool> OnFreezePCPlayer;
-    public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
+    
 
 
 
@@ -157,8 +181,6 @@ public class EventsManager : MonoBehaviour
     //Health Events=============================================
     public static event Action<float> OnChangeHealthCamera;
     public static void ChangeHealthCamera(float _healthCameraIntensity) => OnChangeHealthCamera?.Invoke(_healthCameraIntensity);
-    public static event Action<float> OnChangeHealthBar;
-    public static void ChangeHealthBar(float _newHealth) => OnChangeHealthBar?.Invoke(_newHealth);
     public static event Action<GameObject, float> OnChangeHealthForEntity;
     public static void ChangeHealthForEntity(GameObject _entity, float _newHealth) => OnChangeHealthForEntity?.Invoke(_entity, _newHealth);
     public static event Action<GameObject, float> OnEntityChangedHealth;
@@ -167,14 +189,6 @@ public class EventsManager : MonoBehaviour
     public static void EntityKilled(GameObject _entity) => OnEntityKilled?.Invoke(_entity);
     public static event Action<Renderer, float> OnChangedEnemyOxidization;
     public static void ChangedEnemyOxidization(Renderer _rend, float _oxidization) => OnChangedEnemyOxidization?.Invoke(_rend, _oxidization);
-
-
-
-
-
-    //Charge Events=============================================
-    public static event Action<float> OnChangeChargeBar;
-    public static void ChangeChargeBar(float _newCharge) => OnChangeChargeBar?.Invoke(_newCharge);
 
 
 
@@ -240,6 +254,8 @@ public class EventsManager : MonoBehaviour
 
 
     //Respawn Events=============================================
+    public static event Action OnRespawn;
+    public static void Respawn() => OnRespawn?.Invoke();
     public static event Action<GameObject> OnObjectRespawned;
     public static void ObjectRespawned(GameObject _entity) => OnObjectRespawned?.Invoke(_entity);
 
@@ -318,8 +334,6 @@ public class EventsManager : MonoBehaviour
     public static void Fire(InputAction.CallbackContext ctx) => OnFire?.Invoke(ctx);
     public static event Action OnFire2;
     public static void Fire2() => OnFire2?.Invoke();
-    public static event Action<bool> OnCancel;
-    public static void Cancel(bool _toggle) => OnCancel?.Invoke(_toggle);
 
     public static event Action<float> OnEntityChangedFlashlightRange;
     public static void EntityChangedFlashlightRange(float newFlashlightRange) => OnEntityChangedFlashlightRange?.Invoke(newFlashlightRange);
@@ -368,8 +382,6 @@ public class EventsManager : MonoBehaviour
 
 
     //Ending Events=============================================
-    public static event Action<bool> OnEnteredTemple;
-    public static void EnteredTemple(bool _toggle) => OnEnteredTemple?.Invoke(_toggle);
 
 
 

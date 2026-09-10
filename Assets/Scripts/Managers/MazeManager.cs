@@ -43,6 +43,7 @@ public class MazeManager : NetworkBehaviour
 
 
     [Header("Spin Bridges")]
+    private bool _grabbedSpinWheel;
     [SerializeField] private Transform spinWheelObject;
     [SerializeField] private AudioClip wheelAudio;
     [SerializeField] private int maxWheelCheckCount;
@@ -73,6 +74,8 @@ public class MazeManager : NetworkBehaviour
 
     void Awake()
     {        
+        _grabbedSpinWheel = false;
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _isNewNavMeshAvailable = false;
@@ -180,22 +183,49 @@ public class MazeManager : NetworkBehaviour
         
         //Rotates the bridges if the VR Player rotates the wheel, 
         // and the wheel is active
+        // if(isSpinWheelActive.Value)
+        // {
+        //     CheckSpinWheel();
+
+        //     if(spinWheelKnobValueDiff != 0) EventsManager.UseBridgeHaptic(spinWheelKnobValueDiff);
+
+        //     for(int i = 0; i < rotateBridges.Length; i++)
+        //     {
+        //         rotateBridges[i].Rotate(0.0f, spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+        //     }
+
+        //     for(int i = 0; i < reverseRotateBridges.Length; i++)
+        //     {
+        //         reverseRotateBridges[i].Rotate(0.0f, -spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+        //     }
+        // }
+    }
+    public void SpinWheelChanged(float _value)
+    {
         if(isSpinWheelActive.Value)
         {
-            CheckSpinWheel();
-
-            if(spinWheelKnobValueDiff != 0) EventsManager.UseBridgeHaptic(spinWheelKnobValueDiff);
+            if(spinWheelKnobValueDiff != 0) EventsManager.UseBridgeHaptic(_value);
 
             for(int i = 0; i < rotateBridges.Length; i++)
             {
-                rotateBridges[i].Rotate(0.0f, spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+                rotateBridges[i].localRotation = Quaternion.Euler(0.0f, _value * bridgeRotateSpeed, 0.0f);
             }
 
             for(int i = 0; i < reverseRotateBridges.Length; i++)
             {
-                reverseRotateBridges[i].Rotate(0.0f, -spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+                reverseRotateBridges[i].localRotation = Quaternion.Euler(0.0f, -_value * bridgeRotateSpeed, 0.0f);
             }
         }
+    }
+
+    public void GrabbedSpinWheel()
+    {
+        _grabbedSpinWheel = true;
+    }
+    
+    public void ReleasedSpinWheel()
+    {
+        _grabbedSpinWheel = false;   
     }
 
     //Players / Stops the audio if requested (-1 means to stop audio, while other numbers refer to specific audio clips)

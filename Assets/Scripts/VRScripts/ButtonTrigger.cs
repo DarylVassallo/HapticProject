@@ -6,6 +6,7 @@ public class ButtonTrigger : MonoBehaviour
     [SerializeField] private bool removeSymbol;
     [SerializeField] private bool inputSymbols;
     [SerializeField] private int defenseButtonCount;
+    [SerializeField] private bool openMenu;
     private bool _canBePressed;
     private Collider _enteredCollider;
 
@@ -41,6 +42,9 @@ public class ButtonTrigger : MonoBehaviour
             }else if(defenseButtonCount > 0)
             {
                 EventsManager.PressedDefenseButton(defenseButtonCount);
+            }else if(openMenu)
+            {
+                EventsManager.Cancel(true);
             }
         }
     }

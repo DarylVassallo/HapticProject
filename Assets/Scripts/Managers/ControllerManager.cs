@@ -39,7 +39,7 @@ public class ControllerManager : NetworkBehaviour
     {
         EventsManager.OnActivateController += ActivateController;
         // EventsManager.OnDeactivateController += DeactivateController;
-        EventsManager.OnToggleAll += ToggleHands;
+        // EventsManager.OnToggleAll += ToggleHands;
 
         activateControllerNum.OnValueChanged += ActivateControllerChanged;
         // deactivateControllerNum.OnValueChanged += DeactivateControllerChanged;
@@ -49,7 +49,7 @@ public class ControllerManager : NetworkBehaviour
     {
         EventsManager.OnActivateController -= ActivateController;
         // EventsManager.OnDeactivateController -= DeactivateController;
-        EventsManager.OnToggleAll -= ToggleHands;
+        // EventsManager.OnToggleAll -= ToggleHands;
 
         activateControllerNum.OnValueChanged -= ActivateControllerChanged;
         // deactivateControllerNum.OnValueChanged -= DeactivateControllerChanged;

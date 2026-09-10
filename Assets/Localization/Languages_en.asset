@@ -168,6 +168,10 @@ MonoBehaviour:
     m_Localized: Enter
     m_Metadata:
       m_Items: []
+  - m_Id: 48964915021869056
+    m_Localized: Menu
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

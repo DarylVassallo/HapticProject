@@ -32,13 +32,16 @@ public class CheckpointManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Checkpoint Tutorial");
         currentCheckpoint = tutorialCheckpoint;
 
         EventsManager.OnTutorialTeleport += CompleteTutorialRpc;
         EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
         EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
+
+        EventsManager.OnPlayMainMenuLevel += PlayMainMenuLevel;
+        EventsManager.OnPlayGameLevel += PlayGameLevel;
+        EventsManager.OnRespawn += RespawnPCPlayerRpc;
 
         nextScene.OnValueChanged += OnNextSceneChanged;
     }
@@ -49,6 +52,10 @@ public class CheckpointManager : NetworkBehaviour
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= UsedTeleporter;
         EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
+
+        EventsManager.OnPlayMainMenuLevel -= PlayMainMenuLevel;
+        EventsManager.OnPlayGameLevel -= PlayGameLevel;
+        EventsManager.OnRespawn -= RespawnPCPlayerRpc;
 
         nextScene.OnValueChanged -= OnNextSceneChanged;
     }
@@ -102,7 +109,6 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateFirstCheckpointRpc()
     {
-        Debug.Log("First Checkpoint");
         currentCheckpoint = firstCheckpoint;
     }
     
@@ -113,7 +119,6 @@ public class CheckpointManager : NetworkBehaviour
     {
         _hasUsedTeleporter = true;
 
-        Debug.Log("Second Checkpoint");
         currentCheckpoint = secondCheckpoint;
 
         for (int i = 0; i < hiddenButtons.childCount; i++)
@@ -135,8 +140,6 @@ public class CheckpointManager : NetworkBehaviour
     public void ActivateThirdCheckpointRpc()
     {
         _hasCollectedEverything = true;
-
-        Debug.Log("Third Checkpoint");
         currentCheckpoint = thirdCheckpoint;
 
         EventsManager.DestroyAllEnemies();
@@ -150,8 +153,6 @@ public class CheckpointManager : NetworkBehaviour
     public void ActivateFourthCheckpointRpc()
     {
         _hasCrossedCrookedBridges = true;
-
-        Debug.Log("Fourth Checkpoint");
         currentCheckpoint = fourthCheckpoint;
     }
 
@@ -207,6 +208,16 @@ public class CheckpointManager : NetworkBehaviour
             EventsManager.ResetHealth(_pcPlayer);
             _pcPlayer.transform.position = currentCheckpoint.position;
         }
+    }
+
+    private void PlayMainMenuLevel()
+    {
+        PlayLevelClient("MainMenuScene");
+    }
+
+    private void PlayGameLevel()
+    {
+        PlayLevelClient("PlayLevelScene");
     }
 
     //Used by UI Button to change the scene
