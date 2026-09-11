@@ -4,8 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 
+using Interhaptics;
+using Interhaptics.Utils;
+
 public class NarratorMovement : NetworkBehaviour
 {
+    private AudioHapticSource _hapticSource;
     private AudioSource _audioSource;
     private Rigidbody _rb;
 
@@ -73,7 +77,8 @@ public class NarratorMovement : NetworkBehaviour
 
         _speakToPlayer = false;
         _lookAround = false;
-
+        
+        _hapticSource = this.gameObject.GetComponent<AudioHapticSource>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
         _rb = GetComponent<Rigidbody>();
 
@@ -236,11 +241,13 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    private void NarratorSays(AudioClip _clip)
+    private void NarratorSays(AudioClip _audioClip, HapticMaterial _hapticClip)
     {
         _isPlaying = false;
         _audioSource.Stop();
-        _audioSource.clip = _clip;
+        _hapticSource.Stop();
+        _audioSource.clip = _audioClip;
+        _hapticSource.hapticMaterial = _hapticClip;
         _audioSource.pitch = 1f;
 
         _speakToPlayer = true;
@@ -248,7 +255,10 @@ public class NarratorMovement : NetworkBehaviour
 
     private void PlayerNarratorAudio()
     {
-        _audioSource.Play();
+        // _audioSource.Play();
+        // _hapticSource.PlayEventVibration();
+        _hapticSource.Play();
+
         _isPlaying = true;
         _audioSource.enabled = true; 
         _speakToPlayer = false;
@@ -273,6 +283,7 @@ public class NarratorMovement : NetworkBehaviour
         {
             _isPlaying = false;
             EventsManager.NarratorStopped();
+            _hapticSource.Stop();
 
             if(!_stayWithPlayer) LookAtPlayerRpc(-1, -1, false);
         }

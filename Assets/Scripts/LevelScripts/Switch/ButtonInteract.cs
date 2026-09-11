@@ -26,7 +26,10 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     private float _minDistance = 0.005f;
 
     [SerializeField] private AudioClip buttonAudio;
+
     private AudioSource _audioSource;
+    private bool _isPlaying;
+
     private Renderer _renderer;
 
     [SerializeField] private Material deactiveMaterial;
@@ -41,7 +44,12 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
     void Awake()
     {
+        _isPlaying = false;
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+
+        _audioSource.clip = buttonAudio;
+
         _renderer = this.gameObject.GetComponent<Renderer>();
         _renderer.material = deactiveMaterial;
 
@@ -75,12 +83,18 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         if (_isInteractable && !_activeButton)
         {
             SetMoveDownTrueRpc();
+            Debug.Log("TriggerInteraction");
         }
     }
+
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void SetMoveDownTrueRpc()
     {
+        _audioSource.Stop();
+
+        _isPlaying = true;
+
         _activeButton = true;
 
         if(IsOwner) EventsManager.TriggerButton(shape, button);
@@ -89,13 +103,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         _moveDown = true;
 
-        if(!_audioSource.isPlaying)
-        {
-            _audioSource.Stop();
-            _audioSource.clip = buttonAudio;
-            _audioSource.Play();
-            _audioSource.enabled = true; 
-        }
+        _audioSource.Play();
     }
 
     //Override function from IInteractable

@@ -1545,6 +1545,9 @@ PrefabInstance:
       addedObject: {fileID: 3863207636203503174}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 8024451398310229853}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 3522590260841408626}
   m_SourcePrefab: {fileID: 100100000, guid: b3ac41660e62c834b85393751870f565, type: 3}
 --- !u!4 &1409352189607406832 stripped
@@ -1695,6 +1698,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8024451398310229853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784787704031458890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add947522e3b4e3489a84d14109063fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GoTouchVR.Interhaptics::Interhaptics.Utils.AudioHapticSource
+  hapticMaterial: {fileID: 0}
+  useStreamingAssets: 0
+  hapticEffectStreamingAssetsPath: 
+  sourceIntensity: 1
+  vibrationOffset: 0
+  debugMode: 0
+  isLooping: 0
+  maxLoops: 1
+  maxLoopTime: 10
+  targetIntensity: 1
+  playAtStart: 0
+  isPlaying: 0
+  hapticEffectDuration: 0
+  loopStartTime: 0
+  audioSource: {fileID: 3863207636203503174}
+  hapticBodyParts:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &3522590260841408626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1813,6 +1846,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5270858353043065049}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7484877621807206251}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2852405545171860101}
@@ -1965,6 +2001,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7484877621807206251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1795460225497801120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add947522e3b4e3489a84d14109063fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GoTouchVR.Interhaptics::Interhaptics.Utils.AudioHapticSource
+  hapticMaterial: {fileID: 0}
+  useStreamingAssets: 0
+  hapticEffectStreamingAssetsPath: 
+  sourceIntensity: 1
+  vibrationOffset: 0
+  debugMode: 0
+  isLooping: 0
+  maxLoops: 1
+  maxLoopTime: 10
+  targetIntensity: 1
+  playAtStart: 0
+  isPlaying: 0
+  hapticEffectDuration: 0
+  loopStartTime: 0
+  audioSource: {fileID: 5270858353043065049}
+  hapticBodyParts:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &2852405545171860101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2327,6 +2393,9 @@ PrefabInstance:
       addedObject: {fileID: 2391661774095787928}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 5828199792612731275}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 118547998881244937}
   m_SourcePrefab: {fileID: 100100000, guid: b3ac41660e62c834b85393751870f565, type: 3}
 --- !u!1 &2709261537642604923 stripped
@@ -2472,6 +2541,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5828199792612731275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2709261537642604923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add947522e3b4e3489a84d14109063fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GoTouchVR.Interhaptics::Interhaptics.Utils.AudioHapticSource
+  hapticMaterial: {fileID: 0}
+  useStreamingAssets: 0
+  hapticEffectStreamingAssetsPath: 
+  sourceIntensity: 1
+  vibrationOffset: 0
+  debugMode: 0
+  isLooping: 0
+  maxLoops: 1
+  maxLoopTime: 10
+  targetIntensity: 1
+  playAtStart: 0
+  isPlaying: 0
+  hapticEffectDuration: 0
+  loopStartTime: 0
+  audioSource: {fileID: 2391661774095787928}
+  hapticBodyParts:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &118547998881244937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2598,6 +2697,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
       addedObject: {fileID: 995238022792696016}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3252864799415169814}
   m_SourcePrefab: {fileID: 100100000, guid: b3ac41660e62c834b85393751870f565, type: 3}
 --- !u!1 &3772644406375586061 stripped
 GameObject:
@@ -2767,6 +2869,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3252864799415169814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3772644406375586061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add947522e3b4e3489a84d14109063fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GoTouchVR.Interhaptics::Interhaptics.Utils.AudioHapticSource
+  hapticMaterial: {fileID: 0}
+  useStreamingAssets: 0
+  hapticEffectStreamingAssetsPath: 
+  sourceIntensity: 1
+  vibrationOffset: 0
+  debugMode: 0
+  isLooping: 0
+  maxLoops: 1
+  maxLoopTime: 10
+  targetIntensity: 1
+  playAtStart: 0
+  isPlaying: 0
+  hapticEffectDuration: 0
+  loopStartTime: 0
+  audioSource: {fileID: 995238022792696016}
+  hapticBodyParts:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!4 &4544396688278799287 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b3ac41660e62c834b85393751870f565, type: 3}
@@ -3223,6 +3355,9 @@ PrefabInstance:
       addedObject: {fileID: 325845234431019751}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 264565904432885456}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2552305195901518420}
   m_SourcePrefab: {fileID: 100100000, guid: b3ac41660e62c834b85393751870f565, type: 3}
 --- !u!1 &5824251326418448281 stripped
@@ -3368,6 +3503,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &264565904432885456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5824251326418448281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add947522e3b4e3489a84d14109063fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GoTouchVR.Interhaptics::Interhaptics.Utils.AudioHapticSource
+  hapticMaterial: {fileID: 0}
+  useStreamingAssets: 0
+  hapticEffectStreamingAssetsPath: 
+  sourceIntensity: 1
+  vibrationOffset: 0
+  debugMode: 0
+  isLooping: 0
+  maxLoops: 1
+  maxLoopTime: 10
+  targetIntensity: 1
+  playAtStart: 0
+  isPlaying: 0
+  hapticEffectDuration: 0
+  loopStartTime: 0
+  audioSource: {fileID: 325845234431019751}
+  hapticBodyParts:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &2552305195901518420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3491,6 +3656,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6440761480431597149}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6896758905960003212}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b3ac41660e62c834b85393751870f565, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4163588730636028751}
@@ -3638,6 +3806,36 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6896758905960003212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7014983639511510557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: add947522e3b4e3489a84d14109063fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GoTouchVR.Interhaptics::Interhaptics.Utils.AudioHapticSource
+  hapticMaterial: {fileID: 0}
+  useStreamingAssets: 0
+  hapticEffectStreamingAssetsPath: 
+  sourceIntensity: 1
+  vibrationOffset: 0
+  debugMode: 0
+  isLooping: 0
+  maxLoops: 1
+  maxLoopTime: 10
+  targetIntensity: 1
+  playAtStart: 0
+  isPlaying: 0
+  hapticEffectDuration: 0
+  loopStartTime: 0
+  audioSource: {fileID: 6440761480431597149}
+  hapticBodyParts:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &4163588730636028751
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -9,10 +9,16 @@ using Unity.AI.Navigation;
 
 using Unity.Netcode;
 
+using Interhaptics;
+using Interhaptics.Utils;
+
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
+    [SerializeField] private HapticMaterial buttonHaptic;
+    [SerializeField] private AudioHapticSource _leftHapticSource;
+    [SerializeField] private AudioHapticSource _rightHapticSource;
     private bool _activatedInteractiveObject;
 
     [Header("Switches")]
@@ -537,6 +543,7 @@ public class MazeManager : NetworkBehaviour
         //Adds the new input to the current order
         currentShapeOrder[entryNum] = _shape;
         currentButtonOrder[entryNum] = _button;
+
         entryNum++;
 
         //Checks if the current order is correct. 
@@ -546,6 +553,70 @@ public class MazeManager : NetworkBehaviour
         {
             if(hiddenSwitches[i].shape == _shape)
             {
+                for (int j = 0; j < hiddenSwitches[i].buttonOrder.Length; j++)
+                {
+                    if (hiddenSwitches[i].buttonOrder[j] == _button)
+                    {
+                        _leftHapticSource.Stop();
+                        _rightHapticSource.Stop();
+
+                        float _intensity = 0;
+                        switch(j)
+                        {
+                            case 0:
+                                Debug.Log("Left 0.25 intensity");
+
+                                _intensity = 0.25f;
+
+                                _leftHapticSource.hapticMaterial = buttonHaptic;
+                                _leftHapticSource.SourceIntensity = _intensity;
+                                _leftHapticSource.PlayEventVibration();
+                                break;
+                            case 1:
+                                Debug.Log("Left 0.5 intensity");
+
+                                _intensity = 0.5f;
+
+                                _leftHapticSource.hapticMaterial = buttonHaptic;
+                                _leftHapticSource.SourceIntensity = _intensity;
+                                _leftHapticSource.PlayEventVibration();
+                                break;
+                            case 2:
+                                Debug.Log("Left 1 intensity");
+                                Debug.Log("Right 1 intensity");
+
+                                _intensity = 1f;
+
+                                _leftHapticSource.hapticMaterial = buttonHaptic;
+                                _leftHapticSource.SourceIntensity = _intensity;
+                                _leftHapticSource.PlayEventVibration();
+
+                                _rightHapticSource.hapticMaterial = buttonHaptic;
+                                _rightHapticSource.SourceIntensity = _intensity;
+                                _rightHapticSource.PlayEventVibration();
+                                break;
+                            case 3:
+                                Debug.Log("Right 0.5 intensity");
+
+                                _intensity = 0.5f;
+
+                                _rightHapticSource.hapticMaterial = buttonHaptic;
+                                _rightHapticSource.SourceIntensity = _intensity;
+                                _rightHapticSource.PlayEventVibration();
+                                break;
+                            case 4:
+                                Debug.Log("Right 0.25 intensity");
+
+                                _intensity = 0.25f;
+
+                                _rightHapticSource.hapticMaterial = buttonHaptic;
+                                _rightHapticSource.SourceIntensity = _intensity;
+                                _rightHapticSource.PlayEventVibration();
+                                break;
+                        }
+                    }
+                }
+
                 //The checked switch is the one being used
 
                 //Checks if the current order is complete
