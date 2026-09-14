@@ -9,7 +9,7 @@ using Interhaptics.Utils;
 
 public class NarratorMovement : NetworkBehaviour
 {
-    private AudioHapticSource _hapticSource;
+    // private AudioHapticSource _hapticSource;
     private AudioSource _audioSource;
     private Rigidbody _rb;
 
@@ -78,7 +78,7 @@ public class NarratorMovement : NetworkBehaviour
         _speakToPlayer = false;
         _lookAround = false;
         
-        _hapticSource = this.gameObject.GetComponent<AudioHapticSource>();
+        // _hapticSource = this.gameObject.GetComponent<AudioHapticSource>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
         _rb = GetComponent<Rigidbody>();
 
@@ -245,9 +245,9 @@ public class NarratorMovement : NetworkBehaviour
     {
         _isPlaying = false;
         _audioSource.Stop();
-        _hapticSource.Stop();
+        // _hapticSource.Stop();
         _audioSource.clip = _audioClip;
-        _hapticSource.hapticMaterial = _hapticClip;
+        // _hapticSource.hapticMaterial = _hapticClip;
         _audioSource.pitch = 1f;
 
         _speakToPlayer = true;
@@ -255,9 +255,13 @@ public class NarratorMovement : NetworkBehaviour
 
     private void PlayerNarratorAudio()
     {
-        // _audioSource.Play();
+        _audioSource.Play();
         // _hapticSource.PlayEventVibration();
-        _hapticSource.Play();
+        
+        EventsManager.IsNarratorSpeaking(true);
+
+        // _hapticSource.Play();
+        Debug.Log("Narrator Haptic");
 
         _isPlaying = true;
         _audioSource.enabled = true; 
@@ -282,8 +286,11 @@ public class NarratorMovement : NetworkBehaviour
         if(_isPlaying && !_audioSource.isPlaying)
         {
             _isPlaying = false;
+
+            EventsManager.IsNarratorSpeaking(false);
+
             EventsManager.NarratorStopped();
-            _hapticSource.Stop();
+            // _hapticSource.Stop();
 
             if(!_stayWithPlayer) LookAtPlayerRpc(-1, -1, false);
         }

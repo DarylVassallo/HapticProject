@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Unity.Netcode;
+
 public class TeleportManager : NetworkBehaviour
 {
     private bool isInNetwork;
@@ -311,6 +312,8 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
+        EventsManager.UseTeleportBarHaptic(_newSize);
+
         for(int i = 0; i < _barList.Count; i++)
         {
             _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 

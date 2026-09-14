@@ -117,7 +117,10 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateSecondCheckpointRpc()
     {
+        Debug.Log("ActivateSecondCheckpointRpc");
+        
         _hasUsedTeleporter = true;
+        EventsManager.ActivateTeleporterHaptic();
 
         currentCheckpoint = secondCheckpoint;
 

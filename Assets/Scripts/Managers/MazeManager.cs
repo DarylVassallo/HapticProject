@@ -9,16 +9,12 @@ using Unity.AI.Navigation;
 
 using Unity.Netcode;
 
-using Interhaptics;
-using Interhaptics.Utils;
-
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
-    [SerializeField] private HapticMaterial buttonHaptic;
-    [SerializeField] private AudioHapticSource _leftHapticSource;
-    [SerializeField] private AudioHapticSource _rightHapticSource;
+    [SerializeField] private AudioClip buttonAudio;
+
     private bool _activatedInteractiveObject;
 
     [Header("Switches")]
@@ -49,7 +45,7 @@ public class MazeManager : NetworkBehaviour
 
 
     [Header("Spin Bridges")]
-    private bool _grabbedSpinWheel;
+    // private bool _grabbedSpinWheel;
     [SerializeField] private Transform spinWheelObject;
     [SerializeField] private AudioClip wheelAudio;
     [SerializeField] private int maxWheelCheckCount;
@@ -80,7 +76,7 @@ public class MazeManager : NetworkBehaviour
 
     void Awake()
     {        
-        _grabbedSpinWheel = false;
+        // _grabbedSpinWheel = false;
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
@@ -226,12 +222,12 @@ public class MazeManager : NetworkBehaviour
 
     public void GrabbedSpinWheel()
     {
-        _grabbedSpinWheel = true;
+        // _grabbedSpinWheel = true;
     }
     
     public void ReleasedSpinWheel()
     {
-        _grabbedSpinWheel = false;   
+        // _grabbedSpinWheel = false;   
     }
 
     //Players / Stops the audio if requested (-1 means to stop audio, while other numbers refer to specific audio clips)
@@ -244,19 +240,19 @@ public class MazeManager : NetworkBehaviour
         }
         
         AudioClip _currentAudio = incorrectAudio;
-        float _volume = 0f;
+        // float _volume = 0f;
         switch (current)
         {
             case 0:
-                _volume = 0.8f;
+                // _volume = 0.8f;
                 _currentAudio = incorrectAudio;
                 break;
             case 1:
-                _volume = 0.8f;
+                // _volume = 0.8f;
                 _currentAudio = correctAudio;
                 break;
             case 2:
-                _volume = 0.5f;
+                // _volume = 0.5f;
                 _currentAudio = wheelAudio;
                 break;
         }
@@ -523,6 +519,8 @@ public class MazeManager : NetworkBehaviour
     // Spawns one enemy nearby
     private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
+        _audioSource.clip = buttonAudio;
+
         //Spawns one enemy nearby 
         EventsManager.CreateRandomEnemy(1);
 
@@ -557,63 +555,8 @@ public class MazeManager : NetworkBehaviour
                 {
                     if (hiddenSwitches[i].buttonOrder[j] == _button)
                     {
-                        _leftHapticSource.Stop();
-                        _rightHapticSource.Stop();
-
-                        float _intensity = 0;
-                        switch(j)
-                        {
-                            case 0:
-                                Debug.Log("Left 0.25 intensity");
-
-                                _intensity = 0.25f;
-
-                                _leftHapticSource.hapticMaterial = buttonHaptic;
-                                _leftHapticSource.SourceIntensity = _intensity;
-                                _leftHapticSource.PlayEventVibration();
-                                break;
-                            case 1:
-                                Debug.Log("Left 0.5 intensity");
-
-                                _intensity = 0.5f;
-
-                                _leftHapticSource.hapticMaterial = buttonHaptic;
-                                _leftHapticSource.SourceIntensity = _intensity;
-                                _leftHapticSource.PlayEventVibration();
-                                break;
-                            case 2:
-                                Debug.Log("Left 1 intensity");
-                                Debug.Log("Right 1 intensity");
-
-                                _intensity = 1f;
-
-                                _leftHapticSource.hapticMaterial = buttonHaptic;
-                                _leftHapticSource.SourceIntensity = _intensity;
-                                _leftHapticSource.PlayEventVibration();
-
-                                _rightHapticSource.hapticMaterial = buttonHaptic;
-                                _rightHapticSource.SourceIntensity = _intensity;
-                                _rightHapticSource.PlayEventVibration();
-                                break;
-                            case 3:
-                                Debug.Log("Right 0.5 intensity");
-
-                                _intensity = 0.5f;
-
-                                _rightHapticSource.hapticMaterial = buttonHaptic;
-                                _rightHapticSource.SourceIntensity = _intensity;
-                                _rightHapticSource.PlayEventVibration();
-                                break;
-                            case 4:
-                                Debug.Log("Right 0.25 intensity");
-
-                                _intensity = 0.25f;
-
-                                _rightHapticSource.hapticMaterial = buttonHaptic;
-                                _rightHapticSource.SourceIntensity = _intensity;
-                                _rightHapticSource.PlayEventVibration();
-                                break;
-                        }
+                        EventsManager.UseButtonHaptic(j);
+                        // Debug.Log("Button Haptic");
                     }
                 }
 

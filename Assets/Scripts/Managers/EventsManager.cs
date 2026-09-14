@@ -406,4 +406,18 @@ public class EventsManager : MonoBehaviour
     public static void UseBridgeHaptic(float _bridgeMovementAmount) => OnUseBridgeHaptic?.Invoke(_bridgeMovementAmount);
     public static event Action<int, float> OnUseRopeHaptic;
     public static void UseRopeHaptic(int _controllerNum, float _ropeDistance) => OnUseRopeHaptic?.Invoke(_controllerNum, _ropeDistance);
+
+    public static event Action<float> OnUseTeleportBarHaptic;
+    public static void UseTeleportBarHaptic(float _intensity) => OnUseTeleportBarHaptic?.Invoke(_intensity);
+    public static event Action<int> OnUseButtonHaptic;
+    public static void UseButtonHaptic(int _buttonNum) => OnUseButtonHaptic?.Invoke(_buttonNum);
+
+    public static event Action<bool> OnIsNarratorSpeaking;
+    public static void IsNarratorSpeaking(bool _isNarratorSpeaking) => OnIsNarratorSpeaking?.Invoke(_isNarratorSpeaking);
+
+    public static event Action OnActivateTeleporterHaptic;
+    public static void ActivateTeleporterHaptic() => OnActivateTeleporterHaptic?.Invoke();
+
+    public static event Action<float> OnChangeHealthHaptic;
+    public static void ChangeHealthHaptic(float _newHealth) => OnChangeHealthHaptic?.Invoke(_newHealth);
 }

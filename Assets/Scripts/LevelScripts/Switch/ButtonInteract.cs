@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 using Unity.Netcode;
@@ -18,23 +19,24 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     private Vector3 originalPosition;
     private Vector3 pushedPosition;
 
-    private float _buttonSpeed = 20f;
+    // private float _buttonSpeed = 20f;
 
-    private bool _moveDown;
-    private bool _moveUp;
+    // private bool _moveDown;
+    // private bool _moveUp;
 
     private float _minDistance = 0.005f;
 
     [SerializeField] private AudioClip buttonAudio;
 
     private AudioSource _audioSource;
-    private bool _isPlaying;
+    // private bool _isPlaying;
 
     private Renderer _renderer;
 
     [SerializeField] private Material deactiveMaterial;
     [SerializeField] private Material inProgressMaterial;
     [SerializeField] private Material completeMaterial;
+    private Material targetMaterial;
 
     [SerializeField] private bool isResetButton;
 
@@ -44,7 +46,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
     void Awake()
     {
-        _isPlaying = false;
+        // _isPlaying = false;
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
@@ -83,7 +85,6 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         if (_isInteractable && !_activeButton)
         {
             SetMoveDownTrueRpc();
-            Debug.Log("TriggerInteraction");
         }
     }
 
@@ -93,15 +94,18 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     {
         _audioSource.Stop();
 
-        _isPlaying = true;
+        // _isPlaying = true;
 
         _activeButton = true;
 
         if(IsOwner) EventsManager.TriggerButton(shape, button);
 
         targetPosition = originalPosition;
+        targetMaterial = inProgressMaterial;
+        StartCoroutine(ButtonMove(4f, true));
 
-        _moveDown = true;
+        // _moveDown = true;
+        
 
         _audioSource.Play();
     }
@@ -152,73 +156,111 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     {
         _activeButton = false;
         targetPosition = pushedPosition; 
-        _moveUp = true;
+        targetMaterial = deactiveMaterial;
+        StartCoroutine(ButtonMove(4f, false));
+        
+        // _moveUp = true;
+    }
+
+    IEnumerator ButtonMove(float _delay, bool _canReset)
+    {
+        float elapsed = 0f;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+
+            this.transform.position = Vector3.Lerp(
+                this.transform.position,
+                targetPosition,
+                elapsed / _delay
+            );
+
+            _renderer.material.SetColor(
+                "_BaseColor",
+                Color.Lerp(
+                    _renderer.material.GetColor("_BaseColor"),
+                    targetMaterial.GetColor("_BaseColor"),
+                    elapsed / _delay
+                )
+            );
+
+            yield return null;
+        }
+
+        this.transform.position = targetPosition;
+        _renderer.material = targetMaterial;
+
+        if(isResetButton && _canReset)
+        {
+            EventsManager.ActivateReset();
+        }
     }
 
     //When a button is pressed, or is reset, this smoothly changes the buttons position and colour to be pushed in and blue if it is pressed.
     // This also change the button back to its original position and colour if it is reset
-    private void FixedUpdate()
-    {
-        //Does not run if the button does not need to move
-        if(!_moveDown && !_moveUp) return;
+    // private void FixedUpdate()
+    // {
+    //     //Does not run if the button does not need to move
+    //     if(!_moveDown && !_moveUp) return;
 
-        //Slowly moves the button down, and changes the colour to blue
-        if(_moveDown)
-        {
-            this.transform.position = Vector3.Lerp(
-                this.transform.position,
-                targetPosition,
-                Time.deltaTime * _buttonSpeed
-            );
+    //     //Slowly moves the button down, and changes the colour to blue
+    //     if(_moveDown)
+    //     {
+    //         this.transform.position = Vector3.Lerp(
+    //             this.transform.position,
+    //             targetPosition,
+    //             Time.deltaTime * _buttonSpeed
+    //         );
 
-            _renderer.material.SetColor(
-                "_BaseColor",
-                Color.Lerp(
-                    _renderer.material.GetColor("_BaseColor"),
-                    inProgressMaterial.GetColor("_BaseColor"),
-                    Time.deltaTime * _buttonSpeed
-                )
-            );
+    //         _renderer.material.SetColor(
+    //             "_BaseColor",
+    //             Color.Lerp(
+    //                 _renderer.material.GetColor("_BaseColor"),
+    //                 inProgressMaterial.GetColor("_BaseColor"),
+    //                 Time.deltaTime * _buttonSpeed
+    //             )
+    //         );
 
-            if (Vector3.Distance(this.transform.position, targetPosition) <= _minDistance)
-            {
-                this.transform.position = targetPosition;
-                _renderer.material = inProgressMaterial;
+    //         if (Vector3.Distance(this.transform.position, targetPosition) <= _minDistance)
+    //         {
+    //             this.transform.position = targetPosition;
+    //             _renderer.material = inProgressMaterial;
 
-                _moveDown = false;
+    //             _moveDown = false;
 
-                if(isResetButton)
-                {
-                    EventsManager.ActivateReset();
-                }
-            }
+    //             if(isResetButton)
+    //             {
+    //                 EventsManager.ActivateReset();
+    //             }
+    //         }
 
-        //Slowly resets the button's position and colour
-        }else if(_moveUp)
-        {
-            this.transform.position = Vector3.Lerp(
-                this.transform.position,
-                targetPosition,
-                Time.deltaTime * _buttonSpeed
-            );
+    //     //Slowly resets the button's position and colour
+    //     }else if(_moveUp)
+    //     {
+    //         this.transform.position = Vector3.Lerp(
+    //             this.transform.position,
+    //             targetPosition,
+    //             Time.deltaTime * _buttonSpeed
+    //         );
 
-            _renderer.material.SetColor(
-                "_BaseColor",
-                Color.Lerp(
-                    _renderer.material.GetColor("_BaseColor"),
-                    deactiveMaterial.GetColor("_BaseColor"),
-                    Time.deltaTime * _buttonSpeed
-                )
-            );
+    //         _renderer.material.SetColor(
+    //             "_BaseColor",
+    //             Color.Lerp(
+    //                 _renderer.material.GetColor("_BaseColor"),
+    //                 deactiveMaterial.GetColor("_BaseColor"),
+    //                 Time.deltaTime * _buttonSpeed
+    //             )
+    //         );
 
-            if (Mathf.Abs(this.transform.position.y - targetPosition.y) <= _minDistance)
-            {
-                this.transform.position = targetPosition;
-                _renderer.material = deactiveMaterial;
+    //         if (Mathf.Abs(this.transform.position.y - targetPosition.y) <= _minDistance)
+    //         {
+    //             this.transform.position = targetPosition;
+    //             _renderer.material = deactiveMaterial;
 
-                _moveDown = false;
-                _moveUp = false;
-            }
-        }
-    }
+    //             _moveDown = false;
+    //             _moveUp = false;
+    //         }
+    //     }
+    // }
 }
