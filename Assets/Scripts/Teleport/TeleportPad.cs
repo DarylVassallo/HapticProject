@@ -530,25 +530,25 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnTriggerEnter(Collider _other)
     {
-        //If the PC Player has entered this teleport pad for the first time, the chances for an enemy to randomly spawn increases slightly
-        if (!_hasBeenUsed)
-        {
-            _hasBeenUsed = true;
-            if(_effectsEnemies)
-            {
-                EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
-            }
-
-            //If the PCPlayer has reached the final teleport pad, their progress is saved
-            if(_isFinalPad)
-            {
-                EventsManager.CrossedCrookedBridges();
-            }
-        }
-
         //This saves if the PC Player has entered this teleport pad, and can also begin the teleport sequence immediately if required
         if (_other.CompareTag("PCPlayer"))
         {
+            //If the PC Player has entered this teleport pad for the first time, the chances for an enemy to randomly spawn increases slightly
+            if (!_hasBeenUsed)
+            {
+                _hasBeenUsed = true;
+                if(_effectsEnemies)
+                {
+                    EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
+                }
+
+                //If the PCPlayer has reached the final teleport pad, their progress is saved
+                if(_isFinalPad)
+                {
+                    EventsManager.CrossedCrookedBridges();
+                }
+            }
+
             ChangeIsPlayerOnPadServerRpc(true);
 
             if(_instantTeleport)

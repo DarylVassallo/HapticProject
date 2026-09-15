@@ -3,6 +3,9 @@ using Interhaptics;
 using Interhaptics.Utils;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
+using Interhaptics.Core;
+
+using UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort;
 
 public class HapticManager : MonoBehaviour
 {
@@ -29,6 +32,8 @@ public class HapticManager : MonoBehaviour
     [SerializeField] private HapticMaterial teleportBarHaptic;
     [SerializeField] private HapticMaterial buttonHaptic;
 
+    [SerializeField] private TunnelingVignetteController tunnel;
+
     [Header("Haptic Sources")]
     [SerializeField] private AudioHapticSource teleporterHapticSource;
     [SerializeField] private AudioHapticSource pcDamageHapticSource;
@@ -42,9 +47,13 @@ public class HapticManager : MonoBehaviour
     private float _hapticHealth;
     private bool _playingHealthHaptic;
 
+    private bool _isPaused;
+
     // Start is called before the first frame update
     void Start()
     {
+        _isPaused = false;
+
         _hapticHealth = 1f;
         _playingHealthHaptic = false;
 
@@ -65,6 +74,8 @@ public class HapticManager : MonoBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnToggleAll += TogglePause;
+
         EventsManager.OnCreatedVRPlayer += CreatedVRPlayer;
         EventsManager.OnPingVRController += PingVRController;
         EventsManager.OnUseEnemyHaptic += UseEnemyHaptic;
@@ -82,6 +93,8 @@ public class HapticManager : MonoBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnToggleAll -= TogglePause;
+
         EventsManager.OnCreatedVRPlayer -= CreatedVRPlayer;
         EventsManager.OnPingVRController -= PingVRController;
         EventsManager.OnUseEnemyHaptic -= UseEnemyHaptic;
@@ -97,6 +110,11 @@ public class HapticManager : MonoBehaviour
         EventsManager.OnChangeHealthHaptic -= ChangeHealthHaptic;
     }
 
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
+    }
+
     private void ChangeHealthHaptic(float _newHealth)
     {
         _hapticHealth = ((_newHealth / 100f));
@@ -105,7 +123,6 @@ public class HapticManager : MonoBehaviour
                                             2f,
                                             _hapticHealth
                                         );
-        Debug.Log("1 _hapticHealth: " + _hapticHealth);
         if(!_playingHealthHaptic) StartCoroutine(PlayHealthHaptic(_healthDelay));
     }
 
@@ -156,7 +173,6 @@ public class HapticManager : MonoBehaviour
         bridgeHaptic.Stop();
         bridgeHaptic.SourceIntensity = _intensity;        
         bridgeHaptic.PlayEventVibration();
-        Debug.Log("Bridge Haptic");
     }
 
     private void UseRopeHaptic(int _controllerNum, float _ropeDistance)
@@ -191,17 +207,12 @@ public class HapticManager : MonoBehaviour
                 leftButtonHapticSource.SourceIntensity = _intensity;
                 leftButtonHapticSource.PlayEventVibration();
                 
-
-                Debug.Log("Button 0 Left Haptic");
-
                 break;
             case 1:
                 _intensity = 1f;
 
                 leftButtonHapticSource.SourceIntensity = _intensity;
                 leftButtonHapticSource.PlayEventVibration();
-
-                Debug.Log("Button 1 Left Haptic");
 
                 break;
             case 2:
@@ -213,8 +224,6 @@ public class HapticManager : MonoBehaviour
                 rightButtonHapticSource.SourceIntensity = _intensity;
                 rightButtonHapticSource.PlayEventVibration();
 
-                Debug.Log("Button 2 Left Right Haptic");
-
                 break;
             case 3:
                 _intensity = 1f;
@@ -222,16 +231,12 @@ public class HapticManager : MonoBehaviour
                 rightButtonHapticSource.SourceIntensity = _intensity;
                 rightButtonHapticSource.PlayEventVibration();
 
-                Debug.Log("Button 3 Right Haptic");
-
                 break;
             case 4:
                 _intensity = 0.25f;
 
                 rightButtonHapticSource.SourceIntensity = _intensity;
                 rightButtonHapticSource.PlayEventVibration();
-
-                Debug.Log("Button 4 Right Haptic");
 
                 break;
         }
@@ -272,7 +277,6 @@ public class HapticManager : MonoBehaviour
         
         narratorLeftHeadHaptic.PlayEventVibration();
         narratorRightHeadHaptic.PlayEventVibration();
-        Debug.Log("Enemy Haptic");
 
         yield return new WaitForSeconds(_delay);
 
@@ -281,12 +285,9 @@ public class HapticManager : MonoBehaviour
 
     private IEnumerator PlayTeleportHaptic(float _delay)
     {
-       Debug.Log("_teleportIntensity: " + _teleportIntensity);
-
         teleporterHapticSource.Stop();
         teleporterHapticSource.SourceIntensity = _teleportIntensity;
         teleporterHapticSource.PlayEventVibration();
-        Debug.Log("Teleport Haptic");
 
         yield return new WaitForSeconds(_delay);
 
@@ -301,14 +302,14 @@ public class HapticManager : MonoBehaviour
         pcDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 2;
         pcDamageHapticSource.PlayEventVibration();
 
+        tunnel.defaultParameters.apertureSize = (1f - _hapticHealth);
+
         yield return new WaitForSeconds(_delay);
 
         if(_hapticHealth < 1f)
         {
             _hapticHealth = _hapticHealth + 0.05f;
             float _healthDelay = Mathf.Lerp(0.5f, 2f, _hapticHealth);
-
-            Debug.Log("2 _hapticHealth: " + _hapticHealth);
             StartCoroutine(PlayHealthHaptic(_healthDelay));
         }
         else

@@ -102,6 +102,7 @@ public class PlayerMovement : NetworkBehaviour
     
     private void OnEnable()
     {
+        EventsManager.OnToggleAll += TogglePlayer;
         EventsManager.OnFreezePCPlayer += FreezePlayer;
 
         EventsManager.OnMove += ChangeMotion;
@@ -116,6 +117,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnToggleAll -= TogglePlayer;
         EventsManager.OnFreezePCPlayer -= FreezePlayer;
 
         EventsManager.OnMove -= ChangeMotion;
@@ -127,8 +129,14 @@ public class PlayerMovement : NetworkBehaviour
         bodyXRotation.OnValueChanged -= SetBodyXRotation;
     }
 
+    private void TogglePlayer(bool _toggle)
+    {
+        FreezePlayer(!_toggle);
+    }
     private void FreezePlayer(bool _toggle)
     {
+        _inputAxisController.enabled = !_toggle;
+        
         _isGravityEnabled = !_toggle;
 
         if(!_isGravityEnabled)

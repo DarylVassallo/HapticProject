@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System;
 
 using Interhaptics;
+using Interhaptics.Utils;
 
 public class EventsManager : MonoBehaviour
 {
@@ -359,8 +360,8 @@ public class EventsManager : MonoBehaviour
 
     public static event Action<int, int, bool> OnLookAtPlayer;
     public static void LookAtPlayer(int _playerNum, int _lookAt, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _lookAt, _stay);
-    public static event Action<AudioClip, HapticMaterial> OnNarratorSays;
-    public static void NarratorSays(AudioClip _audioClip, HapticMaterial _hapticMaterial) => OnNarratorSays?.Invoke(_audioClip, _hapticMaterial);
+    public static event Action<AudioClip, AudioHapticSource> OnNarratorSays;
+    public static void NarratorSays(AudioClip _audioClip, AudioHapticSource _hapticSource) => OnNarratorSays?.Invoke(_audioClip, _hapticSource);
 
 
 

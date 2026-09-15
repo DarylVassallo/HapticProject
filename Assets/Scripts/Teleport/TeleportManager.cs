@@ -56,8 +56,12 @@ public class TeleportManager : NetworkBehaviour
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _teleportAudio;
 
+    private bool _isPaused;
+
     private void Awake()
     {
+        _isPaused = false;
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
         _bubbleMaterial = bubble.GetComponent<Renderer>().material;
     }
@@ -77,6 +81,8 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnDisableTeleportChange += DisableTeleportChange;
 
+        EventsManager.OnToggleAll += TogglePause;
+
         EventsManager.TogglePCTrigger(true);
     }
 
@@ -92,11 +98,18 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnTutorialTeleport -= TutorialTeleportRpc;
 
         EventsManager.OnDisableTeleportChange -= DisableTeleportChange;
+
+        EventsManager.OnToggleAll -= TogglePause;
     }
 
     public override void OnNetworkSpawn()
     {
         isInNetwork = true;
+    }
+
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
     }
 
     private void DisableTeleportChange()
@@ -182,30 +195,33 @@ public class TeleportManager : NetworkBehaviour
 
         while(elapsed < _delay)
         {
-            elapsed += Time.deltaTime;
-            
-            if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
+            if(!_isPaused)
             {
-                EventsManager.FixTeleportEffect(0, true);
-            } else {
-                float _newScale = Mathf.Lerp(
-                    40f,
-                    4f,
-                    1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
-                );
-                bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
-
-                float _newAlpha = Mathf.Lerp(
-                    0f,
-                    1f,
-                    1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
-                );
-                Color colour = _bubbleMaterial.color;
-                colour.g = 1 - _newAlpha;
-                colour.a = _newAlpha;
-                _bubbleMaterial.color = colour;
+                elapsed += Time.deltaTime;
                 
-                EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
+                if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
+                {
+                    EventsManager.FixTeleportEffect(0, true);
+                } else {
+                    float _newScale = Mathf.Lerp(
+                        40f,
+                        4f,
+                        1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+                    );
+                    bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+                    float _newAlpha = Mathf.Lerp(
+                        0f,
+                        1f,
+                        1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+                    );
+                    Color colour = _bubbleMaterial.color;
+                    colour.g = 1 - _newAlpha;
+                    colour.a = _newAlpha;
+                    _bubbleMaterial.color = colour;
+                    
+                    EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
+                }
             }
 
             yield return null;
@@ -291,12 +307,15 @@ public class TeleportManager : NetworkBehaviour
         //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / delay;
-
-            if(!_isEverythingCollected)
+            if(!_isPaused)
             {
-                if(isInNetwork) ChangeBarSizeRpc(t); 
+                elapsed += Time.deltaTime;
+                float t = elapsed / delay;
+
+                if(!_isEverythingCollected)
+                {
+                    if(isInNetwork) ChangeBarSizeRpc(t); 
+                }
             }
 
             yield return null;

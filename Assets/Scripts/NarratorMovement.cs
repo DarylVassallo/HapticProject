@@ -9,8 +9,8 @@ using Interhaptics.Utils;
 
 public class NarratorMovement : NetworkBehaviour
 {
-    // private AudioHapticSource _hapticSource;
     private AudioSource _audioSource;
+    private AudioHapticSource _hapticSource;
     private Rigidbody _rb;
 
     private bool _isPlaying;
@@ -61,8 +61,14 @@ public class NarratorMovement : NetworkBehaviour
 
     private ParticleSystem _particle;
 
+    private bool _isPaused;
+    private bool _canCheckVelocity;
+
     private void Awake()
     {
+        _canCheckVelocity = true;
+        _isPaused = false;
+
         _particle = this.GetComponent<ParticleSystem>();
 
         Color colour = visionMaterial.color;
@@ -78,7 +84,6 @@ public class NarratorMovement : NetworkBehaviour
         _speakToPlayer = false;
         _lookAround = false;
         
-        // _hapticSource = this.gameObject.GetComponent<AudioHapticSource>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
         _rb = GetComponent<Rigidbody>();
 
@@ -93,6 +98,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnToggleAll += TogglePause;
+
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
@@ -104,6 +111,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnToggleAll -= TogglePause;
+
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
@@ -111,6 +120,23 @@ public class NarratorMovement : NetworkBehaviour
 
         EventsManager.OnNarratorSays -= NarratorSays;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+    }
+
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
+
+        if(_toggle)
+        { 
+            _rb.constraints = RigidbodyConstraints.None;
+            StartCoroutine(CheckVelocityDelay(1f));
+        }
+        else
+        {
+            _rb.constraints = RigidbodyConstraints.FreezePosition;
+            _particle.Stop();
+            _canCheckVelocity = false;
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -186,6 +212,8 @@ public class NarratorMovement : NetworkBehaviour
         }
 
         _stayWithPlayer = _stay;
+
+        StartCoroutine(CheckVelocityDelay(1f));
     }
 
     IEnumerator ChangeVision(float _delay, float _requiredAlpha)
@@ -223,6 +251,8 @@ public class NarratorMovement : NetworkBehaviour
             }
         }while(!_foundTarget);
 
+        StartCoroutine(CheckVelocityDelay(1f));
+
         yield return new WaitForSeconds(delay);
 
         if(_lookAround) StartCoroutine(ChangeFocus(UnityEngine.Random.Range(minFocusTime, maxFocusTime)));
@@ -231,37 +261,42 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TogglePauseManagerAudioRpc(bool _toggle)
     {
+        Debug.Log("TogglePauseManagerAudioRpc: _hapticSource: " + _hapticSource);
+
+        if(_hapticSource == null) return;
+
         if(_toggle)
         {
-            _audioSource.Pause();
+            _hapticSource.Stop(); 
         }
         else
         {
-            _audioSource.UnPause();
+            // _hapticSource.Play();
+            _speakToPlayer = true;
         }
     }
 
-    private void NarratorSays(AudioClip _audioClip, HapticMaterial _hapticClip)
+    private void NarratorSays(AudioClip _audioClip, AudioHapticSource _newHapticSource)
     {
         _isPlaying = false;
+
         _audioSource.Stop();
-        // _hapticSource.Stop();
         _audioSource.clip = _audioClip;
-        // _hapticSource.hapticMaterial = _hapticClip;
         _audioSource.pitch = 1f;
+
+        _hapticSource = _newHapticSource;
+        _hapticSource.Stop();
 
         _speakToPlayer = true;
     }
 
     private void PlayerNarratorAudio()
     {
-        _audioSource.Play();
+        // _audioSource.Play();
         // _hapticSource.PlayEventVibration();
+        _hapticSource.Play();
         
         EventsManager.IsNarratorSpeaking(true);
-
-        // _hapticSource.Play();
-        Debug.Log("Narrator Haptic");
 
         _isPlaying = true;
         _audioSource.enabled = true; 
@@ -270,6 +305,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {        
+        if(_isPaused) return;
+
         if(_canFlicker) IrisFlickerServerRpc();
 
         if(_moveTarget != null) Movement();
@@ -283,14 +320,16 @@ public class NarratorMovement : NetworkBehaviour
             return;
         }
 
-        if(_isPlaying && !_audioSource.isPlaying)
+        if(_isPlaying && !_audioSource.isPlaying && !_isPaused)
         {
             _isPlaying = false;
+
+            _hapticSource.Stop();
+            _hapticSource = null;
 
             EventsManager.IsNarratorSpeaking(false);
 
             EventsManager.NarratorStopped();
-            // _hapticSource.Stop();
 
             if(!_stayWithPlayer) LookAtPlayerRpc(-1, -1, false);
         }
@@ -361,7 +400,7 @@ public class NarratorMovement : NetworkBehaviour
                     _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
                 }
 
-                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide)
+                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity)
                 {
                     StartCoroutine(DisableCollision(0.4f));
                 }
@@ -398,6 +437,15 @@ public class NarratorMovement : NetworkBehaviour
         _canCollide = true;
         this.GetComponent<Collider>().enabled = true;
         _particle.Stop();
+    }
+
+    private IEnumerator CheckVelocityDelay(float delay)
+    {
+        _canCheckVelocity = false;
+
+        yield return new WaitForSeconds(delay);
+
+        _canCheckVelocity = true;
     }
 
     private void RotateRings()

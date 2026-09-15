@@ -116,8 +116,8 @@ public class PCPlayerInputManager : MonoBehaviour
     private void FreezePlayer(bool _toggle)
     {
         ToggleRestriction("All", !_toggle);
-        Debug.Log("ToggleRestriction: " + !_toggle);
     }
+
     private void ToggleAll(bool _toggle)
     {
         ToggleRestriction("All", _toggle);

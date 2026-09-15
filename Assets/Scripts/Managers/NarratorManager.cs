@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Netcode;
 
 using Interhaptics;
+using Interhaptics.Utils;
 
 public class NarratorManager : NetworkBehaviour
 {
@@ -26,9 +27,9 @@ public class NarratorManager : NetworkBehaviour
     {
         public string audioName;
         public AudioClip englishAudioClip;
-        public HapticMaterial englishHapticMaterial;
+        public AudioHapticSource englishHapticSource;
         public AudioClip frenchAudioClip;
-        public HapticMaterial frenchHapticMaterial;
+        public AudioHapticSource frenchHapticSource;
     }
     [SerializeField] private NarratorSection[] narratorLines;
 
@@ -128,8 +129,8 @@ public class NarratorManager : NetworkBehaviour
                 {
                     if(narratorLines[i].narratorAudio[j].audioName == _currentAudio)
                     {                        
-                        if(_isEnglish) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].englishAudioClip, narratorLines[i].narratorAudio[j].englishHapticMaterial);
-                        if(_isFrench) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].frenchAudioClip, narratorLines[i].narratorAudio[j].frenchHapticMaterial);
+                        if(_isEnglish) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].englishAudioClip, narratorLines[i].narratorAudio[j].englishHapticSource);
+                        if(_isFrench) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].frenchAudioClip, narratorLines[i].narratorAudio[j].frenchHapticSource);
 
                         return;
                     }
