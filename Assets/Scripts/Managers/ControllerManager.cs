@@ -3,6 +3,10 @@ using UnityEngine;
 using Unity.Netcode;
 using System;
 
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
+
+using System.Linq;
+
 public class ControllerManager : NetworkBehaviour
 {
     //0 LeftHand
@@ -22,6 +26,8 @@ public class ControllerManager : NetworkBehaviour
     private NetworkVariable<bool> isRightHandActive = new(false);
     private NetworkVariable<bool> isRightControllerActive = new(false);
 
+    private GameObject[] interactors;
+
     private bool isInNetwork = false;
 
     public override void OnNetworkSpawn()
@@ -33,6 +39,10 @@ public class ControllerManager : NetworkBehaviour
         if(isLeftControllerActive.Value) ActivateLeftControllerRpc();
         if(isRightHandActive.Value) ActivateRightHandRpc();
         if(isRightControllerActive.Value) ActivateRightControllerRpc();
+
+        GameObject[] leftHandObjects = GameObject.FindGameObjectsWithTag("LeftHandInteractor");
+        GameObject[] rightHandObjects = GameObject.FindGameObjectsWithTag("RightHandInteractor");
+        interactors = leftHandObjects.Concat(rightHandObjects).ToArray();
     }
 
     private void OnEnable()
@@ -43,6 +53,8 @@ public class ControllerManager : NetworkBehaviour
 
         activateControllerNum.OnValueChanged += ActivateControllerChanged;
         // deactivateControllerNum.OnValueChanged += DeactivateControllerChanged;
+
+        EventsManager.OnToggleAll += TogglePause;
     }
 
     private void OnDisable()
@@ -53,6 +65,16 @@ public class ControllerManager : NetworkBehaviour
 
         activateControllerNum.OnValueChanged -= ActivateControllerChanged;
         // deactivateControllerNum.OnValueChanged -= DeactivateControllerChanged;
+
+        EventsManager.OnToggleAll -= TogglePause;
+    }
+
+    private void TogglePause(bool _toggle)
+    {
+        for(int i = 0; i < interactors.Length; i++)
+        {
+            interactors[i].SetActive(_toggle);
+        }
     }
 
     private void ActivateController(int _newActivateControllerNum)

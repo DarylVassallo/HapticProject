@@ -1,0 +1,407 @@
+{
+    "description": "",
+    "gain": 1.0,
+    "version": "6",
+    "vibration": {
+        "frequency_range": {
+            "max": 1000.0,
+            "min": 0.0
+        },
+        "gain": 1.0,
+        "loop": false,
+        "melodies": [
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": []
+            },
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": [
+                    {
+                        "amplitude": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": 0.3957597109304426,
+                                    "slope": 5.172615323302196e-05,
+                                    "value": 0.004009857566517727
+                                },
+                                {
+                                    "position": 0.43729042457091244,
+                                    "value": 0.5696086211937681
+                                },
+                                {
+                                    "position": 0.5552737127371273,
+                                    "value": 0.6097071968589449
+                                },
+                                {
+                                    "position": 0.7890731707317072,
+                                    "value": 0.5669353828160896
+                                },
+                                {
+                                    "position": 0.8379530261969286,
+                                    "value": 0.004009857566517727
+                                },
+                                {
+                                    "position": 14.378666666666666,
+                                    "slope": 5.172615323302196e-05,
+                                    "value": 0.0011307947673714976
+                                }
+                            ]
+                        },
+                        "length": 14.378666666666666,
+                        "m_gain": 1.0,
+                        "pitch": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": 0.0,
+                                    "value": 0.22265625
+                                },
+                                {
+                                    "position": 0.275,
+                                    "value": 0.3515625
+                                },
+                                {
+                                    "position": 0.42500000000000004,
+                                    "value": 0.1640625
+                                },
+                                {
+                                    "position": 1.075,
+                                    "value": 0.75
+                                },
+                                {
+                                    "position": 1.2249999999999999,
+                                    "value": 0.1640625
+                                },
+                                {
+                                    "position": 1.375,
+                                    "value": 0.421875
+                                },
+                                {
+                                    "position": 1.575,
+                                    "value": 0.234375
+                                },
+                                {
+                                    "position": 1.625,
+                                    "value": 0.28125
+                                },
+                                {
+                                    "position": 2.125,
+                                    "value": 0.26953125
+                                },
+                                {
+                                    "position": 2.225,
+                                    "value": 0.7734375
+                                },
+                                {
+                                    "position": 2.275,
+                                    "value": 0.3984375
+                                },
+                                {
+                                    "position": 2.5749999999999997,
+                                    "value": 0.703125
+                                },
+                                {
+                                    "position": 3.375,
+                                    "value": 0.1640625
+                                },
+                                {
+                                    "position": 3.675,
+                                    "value": 0.62109375
+                                },
+                                {
+                                    "position": 3.875,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 4.375,
+                                    "value": 0.5625
+                                },
+                                {
+                                    "position": 4.775,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 4.875,
+                                    "value": 0.55078125
+                                },
+                                {
+                                    "position": 4.925000000000001,
+                                    "value": 0.26953125
+                                },
+                                {
+                                    "position": 6.125,
+                                    "value": 0.26953125
+                                },
+                                {
+                                    "position": 6.2250000000000005,
+                                    "value": 0.046875
+                                },
+                                {
+                                    "position": 6.375,
+                                    "value": 0.62109375
+                                },
+                                {
+                                    "position": 7.189333333333333,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 7.675000000000001,
+                                    "value": 0.64453125
+                                },
+                                {
+                                    "position": 7.825,
+                                    "value": 0.1640625
+                                },
+                                {
+                                    "position": 7.925000000000001,
+                                    "value": 0.62109375
+                                },
+                                {
+                                    "position": 8.175,
+                                    "value": 0.2109375
+                                },
+                                {
+                                    "position": 8.625,
+                                    "value": 0.515625
+                                },
+                                {
+                                    "position": 8.725,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 8.875,
+                                    "value": 0.515625
+                                },
+                                {
+                                    "position": 8.925,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 9.475,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 9.625,
+                                    "value": 0.71484375
+                                },
+                                {
+                                    "position": 9.775,
+                                    "value": 0.1875
+                                },
+                                {
+                                    "position": 10.275,
+                                    "value": 0.6328125
+                                },
+                                {
+                                    "position": 10.675,
+                                    "value": 0.1875
+                                },
+                                {
+                                    "position": 11.625,
+                                    "value": 0.43359375
+                                },
+                                {
+                                    "position": 11.725,
+                                    "value": 0.1875
+                                },
+                                {
+                                    "position": 11.825000000000001,
+                                    "value": 0.4453125
+                                },
+                                {
+                                    "position": 11.875,
+                                    "value": 0.17578125
+                                },
+                                {
+                                    "position": 12.525,
+                                    "value": 0.78515625
+                                },
+                                {
+                                    "position": 12.775,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 12.875,
+                                    "value": 0.66796875
+                                },
+                                {
+                                    "position": 13.025,
+                                    "value": 0.31640625
+                                },
+                                {
+                                    "position": 13.225,
+                                    "value": 0.4453125
+                                },
+                                {
+                                    "position": 13.375,
+                                    "value": 0.2578125
+                                },
+                                {
+                                    "position": 13.425,
+                                    "value": 0.45703125
+                                },
+                                {
+                                    "position": 13.525,
+                                    "value": 0.29296875
+                                },
+                                {
+                                    "position": 13.575000000000001,
+                                    "value": 0.5625
+                                },
+                                {
+                                    "position": 13.675,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 14.378666666666666,
+                                    "value": 0.140625
+                                }
+                            ]
+                        },
+                        "position": 0.0
+                    }
+                ]
+            }
+        ],
+        "transients": [
+            {
+                "amplitude": 0.67218017578125,
+                "pitch": 0.09090909090909093,
+                "position": 0.44595833333333335,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.711090087890625,
+                "pitch": 0.09090909090909093,
+                "position": 0.4845,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.78411865234375,
+                "pitch": 0.09090909090909093,
+                "position": 0.5066666666666667,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.721221923828125,
+                "pitch": 0.09090909090909093,
+                "position": 0.6019583333333334,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.614532470703125,
+                "pitch": 0.09090909090909093,
+                "position": 0.6240625,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.546417236328125,
+                "pitch": 0.09090909090909093,
+                "position": 0.6471041666666667,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.614501953125,
+                "pitch": 0.09090909090909093,
+                "position": 0.6685208333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.600555419921875,
+                "pitch": 0.09090909090909093,
+                "position": 0.6896666666666667,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5921630859375,
+                "pitch": 0.09090909090909093,
+                "position": 0.7687083333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.613067626953125,
+                "pitch": 0.09090909090909093,
+                "position": 0.7939375,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 2.491383938995914,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 2.491410719497957,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 2.771998504086398,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 2.7963110040863985,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.7973090277777778,
+                "pitch": 0.09090909090909093,
+                "position": 4.062535618444715,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6121238425925926,
+                "pitch": 0.09090909090909093,
+                "position": 4.119533137161687,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.4472307477678571,
+                "pitch": 0.09090909090909093,
+                "position": 4.852583449172548,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 4.906229293281621,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 7.103858654407473,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.58404541015625,
+                "pitch": 0.09090909090909093,
+                "position": 7.6521875,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.66009521484375,
+                "pitch": 0.09090909090909093,
+                "position": 10.605458333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.4917534722222222,
+                "pitch": 0.09090909090909093,
+                "position": 12.540413309982485,
+                "type": "Simple"
+            }
+        ]
+    }
+}

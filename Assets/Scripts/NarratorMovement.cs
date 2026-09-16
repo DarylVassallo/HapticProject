@@ -140,7 +140,7 @@ public class NarratorMovement : NetworkBehaviour
         }
         else
         {
-            _rb.constraints = RigidbodyConstraints.FreezePosition;
+            _rb.constraints = RigidbodyConstraints.FreezeAll;
             _particle.Stop();
             _canCheckVelocity = false;
         }
@@ -337,8 +337,11 @@ public class NarratorMovement : NetworkBehaviour
         {
             _isPlaying = false;
 
-            _hapticSource.Stop();
-            _hapticSource = null;
+            if(_hapticSource != null)
+            {
+                _hapticSource.Stop();
+                _hapticSource = null;
+            }
 
             EventsManager.IsNarratorSpeaking(false);
 
