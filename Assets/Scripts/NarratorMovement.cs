@@ -304,7 +304,7 @@ public class NarratorMovement : NetworkBehaviour
     {
         // _audioSource.Play();
         // _hapticSource.PlayEventVibration();
-        _hapticSource.Play();
+        if(_hapticSource != null) _hapticSource.Play();
         
         EventsManager.IsNarratorSpeaking(true);
 

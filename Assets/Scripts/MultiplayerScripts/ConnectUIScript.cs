@@ -325,9 +325,11 @@ public class ConnectUIScript : NetworkBehaviour
     //Creates a VR/PC Player when someone logs in as host/client
     private void HandleClientConnected(ulong clientId)
     {
+        Debug.Log("ConnectUIScript HandleClientConnected 0: " + clientId);
+
         if (!NetworkManager.Singleton.IsServer) return;
 
-        Debug.Log("ConnectUIScript HandleClientConnected 1");
+        Debug.Log("ConnectUIScript HandleClientConnected 1: " + clientId);
        
         //Creates a PC Player for the host player, playing alone
         if (_isTestingPCPlayer)
@@ -491,21 +493,12 @@ public class ConnectUIScript : NetworkBehaviour
     //Upon finding the host, the client connects to the host's IP, and continues creating the client / PC Player
     private void OnHostFoundHandler(string hostIp)
     {
-        Debug.Log("ConnectUIScript OnHostFoundHandler: hostIp: " + hostIp);
+        Debug.Log("ConnectUIScript OnHostFoundHandler");
         networkDiscovery.OnHostFound -= OnHostFoundHandler;
 
-        Debug.Log("ConnectUIScript OnHostFoundHandler 2");
-
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-
-        Debug.Log("ConnectUIScript OnHostFoundHandler 3");
-
         transport.SetConnectionData(hostIp, 7777);
 
-        Debug.Log("ConnectUIScript OnHostFoundHandler 4");
-
         NetworkManager.Singleton.StartClient();
-
-        Debug.Log("ConnectUIScript OnHostFoundHandler 5");
     }
 }
