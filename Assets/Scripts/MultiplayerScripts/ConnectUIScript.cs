@@ -487,12 +487,21 @@ public class ConnectUIScript : NetworkBehaviour
     //Upon finding the host, the client connects to the host's IP, and continues creating the client / PC Player
     private void OnHostFoundHandler(string hostIp)
     {
-        Debug.Log("ConnectUIScript OnHostFoundHandler");
+        Debug.Log("ConnectUIScript OnHostFoundHandler: hostIp: " + hostIp);
         networkDiscovery.OnHostFound -= OnHostFoundHandler;
 
+        Debug.Log("ConnectUIScript OnHostFoundHandler 2");
+
         var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
+
+        Debug.Log("ConnectUIScript OnHostFoundHandler 3");
+
         transport.SetConnectionData(hostIp, 7777);
 
+        Debug.Log("ConnectUIScript OnHostFoundHandler 4");
+
         NetworkManager.Singleton.StartClient();
+
+        Debug.Log("ConnectUIScript OnHostFoundHandler 5");
     }
 }
