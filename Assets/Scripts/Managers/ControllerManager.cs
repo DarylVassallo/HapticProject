@@ -26,7 +26,7 @@ public class ControllerManager : NetworkBehaviour
     private NetworkVariable<bool> isRightHandActive = new(false);
     private NetworkVariable<bool> isRightControllerActive = new(false);
 
-    private GameObject[] interactors;
+    [SerializeField] private NearFarInteractor[] interactors;
 
     private bool isInNetwork = false;
 
@@ -39,10 +39,6 @@ public class ControllerManager : NetworkBehaviour
         if(isLeftControllerActive.Value) ActivateLeftControllerRpc();
         if(isRightHandActive.Value) ActivateRightHandRpc();
         if(isRightControllerActive.Value) ActivateRightControllerRpc();
-
-        GameObject[] leftHandObjects = GameObject.FindGameObjectsWithTag("LeftHandInteractor");
-        GameObject[] rightHandObjects = GameObject.FindGameObjectsWithTag("RightHandInteractor");
-        interactors = leftHandObjects.Concat(rightHandObjects).ToArray();
     }
 
     private void OnEnable()
@@ -76,7 +72,7 @@ public class ControllerManager : NetworkBehaviour
         for(int i = 0; i < interactors.Length; i++)
         {
             Debug.Log("interactors[" + i + "]: " + interactors[i]);
-            interactors[i].SetActive(_toggle);
+            interactors[i].enabled = _toggle;
         }
     }
 

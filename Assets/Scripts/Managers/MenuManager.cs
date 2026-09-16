@@ -60,7 +60,6 @@ public class MenuManager : NetworkBehaviour
 
     private void Awake()
     {
-        Debug.Log("Hide Cursor B1");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -311,13 +310,11 @@ public class MenuManager : NetworkBehaviour
     {
         if (_showPauseMenu || _showSettingsMenu || _showGameOverMenu || _showWinMenu)
         {
-            Debug.Log("Show Cursor B1");
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
         else
         {
-            Debug.Log("Hide Cursor B2");
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
