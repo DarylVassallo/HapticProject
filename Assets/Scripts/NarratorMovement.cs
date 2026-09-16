@@ -105,7 +105,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
-        EventsManager.OnLookAtPlayer += LookAtPlayerRpc;
+        EventsManager.OnLookAtPlayer += LookAtPlayerServerRpc;
 
         EventsManager.OnNarratorSays += NarratorSays;
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
@@ -118,7 +118,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
-        EventsManager.OnLookAtPlayer -= LookAtPlayerRpc; 
+        EventsManager.OnLookAtPlayer -= LookAtPlayerServerRpc; 
 
         EventsManager.OnNarratorSays -= NarratorSays;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
@@ -166,8 +166,8 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void LookAtPlayerRpc(int _playerNum, int _specificViewPoint, bool _stay)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LookAtPlayerServerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
         bool _showVision = false;
 
@@ -302,7 +302,8 @@ public class NarratorMovement : NetworkBehaviour
         _speakToPlayer = true;
     }
 
-    private void PlayerNarratorAudio()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayerNarratorAudioServerRpc()
     {
         // _audioSource.Play();
         // _hapticSource.PlayEventVibration();
@@ -343,7 +344,7 @@ public class NarratorMovement : NetworkBehaviour
 
             EventsManager.NarratorStopped();
 
-            if(!_stayWithPlayer) LookAtPlayerRpc(-1, -1, false);
+            if(!_stayWithPlayer) LookAtPlayerServerRpc(-1, -1, false);
         }
     }
 
@@ -431,7 +432,7 @@ public class NarratorMovement : NetworkBehaviour
                     _particle.Stop();
                 }
                 
-                if(_speakToPlayer) PlayerNarratorAudio();
+                if(_speakToPlayer) PlayerNarratorAudioServerRpc();
             }
         }
 

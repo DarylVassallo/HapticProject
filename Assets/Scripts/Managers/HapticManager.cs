@@ -7,6 +7,8 @@ using Interhaptics.Core;
 
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Comfort;
 
+using Unity.Netcode;
+
 public class HapticManager : MonoBehaviour
 {
     public Transform leftHeadListener;
@@ -79,11 +81,11 @@ public class HapticManager : MonoBehaviour
         EventsManager.OnCreatedVRPlayer += CreatedVRPlayer;
         EventsManager.OnPingVRController += PingVRController;
         EventsManager.OnUseEnemyHaptic += UseEnemyHaptic;
-        EventsManager.OnUseBridgeHaptic += UseBridgeHaptic;
+        EventsManager.OnUseBridgeHaptic += UseBridgeHapticServerRpc;
         EventsManager.OnUseRopeHaptic += UseRopeHaptic;
 
         EventsManager.OnUseTeleportBarHaptic += UseTeleportHaptic;
-        EventsManager.OnUseButtonHaptic += UseButtonHaptic;
+        EventsManager.OnUseButtonHaptic += UseButtonHapticServerRpc;
 
         EventsManager.OnIsNarratorSpeaking += IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterHaptic += ActivateTeleporterHaptic;
@@ -98,11 +100,11 @@ public class HapticManager : MonoBehaviour
         EventsManager.OnCreatedVRPlayer -= CreatedVRPlayer;
         EventsManager.OnPingVRController -= PingVRController;
         EventsManager.OnUseEnemyHaptic -= UseEnemyHaptic;
-        EventsManager.OnUseBridgeHaptic -= UseBridgeHaptic;
+        EventsManager.OnUseBridgeHaptic -= UseBridgeHapticServerRpc;
         EventsManager.OnUseRopeHaptic -= UseRopeHaptic;
 
         EventsManager.OnUseTeleportBarHaptic -= UseTeleportHaptic;
-        EventsManager.OnUseButtonHaptic -= UseButtonHaptic;
+        EventsManager.OnUseButtonHaptic -= UseButtonHapticServerRpc;
 
         EventsManager.OnIsNarratorSpeaking -= IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterHaptic -= ActivateTeleporterHaptic;
@@ -123,14 +125,15 @@ public class HapticManager : MonoBehaviour
                                             2f,
                                             _hapticHealth
                                         );
-        if(!_playingHealthHaptic) StartCoroutine(PlayHealthHaptic(_healthDelay));
+
+        if(!_playingHealthHaptic) PlayHealthHapticServerRpc(_healthDelay);
     }
 
     private void ActivateTeleporterHaptic()
     {
         Debug.Log("ActivateTeleporterHaptic");
         _useTeleporterHaptic = true;
-        StartCoroutine(PlayTeleportHaptic(2f));
+        PlayTeleportHapticServerRpc(2f);
     }
 
     private void IsNarratorSpeaking(bool _isNewNarrator)
@@ -165,7 +168,8 @@ public class HapticManager : MonoBehaviour
         // }
     }
 
-    private void UseBridgeHaptic(float _bridgeMovementAmount)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void UseBridgeHapticServerRpc(float _bridgeMovementAmount)
     {
         if(_bridgeMovementAmount < 0) _bridgeMovementAmount *= -1;
         _intensity = Mathf.Clamp(_bridgeMovementAmount * 30, 0, 1);
@@ -194,7 +198,8 @@ public class HapticManager : MonoBehaviour
         _teleportIntensity = _newIntensity;
     }
 
-    private void UseButtonHaptic(int _buttonNum)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void UseButtonHapticServerRpc(int _buttonNum)
     {
         leftButtonHapticSource.Stop();
         rightButtonHapticSource.Stop();
@@ -267,20 +272,26 @@ public class HapticManager : MonoBehaviour
     //     // rightControllerHaptic.SendHapticImpulse(_intensity, 0.1f);
     // }
 
-    private IEnumerator PlayEnemyHaptic(float _delay)
-    {
-        _intensity = 1f - Mathf.Clamp(Vector3.Distance(leftHeadListener.position, narratorLeftHeadTransform.position) * (1f / 20f), 0, 1);
-        narratorLeftHeadHaptic.SourceIntensity = _intensity;
+    // private IEnumerator PlayEnemyHaptic(float _delay)
+    // {
+    //     _intensity = 1f - Mathf.Clamp(Vector3.Distance(leftHeadListener.position, narratorLeftHeadTransform.position) * (1f / 20f), 0, 1);
+    //     narratorLeftHeadHaptic.SourceIntensity = _intensity;
 
-        _intensity = 1f - Mathf.Clamp(Vector3.Distance(rightHeadListener.position, narratorRightHeadTransform.position) * (1f / 20f), 0, 1);
-        narratorRightHeadHaptic.SourceIntensity = _intensity;
+    //     _intensity = 1f - Mathf.Clamp(Vector3.Distance(rightHeadListener.position, narratorRightHeadTransform.position) * (1f / 20f), 0, 1);
+    //     narratorRightHeadHaptic.SourceIntensity = _intensity;
         
-        narratorLeftHeadHaptic.PlayEventVibration();
-        narratorRightHeadHaptic.PlayEventVibration();
+    //     narratorLeftHeadHaptic.PlayEventVibration();
+    //     narratorRightHeadHaptic.PlayEventVibration();
 
-        yield return new WaitForSeconds(_delay);
+    //     yield return new WaitForSeconds(_delay);
 
-        // if(_isUsingEnemyHaptic) StartCoroutine(PlayEnemyHaptic(_delay));
+    //     // if(_isUsingEnemyHaptic) StartCoroutine(PlayEnemyHaptic(_delay));
+    // }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayTeleportHapticServerRpc(float _delay)
+    {
+        StartCoroutine(PlayTeleportHaptic(_delay));
     }
 
     private IEnumerator PlayTeleportHaptic(float _delay)
@@ -291,7 +302,13 @@ public class HapticManager : MonoBehaviour
 
         yield return new WaitForSeconds(_delay);
 
-        if(_useTeleporterHaptic) StartCoroutine(PlayTeleportHaptic(_delay));
+        if(_useTeleporterHaptic) PlayTeleportHapticServerRpc(_delay);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayHealthHapticServerRpc(float _delay)
+    {
+        StartCoroutine(PlayHealthHaptic(_delay));
     }
 
     private IEnumerator PlayHealthHaptic(float _delay)
@@ -310,7 +327,7 @@ public class HapticManager : MonoBehaviour
         {
             _hapticHealth = _hapticHealth + 0.05f;
             float _healthDelay = Mathf.Lerp(0.5f, 2f, _hapticHealth);
-            StartCoroutine(PlayHealthHaptic(_healthDelay));
+            PlayHealthHapticServerRpc(_healthDelay);
         }
         else
         {
