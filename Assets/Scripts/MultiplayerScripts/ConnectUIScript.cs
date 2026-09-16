@@ -103,6 +103,8 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("ConnectUIScript Start Add SceneLoaded");
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
                 } 
+
+                Debug.Log("Client Can Connect 1");
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
         }
@@ -139,6 +141,8 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("ConnectUIScript OnEnable Add SceneLoaded");
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
                 }
+
+                Debug.Log("Client Can Connect 2");
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
         }
