@@ -291,8 +291,11 @@ public class NarratorMovement : NetworkBehaviour
         _audioSource.clip = _audioClip;
         _audioSource.pitch = 1f;
 
-        _hapticSource = _newHapticSource;
-        _hapticSource.Stop();
+        if(_newHapticSource != null)
+        {
+            _hapticSource = _newHapticSource;
+            _hapticSource.Stop();
+        }
 
         _speakToPlayer = true;
     }
