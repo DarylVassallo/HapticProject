@@ -7,7 +7,7 @@ using Unity.Netcode;
 
 public class TeleportManager : NetworkBehaviour
 {
-    private bool isInNetwork;
+    private bool _isInNetwork;
 
     [SerializeField] private Transform bubble;
     private Material _bubbleMaterial;
@@ -104,7 +104,7 @@ public class TeleportManager : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        isInNetwork = true;
+        _isInNetwork = true;
     }
 
     private void TogglePause(bool _toggle)
@@ -314,7 +314,7 @@ public class TeleportManager : NetworkBehaviour
 
                 if(!_isEverythingCollected)
                 {
-                    if(isInNetwork) ChangeBarSizeRpc(t); 
+                    if(_isInNetwork) ChangeBarSizeRpc(t); 
                 }
             }
 
@@ -325,7 +325,7 @@ public class TeleportManager : NetworkBehaviour
         CurrentMapServerRpc(false, true);
 
         //The teleport bars are reset to their full size
-        if(isInNetwork) ChangeBarSizeRpc(0.95f); 
+        if(_isInNetwork) ChangeBarSizeRpc(0.95f); 
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]

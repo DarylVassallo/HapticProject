@@ -64,6 +64,8 @@ public class NarratorMovement : NetworkBehaviour
     private bool _isPaused;
     private bool _canCheckVelocity;
 
+    private bool _isInNetwork;
+
     private void Awake()
     {
         _canCheckVelocity = true;
@@ -120,6 +122,11 @@ public class NarratorMovement : NetworkBehaviour
 
         EventsManager.OnNarratorSays -= NarratorSays;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        _isInNetwork = true;
     }
 
     private void TogglePause(bool _toggle)
@@ -307,7 +314,7 @@ public class NarratorMovement : NetworkBehaviour
     {        
         if(_isPaused) return;
 
-        if(_canFlicker) IrisFlickerServerRpc();
+        if(_canFlicker && _isInNetwork) IrisFlickerServerRpc();
 
         if(_moveTarget != null) Movement();
         RotateRings();
