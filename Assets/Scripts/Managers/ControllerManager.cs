@@ -71,8 +71,11 @@ public class ControllerManager : NetworkBehaviour
 
     private void TogglePause(bool _toggle)
     {
+        Debug.Log("interactors: " + interactors);
+        Debug.Log("interactors.Length: " + interactors.Length);
         for(int i = 0; i < interactors.Length; i++)
         {
+            Debug.Log("interactors[" + i + "]: " + interactors[i]);
             interactors[i].SetActive(_toggle);
         }
     }
