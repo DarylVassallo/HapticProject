@@ -8,7 +8,9 @@ using UnityEngine.Localization.Settings;
 
 using UnityEngine.UI;
 
-public class LanguageManager : MonoBehaviour
+using Unity.Netcode;
+
+public class LanguageManager : NetworkBehaviour
 {
     [SerializeField] Locale engLocale;
     [SerializeField] Locale frLocale;
@@ -35,8 +37,6 @@ public class LanguageManager : MonoBehaviour
     {
         yield return LocalizationSettings.InitializationOperation;
 
-        LoadSavedLanguage();
-
         foreach (var langBtn in languageButtons)
         {
             langBtn.button.onClick.AddListener(() => ChangeLanguage(langBtn.locale));
@@ -53,6 +53,11 @@ public class LanguageManager : MonoBehaviour
     {
         EventsManager.OnChangeLanguageToEnglish -= ChangeLanguageToEnglish;
         EventsManager.OnChangeLanguageToFrench -= ChangeLanguageToFrench;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        LoadSavedLanguage();
     }
 
     //This loads the chosen language, and applies it to the scene
