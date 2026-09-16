@@ -620,6 +620,8 @@ public class TeleportPad : NetworkBehaviour
 
     private void ChangeTeleportEffect()
     {
+        if(_isTutorialTeleport) Debug.Log("bubble.localScale: " + bubble.localScale);
+        
         //This increases/decreases the rotation speed and teleportation visual effect (visuals only applied to the PC Player)
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
         {
