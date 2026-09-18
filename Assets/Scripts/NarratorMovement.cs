@@ -285,6 +285,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void NarratorSays(AudioClip _audioClip, AudioHapticSource _newHapticSource)
     {
+        Debug.Log("NarratorSays: _audioClip: " + _audioClip + " : _newHapticSource : " + _newHapticSource);
+
         _isPlaying = false;
 
         _audioSource.Stop();
@@ -305,6 +307,8 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayerNarratorAudioServerRpc()
     {
+        Debug.Log("PlayerNarratorAudioServerRpc");
+        
         // _audioSource.Play();
         // _hapticSource.PlayEventVibration();
         if(_hapticSource != null) _hapticSource.Play();
