@@ -1,0 +1,628 @@
+fileFormatVersion: 2
+guid: 9ae8839dcb385934c8242bbde5187fd9
+ModelImporter:
+  serializedVersion: 24200
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: "\nClip 'Ennemy_Death_2026-09-17 10.22.25 AM_007' has
+      import animation warnings that might lower retargeting quality:\nNote: Activate
+      translation DOF on avatar to improve retargeting quality.\n\t'Daryl:ChestNull'
+      has translation animation that will be discarded.\n\t'Daryl:ChestNull' is inbetween
+      humanoid transforms and has rotation animation that will be discarded.\n\t'Daryl:HeadNull'
+      has translation animation that will be discarded.\n\t'Daryl:LHandNull' has
+      translation animation that will be discarded.\n\t'Daryl:RHandNull' has translation
+      animation that will be discarded.\n\t'Daryl:LFootNull' has translation animation
+      that will be discarded.\n\t'Daryl:RFootNull' has translation animation that
+      will be discarded.\n"
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Ennemy_Death_2026-09-17 10.22.25 AM_007
+      takeName: Ennemy_Death_2026-09-17 10.22.25 AM_007
+      internalID: 199551062624960868
+      firstFrame: 0
+      lastFrame: 655
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 1
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human:
+    - boneName: Daryl:HipNull
+      humanName: Hips
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LThighNull
+      humanName: LeftUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RThighNull
+      humanName: RightUpperLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LShinNull
+      humanName: LeftLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RShinNull
+      humanName: RightLowerLeg
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LFootNull
+      humanName: LeftFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RFootNull
+      humanName: RightFoot
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:AbNull
+      humanName: Spine
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:NeckNull
+      humanName: Neck
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:HeadNull
+      humanName: Head
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LShoulderNull
+      humanName: LeftShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RShoulderNull
+      humanName: RightShoulder
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LUArmNull
+      humanName: LeftUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RUArmNull
+      humanName: RightUpperArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LFArmNull
+      humanName: LeftLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RFArmNull
+      humanName: RightLowerArm
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LHandNull
+      humanName: LeftHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RHandNull
+      humanName: RightHand
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:LToeNull
+      humanName: LeftToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    - boneName: Daryl:RToeNull
+      humanName: RightToes
+      limit:
+        min: {x: 0, y: 0, z: 0}
+        max: {x: 0, y: 0, z: 0}
+        value: {x: 0, y: 0, z: 0}
+        length: 0
+        modified: 0
+    skeleton:
+    - name: Ennemy_Death_2026-09-17 10.22.25 AM_007(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:optical
+      parentName: Ennemy_Death_2026-09-17 10.22.25 AM_007(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_WaistLFront
+      parentName: C3D:optical
+      position: {x: 2.31969, y: 1.09892, z: 0.20041999}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_WaistRFront
+      parentName: C3D:optical
+      position: {x: 2.32472, y: 1.07843, z: 0.45273998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_WaistLBack
+      parentName: C3D:optical
+      position: {x: 2.44766, y: 1.07882, z: 0.16113001}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_WaistRBack
+      parentName: C3D:optical
+      position: {x: 2.49292, y: 1.0822799, z: 0.47071996}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_BackTop
+      parentName: C3D:optical
+      position: {x: 2.51906, y: 1.4608799, z: 0.31483}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_Chest
+      parentName: C3D:optical
+      position: {x: 2.29144, y: 1.4026699, z: 0.30996}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_BackLeft
+      parentName: C3D:optical
+      position: {x: 2.52521, y: 1.29254, z: 0.20219}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_BackRight
+      parentName: C3D:optical
+      position: {x: 2.5256, y: 1.2801499, z: 0.43091998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_HeadFront
+      parentName: C3D:optical
+      position: {x: 2.3248198, y: 1.77185, z: 0.31849}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_HeadTop
+      parentName: C3D:optical
+      position: {x: 2.41196, y: 1.6976199, z: 0.2192}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_HeadSide
+      parentName: C3D:optical
+      position: {x: 2.41641, y: 1.69755, z: 0.41901}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LShoulderBack
+      parentName: C3D:optical
+      position: {x: 2.52419, y: 1.41093, z: 0.19497998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LShoulderTop
+      parentName: C3D:optical
+      position: {x: 2.43672, y: 1.54479, z: 0.20197}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LElbowOut
+      parentName: C3D:optical
+      position: {x: 2.48266, y: 1.47001, z: -0.08966}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LUArmHigh
+      parentName: C3D:optical
+      position: {x: 2.47868, y: 1.4363999, z: 0.03444}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LHandOut
+      parentName: C3D:optical
+      position: {x: 2.4521, y: 1.47839, z: -0.49074998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LWristOut
+      parentName: C3D:optical
+      position: {x: 2.4486098, y: 1.51265, z: -0.37999}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LWristIn
+      parentName: C3D:optical
+      position: {x: 2.38529, y: 1.52783, z: -0.38647997}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RShoulderBack
+      parentName: C3D:optical
+      position: {x: 2.52395, y: 1.4038299, z: 0.44505998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RShoulderTop
+      parentName: C3D:optical
+      position: {x: 2.45086, y: 1.53385, z: 0.41499}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RElbowOut
+      parentName: C3D:optical
+      position: {x: 2.49168, y: 1.4387699, z: 0.71558}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RUArmHigh
+      parentName: C3D:optical
+      position: {x: 2.5117, y: 1.49393, z: 0.63447}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RHandOut
+      parentName: C3D:optical
+      position: {x: 2.5467699, y: 1.51015, z: 1.12606}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RWristOut
+      parentName: C3D:optical
+      position: {x: 2.52313, y: 1.5279299, z: 1.0042}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RWristIn
+      parentName: C3D:optical
+      position: {x: 2.43831, y: 1.55045, z: 1.03067}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LKneeOut
+      parentName: C3D:optical
+      position: {x: 2.47685, y: 0.45876998, z: 0.14671}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LThigh
+      parentName: C3D:optical
+      position: {x: 2.37144, y: 0.68937, z: 0.17771}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LAnkleOut
+      parentName: C3D:optical
+      position: {x: 2.5425, y: 0.10203, z: 0.16941999}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LShin
+      parentName: C3D:optical
+      position: {x: 2.44568, y: 0.31892, z: 0.21035999}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LToeOut
+      parentName: C3D:optical
+      position: {x: 2.48536, y: 0.05788, z: 0.11828}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LToeIn
+      parentName: C3D:optical
+      position: {x: 2.39289, y: 0.05277, z: 0.21547}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LHeel
+      parentName: C3D:optical
+      position: {x: 2.59245, y: 0.066810004, z: 0.23900999}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_LToeTip
+      parentName: C3D:optical
+      position: {x: 2.3610098, y: 0.05505, z: 0.11833}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RKneeOut
+      parentName: C3D:optical
+      position: {x: 2.48686, y: 0.51641995, z: 0.50481}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RThigh
+      parentName: C3D:optical
+      position: {x: 2.3720598, y: 0.59981996, z: 0.44759998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RAnkleOut
+      parentName: C3D:optical
+      position: {x: 2.54093, y: 0.10536, z: 0.47838}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RShin
+      parentName: C3D:optical
+      position: {x: 2.42234, y: 0.39646998, z: 0.45204}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RToeOut
+      parentName: C3D:optical
+      position: {x: 2.47191, y: 0.06835, z: 0.5239}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RToeIn
+      parentName: C3D:optical
+      position: {x: 2.37405, y: 0.05045, z: 0.4488}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RHeel
+      parentName: C3D:optical
+      position: {x: 2.57446, y: 0.0933, z: 0.40745}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: C3D:Daryl_RToeTip
+      parentName: C3D:optical
+      position: {x: 2.34561, y: 0.05393, z: 0.53553003}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:HipNull
+      parentName: Ennemy_Death_2026-09-17 10.22.25 AM_007(Clone)
+      position: {x: 0, y: 0.98855, z: 0}
+      rotation: {x: 0.05976871, y: 0.002162398, z: -0.015589007, w: 0.99808824}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:AbNull
+      parentName: Daryl:HipNull
+      position: {x: -0, y: 0.07856999, z: 0}
+      rotation: {x: -0.09366805, y: 0.026338704, z: 0.017638123, w: 0.99509877}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:ChestNull
+      parentName: Daryl:AbNull
+      position: {x: -0, y: 0.17492999, z: 0}
+      rotation: {x: 0.02793875, y: 0.008845831, z: -0.0021387825, w: 0.9995682}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:NeckNull
+      parentName: Daryl:ChestNull
+      position: {x: -0, y: 0.18958, z: 0}
+      rotation: {x: 0.13345537, y: -0.001169277, z: 0.04071147, w: 0.99021757}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:HeadNull
+      parentName: Daryl:NeckNull
+      position: {x: -0, y: 0.13822, z: 0.01783}
+      rotation: {x: -0.028810002, y: 0.0028488818, z: 0.010235838, w: 0.99952847}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LShoulderNull
+      parentName: Daryl:ChestNull
+      position: {x: -0.03792, y: 0.16077, z: -0.0015199999}
+      rotation: {x: 0.0061080605, y: -0.024481902, z: -0.11064768, w: 0.99353933}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LUArmNull
+      parentName: Daryl:LShoulderNull
+      position: {x: -0.08677, y: 0, z: 0}
+      rotation: {x: 0.062035948, y: -0.012979748, z: 0.07022647, w: 0.9955157}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LFArmNull
+      parentName: Daryl:LUArmNull
+      position: {x: -0.27861997, y: 0, z: 0}
+      rotation: {x: -0.056050703, y: -0.001679282, z: 0.0010038163, w: 0.998426}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LHandNull
+      parentName: Daryl:LFArmNull
+      position: {x: -0.31079, y: 0, z: 0}
+      rotation: {x: -0.055750065, y: 0.025743138, z: 0.091788076, w: 0.9938834}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RShoulderNull
+      parentName: Daryl:ChestNull
+      position: {x: 0.03834, y: 0.16077, z: -0.0015199999}
+      rotation: {x: 0.010528331, y: -0.091007195, z: 0.1272118, w: 0.98763555}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RUArmNull
+      parentName: Daryl:RShoulderNull
+      position: {x: 0.08677, y: 0, z: 0}
+      rotation: {x: -0.0107608205, y: 0.0374406, z: -0.09293075, w: 0.99491024}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RFArmNull
+      parentName: Daryl:RUArmNull
+      position: {x: 0.27861997, y: 0, z: 0}
+      rotation: {x: -0.026214223, y: 0.019192679, z: 0.0042264825, w: 0.99946314}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RHandNull
+      parentName: Daryl:RFArmNull
+      position: {x: 0.30267, y: 0, z: 0}
+      rotation: {x: -0.0261918, y: -0.012359936, z: -0.04636482, w: 0.99850464}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LThighNull
+      parentName: Daryl:HipNull
+      position: {x: -0.095819995, y: 0, z: 0}
+      rotation: {x: 0.06174022, y: 0.094280995, z: 0.009772225, w: 0.9935813}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LShinNull
+      parentName: Daryl:LThighNull
+      position: {x: -0, y: -0.50407, z: 0}
+      rotation: {x: -0.018191282, y: -0.0847036, z: 0.022718586, w: 0.99598104}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LFootNull
+      parentName: Daryl:LShinNull
+      position: {x: -0.00083, y: -0.39601, z: -0.00055}
+      rotation: {x: -0.050566003, y: -0.19644208, z: 0.022623934, w: 0.9789493}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:LToeNull
+      parentName: Daryl:LFootNull
+      position: {x: -0, y: -0.06228, z: 0.14373}
+      rotation: {x: 0.00060168264, y: 0.0026006424, z: -0.00017609817, w: 0.9999964}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RThighNull
+      parentName: Daryl:HipNull
+      position: {x: 0.095819995, y: 0, z: 0}
+      rotation: {x: 0.057714883, y: 0.0827951, z: 0.0643486, w: 0.9928108}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RShinNull
+      parentName: Daryl:RThighNull
+      position: {x: -0, y: -0.50407, z: 0}
+      rotation: {x: 0.0065369345, y: 0.026123704, z: -0.04203114, w: 0.99875337}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RFootNull
+      parentName: Daryl:RShinNull
+      position: {x: -0.000089999994, y: -0.39209, z: 0.00012}
+      rotation: {x: -0.06972397, y: 0.053324115, z: -0.0063316557, w: 0.99612}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Daryl:RToeNull
+      parentName: Daryl:RFootNull
+      position: {x: -0, y: -0.06228, z: 0.14373}
+      rotation: {x: 0.018488578, y: -0.01996976, z: -0.0001453617, w: 0.9996296}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 3
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

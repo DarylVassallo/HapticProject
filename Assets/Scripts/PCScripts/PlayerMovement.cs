@@ -170,7 +170,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void SetBodyYRotation(float previous, float current)
     {
-        bodyTransform.rotation = Quaternion.Euler(0, current, 0);
+        bodyTransform.rotation = Quaternion.Euler(0, current + 90f, 0);
     }
 
     private void SetBodyXRotation(float previous, float current)
