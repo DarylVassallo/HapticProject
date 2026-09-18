@@ -31,16 +31,14 @@ public class HapticManager : MonoBehaviour
     private bool _canUseHaptics;
     private bool _isUsingEnemyHaptic;
 
-    [SerializeField] private HapticMaterial teleportBarHaptic;
-    [SerializeField] private HapticMaterial buttonHaptic;
-
     [SerializeField] private TunnelingVignetteController tunnel;
 
     [Header("Haptic Sources")]
     [SerializeField] private AudioHapticSource teleporterHapticSource;
-    [SerializeField] private AudioHapticSource pcDamageHapticSource;
-    [SerializeField] private AudioHapticSource leftButtonHapticSource;
-    [SerializeField] private AudioHapticSource rightButtonHapticSource;
+    [SerializeField] private AudioHapticSource pcLeftDamageHapticSource;
+    [SerializeField] private AudioHapticSource pcRightDamageHapticSource;
+    [SerializeField] private AudioHapticSource[] leftButtonHapticSource;
+    [SerializeField] private AudioHapticSource[] rightButtonHapticSource;
 
     private bool _useTeleporterHaptic;
 
@@ -120,13 +118,12 @@ public class HapticManager : MonoBehaviour
     private void ChangeHealthHaptic(float _newHealth)
     {
         _hapticHealth = ((_newHealth / 100f));
-        float _healthDelay = Mathf.Lerp(
-                                            0.5f,
-                                            2f,
-                                            _hapticHealth
-                                        );
+        float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
 
-        if(!_playingHealthHaptic) PlayHealthHapticServerRpc(_healthDelay);
+        if(!_playingHealthHaptic)
+        { 
+            PlayHealthHapticServerRpc(_healthDelay);
+        }
     }
 
     private void ActivateTeleporterHaptic()
@@ -174,6 +171,8 @@ public class HapticManager : MonoBehaviour
         if(_bridgeMovementAmount < 0) _bridgeMovementAmount *= -1;
         _intensity = Mathf.Clamp(_bridgeMovementAmount * 30, 0, 1);
 
+        Debug.Log("bridge Haptic");
+
         bridgeHaptic.Stop();
         bridgeHaptic.SourceIntensity = _intensity;        
         bridgeHaptic.PlayEventVibration();
@@ -201,50 +200,69 @@ public class HapticManager : MonoBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseButtonHapticServerRpc(int _buttonNum)
     {
-        leftButtonHapticSource.Stop();
-        rightButtonHapticSource.Stop();
-
-        switch(_buttonNum)
+        for(int i = 0; i < leftButtonHapticSource.Length; i++)
         {
-            case 0:
-                _intensity = 0.25f;
-
-                leftButtonHapticSource.SourceIntensity = _intensity;
-                leftButtonHapticSource.PlayEventVibration();
-                
-                break;
-            case 1:
-                _intensity = 1f;
-
-                leftButtonHapticSource.SourceIntensity = _intensity;
-                leftButtonHapticSource.PlayEventVibration();
-
-                break;
-            case 2:
-                _intensity = 1.75f;
-
-                leftButtonHapticSource.SourceIntensity = _intensity;
-                leftButtonHapticSource.PlayEventVibration();
-
-                rightButtonHapticSource.SourceIntensity = _intensity;
-                rightButtonHapticSource.PlayEventVibration();
-
-                break;
-            case 3:
-                _intensity = 1f;
-
-                rightButtonHapticSource.SourceIntensity = _intensity;
-                rightButtonHapticSource.PlayEventVibration();
-
-                break;
-            case 4:
-                _intensity = 0.25f;
-
-                rightButtonHapticSource.SourceIntensity = _intensity;
-                rightButtonHapticSource.PlayEventVibration();
-
-                break;
+            leftButtonHapticSource[i].Stop();
+            rightButtonHapticSource[i].Stop();
         }
+
+        leftButtonHapticSource[_buttonNum].SourceIntensity = 1f;
+        leftButtonHapticSource[_buttonNum].Play();
+
+        rightButtonHapticSource[_buttonNum].SourceIntensity = 1f;
+        rightButtonHapticSource[_buttonNum].Play();
+
+        // switch(_buttonNum)
+        // {
+        //     case 0:
+        //         Debug.Log("left button 0.25 Haptic");
+
+        //         _intensity = 0.25f;
+
+        //         leftButtonHapticSource.SourceIntensity = _intensity;
+        //         leftButtonHapticSource.PlayEventVibration();
+                
+        //         break;
+        //     case 1:
+        //         Debug.Log("left button 1 Haptic");
+
+        //         _intensity = 1f;
+
+        //         leftButtonHapticSource.SourceIntensity = _intensity;
+        //         leftButtonHapticSource.PlayEventVibration();
+
+        //         break;
+        //     case 2:
+        //         Debug.Log("left right button 1.75 Haptic");
+
+        //         _intensity = 1.75f;
+
+        //         leftButtonHapticSource.SourceIntensity = _intensity;
+        //         leftButtonHapticSource.PlayEventVibration();
+
+        //         rightButtonHapticSource.SourceIntensity = _intensity;
+        //         rightButtonHapticSource.PlayEventVibration();
+
+        //         break;
+        //     case 3:
+        //         Debug.Log("right button 1 Haptic");
+
+        //         _intensity = 1f;
+
+        //         rightButtonHapticSource.SourceIntensity = _intensity;
+        //         rightButtonHapticSource.PlayEventVibration();
+
+        //         break;
+        //     case 4:
+        //         Debug.Log("right button 0.25 Haptic");
+
+        //         _intensity = 0.25f;
+
+        //         rightButtonHapticSource.SourceIntensity = _intensity;
+        //         rightButtonHapticSource.PlayEventVibration();
+
+        //         break;
+        // }
     }
 
     IEnumerator Ping(HapticImpulsePlayer _controller, float _delay)
@@ -296,6 +314,8 @@ public class HapticManager : MonoBehaviour
 
     private IEnumerator PlayTeleportHaptic(float _delay)
     {
+        Debug.Log("teleport Haptic");
+
         teleporterHapticSource.Stop();
         teleporterHapticSource.SourceIntensity = _teleportIntensity;
         teleporterHapticSource.PlayEventVibration();
@@ -315,9 +335,17 @@ public class HapticManager : MonoBehaviour
     {
         _playingHealthHaptic = true;
 
-        pcDamageHapticSource.Stop();
-        pcDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 2;
-        pcDamageHapticSource.PlayEventVibration();
+        pcLeftDamageHapticSource.Stop();
+        pcRightDamageHapticSource.Stop();
+
+        pcLeftDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
+        pcRightDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
+
+        Debug.Log("health left Haptic");
+        pcLeftDamageHapticSource.PlayEventVibration();
+
+        Debug.Log("health right Haptic");
+        pcRightDamageHapticSource.PlayEventVibration();
 
         tunnel.defaultParameters.apertureSize = (1f - _hapticHealth);
 
@@ -326,7 +354,8 @@ public class HapticManager : MonoBehaviour
         if(_hapticHealth < 1f)
         {
             _hapticHealth = _hapticHealth + 0.05f;
-            float _healthDelay = Mathf.Lerp(0.5f, 2f, _hapticHealth);
+            float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
+             Debug.Log("2 _hapticHealth: " + _hapticHealth + " : 2 _healthDelay : " + _healthDelay);
             PlayHealthHapticServerRpc(_healthDelay);
         }
         else
