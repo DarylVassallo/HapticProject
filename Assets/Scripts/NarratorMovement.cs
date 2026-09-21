@@ -105,7 +105,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
-        EventsManager.OnLookAtPlayer += LookAtPlayerServerRpc;
+        EventsManager.OnLookAtPlayer += LookAtPlayerRpc;
 
         EventsManager.OnNarratorSays += NarratorSays;
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
@@ -118,7 +118,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
-        EventsManager.OnLookAtPlayer -= LookAtPlayerServerRpc; 
+        EventsManager.OnLookAtPlayer -= LookAtPlayerRpc; 
 
         EventsManager.OnNarratorSays -= NarratorSays;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
@@ -166,8 +166,8 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void LookAtPlayerServerRpc(int _playerNum, int _specificViewPoint, bool _stay)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LookAtPlayerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
         bool _showVision = false;
 
@@ -304,10 +304,10 @@ public class NarratorMovement : NetworkBehaviour
         _speakToPlayer = true;
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlayerNarratorAudioServerRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayerNarratorAudioRpc()
     {
-        Debug.Log("PlayerNarratorAudioServerRpc");
+        Debug.Log("PlayerNarratorAudioRpc");
         
         // _audioSource.Play();
         // _hapticSource.PlayEventVibration();
@@ -351,14 +351,20 @@ public class NarratorMovement : NetworkBehaviour
 
             EventsManager.NarratorStopped();
 
-            if(!_stayWithPlayer) LookAtPlayerServerRpc(-1, -1, false);
+            if(!_stayWithPlayer) LookAtPlayerRpc(-1, -1, false);
         }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void IrisFlickerServerRpc()
     {
-        StartCoroutine(IrisFlicker(UnityEngine.Random.Range(0.01f, 0.5f), UnityEngine.Random.Range(0f, 1f)));
+        IrisFlickerRpc(UnityEngine.Random.Range(0.01f, 0.5f), UnityEngine.Random.Range(0f, 1f));
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void IrisFlickerRpc(float _delay, float _flicker)
+    {
+        StartCoroutine(IrisFlicker(_delay, _flicker));
     }
 
     IEnumerator IrisFlicker(float _delay, float _flicker)
@@ -439,7 +445,7 @@ public class NarratorMovement : NetworkBehaviour
                     _particle.Stop();
                 }
                 
-                if(_speakToPlayer) PlayerNarratorAudioServerRpc();
+                if(_speakToPlayer) PlayerNarratorAudioRpc();
             }
         }
 
