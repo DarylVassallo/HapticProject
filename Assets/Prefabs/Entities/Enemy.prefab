@@ -931,7 +931,7 @@ PrefabInstance:
     - target: {fileID: 5391011836006163916, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f6fa62b5e56df8546827fa5a92e67610, type: 2}
+      objectReference: {fileID: 2100000, guid: b1eba6a83ab54bd46a12a206972b5bb2, type: 2}
     - target: {fileID: 5511362428443801525, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1015,7 +1015,7 @@ PrefabInstance:
     - target: {fileID: 6401258778785991962, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f6fa62b5e56df8546827fa5a92e67610, type: 2}
+      objectReference: {fileID: 2100000, guid: b1eba6a83ab54bd46a12a206972b5bb2, type: 2}
     - target: {fileID: 6511838185425321578, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 2.0123272
@@ -1319,7 +1319,7 @@ PrefabInstance:
     - target: {fileID: 9066576789631251579, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: f6fa62b5e56df8546827fa5a92e67610, type: 2}
+      objectReference: {fileID: 2100000, guid: b1eba6a83ab54bd46a12a206972b5bb2, type: 2}
     - target: {fileID: 9137032837993464747, guid: 4534b9cc6330aed499be54b02abf5283, type: 3}
       propertyPath: m_Name
       value: URP - Giant01 - Golem

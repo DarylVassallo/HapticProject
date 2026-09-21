@@ -10,7 +10,6 @@ using Interhaptics.Utils;
 public class NarratorMovement : NetworkBehaviour
 {
     private AudioSource _audioSource;
-    private AudioHapticSource _hapticSource;
     private Rigidbody _rb;
 
     private bool _isPlaying;
@@ -181,6 +180,7 @@ public class NarratorMovement : NetworkBehaviour
                 // this.GetComponent<Collider>().enabled = false;
                 _moveTarget = _vrViewPoint;
                 _angleTarget = _vrViewPoint;
+                // Debug.Log("1 _angleTarget: " + _angleTarget);
                 _lookAround = false;
                 _showVision = false;
 
@@ -190,6 +190,7 @@ public class NarratorMovement : NetworkBehaviour
                 // this.GetComponent<Collider>().enabled = false;
                 _moveTarget = _pcViewPoint;
                 _angleTarget = _pcViewPoint;
+                // Debug.Log("2 _angleTarget: " + _angleTarget);
                 _lookAround = false;
                 _showVision = false;
 
@@ -201,10 +202,12 @@ public class NarratorMovement : NetworkBehaviour
         {
             case 0:
                 _angleTarget = _roofViewPoint;
+                // Debug.Log("3 _angleTarget: " + _angleTarget);
                 _showVision = true;
                 break;
             case 1:
                 _angleTarget = _tutorialExitViewPoint;
+                // Debug.Log("4 _angleTarget: " + _angleTarget);
                 _showVision = true;
                 break;
         }
@@ -268,24 +271,15 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TogglePauseManagerAudioRpc(bool _toggle)
     {
-        Debug.Log("TogglePauseManagerAudioRpc: _hapticSource: " + _hapticSource);
-
-        if(_hapticSource == null) return;
-
-        if(_toggle)
+        if(!_toggle)
         {
-            _hapticSource.Stop(); 
-        }
-        else
-        {
-            // _hapticSource.Play();
             _speakToPlayer = true;
         }
     }
 
     private void NarratorSays(AudioClip _audioClip, AudioHapticSource _newHapticSource)
     {
-        Debug.Log("NarratorSays: _audioClip: " + _audioClip + " : _newHapticSource : " + _newHapticSource);
+        // Debug.Log("NarratorSays: _audioClip: " + _audioClip + " : _newHapticSource : " + _newHapticSource);
 
         _isPlaying = false;
 
@@ -293,13 +287,7 @@ public class NarratorMovement : NetworkBehaviour
         _audioSource.clip = _audioClip;
         _audioSource.pitch = 1f;
 
-        if(_hapticSource != null) _hapticSource.Stop();
-
-        if(_newHapticSource != null)
-        {
-            _hapticSource = _newHapticSource;
-            _hapticSource.Stop();
-        }
+        EventsManager.ChangeNarratorHaptic(_newHapticSource);
 
         _speakToPlayer = true;
     }
@@ -307,12 +295,11 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayerNarratorAudioRpc()
     {
-        Debug.Log("PlayerNarratorAudioRpc");
+        // Debug.Log("PlayerNarratorAudioRpc");
         
         // _audioSource.Play();
-        // _hapticSource.PlayEventVibration();
-        if(_hapticSource != null) _hapticSource.Play();
-        
+
+        EventsManager.PlayNarratorHaptic();
         EventsManager.IsNarratorSpeaking(true);
 
         _isPlaying = true;
@@ -335,6 +322,7 @@ public class NarratorMovement : NetworkBehaviour
             if(_moveTarget != null)
             {
                 _angleTarget = _moveTarget;
+                // Debug.Log("5 _angleTarget: " + _angleTarget);
                 StartCoroutine(ChangeVision(1f, 0f));
             }
             return;
@@ -344,12 +332,7 @@ public class NarratorMovement : NetworkBehaviour
         {
             _isPlaying = false;
 
-            if(_hapticSource != null)
-            {
-                _hapticSource.Stop();
-                _hapticSource = null;
-            }
-
+            EventsManager.StopNarratorHaptic();
             EventsManager.IsNarratorSpeaking(false);
 
             EventsManager.NarratorStopped();
@@ -391,6 +374,7 @@ public class NarratorMovement : NetworkBehaviour
 
     private void RotationControl()
     {
+        // Debug.Log("_angleTarget: " + _angleTarget);
         Vector3 direction = _angleTarget.position - transform.position;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);

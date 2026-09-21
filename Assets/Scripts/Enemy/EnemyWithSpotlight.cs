@@ -66,8 +66,12 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private bool _playingDeath;
 
+    private bool _isPaused;
+
     void Awake()
     {
+        _isPaused = false;
+
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
@@ -101,6 +105,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
         EventsManager.OnEntityChangedFlashlightRange += RecieveFlashlightRange;
 
         EventsManager.OnSendAppropriateEnemyAudio += PlayAudio;
+
+        EventsManager.OnToggleAll += TogglePause;
     }
 
     private void OnDisable()
@@ -113,6 +119,23 @@ public class EnemyWithSpotlight : NetworkBehaviour
         EventsManager.OnEntityChangedFlashlightRange -= RecieveFlashlightRange;
 
         EventsManager.OnSendAppropriateEnemyAudio -= PlayAudio;
+
+        EventsManager.OnToggleAll -= TogglePause;
+    }
+
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
+
+        if(_isPaused)
+        {
+            _agent.speed = 0;
+            FreezeAnimationClientRpc();
+        }
+        else
+        {
+            MoveAnimationClientRpc();
+        }
     }
 
     public override void OnNetworkDespawn()
@@ -219,7 +242,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if(!IsOwner) return;
+        if(!IsOwner || _isPaused) return;
 
         if(_attackCount > 0) _attackCount--;
 

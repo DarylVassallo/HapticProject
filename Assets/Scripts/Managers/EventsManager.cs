@@ -423,4 +423,11 @@ public class EventsManager : MonoBehaviour
 
     public static event Action<float> OnChangeHealthHaptic;
     public static void ChangeHealthHaptic(float _newHealth) => OnChangeHealthHaptic?.Invoke(_newHealth);
+
+    public static event Action<AudioHapticSource> OnChangeNarratorHaptic;
+    public static void ChangeNarratorHaptic(AudioHapticSource _newHapticSource) => OnChangeNarratorHaptic?.Invoke(_newHapticSource);
+    public static event Action OnPlayNarratorHaptic;
+    public static void PlayNarratorHaptic() => OnPlayNarratorHaptic?.Invoke();
+    public static event Action OnStopNarratorHaptic;
+    public static void StopNarratorHaptic() => OnStopNarratorHaptic?.Invoke();
 }
