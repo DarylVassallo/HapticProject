@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+
+using Unity.Netcode;
+
 //This script controls all input
-public class PCPlayerInputManager : MonoBehaviour
+public class PCPlayerInputManager : NetworkBehaviour
 {
     private PlayerInput playerInput;
 
@@ -23,6 +26,8 @@ public class PCPlayerInputManager : MonoBehaviour
 
     [SerializeField] private static bool canCancel = true;
     private InputAction cancelAction;
+
+    private bool _isInNetwork;
 
     private void Awake()
     {
@@ -113,6 +118,11 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.Disable();
     }
 
+    public override void OnNetworkSpawn()
+    {
+        _isInNetwork = true;
+    }
+
     private void FreezePlayer(bool _toggle)
     {
         ToggleRestriction("All", !_toggle);
@@ -191,6 +201,6 @@ public class PCPlayerInputManager : MonoBehaviour
 
     public void HandleCancelUsingUIButtons()
     {
-        if (canCancel) EventsManager.Cancel(true);
+        if (canCancel && _isInNetwork) EventsManager.Cancel(true);
     }
 }
