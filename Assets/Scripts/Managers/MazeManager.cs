@@ -477,10 +477,13 @@ public class MazeManager : NetworkBehaviour
     //Resets the recorded inputted buttons of the switch
     private void ResetButtons()
     {
+        Debug.Log("ResetButtons");
+        
         currentShapeOrder = new EventsManager.ShapeType[5];
         currentButtonOrder = new EventsManager.ButtonType[5];
         entryNum = 0;
 
+        EventsManager.UseAllButtonHaptic();
         EventsManager.ResetButtons();
 
         //Wrong

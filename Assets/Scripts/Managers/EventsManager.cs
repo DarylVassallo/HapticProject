@@ -412,6 +412,8 @@ public class EventsManager : MonoBehaviour
     public static void UseTeleportBarHaptic(float _intensity) => OnUseTeleportBarHaptic?.Invoke(_intensity);
     public static event Action<int> OnUseButtonHaptic;
     public static void UseButtonHaptic(int _buttonNum) => OnUseButtonHaptic?.Invoke(_buttonNum);
+    public static event Action OnUseAllButtonHaptic;
+    public static void UseAllButtonHaptic() => OnUseAllButtonHaptic?.Invoke();
 
     public static event Action<bool> OnIsNarratorSpeaking;
     public static void IsNarratorSpeaking(bool _isNarratorSpeaking) => OnIsNarratorSpeaking?.Invoke(_isNarratorSpeaking);
