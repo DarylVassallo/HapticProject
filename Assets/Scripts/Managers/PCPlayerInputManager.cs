@@ -194,7 +194,7 @@ public class PCPlayerInputManager : NetworkBehaviour
     //Controls the cancel controls (toggles the pause menu) of the PC Player
     private void HandleCancel(InputAction.CallbackContext ctx)
     {
-        if (canCancel) EventsManager.Cancel(true);
+        if (canCancel && _isInNetwork) EventsManager.Cancel(true);
 
         // if (canFire2) EventsManager.Fire2();
     }
