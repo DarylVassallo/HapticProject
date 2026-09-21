@@ -332,8 +332,11 @@ public class NarratorMovement : NetworkBehaviour
 
         if(!_isPlaying)
         {
-            _angleTarget = _moveTarget;
-            StartCoroutine(ChangeVision(1f, 0f));
+            if(_moveTarget != null)
+            {
+                _angleTarget = _moveTarget;
+                StartCoroutine(ChangeVision(1f, 0f));
+            }
             return;
         }
 
