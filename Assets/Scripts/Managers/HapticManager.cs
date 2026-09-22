@@ -302,12 +302,19 @@ public class HapticManager : NetworkBehaviour
         switch(_controllerNum)
         {
             case 0:
-                leftControllerHaptic.SendHapticImpulse(_ropeDistance, 0.1f);
+                StartCoroutine(RopeHapticDelay(leftControllerHaptic, _ropeDistance, 0.1f));
                 break;
             case 1:
-                rightControllerHaptic.SendHapticImpulse(_ropeDistance, 0.1f);
+                StartCoroutine(RopeHapticDelay(rightControllerHaptic, _ropeDistance, 0.1f));
                 break;
         }
+    }
+
+    private IEnumerator RopeHapticDelay(HapticImpulsePlayer _controller, float _intensity, float _delay)
+    {
+        _controller.SendHapticImpulse(_intensity, _delay);
+        yield return new WaitForSeconds(_delay);
+        _controller.SendHapticImpulse(0, _delay);
     }
 
     private void UseTeleporterTimerHaptic(float _newIntensity)
@@ -393,11 +400,15 @@ public class HapticManager : NetworkBehaviour
         {
             leftTeleporterTransitionHapticSource.Stop();
             leftTeleporterTransitionHapticSource.enabled = false;
+
+            rightControllerHaptic.SendHapticImpulse(0, 0.1f);
         }
         else
         {
             rightTeleporterTransitionHapticSource.Stop();
             rightTeleporterTransitionHapticSource.enabled = false;
+
+            leftControllerHaptic.SendHapticImpulse(0, 0.1f);
         }
 
         _playTeleporterTransitionHaptic = true;
@@ -510,6 +521,8 @@ public class HapticManager : NetworkBehaviour
 
             yield return null;
         }
+
+        _controller.SendHapticImpulse(0f, 0.1f);
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]

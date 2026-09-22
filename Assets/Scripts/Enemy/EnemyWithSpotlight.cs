@@ -76,6 +76,11 @@ public class EnemyWithSpotlight : NetworkBehaviour
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+        _animator.speed = 1;
+
+        int walk = UnityEngine.Random.Range(1, 3);
+        Debug.Log("Walk Animation: " + walk);
+        _animator.SetInteger("Walking", walk);
 
         GetPCPlayerData();
 
@@ -185,7 +190,9 @@ public class EnemyWithSpotlight : NetworkBehaviour
         if(_audioNum == 2)
         {
             _animator.speed = 1;
-            _animator.SetBool("IsDead", true);
+            int death = UnityEngine.Random.Range(1, 4);
+            Debug.Log("Death Animation: " + death);
+            _animator.SetInteger("Death", death);
         }
     }
 
