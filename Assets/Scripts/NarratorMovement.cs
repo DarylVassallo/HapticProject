@@ -374,7 +374,12 @@ public class NarratorMovement : NetworkBehaviour
 
     private void RotationControl()
     {
-        // Debug.Log("_angleTarget: " + _angleTarget);
+        if(_angleTarget == null)
+        {
+            Debug.Log("_angleTarget is null");
+            return;
+        }
+
         Vector3 direction = _angleTarget.position - transform.position;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);

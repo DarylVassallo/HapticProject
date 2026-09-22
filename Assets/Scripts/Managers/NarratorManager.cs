@@ -41,6 +41,15 @@ public class NarratorManager : NetworkBehaviour
 
         _pcPlayerID = unchecked((ulong)-1);
         _vrPlayerID = unchecked((ulong)-1);
+
+        for(int i = 0; i < narratorLines.Length; i++)
+        {
+            for(int j = 0; j < narratorLines[i].narratorAudio.Length; j++)
+            {
+                if(narratorLines[i].narratorAudio[j].englishHapticSource != null)   narratorLines[i].narratorAudio[j].englishHapticSource.enabled = false;
+                if(narratorLines[i].narratorAudio[j].frenchHapticSource != null)   narratorLines[i].narratorAudio[j].frenchHapticSource.enabled = false;
+            }
+        }
     }
 
     private void OnEnable()

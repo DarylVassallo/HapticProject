@@ -640,6 +640,8 @@ public class TeleportPad : NetworkBehaviour
             colour.a = _newAlpha;
             _bubbleMaterial.color = colour;
 
+            EventsManager.TeleporterTransitionHaptic(_newAlpha);
+
             rotateSpeed += rotateIncrement;
             EventsManager.ChangeTeleportRotateSpeed(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
         }

@@ -174,7 +174,10 @@ public class TeleportManager : NetworkBehaviour
             }
         }
         
-        if(tutorialTeleportCount == tutorialTeleportPads.Length)
+        Debug.Log("tutorialTeleportCount: " + tutorialTeleportCount);
+        Debug.Log("tutorialTeleportPads.Length: " + tutorialTeleportPads.Length);
+
+        if(tutorialTeleportCount >= tutorialTeleportPads.Length)
         {
             tutorialTeleportCount++;
             _audioSource.Stop();
@@ -184,6 +187,8 @@ public class TeleportManager : NetworkBehaviour
             // EventsManager.ToggleRestriction("Move", true);
 
             EventsManager.FixTeleportEffect(0, true);
+
+            Debug.Log("ReachedSwitches");
 
             if(IsOwner) EventsManager.ReachedSwitches();
         }
@@ -219,6 +224,8 @@ public class TeleportManager : NetworkBehaviour
                     colour.g = 1 - _newAlpha;
                     colour.a = _newAlpha;
                     _bubbleMaterial.color = colour;
+
+                    EventsManager.TeleporterTransitionHaptic(_newAlpha);
                     
                     EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
                 }

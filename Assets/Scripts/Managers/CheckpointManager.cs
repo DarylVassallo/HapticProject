@@ -120,7 +120,7 @@ public class CheckpointManager : NetworkBehaviour
         Debug.Log("ActivateSecondCheckpointRpc");
         
         _hasUsedTeleporter = true;
-        EventsManager.ActivateTeleporterHaptic();
+        EventsManager.ActivateTeleporterTimerHaptic();
 
         currentCheckpoint = secondCheckpoint;
 

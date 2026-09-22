@@ -418,8 +418,10 @@ public class EventsManager : MonoBehaviour
     public static event Action<bool> OnIsNarratorSpeaking;
     public static void IsNarratorSpeaking(bool _isNarratorSpeaking) => OnIsNarratorSpeaking?.Invoke(_isNarratorSpeaking);
 
-    public static event Action OnActivateTeleporterHaptic;
-    public static void ActivateTeleporterHaptic() => OnActivateTeleporterHaptic?.Invoke();
+    public static event Action OnActivateTeleporterTimerHaptic;
+    public static void ActivateTeleporterTimerHaptic() => OnActivateTeleporterTimerHaptic?.Invoke();
+    public static event Action<float> OnTeleporterTransitionHaptic;
+    public static void TeleporterTransitionHaptic(float _newIntensity) => OnTeleporterTransitionHaptic?.Invoke(_newIntensity);
 
     public static event Action<float> OnChangeHealthHaptic;
     public static void ChangeHealthHaptic(float _newHealth) => OnChangeHealthHaptic?.Invoke(_newHealth);

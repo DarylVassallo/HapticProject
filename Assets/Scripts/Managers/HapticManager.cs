@@ -16,11 +16,10 @@ public class HapticManager : NetworkBehaviour
     public Transform leftHeadListener;
     public Transform rightHeadListener;
 
-    public Transform narratorLeftHeadTransform;
-    private AudioHapticSource narratorLeftHeadHaptic;
-    public Transform narratorRightHeadTransform;
-    private AudioHapticSource narratorRightHeadHaptic;
-    [SerializeField] private AudioHapticSource bridgeHaptic;
+    // public Transform narratorLeftHeadTransform;
+    // private AudioHapticSource narratorLeftHeadHaptic;
+    // public Transform narratorRightHeadTransform;
+    // private AudioHapticSource narratorRightHeadHaptic;
 
     private float _intensity;
     private float _teleportIntensity;
@@ -35,9 +34,13 @@ public class HapticManager : NetworkBehaviour
 
     [SerializeField] private TunnelingVignetteController tunnel;
 
+    private AudioHapticSource narratorHapticSource;
+
     [Header("Haptic Sources")]
-    [SerializeField] private AudioHapticSource narratorHapticSource;
-    [SerializeField] private AudioHapticSource teleporterHapticSource;
+    [SerializeField] private AudioHapticSource bridgeHaptic;
+    [SerializeField] private AudioHapticSource teleporterTimerHapticSource;
+    [SerializeField] private AudioHapticSource leftTeleporterTransitionHapticSource;
+    [SerializeField] private AudioHapticSource rightTeleporterTransitionHapticSource;
     [SerializeField] private AudioHapticSource pcLeftDamageHapticSource;
     [SerializeField] private AudioHapticSource pcRightDamageHapticSource;
 
@@ -49,7 +52,9 @@ public class HapticManager : NetworkBehaviour
     private List<AudioSource> rightButtonAudios;
     private List<AudioHapticSource> rightButtonHapticSources;
 
-    private bool _useTeleporterHaptic;
+    private bool _useTeleporterTimerHaptic;
+    private bool _playTeleporterTransitionHaptic;
+    private bool _useLeftTeleporterTransitionSource;
 
     private bool _isNarrator;
 
@@ -87,19 +92,23 @@ public class HapticManager : NetworkBehaviour
         _hapticHealth = 1f;
         _playingHealthHaptic = false;
 
-        _useTeleporterHaptic = false;
+        _useTeleporterTimerHaptic = false;
+
+        _playTeleporterTransitionHaptic = true;
+        _useLeftTeleporterTransitionSource = true;
 
         _isNarrator = false;
 
         _isUsingEnemyHaptic = false;
 
-        narratorLeftHeadHaptic = narratorLeftHeadTransform.GetComponent<AudioHapticSource>();
-        narratorRightHeadHaptic = narratorRightHeadTransform.GetComponent<AudioHapticSource>();
+        // narratorLeftHeadHaptic = narratorLeftHeadTransform.GetComponent<AudioHapticSource>();
+        // narratorRightHeadHaptic = narratorRightHeadTransform.GetComponent<AudioHapticSource>();
 
         leftControllerHaptic = leftController.GetComponent<HapticImpulsePlayer>();
         rightControllerHaptic = rightController.GetComponent<HapticImpulsePlayer>();
 
         // StartCoroutine(PlayEnemyHaptic(2f));
+        ToggleAllAudioHapticSources(false);
     }
 
     private void OnEnable()
@@ -113,12 +122,14 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnUseBridgeHaptic += UseBridgeHapticServerRpc;
         EventsManager.OnUseRopeHaptic += UseRopeHaptic;
 
-        EventsManager.OnUseTeleportBarHaptic += UseTeleportHaptic;
+        EventsManager.OnUseTeleportBarHaptic += UseTeleporterTimerHaptic;
+        EventsManager.OnTeleporterTransitionHaptic += TeleporterTransitionHaptic;
+
         EventsManager.OnUseButtonHaptic += UseButtonHapticServerRpc;
         EventsManager.OnUseAllButtonHaptic += UseAllButtonHapticServerRpc;
 
         EventsManager.OnIsNarratorSpeaking += IsNarratorSpeaking;
-        EventsManager.OnActivateTeleporterHaptic += ActivateTeleporterHaptic;
+        EventsManager.OnActivateTeleporterTimerHaptic += ActivateTeleporterTimerHaptic;
         EventsManager.OnChangeNarratorHaptic += ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic += PlayNarratorHaptic;
@@ -138,18 +149,43 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnUseBridgeHaptic -= UseBridgeHapticServerRpc;
         EventsManager.OnUseRopeHaptic -= UseRopeHaptic;
 
-        EventsManager.OnUseTeleportBarHaptic -= UseTeleportHaptic;
+        EventsManager.OnUseTeleportBarHaptic -= UseTeleporterTimerHaptic;
+        EventsManager.OnTeleporterTransitionHaptic -= TeleporterTransitionHaptic;
+
         EventsManager.OnUseButtonHaptic -= UseButtonHapticServerRpc;
         EventsManager.OnUseAllButtonHaptic -= UseAllButtonHapticServerRpc;
 
         EventsManager.OnIsNarratorSpeaking -= IsNarratorSpeaking;
-        EventsManager.OnActivateTeleporterHaptic -= ActivateTeleporterHaptic;
+        EventsManager.OnActivateTeleporterTimerHaptic -= ActivateTeleporterTimerHaptic;
         EventsManager.OnChangeNarratorHaptic -= ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic -= PlayNarratorHaptic;
         EventsManager.OnStopNarratorHaptic -= StopNarratorHaptic;
 
         EventsManager.OnChangeHealthHaptic -= ChangeHealthHaptic;
+    }
+
+    private void ToggleAllAudioHapticSources(bool _toggle)
+    {
+        bridgeHaptic.enabled = _toggle;
+
+        teleporterTimerHapticSource.enabled = _toggle;
+
+        leftTeleporterTransitionHapticSource.enabled = _toggle;
+        rightTeleporterTransitionHapticSource.enabled = _toggle;
+
+        pcLeftDamageHapticSource.enabled = _toggle;
+        pcRightDamageHapticSource.enabled = _toggle;
+
+        for(int i = 0; i < leftButtonHapticSources.Count; i++)
+        {            
+            leftButtonHapticSources[i].enabled = _toggle;
+        }
+
+        for(int i = 0; i < rightButtonHapticSources.Count; i++)
+        {            
+            rightButtonHapticSources[i].enabled = _toggle;
+        }
     }
 
     private void TogglePause(bool _toggle)
@@ -161,20 +197,25 @@ public class HapticManager : NetworkBehaviour
     public void TogglePauseManagerAudioRpc(bool _toggle)
     {
         if(narratorHapticSource == null) return;
-
         if(_toggle)
         {
             narratorHapticSource.Stop(); 
+            narratorHapticSource.enabled = false;
         }
     }
 
     private void ChangeNarratorHaptic(AudioHapticSource _newHapticSource)
     {
-        if(narratorHapticSource != null) narratorHapticSource.Stop();
+        if(narratorHapticSource != null)
+        {
+            narratorHapticSource.Stop();
+            narratorHapticSource.enabled = false;
+        }
 
         if(_newHapticSource != null)
         {
             narratorHapticSource = _newHapticSource;
+            narratorHapticSource.enabled = true;
             narratorHapticSource.Stop();
         }
     }
@@ -182,7 +223,11 @@ public class HapticManager : NetworkBehaviour
     private void PlayNarratorHaptic()
     {
         Debug.Log("Play Narrator Haptic");
-        if(narratorHapticSource != null) narratorHapticSource.Play();
+        if(narratorHapticSource != null)
+        { 
+            narratorHapticSource.enabled = true;
+            narratorHapticSource.Play();
+        }
     }
 
     private void StopNarratorHaptic()
@@ -190,6 +235,7 @@ public class HapticManager : NetworkBehaviour
         if(narratorHapticSource != null)
         {
             narratorHapticSource.Stop();
+            narratorHapticSource.enabled = false;
             narratorHapticSource = null;
         }
     }
@@ -203,13 +249,6 @@ public class HapticManager : NetworkBehaviour
         { 
             PlayHealthHapticServerRpc(_healthDelay);
         }
-    }
-
-    private void ActivateTeleporterHaptic()
-    {
-        Debug.Log("ActivateTeleporterHaptic");
-        _useTeleporterHaptic = true;
-        PlayTeleportHapticServerRpc(2f);
     }
 
     private void IsNarratorSpeaking(bool _isNewNarrator)
@@ -252,6 +291,7 @@ public class HapticManager : NetworkBehaviour
 
         Debug.Log("Play Bridge Haptic");
 
+        bridgeHaptic.enabled = true;
         bridgeHaptic.Stop();
         bridgeHaptic.SourceIntensity = _intensity;        
         bridgeHaptic.PlayEventVibration();
@@ -270,11 +310,102 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
-    private void UseTeleportHaptic(float _newIntensity)
+    private void UseTeleporterTimerHaptic(float _newIntensity)
     {
-        if(_isNarrator || !_useTeleporterHaptic) return;
+        if(_isNarrator || !_useTeleporterTimerHaptic) return;
         _teleportIntensity = _newIntensity;
     }
+    private void ActivateTeleporterTimerHaptic()
+    {
+        _useTeleporterTimerHaptic = true;
+        PlayTeleporterTimerHapticServerRpc(2f);
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayTeleporterTimerHapticServerRpc(float _delay)
+    {
+        StartCoroutine(PlayTeleporterTimerHaptic(_delay));
+    }
+
+    private IEnumerator PlayTeleporterTimerHaptic(float _delay)
+    {
+        Debug.Log("Play Teleport Timer Haptic");
+
+        teleporterTimerHapticSource.enabled = true;
+        teleporterTimerHapticSource.Stop();
+        teleporterTimerHapticSource.SourceIntensity = _teleportIntensity;
+        teleporterTimerHapticSource.PlayEventVibration();
+
+        yield return new WaitForSeconds(_delay);
+
+        if(_useTeleporterTimerHaptic) PlayTeleporterTimerHapticServerRpc(_delay);
+    }
+
+
+
+
+
+    private void TeleporterTransitionHaptic(float _newIntensity)
+    {
+        if(_playTeleporterTransitionHaptic)
+        {
+            PlayTeleporterTransitionHapticServerRpc(_newIntensity * 1.25f, 0.5f, _useLeftTeleporterTransitionSource);
+            _useLeftTeleporterTransitionSource = !_useLeftTeleporterTransitionSource;
+        }
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayTeleporterTransitionHapticServerRpc(float _newIntensity, float _teleporterTransitionDelay, bool _usingLeftSource)
+    {
+        StartCoroutine(PlayTeleporterTransitionHaptic(_newIntensity, _teleporterTransitionDelay, _usingLeftSource));
+    }
+
+    private IEnumerator PlayTeleporterTransitionHaptic(float _newIntensity, float _teleporterTransitionDelay, bool _usingLeftSource)
+    {
+        _playTeleporterTransitionHaptic = false;
+
+        if(_usingLeftSource)
+        {
+            Debug.Log("Play Left Teleport Transition Haptic: intensity: " + _newIntensity + " : delay: " + _teleporterTransitionDelay);
+
+            leftTeleporterTransitionHapticSource.enabled = true;
+            leftTeleporterTransitionHapticSource.Stop();
+            leftTeleporterTransitionHapticSource.SourceIntensity = _newIntensity;
+            leftTeleporterTransitionHapticSource.PlayEventVibration();
+            
+            rightControllerHaptic.SendHapticImpulse(_newIntensity, 0.1f);
+        }
+        else
+        {
+            Debug.Log("Play Right Teleport Transition Haptic: intensity: " + _newIntensity + " : delay: " + _teleporterTransitionDelay);
+
+            rightTeleporterTransitionHapticSource.enabled = true;
+            rightTeleporterTransitionHapticSource.Stop();
+            rightTeleporterTransitionHapticSource.SourceIntensity = _newIntensity;
+            rightTeleporterTransitionHapticSource.PlayEventVibration();
+
+            leftControllerHaptic.SendHapticImpulse(_newIntensity, 0.1f);
+        }
+
+        yield return new WaitForSeconds(_teleporterTransitionDelay);
+
+        if(_usingLeftSource)
+        {
+            leftTeleporterTransitionHapticSource.Stop();
+            leftTeleporterTransitionHapticSource.enabled = false;
+        }
+        else
+        {
+            rightTeleporterTransitionHapticSource.Stop();
+            rightTeleporterTransitionHapticSource.enabled = false;
+        }
+
+        _playTeleporterTransitionHaptic = true;
+    }
+
+
+
+
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseButtonHapticServerRpc(int _buttonNum)
@@ -282,16 +413,21 @@ public class HapticManager : NetworkBehaviour
         for(int i = 0; i < leftButtonHapticSources.Count; i++)
         {
             leftButtonHapticSources[i].Stop();
+            leftButtonHapticSources[i].enabled = false;
+
             rightButtonHapticSources[i].Stop();
+            rightButtonHapticSources[i].enabled = false;
         }
         
         Debug.Log("Play Specific Button Haptic");
 
         leftButtonAudios[_buttonNum].volume = 0f;
+        leftButtonHapticSources[_buttonNum].enabled = true;
         leftButtonHapticSources[_buttonNum].SourceIntensity = 1f;
         leftButtonHapticSources[_buttonNum].PlayEventVibration();
 
         rightButtonAudios[_buttonNum].volume = 0f;
+        rightButtonHapticSources[_buttonNum].enabled = true;
         rightButtonHapticSources[_buttonNum].SourceIntensity = 1f;
         rightButtonHapticSources[_buttonNum].PlayEventVibration();
     }
@@ -299,18 +435,18 @@ public class HapticManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseAllButtonHapticServerRpc()
     {
-        Debug.Log("UseAllButtonHapticServerRpc");
-
         leftButtonHapticSources[0].Stop();
         rightButtonHapticSources[0].Stop();
         
         Debug.Log("Play First All Buttons Haptic");
 
         leftButtonAudios[0].volume = 1f;
+        leftButtonHapticSources[0].enabled = true;
         leftButtonHapticSources[0].SourceIntensity = 1f;
         leftButtonHapticSources[0].Play();
 
         rightButtonAudios[0].volume = 1f;
+        rightButtonHapticSources[0].enabled = true;
         rightButtonHapticSources[0].SourceIntensity = 1f;
         rightButtonHapticSources[0].Play();
 
@@ -334,7 +470,10 @@ public class HapticManager : NetworkBehaviour
 
         yield return new WaitForSeconds(_delay);
 
+        leftButtonHapticSources[_useAllButtonHaptics].enabled = true;
         leftButtonHapticSources[_useAllButtonHaptics].Stop();
+
+        rightButtonHapticSources[_useAllButtonHaptics].enabled = true;
         rightButtonHapticSources[_useAllButtonHaptics].Stop();
 
         Debug.Log("Play Remaining All Buttons Haptic");
@@ -373,6 +512,49 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayHealthHapticServerRpc(float _delay)
+    {
+        StartCoroutine(PlayHealthHaptic(_delay));
+    }
+
+    private IEnumerator PlayHealthHaptic(float _delay)
+    {
+        _playingHealthHaptic = true;
+
+        pcLeftDamageHapticSource.enabled = true;
+        pcLeftDamageHapticSource.Stop();
+
+        pcRightDamageHapticSource.enabled = true;
+        pcRightDamageHapticSource.Stop();
+
+        pcLeftDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
+        pcRightDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
+
+        Debug.Log("Play Left Health Haptic");
+        pcLeftDamageHapticSource.PlayEventVibration();
+
+        Debug.Log("Play Right Health Haptic");
+        pcRightDamageHapticSource.PlayEventVibration();
+
+        tunnel.defaultParameters.apertureSize = (1f - _hapticHealth);
+
+        yield return new WaitForSeconds(_delay);
+
+        if(_hapticHealth < 1f)
+        {
+            _hapticHealth = _hapticHealth + 0.05f;
+            float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
+            PlayHealthHapticServerRpc(_healthDelay);
+        }
+        else
+        {
+            _playingHealthHaptic = false;
+        }
+    }
+}
+
+
     // private void Update()
     // {
     //     if(!_canUseHaptics) return;
@@ -399,62 +581,3 @@ public class HapticManager : NetworkBehaviour
 
     //     // if(_isUsingEnemyHaptic) StartCoroutine(PlayEnemyHaptic(_delay));
     // }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlayTeleportHapticServerRpc(float _delay)
-    {
-        StartCoroutine(PlayTeleportHaptic(_delay));
-    }
-
-    private IEnumerator PlayTeleportHaptic(float _delay)
-    {
-        Debug.Log("Play Teleport Haptic");
-
-        teleporterHapticSource.Stop();
-        teleporterHapticSource.SourceIntensity = _teleportIntensity;
-        teleporterHapticSource.PlayEventVibration();
-
-        yield return new WaitForSeconds(_delay);
-
-        if(_useTeleporterHaptic) PlayTeleportHapticServerRpc(_delay);
-    }
-
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlayHealthHapticServerRpc(float _delay)
-    {
-        StartCoroutine(PlayHealthHaptic(_delay));
-    }
-
-    private IEnumerator PlayHealthHaptic(float _delay)
-    {
-        _playingHealthHaptic = true;
-
-        pcLeftDamageHapticSource.Stop();
-        pcRightDamageHapticSource.Stop();
-
-        pcLeftDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
-        pcRightDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
-
-        Debug.Log("Play Left Health Haptic");
-        pcLeftDamageHapticSource.PlayEventVibration();
-
-        Debug.Log("Play Right Health Haptic");
-        pcRightDamageHapticSource.PlayEventVibration();
-
-        tunnel.defaultParameters.apertureSize = (1f - _hapticHealth);
-
-        yield return new WaitForSeconds(_delay);
-
-        if(_hapticHealth < 1f)
-        {
-            _hapticHealth = _hapticHealth + 0.05f;
-            float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
-             Debug.Log("2 _hapticHealth: " + _hapticHealth + " : 2 _healthDelay : " + _healthDelay);
-            PlayHealthHapticServerRpc(_healthDelay);
-        }
-        else
-        {
-            _playingHealthHaptic = false;
-        }
-    }
-}
