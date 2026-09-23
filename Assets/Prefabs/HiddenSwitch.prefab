@@ -1573,9 +1573,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonInteract
   ShowTopMostFoldoutHeaderGroup: 1
-  shape: 0
+  shape: 1
   button: 4
-  buttonAudio: {fileID: 8300000, guid: 855d3b46677d55a4a99cb6616fd7ede6, type: 3}
+  buttonAudio: {fileID: 8300000, guid: 4ed0d1858e570374bbefb12e8a85d166, type: 3}
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
@@ -1876,7 +1876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonInteract
   ShowTopMostFoldoutHeaderGroup: 1
-  shape: 0
+  shape: 1
   button: 5
   buttonAudio: {fileID: 8300000, guid: 855d3b46677d55a4a99cb6616fd7ede6, type: 3}
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
@@ -2744,9 +2744,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonInteract
   ShowTopMostFoldoutHeaderGroup: 1
-  shape: 0
+  shape: 1
   button: 1
-  buttonAudio: {fileID: 8300000, guid: 855d3b46677d55a4a99cb6616fd7ede6, type: 3}
+  buttonAudio: {fileID: 8300000, guid: 0e145be4c57b13f42988a91a77a01dc8, type: 3}
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
@@ -3378,9 +3378,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonInteract
   ShowTopMostFoldoutHeaderGroup: 1
-  shape: 0
+  shape: 1
   button: 2
-  buttonAudio: {fileID: 8300000, guid: 855d3b46677d55a4a99cb6616fd7ede6, type: 3}
+  buttonAudio: {fileID: 8300000, guid: 8558aa14f08448c438fca309237a7a10, type: 3}
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
@@ -3681,9 +3681,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonInteract
   ShowTopMostFoldoutHeaderGroup: 1
-  shape: 0
+  shape: 1
   button: 3
-  buttonAudio: {fileID: 8300000, guid: 855d3b46677d55a4a99cb6616fd7ede6, type: 3}
+  buttonAudio: {fileID: 8300000, guid: 6b9ce0e08764c7a4b952876b1c4c2f32, type: 3}
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}

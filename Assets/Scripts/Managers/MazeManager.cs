@@ -9,6 +9,8 @@ using Unity.AI.Navigation;
 
 using Unity.Netcode;
 
+using Interhaptics.Utils;
+
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : NetworkBehaviour
 {
@@ -19,6 +21,7 @@ public class MazeManager : NetworkBehaviour
 
     [Header("Switches")]
     [SerializeField] private HiddenSwitches[] hiddenSwitches;
+    [SerializeField] private StoneButtonHaptics[] stoneButtonHaptics;
 
     //This is the Switch wall, recording the specific type of switch, 
     // and the button order required to activate it
@@ -28,6 +31,13 @@ public class MazeManager : NetworkBehaviour
         public EventsManager.ShapeType shape;
         public EventsManager.ButtonType[] buttonOrder;
         public UnityEvent activateMethod;
+    }
+
+    [System.Serializable]
+    private struct StoneButtonHaptics
+    {
+        public EventsManager.ButtonType button;
+        public AudioHapticSource haptic;
     }
 
     private enum InteractiveObject { SpinWheel, HealthBall, DefenseButton }
@@ -91,6 +101,8 @@ public class MazeManager : NetworkBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnPressedButtonHaptic += PressedButtonHaptic;
+
         EventsManager.OnTriggerButton += PressedButton;
         EventsManager.OnActivateReset += ResetButtons;
 
@@ -109,6 +121,8 @@ public class MazeManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnPressedButtonHaptic -= PressedButtonHaptic;
+
         EventsManager.OnTriggerButton -= PressedButton;
         EventsManager.OnActivateReset -= ResetButtons;
 
@@ -483,7 +497,7 @@ public class MazeManager : NetworkBehaviour
         currentButtonOrder = new EventsManager.ButtonType[5];
         entryNum = 0;
 
-        EventsManager.UseAllButtonHaptic();
+        // EventsManager.UseAllButtonHaptic();
         EventsManager.ResetButtons();
 
         //Wrong
@@ -520,9 +534,24 @@ public class MazeManager : NetworkBehaviour
     // Checks if the button matches the switches order, 
     // Checks if the button belongs to the current switch,
     // Spawns one enemy nearby
+
+    private void PressedButtonHaptic(EventsManager.ButtonType _button)
+    {
+        for (int i = 0; i < stoneButtonHaptics.Length; i++)
+        {
+            if (stoneButtonHaptics[i].button == _button)
+            {
+                EventsManager.PlayStoneButtonHaptic(stoneButtonHaptics[i].haptic);
+                break;
+            }
+        }
+    }
+
     private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
-        _audioSource.clip = buttonAudio;
+        // _audioSource.clip = buttonAudio;
+
+        PressedButtonHaptic(_button);
 
         //Spawns one enemy nearby 
         EventsManager.CreateRandomEnemy(1);
@@ -558,7 +587,7 @@ public class MazeManager : NetworkBehaviour
                 {
                     if (hiddenSwitches[i].buttonOrder[j] == _button)
                     {
-                        EventsManager.UseButtonHaptic(j);
+                        // EventsManager.UseButtonHaptic(j);
                         // Debug.Log("Button Haptic");
                     }
                 }

@@ -445,4 +445,10 @@ public class EventsManager : MonoBehaviour
     public static void PlayNarratorHaptic() => OnPlayNarratorHaptic?.Invoke();
     public static event Action OnStopNarratorHaptic;
     public static void StopNarratorHaptic() => OnStopNarratorHaptic?.Invoke();
+
+    public static event Action<AudioHapticSource> OnPlayStoneButtonHaptic;
+    public static void PlayStoneButtonHaptic(AudioHapticSource _haptic) => OnPlayStoneButtonHaptic?.Invoke(_haptic);
+
+    public static event Action<EventsManager.ButtonType> OnPressedButtonHaptic;
+    public static void PressedButtonHaptic(EventsManager.ButtonType _button) => OnPressedButtonHaptic?.Invoke(_button);
 }

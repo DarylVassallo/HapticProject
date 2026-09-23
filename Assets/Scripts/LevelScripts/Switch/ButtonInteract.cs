@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 using Unity.Netcode;
 
+using UnityEngine.Audio;
+
 //This script controls is the button can be interacted with, and for what switch it is for
 public class ButtonInteract : NetworkBehaviour, IInteractable
 {    
@@ -12,6 +14,8 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
     [SerializeField] private EventsManager.ShapeType shape;
     [SerializeField] private EventsManager.ButtonType button;
+
+    [SerializeField] private AudioClip buttonAudio;
 
     private float pressedDistance = 0.1f;
 
@@ -25,8 +29,6 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     // private bool _moveUp;
 
     private float _minDistance = 0.005f;
-
-    [SerializeField] private AudioClip buttonAudio;
 
     private AudioSource _audioSource;
     // private bool _isPlaying;
@@ -100,7 +102,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         _activeButton = true;
 
-        if(IsOwner) EventsManager.TriggerButton(shape, button);
+        if(!isResetButton && IsOwner) EventsManager.TriggerButton(shape, button);
 
         targetPosition = originalPosition;
         targetMaterial = inProgressMaterial;
@@ -108,7 +110,6 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         // _moveDown = true;
         
-
         _audioSource.Play();
     }
 

@@ -1,0 +1,264 @@
+{
+    "description": "",
+    "gain": 1.0,
+    "version": "6",
+    "vibration": {
+        "frequency_range": {
+            "max": 1000.0,
+            "min": 0.0
+        },
+        "gain": 1.0,
+        "loop": false,
+        "melodies": [
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": []
+            },
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": [
+                    {
+                        "amplitude": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": 0.0,
+                                    "slope": 0.0,
+                                    "value": 0.09662298526124562
+                                },
+                                {
+                                    "position": 0.025,
+                                    "slope": 1.9798237407788297,
+                                    "value": 0.09662298526124562
+                                },
+                                {
+                                    "position": 0.07500000000000001,
+                                    "slope": 0.6061652647810765,
+                                    "value": 0.24510976581965788
+                                },
+                                {
+                                    "position": 0.125,
+                                    "slope": -1.2498211522362015,
+                                    "value": 0.15723951173935327
+                                },
+                                {
+                                    "position": 0.175,
+                                    "slope": -1.7833306982573598,
+                                    "value": 0.12012765059603775
+                                },
+                                {
+                                    "position": 0.21311458333333333,
+                                    "slope": -1.2094252193903015,
+                                    "value": 0.00010207031686363853
+                                },
+                                {
+                                    "position": 0.225,
+                                    "slope": 0.48892133805754123,
+                                    "value": 0.05965638962652266
+                                },
+                                {
+                                    "position": 0.275,
+                                    "slope": -0.43956397307335704,
+                                    "value": 0.03035917103977878
+                                },
+                                {
+                                    "position": 0.325,
+                                    "slope": -0.2792327883053958,
+                                    "value": 0.015699992319186947
+                                },
+                                {
+                                    "position": 0.375,
+                                    "slope": -0.15408525542529716,
+                                    "value": 0.00243589220923921
+                                },
+                                {
+                                    "position": 0.42622916666666666,
+                                    "slope": -0.04555650704921815,
+                                    "value": 0.00010207031686363853
+                                }
+                            ]
+                        },
+                        "length": 0.42622916666666666,
+                        "m_gain": 1.0,
+                        "pitch": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": 0.0,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 0.025,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 0.07500000000000001,
+                                    "value": 0.03515625
+                                },
+                                {
+                                    "position": 0.125,
+                                    "value": 0.0234375
+                                },
+                                {
+                                    "position": 0.175,
+                                    "value": 0.1875
+                                },
+                                {
+                                    "position": 0.21311458333333333,
+                                    "value": 0.01171875
+                                },
+                                {
+                                    "position": 0.225,
+                                    "value": 0.0234375
+                                },
+                                {
+                                    "position": 0.275,
+                                    "value": 0.0234375
+                                },
+                                {
+                                    "position": 0.325,
+                                    "value": 0.01171875
+                                },
+                                {
+                                    "position": 0.375,
+                                    "value": 0.01171875
+                                },
+                                {
+                                    "position": 0.42622916666666666,
+                                    "value": 0.01171875
+                                }
+                            ]
+                        },
+                        "position": 0.0
+                    }
+                ]
+            }
+        ],
+        "transients": [
+            {
+                "amplitude": 0.063751220703125,
+                "pitch": 0.09090909090909093,
+                "position": 0.0005833333333333334,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.12347412109375,
+                "pitch": 0.09090909090909093,
+                "position": 0.022458333333333334,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.252899169921875,
+                "pitch": 0.09090909090909093,
+                "position": 0.04441666666666667,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.49249267578125,
+                "pitch": 0.09090909090909093,
+                "position": 0.06666666666666667,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.40380859375,
+                "pitch": 0.09090909090909093,
+                "position": 0.0884375,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.37225341796875,
+                "pitch": 0.09090909090909093,
+                "position": 0.1106875,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.110809326171875,
+                "pitch": 0.09090909090909093,
+                "position": 0.13277083333333334,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.3193359375,
+                "pitch": 0.09090909090909093,
+                "position": 0.15477083333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.054290771484375,
+                "pitch": 0.09090909090909093,
+                "position": 0.17670833333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.124359130859375,
+                "pitch": 0.09090909090909093,
+                "position": 0.1985,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.21820068359375,
+                "pitch": 0.09090909090909093,
+                "position": 0.2204375,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.033477783203125,
+                "pitch": 0.09090909090909093,
+                "position": 0.242375,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.04193115234375,
+                "pitch": 0.09090909090909093,
+                "position": 0.2642083333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.03887939453125,
+                "pitch": 0.09090909090909093,
+                "position": 0.2861458333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.051849365234375,
+                "pitch": 0.09090909090909093,
+                "position": 0.3081875,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0155029296875,
+                "pitch": 0.09090909090909093,
+                "position": 0.3298333333333333,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.004852294921875,
+                "pitch": 0.09090909090909093,
+                "position": 0.35172916666666665,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.00140380859375,
+                "pitch": 0.09090909090909093,
+                "position": 0.3737916666666667,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.000732421875,
+                "pitch": 0.09090909090909093,
+                "position": 0.39577083333333335,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.0,
+                "pitch": 0.09090909090909093,
+                "position": 0.41775,
+                "type": "Simple"
+            }
+        ]
+    }
+}

@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 using Interhaptics;
 using Interhaptics.Utils;
@@ -49,13 +49,8 @@ public class HapticManager : NetworkBehaviour
     [SerializeField] private AudioHapticSource pcLeftDamageHapticSource;
     [SerializeField] private AudioHapticSource pcRightDamageHapticSource;
 
-    [SerializeField] private Transform[] leftButtons;
-    private List<AudioSource> leftButtonAudios;
-    private List<AudioHapticSource> leftButtonHapticSources;
-
-    [SerializeField] private Transform[] rightButtons;
-    private List<AudioSource> rightButtonAudios;
-    private List<AudioHapticSource> rightButtonHapticSources;
+    [SerializeField] private Transform[] stoneButtons;
+    private List<AudioHapticSource> stoneButtonHapticSources;
 
     private bool _useTeleporterTimerHaptic;
     private bool _playTeleporterTransitionHaptic;
@@ -75,20 +70,10 @@ public class HapticManager : NetworkBehaviour
     {
         _playFullButtonsHaptics = true;
 
-        leftButtonAudios = new List<AudioSource>();
-        leftButtonHapticSources = new List<AudioHapticSource>();
-        for(int i = 0; i < leftButtons.Length; i++)
+        stoneButtonHapticSources = new List<AudioHapticSource>();
+        for(int i = 0; i < stoneButtons.Length; i++)
         {            
-            leftButtonAudios.Add(leftButtons[i].GetComponent<AudioSource>());
-            leftButtonHapticSources.Add(leftButtons[i].GetComponent<AudioHapticSource>());
-        }
-
-        rightButtonAudios = new List<AudioSource>();
-        rightButtonHapticSources = new List<AudioHapticSource>();
-        for(int i = 0; i < rightButtons.Length; i++)
-        {
-            rightButtonAudios.Add(rightButtons[i].GetComponent<AudioSource>());
-            rightButtonHapticSources.Add(rightButtons[i].GetComponent<AudioHapticSource>());
+            stoneButtonHapticSources.Add(stoneButtons[i].GetComponent<AudioHapticSource>());
         }
 
         _useAllButtonHaptics = -1;
@@ -141,6 +126,8 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnStopNarratorHaptic += StopNarratorHaptic;
 
         EventsManager.OnChangeHealthHaptic += ChangeHealthHaptic;
+
+        EventsManager.OnPlayStoneButtonHaptic += PlayStoneButtonHaptic;
     }
 
     private void OnDisable()
@@ -168,6 +155,8 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnStopNarratorHaptic -= StopNarratorHaptic;
 
         EventsManager.OnChangeHealthHaptic -= ChangeHealthHaptic;
+
+        EventsManager.OnPlayStoneButtonHaptic -= PlayStoneButtonHaptic;
     }
 
     private void ToggleAllAudioHapticSources(bool _toggle)
@@ -185,14 +174,9 @@ public class HapticManager : NetworkBehaviour
         pcLeftDamageHapticSource.enabled = _toggle;
         pcRightDamageHapticSource.enabled = _toggle;
 
-        for(int i = 0; i < leftButtonHapticSources.Count; i++)
+        for(int i = 0; i < stoneButtonHapticSources.Count; i++)
         {            
-            leftButtonHapticSources[i].enabled = _toggle;
-        }
-
-        for(int i = 0; i < rightButtonHapticSources.Count; i++)
-        {            
-            rightButtonHapticSources[i].enabled = _toggle;
+            stoneButtonHapticSources[i].enabled = _toggle;
         }
     }
 
@@ -443,52 +427,41 @@ public class HapticManager : NetworkBehaviour
         _playTeleporterTransitionHaptic = true;
     }
 
-
-
-
+    private void PlayStoneButtonHaptic(AudioHapticSource _haptic)
+    {
+        Debug.Log("Play Stone Haptic: " + _haptic);
+        _haptic.Stop();
+        _haptic.enabled = true;
+        _haptic.SourceIntensity = 1f;
+        _haptic.PlayEventVibration();
+    }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseButtonHapticServerRpc(int _buttonNum)
     {
-        for(int i = 0; i < leftButtonHapticSources.Count; i++)
+        for(int i = 0; i < stoneButtonHapticSources.Count; i++)
         {
-            leftButtonHapticSources[i].Stop();
-            leftButtonHapticSources[i].enabled = false;
-
-            rightButtonHapticSources[i].Stop();
-            rightButtonHapticSources[i].enabled = false;
+            stoneButtonHapticSources[i].Stop();
+            stoneButtonHapticSources[i].enabled = false;
         }
         
         Debug.Log("Play Specific Button Haptic");
 
-        leftButtonAudios[_buttonNum].volume = 0f;
-        leftButtonHapticSources[_buttonNum].enabled = true;
-        leftButtonHapticSources[_buttonNum].SourceIntensity = 1f;
-        leftButtonHapticSources[_buttonNum].PlayEventVibration();
-
-        rightButtonAudios[_buttonNum].volume = 0f;
-        rightButtonHapticSources[_buttonNum].enabled = true;
-        rightButtonHapticSources[_buttonNum].SourceIntensity = 1f;
-        rightButtonHapticSources[_buttonNum].PlayEventVibration();
+        stoneButtonHapticSources[_buttonNum].enabled = true;
+        stoneButtonHapticSources[_buttonNum].SourceIntensity = 1f;
+        stoneButtonHapticSources[_buttonNum].PlayEventVibration();
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseAllButtonHapticServerRpc()
     {
-        leftButtonHapticSources[0].Stop();
-        rightButtonHapticSources[0].Stop();
+        stoneButtonHapticSources[0].Stop();
         
         Debug.Log("Play First All Buttons Haptic");
 
-        leftButtonAudios[0].volume = 1f;
-        leftButtonHapticSources[0].enabled = true;
-        leftButtonHapticSources[0].SourceIntensity = 1f;
-        leftButtonHapticSources[0].Play();
-
-        rightButtonAudios[0].volume = 1f;
-        rightButtonHapticSources[0].enabled = true;
-        rightButtonHapticSources[0].SourceIntensity = 1f;
-        rightButtonHapticSources[0].Play();
+        stoneButtonHapticSources[0].enabled = true;
+        stoneButtonHapticSources[0].SourceIntensity = 1f;
+        stoneButtonHapticSources[0].Play();
 
         _useAllButtonHaptics = 1;
     }
@@ -497,7 +470,7 @@ public class HapticManager : NetworkBehaviour
     {
         if(_useAllButtonHaptics != -1)
         {
-            if(_playFullButtonsHaptics && leftButtonAudios[_useAllButtonHaptics - 1].isPlaying == false && rightButtonAudios[_useAllButtonHaptics - 1].isPlaying == false)
+            if(_playFullButtonsHaptics)
             {
                 StartCoroutine(FullButtonHapticsDelay(0.5f));
             }
@@ -510,23 +483,15 @@ public class HapticManager : NetworkBehaviour
 
         yield return new WaitForSeconds(_delay);
 
-        leftButtonHapticSources[_useAllButtonHaptics].enabled = true;
-        leftButtonHapticSources[_useAllButtonHaptics].Stop();
-
-        rightButtonHapticSources[_useAllButtonHaptics].enabled = true;
-        rightButtonHapticSources[_useAllButtonHaptics].Stop();
+        stoneButtonHapticSources[_useAllButtonHaptics].enabled = true;
+        stoneButtonHapticSources[_useAllButtonHaptics].Stop();
 
         Debug.Log("Play Remaining All Buttons Haptic");
 
-        leftButtonAudios[_useAllButtonHaptics].volume = 1f;
-        leftButtonHapticSources[_useAllButtonHaptics].SourceIntensity = 1f;
-        leftButtonHapticSources[_useAllButtonHaptics].Play();
+        stoneButtonHapticSources[_useAllButtonHaptics].SourceIntensity = 1f;
+        stoneButtonHapticSources[_useAllButtonHaptics].Play();
 
-        rightButtonAudios[_useAllButtonHaptics].volume = 1f;
-        rightButtonHapticSources[_useAllButtonHaptics].SourceIntensity = 1f;
-        rightButtonHapticSources[_useAllButtonHaptics].Play();
-
-        if((_useAllButtonHaptics + 1) < leftButtonHapticSources.Count)
+        if((_useAllButtonHaptics + 1) < stoneButtonHapticSources.Count)
         {
             _useAllButtonHaptics++;
         }
