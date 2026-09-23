@@ -131,11 +131,15 @@ public class PlayerMovement : NetworkBehaviour
 
     private void ToggleAllPlayerMotion(bool _toggle)
     {
+        Debug.Log("ToggleAllPlayerMotion: " + _toggle);
+
         _inputAxisController.enabled = _toggle;
         TogglePlayerMovement(_toggle);
     }
     private void TogglePlayerMovement(bool _toggle)
     {
+        Debug.Log("TogglePlayerMovement: " + _toggle);
+        
         _isGravityEnabled = _toggle;
 
         if(!_isGravityEnabled)

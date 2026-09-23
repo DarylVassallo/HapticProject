@@ -60,6 +60,20 @@ public class EventsManager : MonoBehaviour
 
 
 
+    //BackgroundMusic Events=============================================
+    public static event Action OnPlayFirstSectionMusic;
+    public static void PlayFirstSectionMusic() => OnPlayFirstSectionMusic?.Invoke();
+    public static event Action OnPlaySecondSectionMusic;
+    public static void PlaySecondSectionMusic() => OnPlaySecondSectionMusic?.Invoke();
+    public static event Action OnPlayThirdSectionMusic;
+    public static void PlayThirdSectionMusic() => OnPlayThirdSectionMusic?.Invoke();
+    public static event Action OnPlayFourthSectionMusic;
+    public static void PlayFourthSectionMusic() => OnPlayFourthSectionMusic?.Invoke();
+
+
+
+
+
     //GameMenu Events=============================================
     public static event Action OnPlayGameLevel;
     public static void PlayGameLevel() => OnPlayGameLevel?.Invoke();
@@ -92,7 +106,6 @@ public class EventsManager : MonoBehaviour
     public static void ChangeHealthBar(float _newHealth) => OnChangeHealthBar?.Invoke(_newHealth);
     public static event Action<float> OnChangeChargeBar;
     public static void ChangeChargeBar(float _newCharge) => OnChangeChargeBar?.Invoke(_newCharge);
-
 
 
 

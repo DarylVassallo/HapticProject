@@ -109,6 +109,7 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateFirstCheckpointRpc()
     {
+        EventsManager.PlayFirstSectionMusic();
         currentCheckpoint = firstCheckpoint;
     }
     
@@ -122,6 +123,7 @@ public class CheckpointManager : NetworkBehaviour
         _hasUsedTeleporter = true;
         EventsManager.ActivateTeleporterTimerHaptic();
 
+        EventsManager.PlaySecondSectionMusic();
         currentCheckpoint = secondCheckpoint;
 
         for (int i = 0; i < hiddenButtons.childCount; i++)
@@ -143,6 +145,8 @@ public class CheckpointManager : NetworkBehaviour
     public void ActivateThirdCheckpointRpc()
     {
         _hasCollectedEverything = true;
+
+        EventsManager.PlayThirdSectionMusic();
         currentCheckpoint = thirdCheckpoint;
 
         EventsManager.DestroyAllEnemies();
@@ -156,6 +160,8 @@ public class CheckpointManager : NetworkBehaviour
     public void ActivateFourthCheckpointRpc()
     {
         _hasCrossedCrookedBridges = true;
+
+        EventsManager.PlayFourthSectionMusic();
         currentCheckpoint = fourthCheckpoint;
     }
 

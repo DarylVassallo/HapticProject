@@ -338,7 +338,7 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
-        EventsManager.UseTeleportBarHaptic(_newSize);
+        EventsManager.UseTeleportBarHaptic(_newSize / 3f);
 
         for(int i = 0; i < _barList.Count; i++)
         {
