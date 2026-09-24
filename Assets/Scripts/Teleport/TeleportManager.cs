@@ -15,6 +15,7 @@ public class TeleportManager : NetworkBehaviour
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
     private bool _isEverythingCollected;
+    private bool _hasUsedCrookedBridgeTeleporter;
 
     [SerializeField] private Material activeMaterial;
     [SerializeField] private Material deactiveMaterial;
@@ -60,6 +61,7 @@ public class TeleportManager : NetworkBehaviour
 
     private void Awake()
     {
+        _hasUsedCrookedBridgeTeleporter = false;
         _isPaused = false;
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -83,6 +85,8 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnToggleAll += TogglePause;
 
+        EventsManager.OnUsedCrookedBridgeTeleporter += UsedCrookedBridgeTeleporter;
+
         EventsManager.TogglePCTrigger(true);
     }
 
@@ -100,11 +104,21 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnDisableTeleportChange -= DisableTeleportChange;
 
         EventsManager.OnToggleAll -= TogglePause;
+
+        EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
     }
 
     public override void OnNetworkSpawn()
     {
         _isInNetwork = true;
+    }
+
+    private void UsedCrookedBridgeTeleporter()
+    {
+        if(!_hasUsedCrookedBridgeTeleporter)
+        {
+            EventsManager.UsedCrookedBridgeTeleporter();
+        }
     }
 
     private void TogglePause(bool _toggle)
@@ -350,6 +364,8 @@ public class TeleportManager : NetworkBehaviour
 
     private void GainCollectable()
     {
+        if(_collectablePoints == 0) EventsManager.FirstCollectable();
+
         //Once a collectable is collected, this hids it, and gives the PCPlayer a point
         collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
         _collectablePoints++;

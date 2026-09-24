@@ -10,10 +10,21 @@ public class BackgroundMusicManager : MonoBehaviour
     [SerializeField] private AudioClip thirdSectionMusic;
     [SerializeField] private AudioClip fourthSectionMusic;
 
-    private float _maxVolume;
+    [SerializeField] private Transform endPoint;
+    private bool _usingFourthSectionMusic;
+    private Transform _pcPlayer;
+
+    [SerializeField] private float _maxVolume;
+
+    private void Awake()
+    {
+        _usingFourthSectionMusic = false;
+    }
 
     private void OnEnable()
     {
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerData;
+
         EventsManager.OnReachedSwitches += PlayFirstSectionMusic;
         EventsManager.OnPlaySecondSectionMusic += PlaySecondSectionMusic;
         EventsManager.OnPlayThirdSectionMusic += PlayThirdSectionMusic;
@@ -25,6 +36,8 @@ public class BackgroundMusicManager : MonoBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerData;
+
         EventsManager.OnReachedSwitches -= PlayFirstSectionMusic;
         EventsManager.OnPlaySecondSectionMusic -= PlaySecondSectionMusic;
         EventsManager.OnPlayThirdSectionMusic -= PlayThirdSectionMusic;
@@ -32,6 +45,13 @@ public class BackgroundMusicManager : MonoBehaviour
 
         EventsManager.OnPlayNarratorHaptic -= LowerBackgroundMusic;
         EventsManager.OnStopNarratorHaptic -= RaiseBackgroundMusic;
+    }
+
+    private void GetPCPlayerData()
+    {
+        _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+
+        PlayFourthSectionMusic();
     }
 
     private void LowerBackgroundMusic()
@@ -78,6 +98,9 @@ public class BackgroundMusicManager : MonoBehaviour
 
     private void PlayFourthSectionMusic()
     {
+        _usingFourthSectionMusic = true;
+        _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
+
         _maxVolume = 0.0025f;
         PlaySectionMusic(fourthSectionMusic);
     }
@@ -113,5 +136,14 @@ public class BackgroundMusicManager : MonoBehaviour
         }
 
         audioSource.volume = _maxVolume;
+    }
+
+    private void Update()
+    {
+        if(!_usingFourthSectionMusic) return;
+
+        float distRatio = 1f - (Vector3.Distance(_pcPlayer.position, endPoint.position) / 40f);
+        if(distRatio < 0) distRatio = 0;
+        audioSource.volume = Mathf.Lerp(0f, _maxVolume * 2, distRatio); 
     }
 }

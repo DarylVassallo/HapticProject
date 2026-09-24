@@ -29,6 +29,7 @@ public class PlayerMovement : NetworkBehaviour
     private CharacterController _characterController;
     private Vector2 _moveInput;
     private bool _isGrounded;
+    private bool _prevIsGrounded;
     private float _verticalVelocity;
 
     [SerializeField] private float bobSpeed = 7f;
@@ -40,6 +41,7 @@ public class PlayerMovement : NetworkBehaviour
     private Transform pcFlashlight;
 
     private NetworkVariable<bool> isWalking = new(false);
+    private NetworkVariable<bool> isJumping = new(false);
     private NetworkVariable<float> bodyYRotation = new(0f);
     private NetworkVariable<float> bodyXRotation = new(0f);
 
@@ -111,6 +113,7 @@ public class PlayerMovement : NetworkBehaviour
         EventsManager.OnChangeHealthCamera += ChangeHealthCamera;
 
         isWalking.OnValueChanged += ChangeWalkingAnimation;
+        isJumping.OnValueChanged += ChangeJumpingAnimation;
         bodyYRotation.OnValueChanged += SetBodyYRotation;
         bodyXRotation.OnValueChanged += SetBodyXRotation;
     }
@@ -126,6 +129,7 @@ public class PlayerMovement : NetworkBehaviour
         EventsManager.OnChangeHealthCamera -= ChangeHealthCamera;
 
         isWalking.OnValueChanged -= ChangeWalkingAnimation;
+        isJumping.OnValueChanged -= ChangeJumpingAnimation;
         bodyXRotation.OnValueChanged -= SetBodyXRotation;
     }
 
@@ -155,6 +159,12 @@ public class PlayerMovement : NetworkBehaviour
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetIsJumpingServerRpc(bool _jump)
+    {
+        isJumping.Value = _jump;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void SetBodyYRotationServerRpc(float _newYRotation)
     {
         bodyYRotation.Value = _newYRotation;
@@ -169,6 +179,11 @@ public class PlayerMovement : NetworkBehaviour
     private void ChangeWalkingAnimation(bool previous, bool current)
     {
         _animator.SetBool("IsWalking", current);
+    }
+
+    private void ChangeJumpingAnimation(bool previous, bool current)
+    {
+        _animator.SetBool("IsJumping", current);
     }
 
     private void SetBodyYRotation(float previous, float current)
@@ -195,8 +210,19 @@ public class PlayerMovement : NetworkBehaviour
         if (!IsOwner)   return;
 
         _isGrounded = _characterController.isGrounded;
+
+        if(!_isGrounded && _prevIsGrounded)
+        {
+            SetIsJumpingServerRpc(true);
+        }else if(_isGrounded && !_prevIsGrounded)
+        {
+            SetIsJumpingServerRpc(false);
+        }
+
         HandleGravity();
         HandleMovement();
+
+        _prevIsGrounded = _isGrounded;
     }
 
     //Applies the jump force if on the ground

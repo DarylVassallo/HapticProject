@@ -23,6 +23,7 @@ public class TeleportPad : NetworkBehaviour
     private bool _hasBeenUsed = false;
 
     [SerializeField] private bool _instantTeleport;
+    private bool _collectedEverythingAndNotUsedTeleporter;
     [SerializeField] private bool _effectsEnemies;
 
     private bool rotateRings = false;
@@ -93,6 +94,8 @@ public class TeleportPad : NetworkBehaviour
 
     void Start()
     {
+        _collectedEverythingAndNotUsedTeleporter = false;
+
         _bubbleMaterial = bubble.GetComponent<Renderer>().material;
 
         bubble.localScale = new Vector3(8, 8, 8);
@@ -126,6 +129,8 @@ public class TeleportPad : NetworkBehaviour
             EventsManager.OnChangeHidingBarPosition += ChangeHidingBarPositionRpc;
             EventsManager.OnTriggerRopeButton += TriggerRopeButton;
         }
+
+        EventsManager.OnUsedCrookedBridgeTeleporter += UsedCrookedBridgeTeleporter;
     }
 
     private void OnDisable()
@@ -151,6 +156,8 @@ public class TeleportPad : NetworkBehaviour
             EventsManager.OnChangeHidingBarPosition -= ChangeHidingBarPositionRpc;
             EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
         }
+
+        EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
     }
 
     public override void OnNetworkSpawn()
@@ -230,6 +237,11 @@ public class TeleportPad : NetworkBehaviour
         _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
+    private void UsedCrookedBridgeTeleporter()
+    {
+        _collectedEverythingAndNotUsedTeleporter = false;
+    }
+
 
     //Resets the teleport pad, so the PC Player can use it 'for the first time' again
     private void ResetTeleportPad()
@@ -242,6 +254,7 @@ public class TeleportPad : NetworkBehaviour
     {
         bar.parent.gameObject.SetActive(false);
         _instantTeleport = true;
+        _collectedEverythingAndNotUsedTeleporter = true;
     }
 
     //This allows the TeleportManager to change the current teleport pad's exit pad
@@ -598,6 +611,11 @@ public class TeleportPad : NetworkBehaviour
 
         _pcPlayerTransform.position = exitTeleportPad.TransformPoint(localPos);
         _pcPlayerTransform.GetChild(0).rotation = exitTeleportPad.rotation * localRot;
+
+        if(_collectedEverythingAndNotUsedTeleporter)
+        {
+            EventsManager.UsedCrookedBridgeTeleporter();
+        }
     }
 
     private void FixedUpdate()
@@ -667,7 +685,7 @@ public class TeleportPad : NetworkBehaviour
                 EventsManager.TutorialTeleport();
             }else if(_isPlayerOnPad.Value)
             {
-                 TeleportRpc();   
+                TeleportRpc();   
             }  
         }
 

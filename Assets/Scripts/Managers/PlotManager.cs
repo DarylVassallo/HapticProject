@@ -56,6 +56,11 @@ public class PlotManager : NetworkBehaviour
         EventsManager.OnReachedSwitches += ReachedSwitches;
         EventsManager.OnFirstEnemyCreated += FirstEnemyCreated;
         EventsManager.OnFirstActiveInteractiveObject += FirstActiveInteractiveObject;
+
+        EventsManager.OnReachedFirstTeleporter += ReachedFirstTeleporter;
+        EventsManager.OnFirstCollectable += FirstCollectable;
+
+        EventsManager.OnUsedCrookedBridgeTeleporter += UsedFirstCrookedBridgeTeleporter;
     }
 
     private void OnDisable()
@@ -74,6 +79,11 @@ public class PlotManager : NetworkBehaviour
        EventsManager.OnReachedSwitches -= ReachedSwitches;
        EventsManager.OnFirstEnemyCreated -= FirstEnemyCreated;
        EventsManager.OnFirstActiveInteractiveObject -= FirstActiveInteractiveObject;
+
+       EventsManager.OnReachedFirstTeleporter -= ReachedFirstTeleporter;
+       EventsManager.OnFirstCollectable -= FirstCollectable;
+
+        EventsManager.OnUsedCrookedBridgeTeleporter += UsedFirstCrookedBridgeTeleporter;
     }
 
     private void SkipTutorial()
@@ -222,10 +232,64 @@ public class PlotManager : NetworkBehaviour
         EventsManager.TriggerNarratorAudio("VRSwitchSection", "FirstActiveInteractiveObject", true, -1, false);
     }
 
+    private void ReachedFirstTeleporter()
+    {
+        Debug.Log("PCTeleporter ReachedFirstTeleporter");
+        EventsManager.TriggerNarratorAudio("PCTeleporter", "ReachedFirstTeleporter", false, -1, false);
+    }
+    private void FirstCollectable()
+    {
+        Debug.Log("VRTeleporter FirstCollectable");
+        EventsManager.TriggerNarratorAudio("VRTeleporter", "FirstCollectable", true, -1, false);
+    }
+
+    private void UsedFirstCrookedBridgeTeleporter()
+    {
+        Debug.Log("PCCrookedBridge ReachedCrookedBridge");
+        EventsManager.TriggerNarratorAudio("PCCrookedBridge", "ReachedCrookedBridge", false, -1, false);
+    }
+    private void CrookedBridgePCPlayerWaited()
+    {
+        Debug.Log("VRCrookedBridge PCPlayerWaited");
+        EventsManager.TriggerNarratorAudio("VRCrookedBridge", "PCPlayerWaited", true, -1, false);
+    }
+
+    private void ReachedRotatingBridges()
+    {
+        Debug.Log("PCRotatingBridges ReachedRotatingBridges");
+       EventsManager.TriggerNarratorAudio("PCRotatingBridges", "ReachedRotatingBridges", false, -1, false);
+    }
+
+    private void PCReachedEnd()
+    {
+        Debug.Log("PCReachedEnd ReachedEnd");
+       EventsManager.TriggerNarratorAudio("PCReachedEnd", "ReachedEnd", false, -1, false);
+    }
+    private void VRReachedEnd()
+    {
+        Debug.Log("VRReachedEnd ReachedEnd");
+        EventsManager.TriggerNarratorAudio("VRReachedEnd", "ReachedEnd", true, -1, false);
+    }
+    
+
     private void GetVRPlayerData()
     {
         if(_skipTutorial)
         {
+            foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
+            {
+                if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))
+                {
+                    vrPlayerCamera = child;
+                    vrPlayerCameraCover = vrPlayerCamera.GetChild(0).GetComponent<Renderer>().material;
+
+                    Color colour = vrPlayerCameraCover.color;
+                    colour.a = 0;
+                    vrPlayerCameraCover.color = colour;
+                    break;
+                }
+            }
+
             UncoverVRPlayer();
         }
         else
@@ -258,6 +322,14 @@ public class PlotManager : NetworkBehaviour
             {
                 vrPlayerCamera = child;
                 vrPlayerCameraCover = vrPlayerCamera.GetChild(0).GetComponent<Renderer>().material;
+
+                if(_skipTutorial)
+                {
+                    Color colour = vrPlayerCameraCover.color;
+                    colour.a = 0;
+                    vrPlayerCameraCover.color = colour;
+                }
+
                 StartCoroutine(FadeVRPlayerIntoGame(2f));
                 break;
             }
@@ -274,25 +346,30 @@ public class PlotManager : NetworkBehaviour
     {
         float elapsed = 0f;
 
+        Color colour = vrPlayerCameraCover.color;
+
         while(elapsed < _delay)
         {
             elapsed += Time.deltaTime;
             
             if(_skipTutorial)
             {
-                Color colour = vrPlayerCameraCover.color;
+                colour = vrPlayerCameraCover.color;
                 colour.a = 0;
                 vrPlayerCameraCover.color = colour;
 
                 elapsed = 999f;
             }else{
-                Color colour = vrPlayerCameraCover.color;
+                colour = vrPlayerCameraCover.color;
                 colour.a = (_delay - elapsed) / _delay;
                 vrPlayerCameraCover.color = colour;
             }            
 
             yield return null;
         }
+        
+        colour.a = 0;
+        vrPlayerCameraCover.color = colour;
 
         _constantlyCheck = true;
         _checkRoof = true;

@@ -130,6 +130,10 @@ public class EventsManager : MonoBehaviour
 
     public static event Action<int> OnChangeLanguage;
     public static void ChangeLanguage(int _languageNum) => OnChangeLanguage?.Invoke(_languageNum);
+
+    public static event Action<float> OnReduceBackgroundMusic;
+    public static void ReduceBackgroundMusic(float _reducedAmount) => OnReduceBackgroundMusic?.Invoke(_reducedAmount);
+
     
 
 
@@ -299,6 +303,13 @@ public class EventsManager : MonoBehaviour
     public static event Action OnFirstActiveInteractiveObject;
     public static void FirstActiveInteractiveObject() => OnFirstActiveInteractiveObject?.Invoke();
     
+    public static event Action OnReachedFirstTeleporter;
+    public static void ReachedFirstTeleporter() => OnReachedFirstTeleporter?.Invoke();
+    public static event Action OnFirstCollectable;
+    public static void FirstCollectable() => OnFirstCollectable?.Invoke();
+
+    public static event Action OnUsedCrookedBridgeTeleporter;
+    public static void UsedCrookedBridgeTeleporter() => OnUsedCrookedBridgeTeleporter?.Invoke();
 
 
 

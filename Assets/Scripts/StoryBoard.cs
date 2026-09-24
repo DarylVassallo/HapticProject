@@ -66,10 +66,10 @@ public class StoryBoard : MonoBehaviour
 
     IEnumerator ShowStory(float _delay, int _storyNum)
     {
-        Debug.Log("_storyNum: " + _storyNum);
-        Debug.Log("_maxStoryNum: " + _maxStoryNum);
         _audioSource.clip = _storyBoardAudioClips[_storyNum];
         _audioSource.Play(); 
+
+        EventsManager.ReduceBackgroundMusic(0.75f);
 
         float elapsed = 0f;
         while(elapsed < _delay)
@@ -88,8 +88,10 @@ public class StoryBoard : MonoBehaviour
 
     IEnumerator HideStories(float _delay)
     {
-        _audioSource.clip = _storyBoardAudioClips[pcStoryBoardParent.childCount - 1];
+        _audioSource.clip = _storyBoardAudioClips[pcStoryBoardParent.childCount];
         _audioSource.Play(); 
+
+        EventsManager.ReduceBackgroundMusic(0f);
 
         float elapsed = 0f;
         while(elapsed < _delay)

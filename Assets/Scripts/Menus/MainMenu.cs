@@ -46,6 +46,9 @@ public class MainMenu : NetworkBehaviour
     
     private bool _changingScene;
 
+    [SerializeField] private AudioSource _backgroundMusicSource;
+    [SerializeField] private float _maxBackgroundVolume;
+
     private void Awake()
     {
         _changingScene = false;
@@ -102,6 +105,8 @@ public class MainMenu : NetworkBehaviour
         EventsManager.OnQuit += Quit;
 
         EventsManager.OnChangeLanguage += ChangeLanguageNum;
+
+        EventsManager.OnReduceBackgroundMusic += ReduceBackgroundMusic;
     }
 
     void OnDisable()
@@ -118,6 +123,8 @@ public class MainMenu : NetworkBehaviour
         EventsManager.OnQuit -= Quit;
 
         EventsManager.OnChangeLanguage -= ChangeLanguageNum;
+
+        EventsManager.OnReduceBackgroundMusic -= ReduceBackgroundMusic;
     }
 
     public void ChosePlayer()
@@ -165,6 +172,31 @@ public class MainMenu : NetworkBehaviour
 
             yield return null;
         }
+
+        _backgroundMusicSource.Stop();
+        StartCoroutine(ChangeBackgroundMusicVolume(4f, 0f, _maxBackgroundVolume));
+    }
+
+    private void ReduceBackgroundMusic(float _reducedAmount)
+    {
+        StartCoroutine(ChangeBackgroundMusicVolume(2f, _backgroundMusicSource.volume, _backgroundMusicSource.volume * _reducedAmount));
+    }
+
+    IEnumerator ChangeBackgroundMusicVolume(float _delay, float _currentVolume, float _requiredVolume)
+    {
+        _backgroundMusicSource.volume = _currentVolume;
+        _backgroundMusicSource.Play();
+
+        float _elapsed = 0f;
+
+        while(_elapsed < _delay)
+        {
+            _elapsed += Time.deltaTime;
+            _backgroundMusicSource.volume = Mathf.Lerp(_currentVolume, _requiredVolume, (_elapsed / _delay)); 
+            yield return null;
+        }
+
+        _backgroundMusicSource.volume = _requiredVolume;
     }
 
     public override void OnNetworkSpawn()

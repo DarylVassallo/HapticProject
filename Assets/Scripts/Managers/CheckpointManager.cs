@@ -84,6 +84,7 @@ public class CheckpointManager : NetworkBehaviour
     {
         if(!_hasUsedTeleporter)
         {
+            EventsManager.ReachedFirstTeleporter();
             ActivateSecondCheckpointRpc();
         }
     }
