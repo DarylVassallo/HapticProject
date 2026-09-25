@@ -252,7 +252,7 @@ public class TeleportPad : NetworkBehaviour
     //This triggers the teleportation sequence immediately without requiring the code
     private void ActivateInstantTeleport()
     {
-        bar.parent.gameObject.SetActive(false);
+        if(bar != null) bar.parent.gameObject.SetActive(false);
         _instantTeleport = true;
         _collectedEverythingAndNotUsedTeleporter = true;
     }
@@ -550,16 +550,10 @@ public class TeleportPad : NetworkBehaviour
             if (!_hasBeenUsed)
             {
                 _hasBeenUsed = true;
-                if(_effectsEnemies)
-                {
-                    EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
-                }
+                if(_effectsEnemies) EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
 
                 //If the PCPlayer has reached the final teleport pad, their progress is saved
-                if(_isFinalPad)
-                {
-                    EventsManager.CrossedCrookedBridges();
-                }
+                if(_isFinalPad) EventsManager.CrossedCrookedBridges();
             }
 
             ChangeIsPlayerOnPadServerRpc(true);

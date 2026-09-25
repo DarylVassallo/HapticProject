@@ -168,6 +168,8 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void LookAtPlayerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
+        Debug.Log("LookAtPlayerRpc : _playerNum: " + _playerNum + " : _specificViewPoint : " + _specificViewPoint + " : _stay : " + _stay);
+
         bool _showVision = false;
 
         switch(_playerNum)
@@ -178,23 +180,39 @@ public class NarratorMovement : NetworkBehaviour
                 break;
             case 0:
                 // this.GetComponent<Collider>().enabled = false;
-                _moveTarget = _vrViewPoint;
-                _angleTarget = _vrViewPoint;
+                if(_vrViewPoint != null)
+                {
+                    _moveTarget = _vrViewPoint;
+                    _angleTarget = _vrViewPoint;
+                }
+
                 // Debug.Log("1 _angleTarget: " + _angleTarget);
                 _lookAround = false;
                 _showVision = false;
 
-                _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                if(_moveTarget != null)
+                {
+                    _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                    if(Vector3.Distance(_moveTarget.position, this.transform.position) >= 10f) StartCoroutine(DisableCollision(0.4f));
+                }
                 break;
             case 1:
                 // this.GetComponent<Collider>().enabled = false;
-                _moveTarget = _pcViewPoint;
-                _angleTarget = _pcViewPoint;
+                if(_pcViewPoint != null)
+                {
+                    _moveTarget = _pcViewPoint;
+                    _angleTarget = _pcViewPoint;
+                }
+
                 // Debug.Log("2 _angleTarget: " + _angleTarget);
                 _lookAround = false;
                 _showVision = false;
 
-                _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                if(_moveTarget != null)
+                {
+                    _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                    if(Vector3.Distance(_moveTarget.position, this.transform.position) >= 10f) StartCoroutine(DisableCollision(0.4f));
+                }
                 break;
         }
         
@@ -250,7 +268,7 @@ public class NarratorMovement : NetworkBehaviour
         _particle.Stop();
 
         bool _foundTarget = false;
-        do
+        for(int i = 0; i < 50; i++)
         {
             _moveTarget = _narratorViewPoints[UnityEngine.Random.Range(0, _narratorViewPoints.Count - 1)];
 
@@ -258,8 +276,16 @@ public class NarratorMovement : NetworkBehaviour
             {
                 _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
                 _foundTarget = true;
+                break;
             }
-        }while(!_foundTarget);
+        }
+
+        if(!_foundTarget)
+        {
+            _moveTarget = _narratorViewPoints[UnityEngine.Random.Range(0, _narratorViewPoints.Count - 1)];
+            _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+            _foundTarget = true;
+        }
 
         StartCoroutine(CheckVelocityDelay(1f));
 
@@ -279,7 +305,7 @@ public class NarratorMovement : NetworkBehaviour
 
     private void NarratorSays(AudioClip _audioClip, AudioHapticSource _newHapticSource)
     {
-        // Debug.Log("NarratorSays: _audioClip: " + _audioClip + " : _newHapticSource : " + _newHapticSource);
+        Debug.Log("NarratorSays: _audioClip: " + _audioClip + " : _newHapticSource : " + _newHapticSource);
 
         _isPlaying = false;
 
@@ -290,12 +316,13 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.ChangeNarratorHaptic(_newHapticSource);
 
         _speakToPlayer = true;
+        Debug.Log("NarratorSays _speakToPlayer: " + _speakToPlayer);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayerNarratorAudioRpc()
     {
-        // Debug.Log("PlayerNarratorAudioRpc");
+        Debug.Log("PlayerNarratorAudioRpc");
         
         // _audioSource.Play();
 
@@ -305,6 +332,7 @@ public class NarratorMovement : NetworkBehaviour
         _isPlaying = true;
         _audioSource.enabled = true; 
         _speakToPlayer = false;
+        Debug.Log("PlayerNarratorAudioRpc _speakToPlayer: " + _speakToPlayer);
     }
 
     private void FixedUpdate()

@@ -64,6 +64,7 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnEnteredTemple += FreezePlayer;
         EventsManager.OnFreezePCPlayer += FreezePlayer;
 
         EventsManager.OnToggleAll += ToggleAll;
@@ -92,6 +93,7 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnEnteredTemple -= FreezePlayer;
         EventsManager.OnFreezePCPlayer -= FreezePlayer;
 
         EventsManager.OnToggleAll -= ToggleAll;
@@ -125,7 +127,7 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void FreezePlayer(bool _toggle)
     {
-        ToggleRestriction("All", !_toggle);
+        ToggleAll(!_toggle);
     }
 
     private void ToggleAll(bool _toggle)

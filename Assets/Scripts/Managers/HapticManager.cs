@@ -120,6 +120,7 @@ public class HapticManager : NetworkBehaviour
 
         EventsManager.OnIsNarratorSpeaking += IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterTimerHaptic += ActivateTeleporterTimerHaptic;
+        EventsManager.OnEverythingCollected += DeactivateTeleporterTimerHaptic;
         EventsManager.OnChangeNarratorHaptic += ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic += PlayNarratorHaptic;
@@ -149,6 +150,7 @@ public class HapticManager : NetworkBehaviour
 
         EventsManager.OnIsNarratorSpeaking -= IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterTimerHaptic -= ActivateTeleporterTimerHaptic;
+        EventsManager.OnEverythingCollected -= DeactivateTeleporterTimerHaptic;
         EventsManager.OnChangeNarratorHaptic -= ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic -= PlayNarratorHaptic;
@@ -320,6 +322,14 @@ public class HapticManager : NetworkBehaviour
         PlayTeleporterTimerHapticServerRpc(2f);
     }
 
+    private void DeactivateTeleporterTimerHaptic()
+    {
+        _useTeleporterTimerHaptic = false;
+        teleporterTimerHapticSource.Stop();
+        teleporterTimerHapticSource.enabled = false;
+        
+    }
+
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayTeleporterTimerHapticServerRpc(float _delay)
     {
@@ -328,7 +338,7 @@ public class HapticManager : NetworkBehaviour
 
     private IEnumerator PlayTeleporterTimerHaptic(float _delay)
     {
-        Debug.Log("Play Teleport Timer Haptic");
+        Debug.Log("Play Teleport Timer Haptic: " + _teleportIntensity);
 
         teleporterTimerHapticSource.enabled = true;
         teleporterTimerHapticSource.Stop();

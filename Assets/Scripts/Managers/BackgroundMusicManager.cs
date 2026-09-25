@@ -51,7 +51,7 @@ public class BackgroundMusicManager : MonoBehaviour
     {
         _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
 
-        PlayFourthSectionMusic();
+        // PlayFourthSectionMusic();
     }
 
     private void LowerBackgroundMusic()

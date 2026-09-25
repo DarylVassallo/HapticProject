@@ -9,13 +9,16 @@ public class TeleportManager : NetworkBehaviour
 {
     private bool _isInNetwork;
 
+    private bool _hasUsedTeleporter;
+    private bool _useTeleportTimerHaptic;
+
     [SerializeField] private Transform bubble;
     private Material _bubbleMaterial;
 
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
     private bool _isEverythingCollected;
-    private bool _hasUsedCrookedBridgeTeleporter;
+    // private bool _hasUsedCrookedBridgeTeleporter;
 
     [SerializeField] private Material activeMaterial;
     [SerializeField] private Material deactiveMaterial;
@@ -61,7 +64,9 @@ public class TeleportManager : NetworkBehaviour
 
     private void Awake()
     {
-        _hasUsedCrookedBridgeTeleporter = false;
+        _hasUsedTeleporter = false;
+        _useTeleportTimerHaptic = false;
+        // _hasUsedCrookedBridgeTeleporter = false;
         _isPaused = false;
 
         _audioSource = this.gameObject.GetComponent<AudioSource>();
@@ -85,7 +90,9 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnToggleAll += TogglePause;
 
-        EventsManager.OnUsedCrookedBridgeTeleporter += UsedCrookedBridgeTeleporter;
+        // EventsManager.OnUsedCrookedBridgeTeleporter += UsedCrookedBridgeTeleporter;
+
+        EventsManager.OnIncreaseChanceOfSpawningEnemy += ReachedTeleporter;
 
         EventsManager.TogglePCTrigger(true);
     }
@@ -105,7 +112,9 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnToggleAll -= TogglePause;
 
-        EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
+        // EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
+
+        EventsManager.OnIncreaseChanceOfSpawningEnemy -= ReachedTeleporter;
     }
 
     public override void OnNetworkSpawn()
@@ -113,13 +122,22 @@ public class TeleportManager : NetworkBehaviour
         _isInNetwork = true;
     }
 
-    private void UsedCrookedBridgeTeleporter()
+    private void ReachedTeleporter(float _chances)
     {
-        if(!_hasUsedCrookedBridgeTeleporter)
+        if(!_hasUsedTeleporter)
         {
-            EventsManager.UsedCrookedBridgeTeleporter();
+            _hasUsedTeleporter = true;
+            _useTeleportTimerHaptic = true;
         }
     }
+
+    // private void UsedCrookedBridgeTeleporter()
+    // {
+    //     if(!_hasUsedCrookedBridgeTeleporter)
+    //     {
+    //         EventsManager.UsedCrookedBridgeTeleporter();
+    //     }
+    // }
 
     private void TogglePause(bool _toggle)
     {
@@ -260,14 +278,15 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void CurrentMapServerRpc(bool _foundAllCollectables, bool _canChange)
     {
+        Debug.Log("CurrentMapServerRpc : _foundAllCollectables: " + _foundAllCollectables + " : _canChange : " + _canChange);
         //If the PC Player has found all the collectables, then the final map and teleport connections are set
         if(_foundAllCollectables)
         {
             _currentMap = 999;
-        }
-
+            ChangeMapRpc(_currentMap);
+        
         //If not all collectables have been found, then a random map is chosen to replace the current one
-        if(_canChange)
+        }else if(_canChange)
         {
             if(!_foundAllCollectables)
             {
@@ -288,6 +307,7 @@ public class TeleportManager : NetworkBehaviour
         //If the final map is called, the final teleport connections are set up
         if(_newMap == 999)
         {
+            Debug.Log("Final Map Used");
             mapRenderer.material = finalMap;
 
             for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
@@ -295,6 +315,8 @@ public class TeleportManager : NetworkBehaviour
                 EventsManager.SetExitPadTransform(  finalTeleportConnections.teleportPairs[i].entrancePad.gameObject, 
                                                     finalTeleportConnections.teleportPairs[i].exitPad);
             }
+
+            _useTeleportTimerHaptic = false;
 
         //This sets up the correct map for the VR Player, and set up the correct teleport connections.
         // It also sets up a random time limit before the next time the map changes again
@@ -352,13 +374,16 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
-        EventsManager.UseTeleportBarHaptic(_newSize / 3f);
-
-        for(int i = 0; i < _barList.Count; i++)
+        if(_useTeleportTimerHaptic)
         {
-            _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
-                                                _barList[i].localScale.y, 
-                                                Mathf.Lerp(0.95f, 0f, _newSize));
+            EventsManager.UseTeleportBarHaptic(_newSize / 3f);
+
+            for(int i = 0; i < _barList.Count; i++)
+            {
+                _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+                                                    _barList[i].localScale.y, 
+                                                    Mathf.Lerp(0.95f, 0f, _newSize));
+            }
         }
     }
 
@@ -367,12 +392,23 @@ public class TeleportManager : NetworkBehaviour
         if(_collectablePoints == 0) EventsManager.FirstCollectable();
 
         //Once a collectable is collected, this hids it, and gives the PCPlayer a point
-        collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+        if(_collectablePoints < collectableIndicators.Length)
+        {
+            collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+        }
+        else
+        {
+            collectableIndicators[collectableIndicators.Length - 1].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+        }
+
         _collectablePoints++;
+        // _collectablePoints += 10;
 
         //If all collectables are collected, then the teleport pad's bars are removed, and an event is called to inform other scripts about the PCPlayer's progress
         if(collectableIndicators.Length <= _collectablePoints)
         {
+            Debug.Log("Collected Everything");
+            
             _barList = null;
             _isEverythingCollected = true;
             EventsManager.EverythingCollected();

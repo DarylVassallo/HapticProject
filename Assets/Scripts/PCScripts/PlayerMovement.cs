@@ -104,6 +104,7 @@ public class PlayerMovement : NetworkBehaviour
     
     private void OnEnable()
     {
+        EventsManager.OnEnteredTemple += FreezePlayerCompletely;
         EventsManager.OnToggleAll += ToggleAllPlayerMotion;
         EventsManager.OnFreezePCPlayer += TogglePlayerMovement;
 
@@ -120,6 +121,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnEnteredTemple -= FreezePlayerCompletely;
         EventsManager.OnToggleAll -= ToggleAllPlayerMotion;
         EventsManager.OnFreezePCPlayer -= TogglePlayerMovement;
 
@@ -133,6 +135,10 @@ public class PlayerMovement : NetworkBehaviour
         bodyXRotation.OnValueChanged -= SetBodyXRotation;
     }
 
+    private void FreezePlayerCompletely(bool _freeze)
+    {
+        ToggleAllPlayerMotion(!_freeze);
+    }
     private void ToggleAllPlayerMotion(bool _toggle)
     {
         Debug.Log("ToggleAllPlayerMotion: " + _toggle);

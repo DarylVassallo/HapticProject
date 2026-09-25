@@ -86,7 +86,8 @@ public class MenuManager : NetworkBehaviour
         EventsManager.OnSettingsMenu += ToggleSettingsMenuRpc;
         
         EventsManager.OnGameOver += ToggleGameOverMenuRpc;
-        EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
+        EventsManager.OnWinGame += ToggleWinMenuRpc;
+        // EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar += ChangeHealthBarRpc;
         EventsManager.OnChangeChargeBar += ChangeChargeBarRpc;
     }
@@ -97,7 +98,8 @@ public class MenuManager : NetworkBehaviour
         EventsManager.OnSettingsMenu -= ToggleSettingsMenuRpc;
 
         EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
-        EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
+        EventsManager.OnWinGame -= ToggleWinMenuRpc;
+        // EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
         EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
     }

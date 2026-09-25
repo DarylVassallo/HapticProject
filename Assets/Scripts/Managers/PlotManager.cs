@@ -28,10 +28,15 @@ public class PlotManager : NetworkBehaviour
 
     [Header("Roof")]
     [SerializeField] private Transform roof;
+
+    [Header("VRWalls")]
+    [SerializeField] private Animator _vrWallsAnimator;
     
 
     private void Awake()
     {
+        _vrWallsAnimator.speed = 0;
+
         ToggleTutorial(null);
 
         for(int i = 0; i < pcPipes.Length; i++)
@@ -61,29 +66,41 @@ public class PlotManager : NetworkBehaviour
         EventsManager.OnFirstCollectable += FirstCollectable;
 
         EventsManager.OnUsedCrookedBridgeTeleporter += UsedFirstCrookedBridgeTeleporter;
+        EventsManager.OnCrookedBridgePCPlayerWaited += CrookedBridgePCPlayerWaited;
+
+        EventsManager.OnCrossedCrookedBridges += ReachedRotatingBridges;
+
+        EventsManager.OnPCReachedEnd += PCReachedEnd;
+        EventsManager.OnEnteredTemple += VRReachedEnd;
     }
 
     private void OnDisable()
     {
-       EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
-       EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
+        EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
 
-       EventsManager.OnTriggerPCChargeTutorial -= TriggerPCChargeTutorial;
-       EventsManager.OnTriggerPCInteractTutorial -= TriggerPCInteractTutorial;
-       EventsManager.OnResetPCTutorial -= ResetPCTutorial;
-       EventsManager.OnTutorialTeleport -= DisableTutorials;
+        EventsManager.OnTriggerPCChargeTutorial -= TriggerPCChargeTutorial;
+        EventsManager.OnTriggerPCInteractTutorial -= TriggerPCInteractTutorial;
+        EventsManager.OnResetPCTutorial -= ResetPCTutorial;
+        EventsManager.OnTutorialTeleport -= DisableTutorials;
 
-       EventsManager.OnUsingOnlyPCPlayer -= UseOnlyPCPlayer;
-       EventsManager.OnSkipTutorial -= SkipTutorial;
+        EventsManager.OnUsingOnlyPCPlayer -= UseOnlyPCPlayer;
+        EventsManager.OnSkipTutorial -= SkipTutorial;
 
-       EventsManager.OnReachedSwitches -= ReachedSwitches;
-       EventsManager.OnFirstEnemyCreated -= FirstEnemyCreated;
-       EventsManager.OnFirstActiveInteractiveObject -= FirstActiveInteractiveObject;
+        EventsManager.OnReachedSwitches -= ReachedSwitches;
+        EventsManager.OnFirstEnemyCreated -= FirstEnemyCreated;
+        EventsManager.OnFirstActiveInteractiveObject -= FirstActiveInteractiveObject;
 
-       EventsManager.OnReachedFirstTeleporter -= ReachedFirstTeleporter;
-       EventsManager.OnFirstCollectable -= FirstCollectable;
+        EventsManager.OnReachedFirstTeleporter -= ReachedFirstTeleporter;
+        EventsManager.OnFirstCollectable -= FirstCollectable;
 
-        EventsManager.OnUsedCrookedBridgeTeleporter += UsedFirstCrookedBridgeTeleporter;
+        EventsManager.OnUsedCrookedBridgeTeleporter -= UsedFirstCrookedBridgeTeleporter;
+        EventsManager.OnCrookedBridgePCPlayerWaited -= CrookedBridgePCPlayerWaited;
+
+        EventsManager.OnCrossedCrookedBridges -= ReachedRotatingBridges;
+
+        EventsManager.OnPCReachedEnd -= PCReachedEnd;
+        EventsManager.OnEnteredTemple -= VRReachedEnd;
     }
 
     private void SkipTutorial()
@@ -248,6 +265,7 @@ public class PlotManager : NetworkBehaviour
         Debug.Log("PCCrookedBridge ReachedCrookedBridge");
         EventsManager.TriggerNarratorAudio("PCCrookedBridge", "ReachedCrookedBridge", false, -1, false);
     }
+
     private void CrookedBridgePCPlayerWaited()
     {
         Debug.Log("VRCrookedBridge PCPlayerWaited");
@@ -263,12 +281,38 @@ public class PlotManager : NetworkBehaviour
     private void PCReachedEnd()
     {
         Debug.Log("PCReachedEnd ReachedEnd");
-       EventsManager.TriggerNarratorAudio("PCReachedEnd", "ReachedEnd", false, -1, false);
+        EventsManager.TriggerNarratorAudio("PCReachedEnd", "ReachedEnd", false, -1, false);
     }
-    private void VRReachedEnd()
+    private void VRReachedEnd(bool _entered)
     {
         Debug.Log("VRReachedEnd ReachedEnd");
         EventsManager.TriggerNarratorAudio("VRReachedEnd", "ReachedEnd", true, -1, false);
+
+        _vrWallsAnimator.SetBool("IsEnding", true);
+        _vrWallsAnimator.speed = 1f;
+        StartCoroutine(BeginRotateVRArea(0.75f));
+    }
+
+    IEnumerator BeginRotateVRArea(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        StartCoroutine(RotateVRArea(5f));
+    }
+
+    IEnumerator RotateVRArea(float _delay)
+    {
+        float elapsed = 0f;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            
+            _vrWallsAnimator.speed = 2 * (elapsed / _delay);  
+
+            yield return null;
+        }
+
+        StartCoroutine(FadeVRPlayerAway(5f));
     }
     
 
@@ -373,6 +417,31 @@ public class PlotManager : NetworkBehaviour
 
         _constantlyCheck = true;
         _checkRoof = true;
+    }
+
+    IEnumerator FadeVRPlayerAway(float _delay)
+    {
+        float elapsed = 0f;
+
+        Color colour = Color.white;
+        colour.a = 0;
+        vrPlayerCameraCover.color = colour;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+            
+            colour = vrPlayerCameraCover.color;
+            colour.a = elapsed / _delay;
+            vrPlayerCameraCover.color = colour;          
+
+            yield return null;
+        }
+        
+        colour.a = 1;
+        vrPlayerCameraCover.color = colour;
+
+        EventsManager.WinGame(true);
     }
 
     private void Update()

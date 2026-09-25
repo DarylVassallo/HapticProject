@@ -92,6 +92,8 @@ public class EventsManager : MonoBehaviour
 
     public static event Action<bool> OnGameOver;
     public static void GameOver(bool _toggle) => OnGameOver?.Invoke(_toggle);
+    public static event Action<bool> OnWinGame;
+    public static void WinGame(bool _toggle) => OnWinGame?.Invoke(_toggle);
     public static event Action<bool> OnToggleAll;
     public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
     public static event Action<string, bool> OnToggleRestriction;
@@ -310,7 +312,16 @@ public class EventsManager : MonoBehaviour
 
     public static event Action OnUsedCrookedBridgeTeleporter;
     public static void UsedCrookedBridgeTeleporter() => OnUsedCrookedBridgeTeleporter?.Invoke();
+    public static event Action OnCrookedBridgePCPlayerWaited;
+    public static void CrookedBridgePCPlayerWaited() => OnCrookedBridgePCPlayerWaited?.Invoke();
 
+    public static event Action OnReachedRotatingBridges;
+    public static void ReachedRotatingBridges() => OnReachedRotatingBridges?.Invoke();
+
+    public static event Action OnPCReachedEnd;
+    public static void PCReachedEnd() => OnPCReachedEnd?.Invoke();
+    public static event Action OnVRReachedEnd;
+    public static void VRReachedEnd() => OnVRReachedEnd?.Invoke();
 
 
 
