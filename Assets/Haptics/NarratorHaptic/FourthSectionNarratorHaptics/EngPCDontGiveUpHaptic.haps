@@ -1,0 +1,202 @@
+{
+    "description": "",
+    "gain": 1.0,
+    "version": "6",
+    "vibration": {
+        "frequency_range": {
+            "max": 1000.0,
+            "min": 0.0
+        },
+        "gain": 1.0,
+        "loop": false,
+        "melodies": [
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": []
+            },
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": [
+                    {
+                        "amplitude": 0.0010666383693779449,
+                        "length": 1.5702916666666666,
+                        "m_gain": 1.0,
+                        "pitch": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": 0.0,
+                                    "value": 0.03515625
+                                },
+                                {
+                                    "position": 0.07500000000000001,
+                                    "value": 0.19921875
+                                },
+                                {
+                                    "position": 0.125,
+                                    "value": 0.234375
+                                },
+                                {
+                                    "position": 0.175,
+                                    "value": 0.55078125
+                                },
+                                {
+                                    "position": 0.225,
+                                    "value": 0.5390625
+                                },
+                                {
+                                    "position": 0.275,
+                                    "value": 0.76171875
+                                },
+                                {
+                                    "position": 0.325,
+                                    "value": 0.52734375
+                                },
+                                {
+                                    "position": 0.375,
+                                    "value": 0.24609375
+                                },
+                                {
+                                    "position": 0.42500000000000004,
+                                    "value": 0.4921875
+                                },
+                                {
+                                    "position": 0.47500000000000003,
+                                    "value": 0.22265625
+                                },
+                                {
+                                    "position": 0.525,
+                                    "value": 0.22265625
+                                },
+                                {
+                                    "position": 0.5750000000000001,
+                                    "value": 0.45703125
+                                },
+                                {
+                                    "position": 0.625,
+                                    "value": 0.43359375
+                                },
+                                {
+                                    "position": 0.675,
+                                    "value": 0.5859375
+                                },
+                                {
+                                    "position": 0.725,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 0.775,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 0.7851458333333333,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 0.8250000000000001,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 0.875,
+                                    "value": 0.140625
+                                },
+                                {
+                                    "position": 0.925,
+                                    "value": 0.3984375
+                                },
+                                {
+                                    "position": 0.975,
+                                    "value": 0.48046875
+                                },
+                                {
+                                    "position": 1.025,
+                                    "value": 0.2578125
+                                },
+                                {
+                                    "position": 1.075,
+                                    "value": 0.22265625
+                                },
+                                {
+                                    "position": 1.125,
+                                    "value": 0.421875
+                                },
+                                {
+                                    "position": 1.1749999999999998,
+                                    "value": 0.41015625
+                                },
+                                {
+                                    "position": 1.2249999999999999,
+                                    "value": 0.62109375
+                                },
+                                {
+                                    "position": 1.275,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 1.325,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 1.375,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 1.4249999999999998,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 1.4749999999999999,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 1.525,
+                                    "value": 0.15234375
+                                },
+                                {
+                                    "position": 1.5702916666666666,
+                                    "value": 0.15234375
+                                }
+                            ]
+                        },
+                        "position": 0.0
+                    }
+                ]
+            }
+        ],
+        "transients": [
+            {
+                "amplitude": 0.6204001503696588,
+                "pitch": 0.09090909090909093,
+                "position": 0.1234104561878952,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6669267926897321,
+                "pitch": 0.09090909090909093,
+                "position": 0.16152648861646235,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5195501159151896,
+                "pitch": 0.09090909090909093,
+                "position": 0.9557477924175405,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5067875193183242,
+                "pitch": 0.09090909090909093,
+                "position": 0.9883475327461607,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.4260559440768079,
+                "pitch": 0.09090909090909093,
+                "position": 1.0218189162422857,
+                "type": "Simple"
+            }
+        ]
+    }
+}
