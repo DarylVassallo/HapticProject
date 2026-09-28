@@ -160,17 +160,29 @@ public class HapticManager : NetworkBehaviour
 
     private void ToggleAllAudioHapticSources(bool _toggle)
     {
+        if(!_toggle) bridgeHaptic.Stop();
         bridgeHaptic.enabled = _toggle;
 
-        teleporterTimerHapticSource.enabled = _toggle;
+        if(_toggle)
+        {
+            teleporterTimerHapticSource.enabled = _toggle;
+            ActivateTeleporterTimerHaptic();
+        }else{
+            teleporterTimerHapticSource.Stop();
+            teleporterTimerHapticSource.enabled = _toggle;
+        }
 
+        if(!_toggle) teleporterTransitionHapticSource.Stop();
         teleporterTransitionHapticSource.enabled = _toggle;
 
+        if(!_toggle) pcLeftDamageHapticSource.Stop();
         pcLeftDamageHapticSource.enabled = _toggle;
+        if(!_toggle) pcRightDamageHapticSource.Stop();
         pcRightDamageHapticSource.enabled = _toggle;
 
         for(int i = 0; i < stoneButtonHapticSources.Count; i++)
         {            
+            if(!_toggle) stoneButtonHapticSources[i].Stop();
             stoneButtonHapticSources[i].enabled = _toggle;
         }
     }
@@ -178,6 +190,7 @@ public class HapticManager : NetworkBehaviour
     private void TogglePause(bool _toggle)
     {
         _isPaused = !_toggle;
+        ToggleAllAudioHapticSources(_isPaused);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -209,7 +222,6 @@ public class HapticManager : NetworkBehaviour
 
     private void PlayNarratorHaptic()
     {
-        Debug.Log("Play Narrator Haptic");
         if(narratorHapticSource != null)
         { 
             narratorHapticSource.enabled = true;
@@ -276,8 +288,6 @@ public class HapticManager : NetworkBehaviour
         if(_bridgeMovementAmount < 0) _bridgeMovementAmount *= -1;
         _intensity = Mathf.Clamp(_bridgeMovementAmount * 30, 0, 1);
 
-        Debug.Log("Play Bridge Haptic");
-
         bridgeHaptic.enabled = true;
         bridgeHaptic.Stop();
         bridgeHaptic.SourceIntensity = _intensity;        
@@ -306,32 +316,30 @@ public class HapticManager : NetworkBehaviour
 
     private void UseTeleporterTimerHaptic(float _newIntensity)
     {
-        if(_isNarrator || !_useTeleporterTimerHaptic) return;
+        if(_isNarrator || !_useTeleporterTimerHaptic || _isPaused) return;
         _teleportIntensity = _newIntensity;
     }
     private void ActivateTeleporterTimerHaptic()
     {
+        if(_isPaused) return;
+
+        Debug.Log("ActivateTeleporterTimerHaptic");
         _useTeleporterTimerHaptic = true;
         PlayTeleporterTimerHapticServerRpc(2f);
-    }
-
-    private void DeactivateTeleporterTimerHaptic()
-    {
-        _useTeleporterTimerHaptic = false;
-        teleporterTimerHapticSource.Stop();
-        teleporterTimerHapticSource.enabled = false;
-        
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayTeleporterTimerHapticServerRpc(float _delay)
     {
+        if(_isPaused) return;
+
+        Debug.Log("PlayTeleporterTimerHapticServerRpc");
         StartCoroutine(PlayTeleporterTimerHaptic(_delay));
     }
 
     private IEnumerator PlayTeleporterTimerHaptic(float _delay)
     {
-        Debug.Log("Play Teleport Timer Haptic: " + _teleportIntensity);
+        Debug.Log("PlayTeleporterTimerHaptic: " + _delay);
 
         teleporterTimerHapticSource.enabled = true;
         teleporterTimerHapticSource.Stop();
@@ -341,6 +349,16 @@ public class HapticManager : NetworkBehaviour
         yield return new WaitForSeconds(_delay);
 
         if(_useTeleporterTimerHaptic) PlayTeleporterTimerHapticServerRpc(_delay);
+    }
+
+    private void DeactivateTeleporterTimerHaptic()
+    {
+        Debug.Log("DeactivateTeleporterTimerHaptic");
+
+        _useTeleporterTimerHaptic = false;
+        teleporterTimerHapticSource.Stop();
+        teleporterTimerHapticSource.enabled = false;
+        
     }
 
 
@@ -361,7 +379,6 @@ public class HapticManager : NetworkBehaviour
 
     private void PlayStoneButtonHaptic(AudioHapticSource _haptic)
     {
-        Debug.Log("Play Stone Haptic: " + _haptic);
         _haptic.Stop();
         _haptic.enabled = true;
         _haptic.SourceIntensity = 1f;
@@ -377,8 +394,6 @@ public class HapticManager : NetworkBehaviour
             stoneButtonHapticSources[i].enabled = false;
         }
         
-        Debug.Log("Play Specific Button Haptic");
-
         stoneButtonHapticSources[_buttonNum].enabled = true;
         stoneButtonHapticSources[_buttonNum].SourceIntensity = 1f;
         stoneButtonHapticSources[_buttonNum].PlayEventVibration();
@@ -389,8 +404,6 @@ public class HapticManager : NetworkBehaviour
     {
         stoneButtonHapticSources[0].Stop();
         
-        Debug.Log("Play First All Buttons Haptic");
-
         stoneButtonHapticSources[0].enabled = true;
         stoneButtonHapticSources[0].SourceIntensity = 1f;
         stoneButtonHapticSources[0].Play();
@@ -417,8 +430,6 @@ public class HapticManager : NetworkBehaviour
 
         stoneButtonHapticSources[_useAllButtonHaptics].enabled = true;
         stoneButtonHapticSources[_useAllButtonHaptics].Stop();
-
-        Debug.Log("Play Remaining All Buttons Haptic");
 
         stoneButtonHapticSources[_useAllButtonHaptics].SourceIntensity = 1f;
         stoneButtonHapticSources[_useAllButtonHaptics].Play();
@@ -470,10 +481,7 @@ public class HapticManager : NetworkBehaviour
         pcLeftDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
         pcRightDamageHapticSource.SourceIntensity = (1f - _hapticHealth) * 1.5f;
 
-        Debug.Log("Play Left Health Haptic");
         pcLeftDamageHapticSource.PlayEventVibration();
-
-        Debug.Log("Play Right Health Haptic");
         pcRightDamageHapticSource.PlayEventVibration();
 
         tunnel.defaultParameters.apertureSize = (1f - _hapticHealth);

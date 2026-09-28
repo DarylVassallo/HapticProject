@@ -488,11 +488,27 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
+    private IEnumerator WaitBeforeCorrectButtons(EventsManager.ShapeType _shape, int _index)
+    {
+        yield return new WaitForSeconds(1f);
+        
+        //The current order is complete and correct
+        FreezeCorrectButtons(_shape);
+        hiddenSwitches[_index].activateMethod.Invoke();
+        SetAudioNumServerRpc(1);
+    }
+
+    private IEnumerator WaitBeforeReset()
+    {
+        yield return new WaitForSeconds(1f);
+        ResetButtons();
+        SetAudioNumServerRpc(0);
+    }
+
+
     //Resets the recorded inputted buttons of the switch
     private void ResetButtons()
-    {
-        Debug.Log("ResetButtons");
-        
+    {        
         currentShapeOrder = new EventsManager.ShapeType[5];
         currentButtonOrder = new EventsManager.ButtonType[5];
         entryNum = 0;
@@ -549,8 +565,6 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
-        // _audioSource.clip = buttonAudio;
-
         PressedButtonHaptic(_button);
 
         //Spawns one enemy nearby 
@@ -565,7 +579,7 @@ public class MazeManager : NetworkBehaviour
 
             if(currentShapeOrder[i] != _shape)
             {
-                ResetButtons();
+                StartCoroutine(WaitBeforeReset());
                 break;
             }
         }
@@ -588,7 +602,6 @@ public class MazeManager : NetworkBehaviour
                     if (hiddenSwitches[i].buttonOrder[j] == _button)
                     {
                         // EventsManager.UseButtonHaptic(j);
-                        // Debug.Log("Button Haptic");
                     }
                 }
 
@@ -603,17 +616,12 @@ public class MazeManager : NetworkBehaviour
                     {
                         //Current order does not match the switch's order
 
-                        ResetButtons();
-                        SetAudioNumServerRpc(0);
+                        StartCoroutine(WaitBeforeReset());
                         return;
                     }
                 }
 
-                //The current order is complete and correct
-                FreezeCorrectButtons(_shape);
-                hiddenSwitches[i].activateMethod.Invoke();
-                SetAudioNumServerRpc(1);
-
+                StartCoroutine(WaitBeforeCorrectButtons(_shape, i));
                 return;
             }
         }

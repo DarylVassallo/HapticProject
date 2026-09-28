@@ -121,6 +121,7 @@ public class CheckpointManager : NetworkBehaviour
     {
         Debug.Log("ActivateSecondCheckpointRpc");
         
+        _hasCompleteTutorial = true;
         _hasUsedTeleporter = true;
         EventsManager.ActivateTeleporterTimerHaptic();
 
@@ -145,6 +146,8 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateThirdCheckpointRpc()
     {
+        _hasCompleteTutorial = true;
+        _hasUsedTeleporter = true;
         _hasCollectedEverything = true;
 
         EventsManager.PlayThirdSectionMusic();
@@ -160,6 +163,9 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateFourthCheckpointRpc()
     {
+        _hasCompleteTutorial = true;
+        _hasUsedTeleporter = true;
+        _hasCollectedEverything = true;
         _hasCrossedCrookedBridges = true;
 
         EventsManager.PlayFourthSectionMusic();
@@ -210,6 +216,7 @@ public class CheckpointManager : NetworkBehaviour
             //If the PC Player has not collected all the collectables, then all collectables and teleport pads are reset
             if(!_hasCollectedEverything)
             {
+                Debug.Log("_hasCollectedEverything: " + _hasCollectedEverything);
                 EventsManager.ResetHiddenButtons();
                 EventsManager.ResetTeleportPads();
             }

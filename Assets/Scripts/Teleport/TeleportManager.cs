@@ -74,6 +74,10 @@ public class TeleportManager : NetworkBehaviour
     {
         _barList = new List<Transform>();
 
+        EventsManager.OnReachedFirstTeleporter += ReachedFirstTeleporter;
+
+        EventsManager.OnResetTeleportPads += ResetTeleportPads;
+
         EventsManager.OnTriggerHiddenButton += GainCollectable;
         EventsManager.OnResetHiddenButtons += RemoveCollectable;
 
@@ -98,6 +102,10 @@ public class TeleportManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnReachedFirstTeleporter -= ReachedFirstTeleporter;
+
+        EventsManager.OnResetTeleportPads -= ResetTeleportPads;
+
         EventsManager.OnTriggerHiddenButton -= GainCollectable;
         EventsManager.OnResetHiddenButtons -= RemoveCollectable;
 
@@ -121,6 +129,12 @@ public class TeleportManager : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _isInNetwork = true;
+    }
+
+    private void ResetTeleportPads()
+    {
+        Debug.Log("ResetTeleportPads");
+        ChooseRandomMap();
     }
 
     private void RequireOnlyOneCollectable()
@@ -156,6 +170,11 @@ public class TeleportManager : NetworkBehaviour
         maxDelay *= 1000;
     }
 
+    private void ReachedFirstTeleporter()
+    {
+        CurrentMapServerRpc(false, true);
+    }
+
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void GetPCPlayerBodyDataRpc()
     {
@@ -163,27 +182,18 @@ public class TeleportManager : NetworkBehaviour
         {
             // CurrentMapServerRpc(false, true);
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-
-            CurrentMapServerRpc(false, true);
         }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TutorialTeleportRpc()
     {        
-        Debug.Log("=======================================");
-        Debug.Log("=======================================");
-        Debug.Log("=======================================");
-        Debug.Log("=======================================");
-        Debug.Log("=======================================");
-        Debug.Log("1 TutorialTeleportRpc TogglePCTrigger: false");
         EventsManager.TogglePCTrigger(false);
 
         if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, -1, false);
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
-            Debug.Log("1 TutorialTeleportRpc FreezePCPlayer: true");
             EventsManager.TogglePCPlayerMovement(false);
             EventsManager.TogglePCPlayerGravity(false);
 
@@ -221,19 +231,14 @@ public class TeleportManager : NetworkBehaviour
                 StartCoroutine(TutorialTeleportDelay(2f));
             }
         }
-        
-        Debug.Log("tutorialTeleportCount: " + tutorialTeleportCount);
-        Debug.Log("tutorialTeleportPads.Length: " + tutorialTeleportPads.Length);
 
         if(tutorialTeleportCount >= tutorialTeleportPads.Length)
         {
             tutorialTeleportCount++;
             _audioSource.Stop();
 
-            Debug.Log("2 TutorialTeleportRpc TogglePCTrigger: true");
-            // EventsManager.TogglePCTrigger(true);
+            EventsManager.TogglePCTrigger(true);
 
-            Debug.Log("2 TutorialTeleportRpc FreezePCPlayer: false");
             // EventsManager.FreezePCPlayer(false);
 
             EventsManager.TogglePCPlayerMovement(true);
@@ -242,8 +247,6 @@ public class TeleportManager : NetworkBehaviour
             // EventsManager.ToggleRestriction("Move", true);
 
             EventsManager.FixTeleportEffect(0, true);
-
-            Debug.Log("ReachedSwitches");
 
             if(IsOwner) EventsManager.ReachedSwitches();
         }
@@ -301,7 +304,6 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public void CurrentMapServerRpc(bool _foundAllCollectables, bool _canChange)
     {
-        Debug.Log("CurrentMapServerRpc : _foundAllCollectables: " + _foundAllCollectables + " : _canChange : " + _canChange);
         //If the PC Player has found all the collectables, then the final map and teleport connections are set
         if(_foundAllCollectables)
         {
@@ -313,11 +315,16 @@ public class TeleportManager : NetworkBehaviour
         {
             if(!_foundAllCollectables)
             {
-                _currentMap = UnityEngine.Random.Range(0, maps.Length);
-                mapRenderer.material = maps[_currentMap];
-                ChangeMapRpc(_currentMap);
+                ChooseRandomMap();
             }
         }
+    }
+
+    private void ChooseRandomMap()
+    {
+        _currentMap = UnityEngine.Random.Range(0, maps.Length);
+        mapRenderer.material = maps[_currentMap];
+        ChangeMapRpc(_currentMap);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -330,7 +337,6 @@ public class TeleportManager : NetworkBehaviour
         //If the final map is called, the final teleport connections are set up
         if(_newMap == 999)
         {
-            Debug.Log("Final Map Used");
             mapRenderer.material = finalMap;
 
             for(int i = 0; i < finalTeleportConnections.teleportPairs.Length; i++)
@@ -383,15 +389,22 @@ public class TeleportManager : NetworkBehaviour
                     if(_isInNetwork) ChangeBarSizeRpc(t); 
                 }
             }
+            else
+            {
+                elapsed = delay;
+            }
 
             yield return null;
         }
 
-        //This changes the current map
-        CurrentMapServerRpc(false, true);
+        if(!_isPaused)
+        {
+            //This changes the current map
+            CurrentMapServerRpc(false, true);
 
-        //The teleport bars are reset to their full size
-        if(_isInNetwork) ChangeBarSizeRpc(0.95f); 
+            //The teleport bars are reset to their full size
+            if(_isInNetwork) ChangeBarSizeRpc(0.95f); 
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -428,9 +441,7 @@ public class TeleportManager : NetworkBehaviour
 
         //If all collectables are collected, then the teleport pad's bars are removed, and an event is called to inform other scripts about the PCPlayer's progress
         if(collectableIndicators.Length <= _collectablePoints || _requiresOnlyOneCollectable)
-        {
-            Debug.Log("Collected Everything");
-            
+        {            
             _barList = null;
             _isEverythingCollected = true;
             EventsManager.EverythingCollected();

@@ -34,11 +34,7 @@ public class PCPlayerInputManager : NetworkBehaviour
         if (playerInput == null)
         {
             playerInput = FindAnyObjectByType<PlayerInput>();
-            if (playerInput == null)
-            {
-                Debug.LogError("No PlayerInput component found in the scene!");
-                return;
-            }
+            if (playerInput == null) return;
         }
 
         canMove = true;
@@ -129,20 +125,17 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void FreezePlayer(bool _toggle)
     {
-        Debug.Log("FreezePlayer: " + _toggle);
         ToggleAll(!_toggle);
     }
 
     private void ToggleAll(bool _toggle)
     {
-        Debug.Log("ToggleAll: " + _toggle);
         ToggleRestriction("All", _toggle);
     }
 
     //Toggles the restriction of various input controls
     private void ToggleRestriction(string _restriction, bool _toggle)
     {
-        Debug.Log("ToggleRestriction: " + _restriction + " : " + _toggle);
         if(_restriction == "Move" || _restriction == "All")
         {
             canMove = _toggle;

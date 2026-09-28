@@ -121,9 +121,6 @@ public class NarratorManager : NetworkBehaviour
         //     !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
         //     _isVRPlayer && NetworkManager.Singleton.LocalClientId == _pcPlayerID) return;
 
-        Debug.Log("==============");
-        Debug.Log("TriggerNarratorAudioRpc: _currentSection: " + _currentSection + " : _currentAudio : " + _currentAudio + " : _isVRPlayer : " + _isVRPlayer + " : _lookAt : " + _lookAt + " : _stay : " + _stay);
-
         if(_isVRPlayer)
         {
             EventsManager.LookAtPlayer(0, _lookAt, _stay);

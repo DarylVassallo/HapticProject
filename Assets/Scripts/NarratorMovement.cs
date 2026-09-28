@@ -168,8 +168,6 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void LookAtPlayerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
-        Debug.Log("LookAtPlayerRpc : _playerNum: " + _playerNum + " : _specificViewPoint : " + _specificViewPoint + " : _stay : " + _stay);
-
         bool _showVision = false;
 
         switch(_playerNum)
@@ -186,7 +184,6 @@ public class NarratorMovement : NetworkBehaviour
                     _angleTarget = _vrViewPoint;
                 }
 
-                // Debug.Log("1 _angleTarget: " + _angleTarget);
                 _lookAround = false;
                 _showVision = false;
 
@@ -204,7 +201,6 @@ public class NarratorMovement : NetworkBehaviour
                     _angleTarget = _pcViewPoint;
                 }
 
-                // Debug.Log("2 _angleTarget: " + _angleTarget);
                 _lookAround = false;
                 _showVision = false;
 
@@ -220,12 +216,10 @@ public class NarratorMovement : NetworkBehaviour
         {
             case 0:
                 _angleTarget = _roofViewPoint;
-                // Debug.Log("3 _angleTarget: " + _angleTarget);
                 _showVision = true;
                 break;
             case 1:
                 _angleTarget = _tutorialExitViewPoint;
-                // Debug.Log("4 _angleTarget: " + _angleTarget);
                 _showVision = true;
                 break;
         }
@@ -305,8 +299,6 @@ public class NarratorMovement : NetworkBehaviour
 
     private void NarratorSays(AudioClip _audioClip, AudioHapticSource _newHapticSource)
     {
-        Debug.Log("NarratorSays: _audioClip: " + _audioClip + " : _newHapticSource : " + _newHapticSource);
-
         _isPlaying = false;
 
         _audioSource.Stop();
@@ -316,14 +308,11 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.ChangeNarratorHaptic(_newHapticSource);
 
         _speakToPlayer = true;
-        Debug.Log("NarratorSays _speakToPlayer: " + _speakToPlayer);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayerNarratorAudioRpc()
-    {
-        Debug.Log("PlayerNarratorAudioRpc");
-        
+    {        
         // _audioSource.Play();
 
         EventsManager.PlayNarratorHaptic();
@@ -332,7 +321,6 @@ public class NarratorMovement : NetworkBehaviour
         _isPlaying = true;
         _audioSource.enabled = true; 
         _speakToPlayer = false;
-        Debug.Log("PlayerNarratorAudioRpc _speakToPlayer: " + _speakToPlayer);
     }
 
     private void FixedUpdate()
@@ -350,7 +338,6 @@ public class NarratorMovement : NetworkBehaviour
             if(_moveTarget != null)
             {
                 _angleTarget = _moveTarget;
-                // Debug.Log("5 _angleTarget: " + _angleTarget);
                 StartCoroutine(ChangeVision(1f, 0f));
             }
             return;
@@ -402,12 +389,8 @@ public class NarratorMovement : NetworkBehaviour
 
     private void RotationControl()
     {
-        if(_angleTarget == null)
-        {
-            Debug.Log("_angleTarget is null");
-            return;
-        }
-
+        if(_angleTarget == null) return;
+        
         Vector3 direction = _angleTarget.position - transform.position;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);

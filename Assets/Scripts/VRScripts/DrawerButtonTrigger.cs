@@ -23,12 +23,8 @@ public class DrawerButtonTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider _other)
     {
-        Debug.Log(this.gameObject + ": OnTriggerEnter: " + _other);
-
         if(_canBePressed && (_other.gameObject.layer == LayerMask.NameToLayer("LeftHandPhysics") || _other.gameObject.layer == LayerMask.NameToLayer("RightHandPhysics")))
         {
-            Debug.Log(this.gameObject + ": Pressed");
-
             if(buttonRenderer.material != _highlightMaterial) StartCoroutine(HighlightButton(0.25f, _originalMaterial, _highlightMaterial));
 
             if(_other.gameObject.layer == LayerMask.NameToLayer("LeftHandPhysics"))
@@ -44,23 +40,18 @@ public class DrawerButtonTrigger : MonoBehaviour
 
             if(isSquare)
             {
-                Debug.Log(this.gameObject + ": Square");
                 EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Square);
             }else if(isCircle)
             {
-                Debug.Log(this.gameObject + ": Circle");
                 EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Circle);
             }else if(isTriangle)
             {
-                Debug.Log(this.gameObject + ": Triangle");
                 EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Triangle);
             }else if(isCross)
             {
-                Debug.Log(this.gameObject + ": Cross");
                 EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Cross);
             }else if(isStar)
             {
-                Debug.Log(this.gameObject + ": Star");
                 EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Star);
             }
         }
@@ -94,12 +85,9 @@ public class DrawerButtonTrigger : MonoBehaviour
                 )
             );    
 
-            Debug.Log("1 buttonRenderer.material.color: " + buttonRenderer.material.color);          
-
             yield return null;
         }  
 
         buttonRenderer.material = _newMaterial;   
-        Debug.Log("2 buttonRenderer.material: " + buttonRenderer.material);   
     }
 }

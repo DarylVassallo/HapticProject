@@ -1579,6 +1579,7 @@ MonoBehaviour:
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
+  wrongMaterial: {fileID: 2100000, guid: deec5a306eff3be41942ce41deeef2c0, type: 2}
   isResetButton: 0
 --- !u!65 &231649900802362467
 BoxCollider:
@@ -1882,6 +1883,7 @@ MonoBehaviour:
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
+  wrongMaterial: {fileID: 2100000, guid: deec5a306eff3be41942ce41deeef2c0, type: 2}
   isResetButton: 0
 --- !u!65 &7688037646613890534
 BoxCollider:
@@ -2422,6 +2424,7 @@ MonoBehaviour:
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
+  wrongMaterial: {fileID: 0}
   isResetButton: 1
 --- !u!65 &441532882162548770
 BoxCollider:
@@ -2750,6 +2753,7 @@ MonoBehaviour:
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
+  wrongMaterial: {fileID: 2100000, guid: deec5a306eff3be41942ce41deeef2c0, type: 2}
   isResetButton: 0
 --- !u!65 &7622267266739743027
 BoxCollider:
@@ -3384,6 +3388,7 @@ MonoBehaviour:
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
+  wrongMaterial: {fileID: 2100000, guid: deec5a306eff3be41942ce41deeef2c0, type: 2}
   isResetButton: 0
 --- !u!65 &4826595894216810702
 BoxCollider:
@@ -3687,6 +3692,7 @@ MonoBehaviour:
   deactiveMaterial: {fileID: 2100000, guid: 2450df8edd3e57542a4cb15ac5cd4104, type: 2}
   inProgressMaterial: {fileID: 2100000, guid: a15120ea9ba398042b8f4ccf46b75949, type: 2}
   completeMaterial: {fileID: 2100000, guid: b6b9e72913639cd4ea227b1069ca4d25, type: 2}
+  wrongMaterial: {fileID: 2100000, guid: deec5a306eff3be41942ce41deeef2c0, type: 2}
   isResetButton: 0
 --- !u!65 &6176633183011384373
 BoxCollider:

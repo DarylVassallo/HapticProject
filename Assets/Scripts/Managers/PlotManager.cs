@@ -344,6 +344,7 @@ public class PlotManager : NetworkBehaviour
 
     private void GetPCPlayerData()
     {
+        Debug.Log("GetPCPlayerData");
         EventsManager.AddPCPlayerBody();
     }
 

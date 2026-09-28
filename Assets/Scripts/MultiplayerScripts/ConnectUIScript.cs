@@ -275,6 +275,7 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 1");
             SetPCPlayerID(0);
             EventsManager.CreatedPCPlayer();
+
             CreatePCPlayerBody();
             // if(_skipTutorial) CreatePCPlayerBody();
         }
@@ -384,6 +385,8 @@ public class ConnectUIScript : NetworkBehaviour
 
     private void CreatePCPlayerBody()
     {
+        Debug.Log("CreatePCPlayerBody");
+
         DestroyPCPlayerStatueRpc();
 
         GameObject _newPCPlayer;

@@ -38,6 +38,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     [SerializeField] private Material deactiveMaterial;
     [SerializeField] private Material inProgressMaterial;
     [SerializeField] private Material completeMaterial;
+    [SerializeField] private Material wrongMaterial;
     private Material targetMaterial;
 
     [SerializeField] private bool isResetButton;
@@ -64,7 +65,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         originalPosition = this.transform.position;
 
         //This line formed with ChatGPT
-        pushedPosition =    this.transform.position + 
+        pushedPosition =    this.transform.position - 
                             (   transform.forward * 
                                 pressedDistance * 
                                 this.transform.localScale.x
@@ -74,12 +75,14 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     private void OnEnable()
     {
         EventsManager.OnResetButtons += ResetButtonRpc;
+        EventsManager.OnTrueResetButtons += TrueResetButtonRpc;
         EventsManager.OnFreezeCorrectButtons += FreezeButtonRpc;
     }
 
     private void OnDisable()
     {
         EventsManager.OnResetButtons -= ResetButtonRpc;
+        EventsManager.OnTrueResetButtons -= TrueResetButtonRpc;
         EventsManager.OnFreezeCorrectButtons -= FreezeButtonRpc;
     }
 
@@ -98,28 +101,33 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     {        
         _audioSource.Stop();
 
-        // _isPlaying = true;
-
         _activeButton = true;
 
         if(!isResetButton && IsOwner) EventsManager.TriggerButton(shape, button);
 
-        targetPosition = originalPosition;
+        targetPosition = pushedPosition;
         targetMaterial = inProgressMaterial;
-        StartCoroutine(ButtonMove(4f, true));
-
-        // _moveDown = true;
+        StartCoroutine(ButtonMove(0.25f, true, false));
         
         _audioSource.Play();
     }
 
-    public void DeactivateButton()
+    public void DeactivateButton(bool _isWrong)
     {
         _activeButton = false;
         _resetButton = true;
-        targetPosition = pushedPosition; 
-        targetMaterial = deactiveMaterial;
-        StartCoroutine(ButtonMove(4f, false));
+        targetPosition = originalPosition; 
+
+        if(_isWrong)
+        {
+            targetMaterial = wrongMaterial;
+        }
+        else
+        {
+            targetMaterial = deactiveMaterial;
+        }
+
+        StartCoroutine(ButtonMove(0.25f, false, _isWrong));
         
         // _moveUp = true;
     }
@@ -141,14 +149,14 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     {
         _isPermanentallyCorrect = false;
         if(!_activeButton) return;
-        DeactivateButton();
+        DeactivateButton(true);
     }
     
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ResetButtonRpc()
     {
         if(!_activeButton || _isPermanentallyCorrect) return;
-        DeactivateButton();
+        DeactivateButton(true);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -159,14 +167,36 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         if(_shape == shape)
         {
             _isPermanentallyCorrect = true;
+            StartCoroutine(ButtonCorrect(0.25f));
         }
         else
         {
-            DeactivateButton();
+            DeactivateButton(false);
         }
     }
 
-    IEnumerator ButtonMove(float _delay, bool _canReset)
+    IEnumerator ButtonCorrect(float _delay)
+    {
+        float elapsed = 0f;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+
+            _renderer.material.SetColor(
+                "_BaseColor",
+                Color.Lerp(
+                    _renderer.material.GetColor("_BaseColor"),
+                    completeMaterial.GetColor("_BaseColor"),
+                    elapsed / _delay
+                )
+            );
+
+            yield return null;
+        }
+    }
+
+    IEnumerator ButtonMove(float _delay, bool _canReset, bool _isWrong)
     {
         float elapsed = 0f;
 
@@ -207,9 +237,31 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         if(_resetButton && _canReset)
         {
-            DeactivateButton();
+            DeactivateButton(false);
         }
 
         if(!_canReset) _resetButton = false;
+
+        if(_isWrong)
+        {
+            elapsed = 0f;
+            targetMaterial = deactiveMaterial;
+
+            while(elapsed < (_delay / 2f))
+            {
+                elapsed += Time.deltaTime;
+
+                _renderer.material.SetColor(
+                    "_BaseColor",
+                    Color.Lerp(
+                        _renderer.material.GetColor("_BaseColor"),
+                        targetMaterial.GetColor("_BaseColor"),
+                        elapsed / (_delay / 2f)
+                    )
+                );
+
+                yield return null;
+            }
+        }
     }
 }
