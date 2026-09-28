@@ -29,11 +29,14 @@ public class EventsManager : MonoBehaviour
 
     public static event Action OnDisableEnemySpawning;
     public static void DisableEnemySpawning() => OnDisableEnemySpawning?.Invoke();
-
+    
+    public static event Action OnStartWithInstantTeleport;
+    public static void StartWithInstantTeleport() => OnStartWithInstantTeleport?.Invoke();
     public static event Action OnDisableTeleportChange;
     public static void DisableTeleportChange() => OnDisableTeleportChange?.Invoke();
 
-
+    public static event Action OnRequireOnlyOneCollectable;
+    public static void RequireOnlyOneCollectable() => OnRequireOnlyOneCollectable?.Invoke();
 
 
     //Network Events=============================================

@@ -9,6 +9,8 @@ public class TeleportManager : NetworkBehaviour
 {
     private bool _isInNetwork;
 
+    private bool _requiresOnlyOneCollectable;
+
     private bool _hasUsedTeleporter;
     private bool _useTeleportTimerHaptic;
 
@@ -64,11 +66,6 @@ public class TeleportManager : NetworkBehaviour
 
     private void Awake()
     {
-        _hasUsedTeleporter = false;
-        _useTeleportTimerHaptic = false;
-        // _hasUsedCrookedBridgeTeleporter = false;
-        _isPaused = false;
-
         _audioSource = this.gameObject.GetComponent<AudioSource>();
         _bubbleMaterial = bubble.GetComponent<Renderer>().material;
     }
@@ -94,6 +91,8 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy += ReachedTeleporter;
 
+        EventsManager.OnRequireOnlyOneCollectable += RequireOnlyOneCollectable;
+
         EventsManager.TogglePCTrigger(true);
     }
 
@@ -115,11 +114,18 @@ public class TeleportManager : NetworkBehaviour
         // EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= ReachedTeleporter;
+
+        EventsManager.OnRequireOnlyOneCollectable -= RequireOnlyOneCollectable;
     }
 
     public override void OnNetworkSpawn()
     {
         _isInNetwork = true;
+    }
+
+    private void RequireOnlyOneCollectable()
+    {
+        _requiresOnlyOneCollectable = true;
     }
 
     private void ReachedTeleporter(float _chances)
@@ -402,10 +408,9 @@ public class TeleportManager : NetworkBehaviour
         }
 
         _collectablePoints++;
-        // _collectablePoints += 10;
 
         //If all collectables are collected, then the teleport pad's bars are removed, and an event is called to inform other scripts about the PCPlayer's progress
-        if(collectableIndicators.Length <= _collectablePoints)
+        if(collectableIndicators.Length <= _collectablePoints || _requiresOnlyOneCollectable)
         {
             Debug.Log("Collected Everything");
             

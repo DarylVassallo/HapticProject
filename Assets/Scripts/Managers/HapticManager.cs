@@ -120,7 +120,10 @@ public class HapticManager : NetworkBehaviour
 
         EventsManager.OnIsNarratorSpeaking += IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterTimerHaptic += ActivateTeleporterTimerHaptic;
+
+        EventsManager.OnStartWithInstantTeleport += DeactivateTeleporterTimerHaptic;
         EventsManager.OnEverythingCollected += DeactivateTeleporterTimerHaptic;
+
         EventsManager.OnChangeNarratorHaptic += ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic += PlayNarratorHaptic;
@@ -150,7 +153,10 @@ public class HapticManager : NetworkBehaviour
 
         EventsManager.OnIsNarratorSpeaking -= IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterTimerHaptic -= ActivateTeleporterTimerHaptic;
+
+        EventsManager.OnStartWithInstantTeleport -= DeactivateTeleporterTimerHaptic;
         EventsManager.OnEverythingCollected -= DeactivateTeleporterTimerHaptic;
+
         EventsManager.OnChangeNarratorHaptic -= ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic -= PlayNarratorHaptic;

@@ -108,8 +108,10 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnStartWithInstantTeleport += ActivateInstantTeleport;
+
         EventsManager.OnSendCodeToTeleportPads += CheckInputtedCode;
-        EventsManager.OnEverythingCollected += ActivateInstantTeleport;
+        EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnResetTeleportPads += ResetTeleportPad;
 
         EventsManager.OnChangePadsReady += ChangePadsReady;
@@ -135,8 +137,10 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnStartWithInstantTeleport -= ActivateInstantTeleport;
+
         EventsManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
-        EventsManager.OnEverythingCollected -= ActivateInstantTeleport;
+        EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnResetTeleportPads -= ResetTeleportPad;
 
         EventsManager.OnChangePadsReady -= ChangePadsReady;
@@ -254,6 +258,11 @@ public class TeleportPad : NetworkBehaviour
     {
         if(bar != null) bar.parent.gameObject.SetActive(false);
         _instantTeleport = true;
+    }
+    
+    private void EverythingCollected()
+    {
+        ActivateInstantTeleport();
         _collectedEverythingAndNotUsedTeleporter = true;
     }
 

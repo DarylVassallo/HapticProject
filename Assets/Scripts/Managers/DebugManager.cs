@@ -21,7 +21,11 @@ public class DebugManager : MonoBehaviour
     [SerializeField] private bool disableEnemies;
 
     [Header("Teleport Debugging")]
+    [SerializeField] private bool startWithInstantTeleport;
     [SerializeField] private bool disableTeleportChange;
+
+    [Header("Collectable Debugging")]
+    [SerializeField] private bool requireOnlyOneCollectable;
 
     private void OnEnable()
     {
@@ -43,7 +47,10 @@ public class DebugManager : MonoBehaviour
         if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
 
         if(disableEnemies) EventsManager.DisableEnemies();
-
+        
+        if(startWithInstantTeleport) EventsManager.StartWithInstantTeleport();
         if(disableTeleportChange) EventsManager.DisableTeleportChange();
+
+        if(requireOnlyOneCollectable) EventsManager.RequireOnlyOneCollectable();
     }
 }

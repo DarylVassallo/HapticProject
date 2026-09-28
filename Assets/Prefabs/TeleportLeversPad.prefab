@@ -18692,7 +18692,7 @@ MonoBehaviour:
   maxRotateSpeed: 1000
   rotationRange: 2
   _isFinalPad: 0
-  _teleportAudio: {fileID: 8300000, guid: 5e516cfbe15c83044be26a673b3a55eb, type: 3}
+  _teleportAudio: {fileID: 8300000, guid: 52fc2f4109d79d04c823939a25229890, type: 3}
   parentDisplay: {fileID: 2489891830540759859}
   usesSymbols: 0
   clearSymbol: {fileID: 2100000, guid: cf356f99aa3ce6247b2d80126518019a, type: 2}
