@@ -105,8 +105,8 @@ public class PlayerMovement : NetworkBehaviour
     private void OnEnable()
     {
         EventsManager.OnEnteredTemple += FreezePlayerCompletely;
-        EventsManager.OnToggleAll += ToggleAllPlayerMotion;
-        EventsManager.OnFreezePCPlayer += TogglePlayerMovement;
+        EventsManager.OnToggleAll += TogglePlayerCompletely;
+        EventsManager.OnTogglePCPlayerGravity += TogglePlayerGravity;
 
         EventsManager.OnMove += ChangeMotion;
         EventsManager.OnJump += Jump;
@@ -122,8 +122,8 @@ public class PlayerMovement : NetworkBehaviour
     private void OnDisable()
     {
         EventsManager.OnEnteredTemple -= FreezePlayerCompletely;
-        EventsManager.OnToggleAll -= ToggleAllPlayerMotion;
-        EventsManager.OnFreezePCPlayer -= TogglePlayerMovement;
+        EventsManager.OnToggleAll -= TogglePlayerCompletely;
+        EventsManager.OnTogglePCPlayerGravity -= TogglePlayerGravity;
 
         EventsManager.OnMove -= ChangeMotion;
         EventsManager.OnJump -= Jump;
@@ -137,18 +137,23 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FreezePlayerCompletely(bool _freeze)
     {
-        ToggleAllPlayerMotion(!_freeze);
+        TogglePlayerCompletely(!_freeze);
     }
-    private void ToggleAllPlayerMotion(bool _toggle)
-    {
-        Debug.Log("ToggleAllPlayerMotion: " + _toggle);
 
-        _inputAxisController.enabled = _toggle;
-        TogglePlayerMovement(_toggle);
-    }
-    private void TogglePlayerMovement(bool _toggle)
+    private void TogglePlayerCompletely(bool _toggle)
     {
-        Debug.Log("TogglePlayerMovement: " + _toggle);
+        Debug.Log("TogglePlayerCompletely: " + _toggle);
+        ToggleAllPlayerCameraMotion(_toggle);
+        TogglePlayerGravity(_toggle);
+    }
+    private void ToggleAllPlayerCameraMotion(bool _toggle)
+    {
+        Debug.Log("ToggleAllPlayerCameraMotion: " + _toggle);
+        _inputAxisController.enabled = _toggle;
+    }
+    private void TogglePlayerGravity(bool _toggle)
+    {
+        Debug.Log("TogglePlayerGravity: " + _toggle);
         
         _isGravityEnabled = _toggle;
 

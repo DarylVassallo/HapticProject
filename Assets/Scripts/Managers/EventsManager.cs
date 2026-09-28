@@ -101,8 +101,8 @@ public class EventsManager : MonoBehaviour
     public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
     public static event Action<string, bool> OnToggleRestriction;
     public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
-    public static event Action<bool> OnFreezePCPlayer;
-    public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
+    // public static event Action<bool> OnFreezePCPlayer;
+    // public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
 
 
     public static event Action<bool> OnEnteredTemple;
@@ -365,6 +365,11 @@ public class EventsManager : MonoBehaviour
 
 
     //PC Player Input Events=============================================
+    public static event Action<bool> OnTogglePCPlayerMovement;
+    public static void TogglePCPlayerMovement(bool _toggle) => OnTogglePCPlayerMovement?.Invoke(_toggle);
+    public static event Action<bool> OnTogglePCPlayerGravity;
+    public static void TogglePCPlayerGravity(bool _toggle) => OnTogglePCPlayerGravity?.Invoke(_toggle);
+    
     public static event Action<Vector2> OnMove;
     public static void Move(Vector2 movement) => OnMove?.Invoke(movement);
     public static event Action OnJump;

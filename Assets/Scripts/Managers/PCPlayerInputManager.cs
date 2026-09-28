@@ -65,7 +65,8 @@ public class PCPlayerInputManager : NetworkBehaviour
     private void OnEnable()
     {
         EventsManager.OnEnteredTemple += FreezePlayer;
-        EventsManager.OnFreezePCPlayer += FreezePlayer;
+        EventsManager.OnTogglePCPlayerMovement += ToggleAll;
+        // EventsManager.OnFreezePCPlayer += FreezePlayer;
 
         EventsManager.OnToggleAll += ToggleAll;
         EventsManager.OnToggleRestriction += ToggleRestriction;
@@ -94,7 +95,8 @@ public class PCPlayerInputManager : NetworkBehaviour
     private void OnDisable()
     {
         EventsManager.OnEnteredTemple -= FreezePlayer;
-        EventsManager.OnFreezePCPlayer -= FreezePlayer;
+        EventsManager.OnTogglePCPlayerMovement -= ToggleAll;
+        // EventsManager.OnFreezePCPlayer -= FreezePlayer;
 
         EventsManager.OnToggleAll -= ToggleAll;
         EventsManager.OnToggleRestriction -= ToggleRestriction;
@@ -127,17 +129,20 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void FreezePlayer(bool _toggle)
     {
+        Debug.Log("FreezePlayer: " + _toggle);
         ToggleAll(!_toggle);
     }
 
     private void ToggleAll(bool _toggle)
     {
+        Debug.Log("ToggleAll: " + _toggle);
         ToggleRestriction("All", _toggle);
     }
 
     //Toggles the restriction of various input controls
     private void ToggleRestriction(string _restriction, bool _toggle)
     {
+        Debug.Log("ToggleRestriction: " + _restriction + " : " + _toggle);
         if(_restriction == "Move" || _restriction == "All")
         {
             canMove = _toggle;

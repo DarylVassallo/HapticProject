@@ -93,7 +93,7 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnRequireOnlyOneCollectable += RequireOnlyOneCollectable;
 
-        EventsManager.TogglePCTrigger(true);
+        // EventsManager.TogglePCTrigger(true);
     }
 
     private void OnDisable()
@@ -171,13 +171,21 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TutorialTeleportRpc()
     {        
+        Debug.Log("=======================================");
+        Debug.Log("=======================================");
+        Debug.Log("=======================================");
+        Debug.Log("=======================================");
+        Debug.Log("=======================================");
+        Debug.Log("1 TutorialTeleportRpc TogglePCTrigger: false");
         EventsManager.TogglePCTrigger(false);
 
         if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, -1, false);
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
-            EventsManager.FreezePCPlayer(true);
+            Debug.Log("1 TutorialTeleportRpc FreezePCPlayer: true");
+            EventsManager.TogglePCPlayerMovement(false);
+            EventsManager.TogglePCPlayerGravity(false);
 
             // if(!IsOwner)
             // {
@@ -194,7 +202,8 @@ public class TeleportManager : NetworkBehaviour
             {
                 _audioSource.Stop();
                 _audioSource.clip = _teleportAudio;
-                _audioSource.pitch = 3.5f;
+                // _audioSource.pitch = 3.5f;
+                _audioSource.pitch = 1f;
                 _audioSource.Play();
                 _audioSource.enabled = true; 
 
@@ -204,7 +213,8 @@ public class TeleportManager : NetworkBehaviour
             {
                 _audioSource.Stop();
                 _audioSource.clip = _teleportAudio;
-                _audioSource.pitch = 5f;
+                // _audioSource.pitch = 5f;
+                _audioSource.pitch = 2f;
                 _audioSource.Play();
                 _audioSource.enabled = true; 
 
@@ -220,8 +230,15 @@ public class TeleportManager : NetworkBehaviour
             tutorialTeleportCount++;
             _audioSource.Stop();
 
-            EventsManager.TogglePCTrigger(true);
-            EventsManager.FreezePCPlayer(false);
+            Debug.Log("2 TutorialTeleportRpc TogglePCTrigger: true");
+            // EventsManager.TogglePCTrigger(true);
+
+            Debug.Log("2 TutorialTeleportRpc FreezePCPlayer: false");
+            // EventsManager.FreezePCPlayer(false);
+
+            EventsManager.TogglePCPlayerMovement(true);
+            EventsManager.TogglePCPlayerGravity(true);
+
             // EventsManager.ToggleRestriction("Move", true);
 
             EventsManager.FixTeleportEffect(0, true);

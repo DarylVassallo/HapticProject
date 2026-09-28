@@ -40,11 +40,7 @@ public class HapticManager : NetworkBehaviour
     [SerializeField] private AudioHapticSource bridgeHaptic;
     [SerializeField] private AudioHapticSource teleporterTimerHapticSource;
 
-    [SerializeField] private AudioHapticSource firstLeftTeleporterTransitionHapticSource;
-    [SerializeField] private AudioHapticSource firstRightTeleporterTransitionHapticSource;
-
-    [SerializeField] private AudioHapticSource secondLeftTeleporterTransitionHapticSource;
-    [SerializeField] private AudioHapticSource secondRightTeleporterTransitionHapticSource;
+    [SerializeField] private AudioHapticSource teleporterTransitionHapticSource;
 
     [SerializeField] private AudioHapticSource pcLeftDamageHapticSource;
     [SerializeField] private AudioHapticSource pcRightDamageHapticSource;
@@ -53,8 +49,6 @@ public class HapticManager : NetworkBehaviour
     private List<AudioHapticSource> stoneButtonHapticSources;
 
     private bool _useTeleporterTimerHaptic;
-    private bool _playTeleporterTransitionHaptic;
-    private bool _useFirstTransitionHaptic;
 
     private bool _isNarrator;
 
@@ -83,9 +77,6 @@ public class HapticManager : NetworkBehaviour
         _playingHealthHaptic = false;
 
         _useTeleporterTimerHaptic = false;
-
-        _playTeleporterTransitionHaptic = true;
-        _useFirstTransitionHaptic = true;
 
         _isNarrator = false;
 
@@ -173,11 +164,7 @@ public class HapticManager : NetworkBehaviour
 
         teleporterTimerHapticSource.enabled = _toggle;
 
-        firstLeftTeleporterTransitionHapticSource.enabled = _toggle;
-        firstRightTeleporterTransitionHapticSource.enabled = _toggle;
-
-        secondLeftTeleporterTransitionHapticSource.enabled = _toggle;
-        secondRightTeleporterTransitionHapticSource.enabled = _toggle;
+        teleporterTransitionHapticSource.enabled = _toggle;
 
         pcLeftDamageHapticSource.enabled = _toggle;
         pcRightDamageHapticSource.enabled = _toggle;
@@ -362,85 +349,14 @@ public class HapticManager : NetworkBehaviour
 
     private void TeleporterTransitionHaptic(float _newIntensity)
     {
-        if(_playTeleporterTransitionHaptic)
-        {
-            PlayTeleporterTransitionHapticServerRpc(_newIntensity * 1.25f, 0.75f);
-        }
-    }
+        if(_newIntensity < 0.01f) _newIntensity = 0.01f;
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlayTeleporterTransitionHapticServerRpc(float _newIntensity, float _teleporterTransitionDelay)
-    {
-        if(_useFirstTransitionHaptic)
-        {
-            StartCoroutine(PlayFirstTeleporterTransitionHaptic(_newIntensity, _teleporterTransitionDelay));
-        }
-        else
-        {
-            StartCoroutine(PlaySecondTeleporterTransitionHaptic(_newIntensity, _teleporterTransitionDelay));
-        }
-
-        _useFirstTransitionHaptic = !_useFirstTransitionHaptic;
-    }
-
-    private IEnumerator PlayFirstTeleporterTransitionHaptic(float _newIntensity, float _teleporterTransitionDelay)
-    {
-        _playTeleporterTransitionHaptic = false;
-
-        Debug.Log("Play First Teleport Transition Haptic: intensity: " + _newIntensity + " : delay: " + _teleporterTransitionDelay);
-
-        firstLeftTeleporterTransitionHapticSource.enabled = true;
-        firstLeftTeleporterTransitionHapticSource.Stop();
-        firstLeftTeleporterTransitionHapticSource.SourceIntensity = _newIntensity;
-        firstLeftTeleporterTransitionHapticSource.PlayEventVibration();
-
-        firstRightTeleporterTransitionHapticSource.enabled = true;
-        firstRightTeleporterTransitionHapticSource.Stop();
-        firstRightTeleporterTransitionHapticSource.SourceIntensity = _newIntensity;
-        firstRightTeleporterTransitionHapticSource.PlayEventVibration();
+        if(teleporterTransitionHapticSource.enabled == false) teleporterTransitionHapticSource.enabled = true;
+        teleporterTransitionHapticSource.SourceIntensity = _newIntensity;
+        if(!teleporterTransitionHapticSource.isPlaying) teleporterTransitionHapticSource.PlayEventVibration();
 
         StartCoroutine(ControllerHapticDelay(leftControllerHaptic, _newIntensity, 0.1f));
         StartCoroutine(ControllerHapticDelay(rightControllerHaptic, _newIntensity, 0.1f));
-
-        yield return new WaitForSeconds(_teleporterTransitionDelay);
-
-        firstLeftTeleporterTransitionHapticSource.Stop();
-        firstLeftTeleporterTransitionHapticSource.enabled = false;
-
-        firstRightTeleporterTransitionHapticSource.Stop();
-        firstRightTeleporterTransitionHapticSource.enabled = false;
-
-        _playTeleporterTransitionHaptic = true;
-    }
-
-    private IEnumerator PlaySecondTeleporterTransitionHaptic(float _newIntensity, float _teleporterTransitionDelay)
-    {
-        _playTeleporterTransitionHaptic = false;
-
-        Debug.Log("Play Second Teleport Transition Haptic: intensity: " + _newIntensity + " : delay: " + _teleporterTransitionDelay);
-
-        secondLeftTeleporterTransitionHapticSource.enabled = true;
-        secondLeftTeleporterTransitionHapticSource.Stop();
-        secondLeftTeleporterTransitionHapticSource.SourceIntensity = _newIntensity;
-        secondLeftTeleporterTransitionHapticSource.PlayEventVibration();
-
-        secondLeftTeleporterTransitionHapticSource.enabled = true;
-        secondLeftTeleporterTransitionHapticSource.Stop();
-        secondLeftTeleporterTransitionHapticSource.SourceIntensity = _newIntensity;
-        secondLeftTeleporterTransitionHapticSource.PlayEventVibration();
-
-        StartCoroutine(ControllerHapticDelay(leftControllerHaptic, _newIntensity, 0.1f));
-        StartCoroutine(ControllerHapticDelay(rightControllerHaptic, _newIntensity, 0.1f));
-
-        yield return new WaitForSeconds(_teleporterTransitionDelay);
-
-        secondLeftTeleporterTransitionHapticSource.Stop();
-        secondLeftTeleporterTransitionHapticSource.enabled = false;
-
-        secondLeftTeleporterTransitionHapticSource.Stop();
-        secondLeftTeleporterTransitionHapticSource.enabled = false;
-
-        _playTeleporterTransitionHaptic = true;
     }
 
     private void PlayStoneButtonHaptic(AudioHapticSource _haptic)
