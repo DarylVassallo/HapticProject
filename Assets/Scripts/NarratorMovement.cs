@@ -107,7 +107,6 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnLookAtPlayer += LookAtPlayerServerRpc;
 
         EventsManager.OnNarratorSays += NarratorSays;
-        EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
     }
 
     private void OnDisable()
@@ -120,12 +119,14 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnLookAtPlayer -= LookAtPlayerServerRpc; 
 
         EventsManager.OnNarratorSays -= NarratorSays;
-        EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+        
+        if(!_isInNetwork) EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
     }
 
     public override void OnNetworkSpawn()
     {
         _isInNetwork = true;
+        EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
     }
 
     private void TogglePause(bool _toggle)
@@ -548,12 +549,18 @@ public class NarratorMovement : NetworkBehaviour
 
         float decibel = GetDecibel(spectrum, 16f);
 
-        if(_isInNetwork) ChangeEyeRingColourRpc(decibel);
+        if(_isInNetwork)
+        {
+            Debug.Log("ChangeEyeRingColourRpc: decibel: " + decibel);
+            ChangeEyeRingColourRpc(decibel);
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeEyeRingColourRpc(float decibel)
     {
+        Debug.Log("ChangeEyeRingColourRpc: decibel: " + decibel);
+
         eyeRingRenderer.material.SetColor(
             "_BaseColor",
             Color.Lerp(
