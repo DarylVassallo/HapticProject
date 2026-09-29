@@ -34,6 +34,7 @@ public class ConnectUIScript : NetworkBehaviour
 
 
     [Header("PC Player")]
+    [SerializeField] private GameObject pcPlayerCameraCover;
     [SerializeField] private GameObject pcPlayerStatue;
     [SerializeField] private GameObject pcPlayerWithBody;
     [SerializeField] private GameObject pcPlayerWithoutBody;
@@ -410,6 +411,7 @@ public class ConnectUIScript : NetworkBehaviour
     public void DestroyPCPlayerStatueRpc()
     {
         if(pcPlayerStatue != null) Destroy(pcPlayerStatue);
+        if(pcPlayerCameraCover != null) Destroy(pcPlayerCameraCover);
     }
 
     //Immediately creates a VR Player for the host (used in debugging only)
