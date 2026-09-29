@@ -336,6 +336,7 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayerNarratorAudioRpc()
     {        
+        Debug.Log("PlayerNarratorAudioRpc");
         // _audioSource.Play();
 
         EventsManager.PlayNarratorHaptic();
@@ -354,7 +355,7 @@ public class NarratorMovement : NetworkBehaviour
 
         if(_moveTarget != null && IsOwner) MovementServerRpc();
         RotateRings();
-        AudioEyeRing();
+        AudioEyeRingServerRpc();
 
         if(!_isPlaying)
         {
@@ -476,7 +477,11 @@ public class NarratorMovement : NetworkBehaviour
                     ToggleCollisionRpc(true);
                 }
                 
-                if(_speakToPlayer) PlayerNarratorAudioRpc();
+                if(_speakToPlayer)
+                { 
+                    Debug.Log("MovementServerRpc _speakToPlayer");
+                    PlayerNarratorAudioRpc();
+                }
             }
         }
 
@@ -542,7 +547,8 @@ public class NarratorMovement : NetworkBehaviour
         return Mathf.Max(maxValue / length, minDb);
     }
 
-    private void AudioEyeRing()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void AudioEyeRingServerRpc()
     {
         float[] spectrum = new float[256];
         _audioSource.GetSpectrumData(spectrum, 0, FFTWindow.Rectangular);
