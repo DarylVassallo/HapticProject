@@ -21389,7 +21389,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4145133373348246028, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
       propertyPath: _maxBackgroundVolume
-      value: 0.001
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4145133373348246028, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
       propertyPath: vrMenuList.Array.size

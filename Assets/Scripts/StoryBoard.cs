@@ -46,16 +46,17 @@ public class StoryBoard : NetworkBehaviour
 
     void OnEnable()
     {
-        EventsManager.OnStartStoryBoard += StartStoryBoard;
+        EventsManager.OnStartStoryBoard += StartStoryBoardRpc;
     }
 
     void OnDisable()
     {
-        EventsManager.OnStartStoryBoard -= StartStoryBoard;
+        EventsManager.OnStartStoryBoard -= StartStoryBoardRpc;
     }
 
     //Can be used by UI Buttons
-    public void StartStoryBoard()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void StartStoryBoardRpc()
     {
         EventsManager.SetMenu(-1);
 

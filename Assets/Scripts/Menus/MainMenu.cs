@@ -106,7 +106,7 @@ public class MainMenu : NetworkBehaviour
 
         EventsManager.OnChangeLanguage += ChangeLanguageNum;
 
-        EventsManager.OnReduceBackgroundMusic += ReduceBackgroundMusic;
+        EventsManager.OnReduceBackgroundMusic += ReduceBackgroundMusicRpc;
     }
 
     void OnDisable()
@@ -124,7 +124,7 @@ public class MainMenu : NetworkBehaviour
 
         EventsManager.OnChangeLanguage -= ChangeLanguageNum;
 
-        EventsManager.OnReduceBackgroundMusic -= ReduceBackgroundMusic;
+        EventsManager.OnReduceBackgroundMusic -= ReduceBackgroundMusicRpc;
     }
 
     public void ChosePlayer()
@@ -177,7 +177,8 @@ public class MainMenu : NetworkBehaviour
         StartCoroutine(ChangeBackgroundMusicVolume(4f, 0f, _maxBackgroundVolume));
     }
 
-    private void ReduceBackgroundMusic(float _reducedAmount)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ReduceBackgroundMusicRpc(float _reducedAmount)
     {
         StartCoroutine(ChangeBackgroundMusicVolume(2f, _backgroundMusicSource.volume, _backgroundMusicSource.volume * _reducedAmount));
     }
