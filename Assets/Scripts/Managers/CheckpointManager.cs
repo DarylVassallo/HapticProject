@@ -9,6 +9,8 @@ using System.IO;
 
 public class CheckpointManager : NetworkBehaviour
 {
+    private bool _isInNetwork;
+
     [Header("Checkpoints")]
     [SerializeField] private Transform tutorialCheckpoint;
     [SerializeField] private Transform firstCheckpoint;
@@ -58,6 +60,11 @@ public class CheckpointManager : NetworkBehaviour
         EventsManager.OnRespawn -= RespawnPCPlayerRpc;
 
         nextScene.OnValueChanged -= OnNextSceneChanged;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        _isInNetwork = true;
     }
 
     private void GetPCPlayerData()
@@ -195,10 +202,12 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RespawnPCPlayerRpc()
     {
-        if(!_canPCFunction) GetPCPlayerData();
+        // if(!_canPCFunction) GetPCPlayerData();
 
-        if(_canPCFunction) 
+        if(_isInNetwork) 
         {
+            EventsManage.GameOver(false);
+            
             EventsManager.DestroyAllEnemies();
 
             //If the PC Player has not completed the tutorial, then tutorial audio cues are reset
@@ -221,9 +230,12 @@ public class CheckpointManager : NetworkBehaviour
                 EventsManager.ResetTeleportPads();
             }
 
-            //The PC Player's health and position are reset
-            EventsManager.ResetHealth(_pcPlayer);
-            _pcPlayer.transform.position = currentCheckpoint.position;
+            if(_pcPlayer != null)
+            {
+                //The PC Player's health and position are reset
+                EventsManager.ResetHealth(_pcPlayer);
+                _pcPlayer.transform.position = currentCheckpoint.position;
+            }
         }
     }
 
