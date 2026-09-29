@@ -372,7 +372,7 @@ public class PlotManager : NetworkBehaviour
 
     private void GetVRPlayerData()
     {
-        if(GameObject.FindGameObjectWithTag("VRPlayer") != null) _createdVRPlayer = true;
+        _createdVRPlayer = true;
 
         if(_skipTutorial)
         {
@@ -396,9 +396,7 @@ public class PlotManager : NetworkBehaviour
 
     private void GetPCPlayerData()
     {
-        if(GameObject.FindGameObjectWithTag("VRPlayer") != null) _createdVRPlayer = true;
-        if(GameObject.FindGameObjectWithTag("PCPlayer") != null) _createdPCPlayer = true;
-
+        _createdPCPlayer = true;
         if(_createdVRPlayer && _createdPCPlayer) VRIntroEvent();
     }
 
