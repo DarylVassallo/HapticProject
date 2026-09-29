@@ -98,7 +98,7 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
 
         EventsManager.OnCreatedVRPlayer += CreatedVRPlayer;
-        EventsManager.OnPingVRController += PingVRController;
+        EventsManager.OnPingVRController += PingVRControllerRpc;
         EventsManager.OnUseEnemyHaptic += UseEnemyHaptic;
         EventsManager.OnUseBridgeHaptic += UseBridgeHapticServerRpc;
         EventsManager.OnUseRopeHaptic += UseRopeHaptic;
@@ -131,7 +131,7 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
 
         EventsManager.OnCreatedVRPlayer -= CreatedVRPlayer;
-        EventsManager.OnPingVRController -= PingVRController;
+        EventsManager.OnPingVRController -= PingVRControllerRpc;
         EventsManager.OnUseEnemyHaptic -= UseEnemyHaptic;
         EventsManager.OnUseBridgeHaptic -= UseBridgeHapticServerRpc;
         EventsManager.OnUseRopeHaptic -= UseRopeHaptic;
@@ -260,7 +260,8 @@ public class HapticManager : NetworkBehaviour
         _canUseHaptics = true;
     }
 
-    private void PingVRController(int _controllerNum)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PingVRControllerRpc(int _controllerNum)
     {
         switch(_controllerNum)
         {

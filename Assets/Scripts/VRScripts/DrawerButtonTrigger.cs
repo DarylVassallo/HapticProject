@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class DrawerButtonTrigger : MonoBehaviour
+public class DrawerButtonTrigger : NetworkBehaviour
 {
     [SerializeField] private Renderer buttonRenderer;
     [SerializeField] private Material _highlightMaterial;
@@ -38,22 +39,28 @@ public class DrawerButtonTrigger : MonoBehaviour
             _enteredCollider = _other;
             _canBePressed = false;
 
-            if(isSquare)
-            {
-                EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Square);
-            }else if(isCircle)
-            {
-                EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Circle);
-            }else if(isTriangle)
-            {
-                EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Triangle);
-            }else if(isCross)
-            {
-                EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Cross);
-            }else if(isStar)
-            {
-                EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Star);
-            }
+            TriggerButtonHapticRpc();
+        }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void TriggerButtonHapticRpc()
+    {
+        if(isSquare)
+        {
+            EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Square);
+        }else if(isCircle)
+        {
+            EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Circle);
+        }else if(isTriangle)
+        {
+            EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Triangle);
+        }else if(isCross)
+        {
+            EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Cross);
+        }else if(isStar)
+        {
+            EventsManager.PressedButtonHaptic(EventsManager.ButtonType.Star);
         }
     }
 
