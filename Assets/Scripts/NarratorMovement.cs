@@ -469,6 +469,12 @@ public class NarratorMovement : NetworkBehaviour
                 Vector3 direction = transform.position - _moveTarget.position;
                 _rb.AddForce(direction * _force, ForceMode.Force);
                 _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+
+                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity && IsOwner)
+                {
+                    Debug.Log("DisableCollisionServerRpc 3");
+                    DisableCollisionServerRpc();
+                }
             }
             else
             {

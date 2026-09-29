@@ -112,7 +112,8 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         _audioSource.Play();
     }
 
-    public void DeactivateButton(bool _isWrong)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void DeactivateButtonRpc(bool _isWrong)
     {
         _activeButton = false;
         _resetButton = true;
@@ -149,14 +150,14 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     {
         _isPermanentallyCorrect = false;
         if(!_activeButton) return;
-        DeactivateButton(true);
+        if(IsOwner) DeactivateButtonRpc(true);
     }
     
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ResetButtonRpc()
     {
         if(!_activeButton || _isPermanentallyCorrect) return;
-        DeactivateButton(true);
+        if(IsOwner) DeactivateButtonRpc(true);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -171,7 +172,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         }
         else
         {
-            DeactivateButton(false);
+            if(IsOwner) DeactivateButton(false);
         }
     }
 
@@ -237,7 +238,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         if(_resetButton && _canReset)
         {
-            DeactivateButton(false);
+            DeactivateButtonRpc(false);
         }
 
         if(!_canReset) _resetButton = false;

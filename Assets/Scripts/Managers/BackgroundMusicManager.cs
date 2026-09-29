@@ -1,8 +1,9 @@
 using UnityEngine;
 
 using System.Collections;
+using Unity.Netcode;
 
-public class BackgroundMusicManager : MonoBehaviour
+public class BackgroundMusicManager : NetworkBehaviour
 {
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip firstSectionMusic;
@@ -23,43 +24,46 @@ public class BackgroundMusicManager : MonoBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerDataRpc;
 
-        EventsManager.OnReachedSwitches += PlayFirstSectionMusic;
-        EventsManager.OnPlaySecondSectionMusic += PlaySecondSectionMusic;
-        EventsManager.OnPlayThirdSectionMusic += PlayThirdSectionMusic;
-        EventsManager.OnPlayFourthSectionMusic += PlayFourthSectionMusic;
+        EventsManager.OnReachedSwitches += PlayFirstSectionMusicRpc;
+        EventsManager.OnPlaySecondSectionMusic += PlaySecondSectionMusicRpc;
+        EventsManager.OnPlayThirdSectionMusic += PlayThirdSectionMusicRpc;
+        EventsManager.OnPlayFourthSectionMusic += PlayFourthSectionMusicRpc;
 
-        EventsManager.OnPlayNarratorHaptic += LowerBackgroundMusic;
-        EventsManager.OnStopNarratorHaptic += RaiseBackgroundMusic;
+        EventsManager.OnPlayNarratorHaptic += LowerBackgroundMusicRpc;
+        EventsManager.OnStopNarratorHaptic += RaiseBackgroundMusicRpc;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerDataRpc;
 
-        EventsManager.OnReachedSwitches -= PlayFirstSectionMusic;
-        EventsManager.OnPlaySecondSectionMusic -= PlaySecondSectionMusic;
-        EventsManager.OnPlayThirdSectionMusic -= PlayThirdSectionMusic;
-        EventsManager.OnPlayFourthSectionMusic -= PlayFourthSectionMusic;
+        EventsManager.OnReachedSwitches -= PlayFirstSectionMusicRpc;
+        EventsManager.OnPlaySecondSectionMusic -= PlaySecondSectionMusicRpc;
+        EventsManager.OnPlayThirdSectionMusic -= PlayThirdSectionMusicRpc;
+        EventsManager.OnPlayFourthSectionMusic -= PlayFourthSectionMusicRpc;
 
-        EventsManager.OnPlayNarratorHaptic -= LowerBackgroundMusic;
-        EventsManager.OnStopNarratorHaptic -= RaiseBackgroundMusic;
+        EventsManager.OnPlayNarratorHaptic -= LowerBackgroundMusicRpc;
+        EventsManager.OnStopNarratorHaptic -= RaiseBackgroundMusicRpc;
     }
 
-    private void GetPCPlayerData()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void GetPCPlayerDataRpc()
     {
         _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
 
-        // PlayFourthSectionMusic();
+        // PlayFourthSectionMusicRpc();
     }
 
-    private void LowerBackgroundMusic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LowerBackgroundMusicRpc()
     {
         StartCoroutine(ChangeMusicVolume(1f, audioSource.volume, 0.0015f));
     }
 
-    private void RaiseBackgroundMusic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void RaiseBackgroundMusicRpc()
     {
         StartCoroutine(ChangeMusicVolume(1f, audioSource.volume, _maxVolume));
     }
@@ -78,25 +82,29 @@ public class BackgroundMusicManager : MonoBehaviour
         audioSource.volume = _requiredVolume;
     }
 
-    private void PlayFirstSectionMusic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayFirstSectionMusicRpc()
     {
         _maxVolume = 0.0025f;
         PlaySectionMusic(firstSectionMusic);
     }
 
-    private void PlaySecondSectionMusic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlaySecondSectionMusicRpc()
     {
         _maxVolume = 0.0025f;
         PlaySectionMusic(secondSectionMusic);
     }
 
-    private void PlayThirdSectionMusic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayThirdSectionMusicRpc()
     {
         _maxVolume =0.0025f;
         PlaySectionMusic(thirdSectionMusic);
     }
 
-    private void PlayFourthSectionMusic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayFourthSectionMusicRpc()
     {
         _usingFourthSectionMusic = true;
         _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;

@@ -100,14 +100,14 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnCreatedVRPlayer += CreatedVRPlayer;
         EventsManager.OnPingVRController += PingVRControllerRpc;
         EventsManager.OnUseEnemyHaptic += UseEnemyHaptic;
-        EventsManager.OnUseBridgeHaptic += UseBridgeHapticServerRpc;
+        EventsManager.OnUseBridgeHaptic += UseBridgeHapticRpc;
         EventsManager.OnUseRopeHaptic += UseRopeHaptic;
 
         EventsManager.OnUseTeleportBarHaptic += UseTeleporterTimerHaptic;
-        EventsManager.OnTeleporterTransitionHaptic += TeleporterTransitionHaptic;
+        EventsManager.OnTeleporterTransitionHaptic += TeleporterTransitionHapticRpc;
 
-        EventsManager.OnUseButtonHaptic += UseButtonHapticServerRpc;
-        EventsManager.OnUseAllButtonHaptic += UseAllButtonHapticServerRpc;
+        EventsManager.OnUseButtonHaptic += UseButtonHapticRpc;
+        EventsManager.OnUseAllButtonHaptic += UseAllButtonHapticRpc;
 
         EventsManager.OnIsNarratorSpeaking += IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterTimerHaptic += ActivateTeleporterTimerHaptic;
@@ -117,8 +117,8 @@ public class HapticManager : NetworkBehaviour
 
         EventsManager.OnChangeNarratorHaptic += ChangeNarratorHaptic;
 
-        EventsManager.OnPlayNarratorHaptic += PlayNarratorHaptic;
-        EventsManager.OnStopNarratorHaptic += StopNarratorHaptic;
+        EventsManager.OnPlayNarratorHaptic += PlayNarratorHapticRpc;
+        EventsManager.OnStopNarratorHaptic += StopNarratorHapticRpc;
 
         EventsManager.OnChangeHealthHaptic += ChangeHealthHaptic;
 
@@ -133,14 +133,14 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnCreatedVRPlayer -= CreatedVRPlayer;
         EventsManager.OnPingVRController -= PingVRControllerRpc;
         EventsManager.OnUseEnemyHaptic -= UseEnemyHaptic;
-        EventsManager.OnUseBridgeHaptic -= UseBridgeHapticServerRpc;
+        EventsManager.OnUseBridgeHaptic -= UseBridgeHapticRpc;
         EventsManager.OnUseRopeHaptic -= UseRopeHaptic;
 
         EventsManager.OnUseTeleportBarHaptic -= UseTeleporterTimerHaptic;
-        EventsManager.OnTeleporterTransitionHaptic -= TeleporterTransitionHaptic;
+        EventsManager.OnTeleporterTransitionHaptic -= TeleporterTransitionHapticRpc;
 
-        EventsManager.OnUseButtonHaptic -= UseButtonHapticServerRpc;
-        EventsManager.OnUseAllButtonHaptic -= UseAllButtonHapticServerRpc;
+        EventsManager.OnUseButtonHaptic -= UseButtonHapticRpc;
+        EventsManager.OnUseAllButtonHaptic -= UseAllButtonHapticRpc;
 
         EventsManager.OnIsNarratorSpeaking -= IsNarratorSpeaking;
         EventsManager.OnActivateTeleporterTimerHaptic -= ActivateTeleporterTimerHaptic;
@@ -150,8 +150,8 @@ public class HapticManager : NetworkBehaviour
 
         EventsManager.OnChangeNarratorHaptic -= ChangeNarratorHaptic;
 
-        EventsManager.OnPlayNarratorHaptic -= PlayNarratorHaptic;
-        EventsManager.OnStopNarratorHaptic -= StopNarratorHaptic;
+        EventsManager.OnPlayNarratorHaptic -= PlayNarratorHapticRpc;
+        EventsManager.OnStopNarratorHaptic -= StopNarratorHapticRpc;
 
         EventsManager.OnChangeHealthHaptic -= ChangeHealthHaptic;
 
@@ -220,7 +220,8 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
-    private void PlayNarratorHaptic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayNarratorHapticRpc()
     {
         if(narratorHapticSource != null)
         { 
@@ -229,7 +230,8 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
-    private void StopNarratorHaptic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void StopNarratorHapticRpc()
     {
         if(narratorHapticSource != null)
         {
@@ -246,7 +248,7 @@ public class HapticManager : NetworkBehaviour
 
         if(!_playingHealthHaptic)
         { 
-            PlayHealthHapticServerRpc(_healthDelay);
+            PlayHealthHapticRpc(_healthDelay);
         }
     }
 
@@ -283,8 +285,8 @@ public class HapticManager : NetworkBehaviour
         // }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void UseBridgeHapticServerRpc(float _bridgeMovementAmount)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void UseBridgeHapticRpc(float _bridgeMovementAmount)
     {
         if(_bridgeMovementAmount < 0) _bridgeMovementAmount *= -1;
         _intensity = Mathf.Clamp(_bridgeMovementAmount * 30, 0, 1);
@@ -324,11 +326,11 @@ public class HapticManager : NetworkBehaviour
     {
         if(_isPaused) return;
         _useTeleporterTimerHaptic = true;
-        PlayTeleporterTimerHapticServerRpc(2f);
+        PlayTeleporterTimerHapticRpc(2f);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlayTeleporterTimerHapticServerRpc(float _delay)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayTeleporterTimerHapticRpc(float _delay)
     {
         if(_isPaused) return;
         StartCoroutine(PlayTeleporterTimerHaptic(_delay));
@@ -343,7 +345,7 @@ public class HapticManager : NetworkBehaviour
 
         yield return new WaitForSeconds(_delay);
 
-        if(_useTeleporterTimerHaptic) PlayTeleporterTimerHapticServerRpc(_delay);
+        if(_useTeleporterTimerHaptic) PlayTeleporterTimerHapticRpc(_delay);
     }
 
     private void DeactivateTeleporterTimerHaptic()
@@ -356,8 +358,8 @@ public class HapticManager : NetworkBehaviour
 
 
 
-
-    private void TeleporterTransitionHaptic(float _newIntensity)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void TeleporterTransitionHapticRpc(float _newIntensity)
     {
         if(_newIntensity < 0.01f) _newIntensity = 0.01f;
 
@@ -377,8 +379,8 @@ public class HapticManager : NetworkBehaviour
         _haptic.PlayEventVibration();
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void UseButtonHapticServerRpc(int _buttonNum)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void UseButtonHapticRpc(int _buttonNum)
     {
         for(int i = 0; i < stoneButtonHapticSources.Count; i++)
         {
@@ -391,8 +393,8 @@ public class HapticManager : NetworkBehaviour
         stoneButtonHapticSources[_buttonNum].PlayEventVibration();
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void UseAllButtonHapticServerRpc()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void UseAllButtonHapticRpc()
     {
         stoneButtonHapticSources[0].Stop();
         
@@ -409,9 +411,15 @@ public class HapticManager : NetworkBehaviour
         {
             if(_playFullButtonsHaptics)
             {
-                StartCoroutine(FullButtonHapticsDelay(0.5f));
+                FullButtonHapticsRpc(0.5f);
             }
         }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void FullButtonHapticsRpc(float _delay)
+    {
+        StartCoroutine(FullButtonHapticsDelay(_delay));
     }
 
     IEnumerator FullButtonHapticsDelay(float _delay)
@@ -454,8 +462,8 @@ public class HapticManager : NetworkBehaviour
         // _controller.SendHapticImpulse(0f, 0.1f);
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void PlayHealthHapticServerRpc(float _delay)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayHealthHapticRpc(float _delay)
     {
         StartCoroutine(PlayHealthHaptic(_delay));
     }
@@ -484,7 +492,7 @@ public class HapticManager : NetworkBehaviour
         {
             _hapticHealth = _hapticHealth + 0.05f;
             float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
-            PlayHealthHapticServerRpc(_healthDelay);
+            PlayHealthHapticRpc(_healthDelay);
         }
         else
         {

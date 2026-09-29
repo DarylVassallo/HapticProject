@@ -4993,6 +4993,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9cf4a903e45a84ab4c03d32395807c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawerButtonTrigger
+  ShowTopMostFoldoutHeaderGroup: 1
   buttonRenderer: {fileID: 6202994412761940537}
   _highlightMaterial: {fileID: 2100000, guid: 066a3e16d0d57194096de71290113db9, type: 2}
   _originalMaterial: {fileID: 2100000, guid: a6b2995c30f20fa4d832a4c61b815ec9, type: 2}
@@ -5193,6 +5194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9cf4a903e45a84ab4c03d32395807c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawerButtonTrigger
+  ShowTopMostFoldoutHeaderGroup: 1
   buttonRenderer: {fileID: 8180769996894847898}
   _highlightMaterial: {fileID: 2100000, guid: 066a3e16d0d57194096de71290113db9, type: 2}
   _originalMaterial: {fileID: 2100000, guid: a6b2995c30f20fa4d832a4c61b815ec9, type: 2}
@@ -5388,6 +5390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9cf4a903e45a84ab4c03d32395807c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawerButtonTrigger
+  ShowTopMostFoldoutHeaderGroup: 1
   buttonRenderer: {fileID: 8979631916778210211}
   _highlightMaterial: {fileID: 2100000, guid: 066a3e16d0d57194096de71290113db9, type: 2}
   _originalMaterial: {fileID: 2100000, guid: a6b2995c30f20fa4d832a4c61b815ec9, type: 2}
@@ -5574,6 +5577,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9cf4a903e45a84ab4c03d32395807c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawerButtonTrigger
+  ShowTopMostFoldoutHeaderGroup: 1
   buttonRenderer: {fileID: 3696222773287433048}
   _highlightMaterial: {fileID: 2100000, guid: 066a3e16d0d57194096de71290113db9, type: 2}
   _originalMaterial: {fileID: 2100000, guid: a6b2995c30f20fa4d832a4c61b815ec9, type: 2}
@@ -5769,6 +5773,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f9cf4a903e45a84ab4c03d32395807c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrawerButtonTrigger
+  ShowTopMostFoldoutHeaderGroup: 1
   buttonRenderer: {fileID: 4019866904996977356}
   _highlightMaterial: {fileID: 2100000, guid: 066a3e16d0d57194096de71290113db9, type: 2}
   _originalMaterial: {fileID: 2100000, guid: a6b2995c30f20fa4d832a4c61b815ec9, type: 2}
