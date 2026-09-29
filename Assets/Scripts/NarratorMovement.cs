@@ -215,7 +215,7 @@ public class NarratorMovement : NetworkBehaviour
             _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
             if(_distance >= 50f)
             {
-                StartCoroutine(DisableCollision());
+                if(IsOwner) DisableCollisionServerRpc();
             }
         }
         
@@ -441,7 +441,7 @@ public class NarratorMovement : NetworkBehaviour
 
                 if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity)
                 {
-                    StartCoroutine(DisableCollision());
+                    if(IsOwner) DisableCollisionServerRpc();
                 }
             }
             else if(_distance < 6f)
@@ -465,6 +465,12 @@ public class NarratorMovement : NetworkBehaviour
         _prevDistance = _distance;
     }
 
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void DisableCollisionServerRpc()
+    {
+        StartCoroutine(DisableCollision());
+    }
+    
     private IEnumerator DisableCollision()
     {
         if(_moveTarget != null)
