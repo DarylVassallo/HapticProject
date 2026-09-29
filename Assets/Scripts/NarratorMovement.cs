@@ -548,13 +548,19 @@ public class NarratorMovement : NetworkBehaviour
 
         float decibel = GetDecibel(spectrum, 16f);
 
+        ChangeEyeRingColourRpc(decibel);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeEyeRingColourRpc(float decibel)
+    {
         eyeRingRenderer.material.SetColor(
-                "_BaseColor",
-                Color.Lerp(
-                    silentMaterial.GetColor("_BaseColor"),
-                    loudMaterial.GetColor("_BaseColor"),
-                    decibel / 60f
-                )
-            );
+            "_BaseColor",
+            Color.Lerp(
+                silentMaterial.GetColor("_BaseColor"),
+                loudMaterial.GetColor("_BaseColor"),
+                decibel / 60f
+            )
+        );
     }
 }
