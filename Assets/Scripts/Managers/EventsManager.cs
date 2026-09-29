@@ -18,6 +18,9 @@ public class EventsManager : MonoBehaviour
     public static event Action OnSkipTutorial;
     public static void SkipTutorial() => OnSkipTutorial?.Invoke();
 
+    public static event Action OnStartWithPlayerIcon;
+    public static void StartWithPlayerIcon() => OnStartWithPlayerIcon?.Invoke();
+
     public static event Action OnActivateSpinWheel;
     public static void ActivateSpinWheel() => OnActivateSpinWheel?.Invoke();
     public static event Action OnActivateHealthBall;

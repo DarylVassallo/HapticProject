@@ -133,7 +133,6 @@ public class TeleportManager : NetworkBehaviour
 
     private void ResetTeleportPads()
     {
-        Debug.Log("ResetTeleportPads");
         ChooseRandomMap();
     }
 

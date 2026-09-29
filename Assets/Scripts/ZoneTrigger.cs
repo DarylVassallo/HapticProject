@@ -48,13 +48,13 @@ public class ZoneTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {        
-        if (other.CompareTag("PCPlayer"))
+        if (other.CompareTag("PCPlayer") && _canPCTrigger)
         { 
             if(chargeTutorial) EventsManager.TriggerPCChargeTutorial();
             if(interactTutorial) EventsManager.TriggerPCInteractTutorial();
             if(reachedEnd) EventsManager.PCReachedEnd();
             if(crossingCrookedBridge) _crossedCrookedBridge = true;
-            if(enteredTemple && _canPCTrigger) EventsManager.EnteredTemple(true);
+            if(enteredTemple) EventsManager.EnteredTemple(true);
         }
     }
 }
