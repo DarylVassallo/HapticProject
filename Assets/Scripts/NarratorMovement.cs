@@ -374,7 +374,7 @@ public class NarratorMovement : NetworkBehaviour
 
             EventsManager.NarratorStopped();
 
-            if(!_stayWithPlayer)
+            if(!_stayWithPlayer && IsOwner)
             {
                 Debug.Log("FixedUpdate LookAtPlayerServerRpc");
                 LookAtPlayerServerRpc(-1, -1, false);
