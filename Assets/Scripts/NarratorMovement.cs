@@ -169,7 +169,6 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void LookAtPlayerServerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
-        Debug.Log("LookAtPlayerServerRpc: _playerNum: " + _playerNum + " : _specificViewPoint : " + _specificViewPoint + " : _stay: " + _stay);
         bool _showVision = false;
 
         switch(_playerNum)
@@ -215,8 +214,6 @@ public class NarratorMovement : NetworkBehaviour
             _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
             if(_distance >= 50f)
             {
-                Debug.Log("DisableCollisionServerRpc 1 _moveTarget: " + _moveTarget);
-                Debug.Log("DisableCollisionServerRpc 1 _distance: " + _distance);
                 DisableCollisionServerRpc();
             }
         }
@@ -336,7 +333,6 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayerNarratorAudioRpc()
     {        
-        Debug.Log("PlayerNarratorAudioRpc");
         // _audioSource.Play();
 
         EventsManager.PlayNarratorHaptic();
@@ -378,7 +374,6 @@ public class NarratorMovement : NetworkBehaviour
 
             if(!_stayWithPlayer && IsOwner)
             {
-                Debug.Log("FixedUpdate LookAtPlayerServerRpc");
                 LookAtPlayerServerRpc(-1, -1, false);
             }
         }
@@ -460,7 +455,6 @@ public class NarratorMovement : NetworkBehaviour
 
                 if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity && IsOwner)
                 {
-                    Debug.Log("DisableCollisionServerRpc 2");
                     DisableCollisionServerRpc();
                 }
             }
@@ -472,7 +466,6 @@ public class NarratorMovement : NetworkBehaviour
 
                 if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity && IsOwner)
                 {
-                    Debug.Log("DisableCollisionServerRpc 3");
                     DisableCollisionServerRpc();
                 }
             }
@@ -485,7 +478,6 @@ public class NarratorMovement : NetworkBehaviour
                 
                 if(_speakToPlayer)
                 { 
-                    Debug.Log("MovementServerRpc _speakToPlayer");
                     PlayerNarratorAudioRpc();
                 }
             }
@@ -506,7 +498,6 @@ public class NarratorMovement : NetworkBehaviour
         {
             _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
             float _originalDistance = _distance;
-            Debug.Log("_originalDistance: " + _originalDistance);
 
             _canCollide = false;
             ToggleCollisionRpc(false);
@@ -515,8 +506,6 @@ public class NarratorMovement : NetworkBehaviour
             while(_distance > _originalDistance * 0.5f)
             {      
                 _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
-                Debug.Log("DisableCollision _moveTarget: " + _moveTarget);
-                Debug.Log("DisableCollision _distance: " + _distance);
                 yield return null;
             }
         }
@@ -563,7 +552,6 @@ public class NarratorMovement : NetworkBehaviour
 
         if(_isInNetwork)
         {
-            Debug.Log("ChangeEyeRingColourRpc: decibel: " + decibel);
             ChangeEyeRingColourRpc(decibel);
         }
     }
@@ -571,8 +559,6 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeEyeRingColourRpc(float decibel)
     {
-        Debug.Log("ChangeEyeRingColourRpc: decibel: " + decibel);
-
         eyeRingRenderer.material.SetColor(
             "_BaseColor",
             Color.Lerp(

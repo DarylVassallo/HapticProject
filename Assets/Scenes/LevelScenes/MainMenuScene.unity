@@ -21301,7 +21301,7 @@ PrefabInstance:
       objectReference: {fileID: 6248540552738714588}
     - target: {fileID: 1037925232532237025, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: StartStoryBoard
+      value: StartStoryBoardRpc
       objectReference: {fileID: 0}
     - target: {fileID: 1037925232532237025, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
