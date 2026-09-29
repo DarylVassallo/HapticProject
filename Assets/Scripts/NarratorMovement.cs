@@ -376,6 +376,7 @@ public class NarratorMovement : NetworkBehaviour
 
             if(!_stayWithPlayer)
             {
+                Debug.Log("FixedUpdate LookAtPlayerServerRpc");
                 LookAtPlayerServerRpc(-1, -1, false);
             }
         }

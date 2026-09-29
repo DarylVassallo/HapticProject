@@ -191,6 +191,7 @@ public class TeleportManager : NetworkBehaviour
 
         if(tutorialTeleportCount == 1)
         {
+            Debug.Log("TutorialTeleportRpc LookAtPlayer");
             EventsManager.LookAtPlayer(-1, -1, false);
         }
 

@@ -116,6 +116,7 @@ public class NarratorManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TriggerNarratorAudioRpc(string _currentSection, string _currentAudio, bool _isVRPlayer, int _lookAt, bool _stay)
     {
+        Debug.Log("NarratorManager TriggerNarratorAudioRpc");
         // if( _vrPlayerID == unchecked((ulong)-1) && _isVRPlayer || 
         //     _pcPlayerID == unchecked((ulong)-1) && !_isVRPlayer ||
         //     !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
@@ -123,10 +124,12 @@ public class NarratorManager : NetworkBehaviour
 
         if(_isVRPlayer)
         {
+            Debug.Log("TriggerNarratorAudioRpc LookAtPlayer 1");
             EventsManager.LookAtPlayer(0, _lookAt, _stay);
         }
         else
         {
+            Debug.Log("TriggerNarratorAudioRpc LookAtPlayer 2");
             EventsManager.LookAtPlayer(1, _lookAt, _stay);
         }
 
