@@ -16576,6 +16576,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 2311972384724138209, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+    - {fileID: 6836408159420624483, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
+    - {fileID: 574166262717501571, guid: 4cdafa222403153489408e48f3d42d13, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -21831,6 +21833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccdffa01dde17b946923306cc92409ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  ShowTopMostFoldoutHeaderGroup: 1
   _storyBoardAudioClips:
   - {fileID: 8300000, guid: f67973d950451de488660fe276105b77, type: 3}
   - {fileID: 8300000, guid: 450a45e14a291d4498515005f53188ad, type: 3}
