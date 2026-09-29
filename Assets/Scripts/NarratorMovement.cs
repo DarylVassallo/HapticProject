@@ -215,7 +215,7 @@ public class NarratorMovement : NetworkBehaviour
             _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
             if(_distance >= 10f)
             {
-                StartCoroutine(DisableCollision(_moveTarget.position, this.transform.position));
+                StartCoroutine(DisableCollision(_moveTarget.position));
             }
         }
         
@@ -441,7 +441,7 @@ public class NarratorMovement : NetworkBehaviour
 
                 if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity)
                 {
-                    StartCoroutine(DisableCollision(_moveTarget.position, this.transform.position));
+                    StartCoroutine(DisableCollision(_moveTarget.position));
                 }
             }
             else if(_distance < 6f)
