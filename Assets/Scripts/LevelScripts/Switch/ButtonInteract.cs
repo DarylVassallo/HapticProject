@@ -172,7 +172,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
         }
         else
         {
-            if(IsOwner) DeactivateButton(false);
+            if(IsOwner) DeactivateButtonRpc(false);
         }
     }
 
