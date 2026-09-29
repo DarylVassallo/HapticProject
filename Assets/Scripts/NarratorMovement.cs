@@ -104,7 +104,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
-        EventsManager.OnLookAtPlayer += LookAtPlayerRpc;
+        EventsManager.OnLookAtPlayer += LookAtPlayerServerRpc;
 
         EventsManager.OnNarratorSays += NarratorSays;
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
@@ -117,7 +117,7 @@ public class NarratorMovement : NetworkBehaviour
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
-        EventsManager.OnLookAtPlayer -= LookAtPlayerRpc; 
+        EventsManager.OnLookAtPlayer -= LookAtPlayerServerRpc; 
 
         EventsManager.OnNarratorSays -= NarratorSays;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
@@ -165,8 +165,8 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void LookAtPlayerRpc(int _playerNum, int _specificViewPoint, bool _stay)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LookAtPlayerServerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
         bool _showVision = false;
 
@@ -177,7 +177,6 @@ public class NarratorMovement : NetworkBehaviour
                 StartCoroutine(ChangeFocus(UnityEngine.Random.Range(minFocusTime, maxFocusTime)));
                 break;
             case 0:
-                // this.GetComponent<Collider>().enabled = false;
                 if(_vrViewPoint != null)
                 {
                     _moveTarget = _vrViewPoint;
@@ -193,7 +192,6 @@ public class NarratorMovement : NetworkBehaviour
                 }
                 break;
             case 1:
-                // this.GetComponent<Collider>().enabled = false;
                 if(_pcViewPoint != null)
                 {
                     _moveTarget = _pcViewPoint;
@@ -263,10 +261,24 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleCollisionRpc(bool _toggle)
+    {
+        if(_toggle)
+        {
+            this.GetComponent<Collider>().enabled = true;
+            _particle.Stop();
+        }
+        else
+        {
+            this.GetComponent<Collider>().enabled = false;
+            _particle.Play();
+        }
+    }
+
     IEnumerator ChangeFocus(float _delay)
     {
-        this.GetComponent<Collider>().enabled = true;
-        _particle.Stop();
+        ToggleCollisionRpc(true);
 
         bool _foundTarget = false;
         for(int i = 0; i < 50; i++)
@@ -336,7 +348,7 @@ public class NarratorMovement : NetworkBehaviour
 
         if(_canFlicker && _isInNetwork) IrisFlickerServerRpc();
 
-        if(_moveTarget != null) Movement();
+        if(_moveTarget != null && IsOwner) MovementServerRpc();
         RotateRings();
         AudioEyeRing();
 
@@ -361,7 +373,7 @@ public class NarratorMovement : NetworkBehaviour
 
             if(!_stayWithPlayer)
             {
-                LookAtPlayerRpc(-1, -1, false);
+                LookAtPlayerServerRpc(-1, -1, false);
             }
         }
     }
@@ -413,7 +425,8 @@ public class NarratorMovement : NetworkBehaviour
         _rb.AddTorque(torque + dampingTorque, ForceMode.Acceleration);
     }
 
-    private void Movement()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void MovementServerRpc()
     {
         RotationControl();
 
@@ -454,8 +467,7 @@ public class NarratorMovement : NetworkBehaviour
             {
                 if(!this.GetComponent<Collider>().enabled)
                 {
-                    this.GetComponent<Collider>().enabled = true;
-                    _particle.Stop();
+                    ToggleCollisionRpc(true);
                 }
                 
                 if(_speakToPlayer) PlayerNarratorAudioRpc();
@@ -480,8 +492,7 @@ public class NarratorMovement : NetworkBehaviour
             Debug.Log("_originalDistance: " + _originalDistance);
 
             _canCollide = false;
-            this.GetComponent<Collider>().enabled = false;
-            _particle.Play();
+            ToggleCollisionRpc(false);
 
             // yield return new WaitForSeconds(_delay);
             while(_distance > _originalDistance * 0.5f)
@@ -493,8 +504,7 @@ public class NarratorMovement : NetworkBehaviour
         }
 
         _canCollide = true;
-        this.GetComponent<Collider>().enabled = true;
-        _particle.Stop();
+        ToggleCollisionRpc(true);
     }
 
     private IEnumerator CheckVelocityDelay(float _delay)
