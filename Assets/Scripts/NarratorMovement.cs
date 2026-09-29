@@ -465,9 +465,9 @@ public class NarratorMovement : NetworkBehaviour
         _prevDistance = _distance;
     }
 
-    private IEnumerator DisableCollision(Vector3 _moveTargetPos, Vector3 _currPos)
+    private IEnumerator DisableCollision(Vector3 _moveTargetPos)
     {
-        _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+        _distance = Vector3.Distance(_moveTargetPos, this.transform.position);
         float _originalDistance = _distance;
         Debug.Log("_originalDistance: " + _originalDistance);
 
@@ -478,6 +478,7 @@ public class NarratorMovement : NetworkBehaviour
         // yield return new WaitForSeconds(_delay);
         while(_distance > _originalDistance * 0.75f)
         {      
+            _distance = Vector3.Distance(_moveTargetPos, this.transform.position);
             Debug.Log("curr _distance: " + _distance);
             yield return null;
         }
