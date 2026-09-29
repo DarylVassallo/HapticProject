@@ -208,12 +208,14 @@ public class NarratorMovement : NetworkBehaviour
                 break;
         }
 
-        if(_moveTarget != null)
+        if(_moveTarget != null && IsOwner)
         {
             _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
             if(_distance >= 50f)
             {
-                if(IsOwner) DisableCollisionServerRpc();
+                Debug.Log("DisableCollisionServerRpc 1 _moveTarget: " + _moveTarget);
+                Debug.Log("DisableCollisionServerRpc 1 _distance: " + _distance);
+                DisableCollisionServerRpc();
             }
         }
         
@@ -452,9 +454,10 @@ public class NarratorMovement : NetworkBehaviour
                     _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
                 }
 
-                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity)
+                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity && IsOwner)
                 {
-                    if(IsOwner) DisableCollisionServerRpc();
+                    Debug.Log("DisableCollisionServerRpc 2");
+                    DisableCollisionServerRpc();
                 }
             }
             else if(_distance < 6f)
@@ -498,7 +501,8 @@ public class NarratorMovement : NetworkBehaviour
             while(_distance > _originalDistance * 0.5f)
             {      
                 _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
-                Debug.Log("curr _distance: " + _distance);
+                Debug.Log("DisableCollision _moveTarget: " + _moveTarget);
+                Debug.Log("DisableCollision _distance: " + _distance);
                 yield return null;
             }
         }
