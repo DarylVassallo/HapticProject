@@ -35,13 +35,11 @@ public class ZoneTrigger : MonoBehaviour
 
     private void UsedFirstCrookedBridgeTeleporter()
     {
-        Debug.Log("UsedFirstCrookedBridgeTeleporter");
         StartCoroutine(CheckPCWaitingForCrookedBridge());
     }
 
     IEnumerator CheckPCWaitingForCrookedBridge()
     {
-        Debug.Log("CheckPCWaitingForCrookedBridge");
         yield return new WaitForSeconds(5f);
         if(!_crossedCrookedBridge) EventsManager.CrookedBridgePCPlayerWaited();
     }

@@ -18,6 +18,10 @@ public class PlotManager : NetworkBehaviour
     private int visiblePCPipes = 0;
     [SerializeField] private float pcSpawnDelay;
     private bool isPCTransforming;
+    [SerializeField] private Transform pcStatueBubble;
+    private Material _pcStatueBubbleMaterial;
+    [SerializeField] private Transform pcSpawnBubble;
+    private Material _pcSpawnBubbleMaterial;
 
     [Header("PC Tutorial UI")]
     [SerializeField] private GameObject pcMovementTutorial;
@@ -43,6 +47,9 @@ public class PlotManager : NetworkBehaviour
         {
             pcPipes[i].SetActive(false);
         }
+
+        _pcStatueBubbleMaterial = pcStatueBubble.GetComponent<Renderer>().material;
+        _pcSpawnBubbleMaterial = pcSpawnBubble.GetComponent<Renderer>().material;
     }
     
     private void OnEnable()
@@ -117,6 +124,7 @@ public class PlotManager : NetworkBehaviour
     {
         Debug.Log("PCIntro IntroducePC");
         EventsManager.TriggerNarratorAudio("PCIntro", "IntroducePC", false, -1, true);
+        EventsManager.TogglePCTrigger(true);
         ToggleTutorialRpc(0);
         // StartCoroutine(DelayPCSpawn());
     }
@@ -225,10 +233,51 @@ public class PlotManager : NetworkBehaviour
         if(visiblePCPipes >= pcPipes.Length || _skipTutorial)
         {
             // Destroy(pcStatue);
-            EventsManager.AddPCPlayerBody();
+            // EventsManager.AddPCPlayerBody();
+            StartCoroutine(SwitchStatueToPCPlayer(1f));
         } else {
             StartCoroutine(DelayPCSpawn());
         }
+    }
+
+    IEnumerator SwitchStatueToPCPlayer(float _delay)
+    {
+        float elapsed = 0f;
+        Color colour;
+
+        while(elapsed < _delay)
+        {
+            elapsed += Time.deltaTime;
+                
+            float _newScale = Mathf.Lerp(
+                20f,
+                4f,
+                1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+            );
+            pcStatueBubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+            pcSpawnBubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+            float _newAlpha = Mathf.Lerp(
+                0f,
+                1f,
+                1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+            );
+
+            colour = _pcStatueBubbleMaterial.color;
+            colour.g = 1 - _newAlpha;
+            colour.a = _newAlpha;
+            _pcStatueBubbleMaterial.color = colour;
+            _pcSpawnBubbleMaterial.color = colour;
+
+            yield return null;
+        }
+
+        colour = _pcStatueBubbleMaterial.color;
+        colour.a = 0;
+        _pcStatueBubbleMaterial.color = colour;
+        _pcSpawnBubbleMaterial.color = colour;
+
+        EventsManager.AddPCPlayerBody();
     }
 
     private void ReachedSwitches()

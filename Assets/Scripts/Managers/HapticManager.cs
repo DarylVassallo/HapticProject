@@ -322,8 +322,6 @@ public class HapticManager : NetworkBehaviour
     private void ActivateTeleporterTimerHaptic()
     {
         if(_isPaused) return;
-
-        Debug.Log("ActivateTeleporterTimerHaptic");
         _useTeleporterTimerHaptic = true;
         PlayTeleporterTimerHapticServerRpc(2f);
     }
@@ -332,15 +330,11 @@ public class HapticManager : NetworkBehaviour
     private void PlayTeleporterTimerHapticServerRpc(float _delay)
     {
         if(_isPaused) return;
-
-        Debug.Log("PlayTeleporterTimerHapticServerRpc");
         StartCoroutine(PlayTeleporterTimerHaptic(_delay));
     }
 
     private IEnumerator PlayTeleporterTimerHaptic(float _delay)
     {
-        Debug.Log("PlayTeleporterTimerHaptic: " + _delay);
-
         teleporterTimerHapticSource.enabled = true;
         teleporterTimerHapticSource.Stop();
         teleporterTimerHapticSource.SourceIntensity = _teleportIntensity;
@@ -353,12 +347,9 @@ public class HapticManager : NetworkBehaviour
 
     private void DeactivateTeleporterTimerHaptic()
     {
-        Debug.Log("DeactivateTeleporterTimerHaptic");
-
         _useTeleporterTimerHaptic = false;
         teleporterTimerHapticSource.Stop();
         teleporterTimerHapticSource.enabled = false;
-        
     }
 
 

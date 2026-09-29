@@ -189,7 +189,10 @@ public class TeleportManager : NetworkBehaviour
     {        
         EventsManager.TogglePCTrigger(false);
 
-        if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, -1, false);
+        if(tutorialTeleportCount == 1)
+        {
+            EventsManager.LookAtPlayer(-1, -1, false);
+        }
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
@@ -440,7 +443,7 @@ public class TeleportManager : NetworkBehaviour
 
         //If all collectables are collected, then the teleport pad's bars are removed, and an event is called to inform other scripts about the PCPlayer's progress
         if(collectableIndicators.Length <= _collectablePoints || _requiresOnlyOneCollectable)
-        {            
+        {        
             _barList = null;
             _isEverythingCollected = true;
             EventsManager.EverythingCollected();
@@ -451,10 +454,11 @@ public class TeleportManager : NetworkBehaviour
     //This resets the latest collectable (to be used when all collectables need to be reset)
     private void RemoveCollectable()
     {
-        if(_collectablePoints > 0)
+        _collectablePoints = 0;
+
+        for(int i = 0; i < collectableIndicators.Length; i++)
         {
-            _collectablePoints--;
-            collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
+            collectableIndicators[i].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));    
         }
     }
 }

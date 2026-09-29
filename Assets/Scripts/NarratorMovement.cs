@@ -190,7 +190,6 @@ public class NarratorMovement : NetworkBehaviour
                 if(_moveTarget != null)
                 {
                     _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
-                    if(Vector3.Distance(_moveTarget.position, this.transform.position) >= 10f) StartCoroutine(DisableCollision(0.4f));
                 }
                 break;
             case 1:
@@ -207,9 +206,17 @@ public class NarratorMovement : NetworkBehaviour
                 if(_moveTarget != null)
                 {
                     _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
-                    if(Vector3.Distance(_moveTarget.position, this.transform.position) >= 10f) StartCoroutine(DisableCollision(0.4f));
                 }
                 break;
+        }
+
+        if(_moveTarget != null)
+        {
+            _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+            if(_distance >= 10f)
+            {
+                StartCoroutine(DisableCollision(_moveTarget.position, this.transform.position));
+            }
         }
         
         switch(_specificViewPoint)
@@ -256,7 +263,7 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    IEnumerator ChangeFocus(float delay)
+    IEnumerator ChangeFocus(float _delay)
     {
         this.GetComponent<Collider>().enabled = true;
         _particle.Stop();
@@ -283,7 +290,7 @@ public class NarratorMovement : NetworkBehaviour
 
         StartCoroutine(CheckVelocityDelay(1f));
 
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(_delay);
 
         if(_lookAround) StartCoroutine(ChangeFocus(UnityEngine.Random.Range(minFocusTime, maxFocusTime)));
     }
@@ -352,7 +359,10 @@ public class NarratorMovement : NetworkBehaviour
 
             EventsManager.NarratorStopped();
 
-            if(!_stayWithPlayer) LookAtPlayerRpc(-1, -1, false);
+            if(!_stayWithPlayer)
+            {
+                LookAtPlayerRpc(-1, -1, false);
+            }
         }
     }
 
@@ -431,7 +441,7 @@ public class NarratorMovement : NetworkBehaviour
 
                 if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity)
                 {
-                    StartCoroutine(DisableCollision(0.4f));
+                    StartCoroutine(DisableCollision(_moveTarget.position, this.transform.position));
                 }
             }
             else if(_distance < 6f)
@@ -455,24 +465,33 @@ public class NarratorMovement : NetworkBehaviour
         _prevDistance = _distance;
     }
 
-    private IEnumerator DisableCollision(float delay)
+    private IEnumerator DisableCollision(Vector3 _moveTargetPos, Vector3 _currPos)
     {
+        _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+        float _originalDistance = _distance;
+        Debug.Log("_originalDistance: " + _originalDistance);
+
         _canCollide = false;
         this.GetComponent<Collider>().enabled = false;
         _particle.Play();
 
-        yield return new WaitForSeconds(delay);
+        // yield return new WaitForSeconds(_delay);
+        while(_distance > _originalDistance * 0.75f)
+        {      
+            Debug.Log("curr _distance: " + _distance);
+            yield return null;
+        }
 
         _canCollide = true;
         this.GetComponent<Collider>().enabled = true;
         _particle.Stop();
     }
 
-    private IEnumerator CheckVelocityDelay(float delay)
+    private IEnumerator CheckVelocityDelay(float _delay)
     {
         _canCheckVelocity = false;
 
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSeconds(_delay);
 
         _canCheckVelocity = true;
     }
