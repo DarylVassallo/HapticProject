@@ -421,8 +421,11 @@ public class PlotManager : NetworkBehaviour
 
         foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
         {
+            Debug.Log("child 1: " + child);
             if (child.gameObject.layer == LayerMask.NameToLayer("VRCamera"))
             {
+                Debug.Log("child 2: " + child);
+
                 vrPlayerCamera = child;
                 vrPlayerCameraCover = vrPlayerCamera.GetChild(0).GetComponent<Renderer>().material;
 
@@ -447,6 +450,7 @@ public class PlotManager : NetworkBehaviour
 
     IEnumerator FadeVRPlayerIntoGame(float _delay)
     {
+        Debug.Log("FadeVRPlayerIntoGame");
         float elapsed = 0f;
 
         Color colour = vrPlayerCameraCover.color;
