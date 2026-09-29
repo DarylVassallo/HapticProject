@@ -548,7 +548,7 @@ public class NarratorMovement : NetworkBehaviour
 
         float decibel = GetDecibel(spectrum, 16f);
 
-        ChangeEyeRingColourRpc(decibel);
+        if(_isInNetwork) ChangeEyeRingColourRpc(decibel);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
