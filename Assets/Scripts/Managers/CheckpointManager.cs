@@ -206,8 +206,6 @@ public class CheckpointManager : NetworkBehaviour
 
         if(_isInNetwork) 
         {
-            EventsManager.GameOver(false);
-
             EventsManager.DestroyAllEnemies();
 
             //If the PC Player has not completed the tutorial, then tutorial audio cues are reset
@@ -235,7 +233,10 @@ public class CheckpointManager : NetworkBehaviour
                 //The PC Player's health and position are reset
                 EventsManager.ResetHealth(_pcPlayer);
                 _pcPlayer.transform.position = currentCheckpoint.position;
+                Debug.Log("currentCheckpoint: " + currentCheckpoint);
             }
+
+            EventsManager.GameOver(false);
         }
     }
 
