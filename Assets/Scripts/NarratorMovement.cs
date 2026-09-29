@@ -168,6 +168,7 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void LookAtPlayerServerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
+        Debug.Log("LookAtPlayerServerRpc: _playerNum: " + _playerNum + " : _specificViewPoint : " + _specificViewPoint + " : _stay: " + _stay);
         bool _showVision = false;
 
         switch(_playerNum)
