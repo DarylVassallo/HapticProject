@@ -235,8 +235,15 @@ public class CheckpointManager : NetworkBehaviour
             _pcPlayer.transform.position = currentCheckpoint.position;
             Debug.Log("currentCheckpoint: " + currentCheckpoint);
 
-            EventsManager.GameOver(false);
+            StartCoroutine(ResumeGameplay(0.1f));
         }
+    }
+
+    IEnumerator ResumeGameplay(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+
+        EventsManager.GameOver(false);       
     }
 
     private void PlayMainMenuLevel()
