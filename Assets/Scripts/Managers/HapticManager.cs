@@ -94,7 +94,7 @@ public class HapticManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnToggleAll += TogglePause;
+        EventsManager.OnToggleAll += TogglePauseRpc;
         EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
 
         EventsManager.OnCreatedVRPlayer += CreatedVRPlayer;
@@ -103,31 +103,31 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnUseBridgeHaptic += UseBridgeHapticRpc;
         EventsManager.OnUseRopeHaptic += UseRopeHaptic;
 
-        EventsManager.OnUseTeleportBarHaptic += UseTeleporterTimerHaptic;
+        EventsManager.OnUseTeleportBarHaptic += UseTeleporterTimerHapticRpc;
         EventsManager.OnTeleporterTransitionHaptic += TeleporterTransitionHapticRpc;
 
         EventsManager.OnUseButtonHaptic += UseButtonHapticRpc;
         EventsManager.OnUseAllButtonHaptic += UseAllButtonHapticRpc;
 
         EventsManager.OnIsNarratorSpeaking += IsNarratorSpeaking;
-        EventsManager.OnActivateTeleporterTimerHaptic += ActivateTeleporterTimerHaptic;
+        EventsManager.OnActivateTeleporterTimerHaptic += ActivateTeleporterTimerHapticRpc;
 
-        EventsManager.OnStartWithInstantTeleport += DeactivateTeleporterTimerHaptic;
-        EventsManager.OnEverythingCollected += DeactivateTeleporterTimerHaptic;
+        EventsManager.OnStartWithInstantTeleport += DeactivateTeleporterTimerHapticRpc;
+        EventsManager.OnEverythingCollected += DeactivateTeleporterTimerHapticRpc;
 
         EventsManager.OnChangeNarratorHaptic += ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic += PlayNarratorHapticRpc;
         EventsManager.OnStopNarratorHaptic += StopNarratorHapticRpc;
 
-        EventsManager.OnChangeHealthHaptic += ChangeHealthHaptic;
+        EventsManager.OnChangeHealthHaptic += ChangeHealthHapticRpc;
 
         EventsManager.OnPlayStoneButtonHaptic += PlayStoneButtonHaptic;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnToggleAll -= TogglePause;
+        EventsManager.OnToggleAll -= TogglePauseRpc;
         EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
 
         EventsManager.OnCreatedVRPlayer -= CreatedVRPlayer;
@@ -136,24 +136,24 @@ public class HapticManager : NetworkBehaviour
         EventsManager.OnUseBridgeHaptic -= UseBridgeHapticRpc;
         EventsManager.OnUseRopeHaptic -= UseRopeHaptic;
 
-        EventsManager.OnUseTeleportBarHaptic -= UseTeleporterTimerHaptic;
+        EventsManager.OnUseTeleportBarHaptic -= UseTeleporterTimerHapticRpc;
         EventsManager.OnTeleporterTransitionHaptic -= TeleporterTransitionHapticRpc;
 
         EventsManager.OnUseButtonHaptic -= UseButtonHapticRpc;
         EventsManager.OnUseAllButtonHaptic -= UseAllButtonHapticRpc;
 
         EventsManager.OnIsNarratorSpeaking -= IsNarratorSpeaking;
-        EventsManager.OnActivateTeleporterTimerHaptic -= ActivateTeleporterTimerHaptic;
+        EventsManager.OnActivateTeleporterTimerHaptic -= ActivateTeleporterTimerHapticRpc;
 
-        EventsManager.OnStartWithInstantTeleport -= DeactivateTeleporterTimerHaptic;
-        EventsManager.OnEverythingCollected -= DeactivateTeleporterTimerHaptic;
+        EventsManager.OnStartWithInstantTeleport -= DeactivateTeleporterTimerHapticRpc;
+        EventsManager.OnEverythingCollected -= DeactivateTeleporterTimerHapticRpc;
 
         EventsManager.OnChangeNarratorHaptic -= ChangeNarratorHaptic;
 
         EventsManager.OnPlayNarratorHaptic -= PlayNarratorHapticRpc;
         EventsManager.OnStopNarratorHaptic -= StopNarratorHapticRpc;
 
-        EventsManager.OnChangeHealthHaptic -= ChangeHealthHaptic;
+        EventsManager.OnChangeHealthHaptic -= ChangeHealthHapticRpc;
 
         EventsManager.OnPlayStoneButtonHaptic -= PlayStoneButtonHaptic;
     }
@@ -166,7 +166,7 @@ public class HapticManager : NetworkBehaviour
         if(_toggle)
         {
             teleporterTimerHapticSource.enabled = _toggle;
-            ActivateTeleporterTimerHaptic();
+            if(IsOwner) ActivateTeleporterTimerHapticRpc();
         }else{
             teleporterTimerHapticSource.Stop();
             teleporterTimerHapticSource.enabled = _toggle;
@@ -187,7 +187,8 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
-    private void TogglePause(bool _toggle)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void TogglePauseRpc(bool _toggle)
     {
         _isPaused = !_toggle;
         ToggleAllAudioHapticSources(_isPaused);
@@ -241,14 +242,14 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
-    private void ChangeHealthHaptic(float _newHealth)
+    private void ChangeHealthHapticRpc(float _newHealth)
     {
         _hapticHealth = ((_newHealth / 100f));
         float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
 
         if(!_playingHealthHaptic)
         { 
-            PlayHealthHapticRpc(_healthDelay);
+            if(IsOwner) PlayHealthHapticRpc(_healthDelay);
         }
     }
 
@@ -317,16 +318,19 @@ public class HapticManager : NetworkBehaviour
         _controller.SendHapticImpulse(0, _delay);
     }
 
-    private void UseTeleporterTimerHaptic(float _newIntensity)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void UseTeleporterTimerHapticRpc(float _newIntensity)
     {
         if(_isNarrator || !_useTeleporterTimerHaptic || _isPaused) return;
         _teleportIntensity = _newIntensity;
     }
-    private void ActivateTeleporterTimerHaptic()
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ActivateTeleporterTimerHapticRpc()
     {
         if(_isPaused) return;
         _useTeleporterTimerHaptic = true;
-        PlayTeleporterTimerHapticRpc(2f);
+        if(IsOwner) PlayTeleporterTimerHapticRpc(2f);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -345,10 +349,11 @@ public class HapticManager : NetworkBehaviour
 
         yield return new WaitForSeconds(_delay);
 
-        if(_useTeleporterTimerHaptic) PlayTeleporterTimerHapticRpc(_delay);
+        if(_useTeleporterTimerHaptic && IsOwner) PlayTeleporterTimerHapticRpc(_delay);
     }
 
-    private void DeactivateTeleporterTimerHaptic()
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void DeactivateTeleporterTimerHapticRpc()
     {
         _useTeleporterTimerHaptic = false;
         teleporterTimerHapticSource.Stop();
