@@ -2,8 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 using UnityEngine.UI;
+using Unity.Netcode;
 
-public class StoryBoard : MonoBehaviour
+public class StoryBoard : NetworkBehaviour
 {
     private bool _playStoryBoard;
 
@@ -62,6 +63,12 @@ public class StoryBoard : MonoBehaviour
         vrStoryBoardParent.gameObject.SetActive(true);
 
         _playStoryBoard = true;
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ShowStoryRpc(float _delay, int _storyNum)
+    {
+        StartCoroutine(ShowStory(1f, _currentStory));   
     }
 
     IEnumerator ShowStory(float _delay, int _storyNum)
