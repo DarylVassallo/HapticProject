@@ -228,13 +228,12 @@ public class CheckpointManager : NetworkBehaviour
                 EventsManager.ResetTeleportPads();
             }
 
-            if(_pcPlayer != null)
-            {
-                //The PC Player's health and position are reset
-                EventsManager.ResetHealth(_pcPlayer);
-                _pcPlayer.transform.position = currentCheckpoint.position;
-                Debug.Log("currentCheckpoint: " + currentCheckpoint);
-            }
+            if(_pcPlayer == null) _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
+
+            //The PC Player's health and position are reset
+            EventsManager.ResetHealth(_pcPlayer);
+            _pcPlayer.transform.position = currentCheckpoint.position;
+            Debug.Log("currentCheckpoint: " + currentCheckpoint);
 
             EventsManager.GameOver(false);
         }
