@@ -355,7 +355,7 @@ public class NarratorMovement : NetworkBehaviour
 
         if(_moveTarget != null && IsOwner) MovementServerRpc();
         RotateRings();
-        AudioEyeRingServerRpc();
+        if(_isInNetwork) AudioEyeRingServerRpc();
 
         if(!_isPlaying)
         {
