@@ -255,7 +255,7 @@ public class PlotManager : NetworkBehaviour
             elapsed += Time.deltaTime;
                 
             float _newScale = Mathf.Lerp(
-                20f,
+                10f,
                 4f,
                 1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
             );
