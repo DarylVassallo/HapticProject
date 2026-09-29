@@ -35,6 +35,9 @@ public class PlotManager : NetworkBehaviour
 
     [Header("VRWalls")]
     [SerializeField] private Animator _vrWallsAnimator;
+
+    private bool _createdVRPlayer;
+    private bool _createdPCPlayer;
     
 
     private void Awake()
@@ -54,8 +57,9 @@ public class PlotManager : NetworkBehaviour
     
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData;
+        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
 
         EventsManager.OnTriggerPCChargeTutorial += TriggerPCChargeTutorial;
         EventsManager.OnTriggerPCInteractTutorial += TriggerPCInteractTutorial;
@@ -83,8 +87,9 @@ public class PlotManager : NetworkBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
+        EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
 
         EventsManager.OnTriggerPCChargeTutorial -= TriggerPCChargeTutorial;
         EventsManager.OnTriggerPCInteractTutorial -= TriggerPCInteractTutorial;
@@ -367,6 +372,8 @@ public class PlotManager : NetworkBehaviour
 
     private void GetVRPlayerData()
     {
+        if(GameObject.FindGameObjectWithTag("VRPlayer") != null) _createdVRPlayer = true;
+
         if(_skipTutorial)
         {
             foreach (Transform child in GameObject.FindGameObjectWithTag("VRPlayer").GetComponentsInChildren<Transform>())
@@ -385,17 +392,21 @@ public class PlotManager : NetworkBehaviour
 
             UncoverVRPlayer();
         }
-        else
-        {
-            VRIntroEvent();
-        }
     }
 
     private void GetPCPlayerData()
     {
-        Debug.Log("GetPCPlayerData");
-        EventsManager.AddPCPlayerBody();
+        if(GameObject.FindGameObjectWithTag("VRPlayer") != null) _createdVRPlayer = true;
+        if(GameObject.FindGameObjectWithTag("PCPlayer") != null) _createdPCPlayer = true;
+
+        if(_createdVRPlayer && _createdPCPlayer) VRIntroEvent();
     }
+
+    // private void GetPCPlayerData()
+    // {
+    //     Debug.Log("GetPCPlayerData");
+    //     EventsManager.AddPCPlayerBody();
+    // }
 
     private void VRIntroEvent()
     {
