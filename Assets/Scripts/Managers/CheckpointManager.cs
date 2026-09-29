@@ -206,8 +206,8 @@ public class CheckpointManager : NetworkBehaviour
 
         if(_isInNetwork) 
         {
-            EventsManage.GameOver(false);
-            
+            EventsManager.GameOver(false);
+
             EventsManager.DestroyAllEnemies();
 
             //If the PC Player has not completed the tutorial, then tutorial audio cues are reset
