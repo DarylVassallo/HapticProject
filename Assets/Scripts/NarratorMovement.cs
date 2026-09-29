@@ -213,9 +213,9 @@ public class NarratorMovement : NetworkBehaviour
         if(_moveTarget != null)
         {
             _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
-            if(_distance >= 10f)
+            if(_distance >= 50f)
             {
-                StartCoroutine(DisableCollision(_moveTarget.position));
+                StartCoroutine(DisableCollision());
             }
         }
         
@@ -441,7 +441,7 @@ public class NarratorMovement : NetworkBehaviour
 
                 if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity)
                 {
-                    StartCoroutine(DisableCollision(_moveTarget.position));
+                    StartCoroutine(DisableCollision());
                 }
             }
             else if(_distance < 6f)
@@ -465,22 +465,25 @@ public class NarratorMovement : NetworkBehaviour
         _prevDistance = _distance;
     }
 
-    private IEnumerator DisableCollision(Vector3 _moveTargetPos)
+    private IEnumerator DisableCollision()
     {
-        _distance = Vector3.Distance(_moveTargetPos, this.transform.position);
-        float _originalDistance = _distance;
-        Debug.Log("_originalDistance: " + _originalDistance);
+        if(_moveTarget != null)
+        {
+            _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+            float _originalDistance = _distance;
+            Debug.Log("_originalDistance: " + _originalDistance);
 
-        _canCollide = false;
-        this.GetComponent<Collider>().enabled = false;
-        _particle.Play();
+            _canCollide = false;
+            this.GetComponent<Collider>().enabled = false;
+            _particle.Play();
 
-        // yield return new WaitForSeconds(_delay);
-        while(_distance > _originalDistance * 0.75f)
-        {      
-            _distance = Vector3.Distance(_moveTargetPos, this.transform.position);
-            Debug.Log("curr _distance: " + _distance);
-            yield return null;
+            // yield return new WaitForSeconds(_delay);
+            while(_distance > _originalDistance * 0.5f)
+            {      
+                _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                Debug.Log("curr _distance: " + _distance);
+                yield return null;
+            }
         }
 
         _canCollide = true;
