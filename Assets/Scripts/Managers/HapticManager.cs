@@ -247,9 +247,9 @@ public class HapticManager : NetworkBehaviour
         _hapticHealth = ((_newHealth / 100f));
         float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
 
-        if(!_playingHealthHaptic)
+        if(IsOwner && !_playingHealthHaptic)
         { 
-            if(IsOwner) PlayHealthHapticRpc(_healthDelay);
+            PlayHealthHapticRpc(_healthDelay);
         }
     }
 
@@ -478,6 +478,8 @@ public class HapticManager : NetworkBehaviour
 
     private IEnumerator PlayHealthHaptic(float _delay)
     {
+        Debug.Log("PlayHealthHaptic: " + _delay);
+        
         _playingHealthHaptic = true;
 
         pcLeftDamageHapticSource.enabled = true;

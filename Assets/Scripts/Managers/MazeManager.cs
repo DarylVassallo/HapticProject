@@ -378,13 +378,13 @@ public class MazeManager : NetworkBehaviour
     private void DeactivateAllServerRpc()
     {
         isSpinWheelActive.Value = false;
-        DeactivateObjectLight(spinWheelObject);
+        hasSpinWheelBeenUsed.Value = false;
 
         isHealthBallActive.Value = false;
-        DeactivateObjectLight(healthBallObject);
+        hasHealthBallBeenUsed.Value = false;
 
         isDefenseButtonActive.Value = false;
-        DeactivateObjectLight(defenseButtonObject);
+        hasDefenseButtonBeenUsed.Value = false;
 
         TrueResetButtons();
     }
@@ -395,19 +395,39 @@ public class MazeManager : NetworkBehaviour
     {
         if (!current) return;
 
-        switch(interactiveObject)
+        if(current)
         {
-            case InteractiveObject.SpinWheel:
-                ActivateObjectLight(spinWheelObject);
-                break;
+            switch(interactiveObject)
+            {
+                case InteractiveObject.SpinWheel:
+                    ActivateObjectLight(spinWheelObject);
+                    break;
 
-            case InteractiveObject.HealthBall:
-                ActivateObjectLight(healthBallObject);
-                break;
+                case InteractiveObject.HealthBall:
+                    ActivateObjectLight(healthBallObject);
+                    break;
 
-            case InteractiveObject.DefenseButton:
-                ActivateObjectLight(defenseButtonObject);
-                break;
+                case InteractiveObject.DefenseButton:
+                    ActivateObjectLight(defenseButtonObject);
+                    break;
+            }
+        }
+        else
+        {
+            switch(interactiveObject)
+            {
+                case InteractiveObject.SpinWheel:
+                    DeactivateObjectLight(spinWheelObject);
+                    break;
+
+                case InteractiveObject.HealthBall:
+                    DeactivateObjectLight(healthBallObject);
+                    break;
+
+                case InteractiveObject.DefenseButton:
+                    DeactivateObjectLight(defenseButtonObject);
+                    break;
+            }
         }
     }
 
@@ -447,36 +467,45 @@ public class MazeManager : NetworkBehaviour
     private IEnumerator ObjectLightFlicker(bool isOn, Material objectLight, Transform interactiveObject)
     {
         bool hasBeenUsed = false;
+        bool isActive = false;
 
         yield return new WaitForSeconds(1f);
 
         if(interactiveObject == spinWheelObject)
         {
             hasBeenUsed = hasSpinWheelBeenUsed.Value;
+            isActive = isSpinWheelActive.Value;
         }else if(interactiveObject == healthBallObject)
         {
             hasBeenUsed = hasHealthBallBeenUsed.Value;
+            isActive = isHealthBallActive.Value;
         }else if(interactiveObject == defenseButtonObject)
         {
             hasBeenUsed = hasDefenseButtonBeenUsed.Value;
+            isActive = isDefenseButtonActive.Value;
         }
 
-        if(!hasBeenUsed)
+        if(isActive)
         {
-            if(isOn)
+            if(!hasBeenUsed)
             {
-                objectLight.SetColor("_BaseColor", Color.red);
-                StartCoroutine(ObjectLightFlicker(false, objectLight, interactiveObject));
-            }
-            else
-            {
+                if(isOn)
+                {
+                    objectLight.SetColor("_BaseColor", Color.red);
+                    StartCoroutine(ObjectLightFlicker(false, objectLight, interactiveObject));
+                }
+                else
+                {
+                    objectLight.SetColor("_BaseColor", Color.green);
+                    StartCoroutine(ObjectLightFlicker(true, objectLight, interactiveObject));
+                }
+            }else{
                 objectLight.SetColor("_BaseColor", Color.green);
-                StartCoroutine(ObjectLightFlicker(true, objectLight, interactiveObject));
             }
         }
         else
         {
-            objectLight.SetColor("_BaseColor", Color.green);
+            objectLight.SetColor("_BaseColor", Color.red);
         }
     }
 

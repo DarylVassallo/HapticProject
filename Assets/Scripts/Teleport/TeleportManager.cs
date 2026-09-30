@@ -201,6 +201,7 @@ public class TeleportManager : NetworkBehaviour
 
             if(!IsOwner)
             {
+                Debug.Log("tutorialTeleportPads[" + tutorialTeleportCount + "]: " + tutorialTeleportPads[tutorialTeleportCount]);
                 _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
                 _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
             }
