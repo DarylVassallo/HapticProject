@@ -1,9 +1,23 @@
 !Game Developer
 Daryl Luke Vassallo
 !Audio Used
-Static 2 (Grittier) by _MokeyMokey -- https://freesound.org/s/836187/ -- License: Creative Commons 0
-Ghost Whispers by IENBA -- https://freesound.org/s/656439/ -- License: Creative Commons 0
-Whispering Midnight.wav by balloonhead -- https://freesound.org/s/362503/ -- License: Creative Commons 0
+Typewriter Button SLIDE 1A.wav by mincedbeats -- https://freesound.org/s/433600/ -- License: Creative Commons 0
+Mysterious Magical Bell Flourish by SkySpeira -- https://freesound.org/s/848847/ -- License: Creative Commons 0
+crushed-suspense-001 by Johnmode -- https://freesound.org/s/818855/ -- License: Creative Commons 0
+65421.wav by BuytheField -- https://freesound.org/s/506168/ -- License: Creative Commons 0
+Fish - Cinematic soundtrack background music.wav by szegvari -- https://freesound.org/s/593910/ -- License: Creative Commons 0
+Game_Background_Dark_Music.mp3 by iamnexxed -- https://freesound.org/s/480882/ -- License: Creative Commons 0
+Rocks.wav by adamgryu -- https://freesound.org/s/336023/ -- License: Creative Commons 0
+rubbed rust.wav by bruno.auzet -- https://freesound.org/s/525025/ -- License: Creative Commons 0
+Footsteps - Stone, Rock, Concrete, Cement by SecureSubset -- https://freesound.org/s/813622/ -- License: Creative Commons 0
+Menu Button (Stone) by Bratish -- https://freesound.org/s/503274/ -- License: Creative Commons 0
+Resonant Model Gongs.aif by milo -- https://freesound.org/s/161288/ -- License: Creative Commons 0
+cymbal bass 2 by Logicogonist -- https://freesound.org/s/795504/ -- License: Creative Commons 0
+Smashed/demolished brick wall crumbling/caving in by Squirrel_404 -- https://freesound.org/s/829103/ -- License: Creative Commons 0
+Sword stab 2 by ihitokage -- https://freesound.org/s/395373/ -- License: Creative Commons 0
+Bullet Blood 3 by JustInvoke -- https://freesound.org/s/138480/ -- License: Creative Commons 0
+gear-spinning-loop by newagesoup -- https://freesound.org/s/336328/ -- License: Creative Commons 0
+Hand Crank for Rechargable Flashlight by iateallofthecheese -- https://freesound.org/s/774919/ -- License: Creative Commons 0
 !Tutorials Used
 How to reveal Objects Under Light In Unity 3D by Just a Mom in Canada -- https://www.youtube.com/@Justamombyrk
 How to Make a Simple Weeping Angel AI in Unity - Unity C# Tutorial by Omogonix -- https://www.youtube.com/@Omogonix
