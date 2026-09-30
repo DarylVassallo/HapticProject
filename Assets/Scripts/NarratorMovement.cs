@@ -553,6 +553,7 @@ public class NarratorMovement : NetworkBehaviour
 
         if(_isInNetwork)
         {
+            if(decibel > 0f) Debug.Log("2 decibel: " + decibel);
             ChangeEyeRingColourRpc(decibel);
         }
     }
@@ -560,7 +561,7 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeEyeRingColourRpc(float decibel)
     {
-        if(decibel > 0f) Debug.Log("2 decibel: " + decibel);
+        if(decibel > 0f) Debug.Log("3 decibel: " + decibel);
         eyeRingRenderer.material.SetColor(
             "_BaseColor",
             Color.Lerp(
