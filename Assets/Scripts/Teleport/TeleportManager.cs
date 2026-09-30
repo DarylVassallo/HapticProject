@@ -269,7 +269,7 @@ public class TeleportManager : NetworkBehaviour
             {
                 elapsed += Time.deltaTime;
 
-                _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
+                // _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
                 
                 if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
                 {
