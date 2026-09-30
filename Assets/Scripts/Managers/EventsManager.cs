@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
 
+using Interhaptics;
+using Interhaptics.Utils;
+
 public class EventsManager : MonoBehaviour
 {
     //Debug Events=============================================
@@ -15,6 +18,9 @@ public class EventsManager : MonoBehaviour
     public static event Action OnSkipTutorial;
     public static void SkipTutorial() => OnSkipTutorial?.Invoke();
 
+    public static event Action OnStartWithPlayerIcon;
+    public static void StartWithPlayerIcon() => OnStartWithPlayerIcon?.Invoke();
+
     public static event Action OnActivateSpinWheel;
     public static void ActivateSpinWheel() => OnActivateSpinWheel?.Invoke();
     public static event Action OnActivateHealthBall;
@@ -26,11 +32,14 @@ public class EventsManager : MonoBehaviour
 
     public static event Action OnDisableEnemySpawning;
     public static void DisableEnemySpawning() => OnDisableEnemySpawning?.Invoke();
-
+    
+    public static event Action OnStartWithInstantTeleport;
+    public static void StartWithInstantTeleport() => OnStartWithInstantTeleport?.Invoke();
     public static event Action OnDisableTeleportChange;
     public static void DisableTeleportChange() => OnDisableTeleportChange?.Invoke();
 
-
+    public static event Action OnRequireOnlyOneCollectable;
+    public static void RequireOnlyOneCollectable() => OnRequireOnlyOneCollectable?.Invoke();
 
 
     //Network Events=============================================
@@ -57,6 +66,59 @@ public class EventsManager : MonoBehaviour
 
 
 
+    //BackgroundMusic Events=============================================
+    public static event Action OnPlayFirstSectionMusic;
+    public static void PlayFirstSectionMusic() => OnPlayFirstSectionMusic?.Invoke();
+    public static event Action OnPlaySecondSectionMusic;
+    public static void PlaySecondSectionMusic() => OnPlaySecondSectionMusic?.Invoke();
+    public static event Action OnPlayThirdSectionMusic;
+    public static void PlayThirdSectionMusic() => OnPlayThirdSectionMusic?.Invoke();
+    public static event Action OnPlayFourthSectionMusic;
+    public static void PlayFourthSectionMusic() => OnPlayFourthSectionMusic?.Invoke();
+
+
+
+
+
+    //GameMenu Events=============================================
+    public static event Action OnPlayGameLevel;
+    public static void PlayGameLevel() => OnPlayGameLevel?.Invoke();
+    public static event Action OnPlayMainMenuLevel;
+    public static void PlayMainMenuLevel() => OnPlayMainMenuLevel?.Invoke();
+
+    public static event Action OnChangeLanguageToEnglish;
+    public static void ChangeLanguageToEnglish() => OnChangeLanguageToEnglish?.Invoke();
+    public static event Action OnChangeLanguageToFrench;
+    public static void ChangeLanguageToFrench() => OnChangeLanguageToFrench?.Invoke();
+    
+    public static event Action<bool> OnCancel;
+    public static void Cancel(bool _toggle) => OnCancel?.Invoke(_toggle);
+    public static event Action<bool> OnSettingsMenu;
+    public static void SettingsMenu(bool _toggle) => OnSettingsMenu?.Invoke(_toggle);
+
+    public static event Action<bool> OnGameOver;
+    public static void GameOver(bool _toggle) => OnGameOver?.Invoke(_toggle);
+    public static event Action<bool> OnWinGame;
+    public static void WinGame(bool _toggle) => OnWinGame?.Invoke(_toggle);
+    public static event Action<bool> OnToggleAll;
+    public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
+    public static event Action<string, bool> OnToggleRestriction;
+    public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
+    // public static event Action<bool> OnFreezePCPlayer;
+    // public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
+
+
+    public static event Action<bool> OnEnteredTemple;
+    public static void EnteredTemple(bool _toggle) => OnEnteredTemple?.Invoke(_toggle);
+    public static event Action<float> OnChangeHealthBar;
+    public static void ChangeHealthBar(float _newHealth) => OnChangeHealthBar?.Invoke(_newHealth);
+    public static event Action<float> OnChangeChargeBar;
+    public static void ChangeChargeBar(float _newCharge) => OnChangeChargeBar?.Invoke(_newCharge);
+
+
+
+
+
     //MainMenu Events=============================================
     public static event Action OnChosePlayer;
     public static void ChosePlayer() => OnChosePlayer?.Invoke();
@@ -77,20 +139,10 @@ public class EventsManager : MonoBehaviour
     public static event Action<int> OnChangeLanguage;
     public static void ChangeLanguage(int _languageNum) => OnChangeLanguage?.Invoke(_languageNum);
 
+    public static event Action<float> OnReduceBackgroundMusic;
+    public static void ReduceBackgroundMusic(float _reducedAmount) => OnReduceBackgroundMusic?.Invoke(_reducedAmount);
 
-
-
-
-    //GameOver Events=============================================
-    public static event Action<bool> OnGameOver;
-    public static void GameOver(bool _toggle) => OnGameOver?.Invoke(_toggle);
-    public static event Action<bool> OnToggleAll;
-    public static void ToggleAll(bool _toggle) => OnToggleAll?.Invoke(_toggle);
-    public static event Action<string, bool> OnToggleRestriction;
-    public static void ToggleRestriction(string _restriction, bool _toggle) => OnToggleRestriction?.Invoke(_restriction, _toggle);
-
-    public static event Action<bool> OnFreezePCPlayer;
-    public static void FreezePCPlayer(bool _toggle) => OnFreezePCPlayer?.Invoke(_toggle);
+    
 
 
 
@@ -101,6 +153,8 @@ public class EventsManager : MonoBehaviour
     public static void DestroyAllEnemies() => OnDestroyAllEnemies?.Invoke();
     public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
     public static void IncreaseChanceOfSpawningEnemy(float _chance) => OnIncreaseChanceOfSpawningEnemy?.Invoke(_chance);
+    public static event Action<float> OnSetChanceOfSpawningEnemy;
+    public static void SetChanceOfSpawningEnemy(float _chance) => OnSetChanceOfSpawningEnemy?.Invoke(_chance);
     public static event Action<int> OnCreateRandomEnemy;
     public static void CreateRandomEnemy(int _enemyNum) => OnCreateRandomEnemy?.Invoke(_enemyNum);
     public static event Action<GameObject> OnRemoveEnemy;
@@ -157,8 +211,6 @@ public class EventsManager : MonoBehaviour
     //Health Events=============================================
     public static event Action<float> OnChangeHealthCamera;
     public static void ChangeHealthCamera(float _healthCameraIntensity) => OnChangeHealthCamera?.Invoke(_healthCameraIntensity);
-    public static event Action<float> OnChangeHealthBar;
-    public static void ChangeHealthBar(float _newHealth) => OnChangeHealthBar?.Invoke(_newHealth);
     public static event Action<GameObject, float> OnChangeHealthForEntity;
     public static void ChangeHealthForEntity(GameObject _entity, float _newHealth) => OnChangeHealthForEntity?.Invoke(_entity, _newHealth);
     public static event Action<GameObject, float> OnEntityChangedHealth;
@@ -167,14 +219,6 @@ public class EventsManager : MonoBehaviour
     public static void EntityKilled(GameObject _entity) => OnEntityKilled?.Invoke(_entity);
     public static event Action<Renderer, float> OnChangedEnemyOxidization;
     public static void ChangedEnemyOxidization(Renderer _rend, float _oxidization) => OnChangedEnemyOxidization?.Invoke(_rend, _oxidization);
-
-
-
-
-
-    //Charge Events=============================================
-    public static event Action<float> OnChangeChargeBar;
-    public static void ChangeChargeBar(float _newCharge) => OnChangeChargeBar?.Invoke(_newCharge);
 
 
 
@@ -240,6 +284,8 @@ public class EventsManager : MonoBehaviour
 
 
     //Respawn Events=============================================
+    public static event Action OnRespawn;
+    public static void Respawn() => OnRespawn?.Invoke();
     public static event Action<GameObject> OnObjectRespawned;
     public static void ObjectRespawned(GameObject _entity) => OnObjectRespawned?.Invoke(_entity);
 
@@ -267,7 +313,23 @@ public class EventsManager : MonoBehaviour
     public static event Action OnFirstActiveInteractiveObject;
     public static void FirstActiveInteractiveObject() => OnFirstActiveInteractiveObject?.Invoke();
     
+    public static event Action OnReachedFirstTeleporter;
+    public static void ReachedFirstTeleporter() => OnReachedFirstTeleporter?.Invoke();
+    public static event Action OnFirstCollectable;
+    public static void FirstCollectable() => OnFirstCollectable?.Invoke();
 
+    public static event Action OnUsedCrookedBridgeTeleporter;
+    public static void UsedCrookedBridgeTeleporter() => OnUsedCrookedBridgeTeleporter?.Invoke();
+    public static event Action OnCrookedBridgePCPlayerWaited;
+    public static void CrookedBridgePCPlayerWaited() => OnCrookedBridgePCPlayerWaited?.Invoke();
+
+    public static event Action OnReachedRotatingBridges;
+    public static void ReachedRotatingBridges() => OnReachedRotatingBridges?.Invoke();
+
+    public static event Action OnPCReachedEnd;
+    public static void PCReachedEnd() => OnPCReachedEnd?.Invoke();
+    public static event Action OnVRReachedEnd;
+    public static void VRReachedEnd() => OnVRReachedEnd?.Invoke();
 
 
 
@@ -300,12 +362,19 @@ public class EventsManager : MonoBehaviour
     public static void ActivateController(int controllerNum) => OnActivateController?.Invoke(controllerNum);
     public static event Action<int> OnDeactivateController;
     public static void DeactivateController(int controllerNum) => OnDeactivateController?.Invoke(controllerNum);
+    public static event Action OnUpdateVRFlashlight;
+    public static void UpdateVRFlashlight() => OnUpdateVRFlashlight?.Invoke();
 
 
 
 
 
     //PC Player Input Events=============================================
+    public static event Action<bool> OnTogglePCPlayerMovement;
+    public static void TogglePCPlayerMovement(bool _toggle) => OnTogglePCPlayerMovement?.Invoke(_toggle);
+    public static event Action<bool> OnTogglePCPlayerGravity;
+    public static void TogglePCPlayerGravity(bool _toggle) => OnTogglePCPlayerGravity?.Invoke(_toggle);
+    
     public static event Action<Vector2> OnMove;
     public static void Move(Vector2 movement) => OnMove?.Invoke(movement);
     public static event Action OnJump;
@@ -316,8 +385,6 @@ public class EventsManager : MonoBehaviour
     public static void Fire(InputAction.CallbackContext ctx) => OnFire?.Invoke(ctx);
     public static event Action OnFire2;
     public static void Fire2() => OnFire2?.Invoke();
-    public static event Action<bool> OnCancel;
-    public static void Cancel(bool _toggle) => OnCancel?.Invoke(_toggle);
 
     public static event Action<float> OnEntityChangedFlashlightRange;
     public static void EntityChangedFlashlightRange(float newFlashlightRange) => OnEntityChangedFlashlightRange?.Invoke(newFlashlightRange);
@@ -327,8 +394,8 @@ public class EventsManager : MonoBehaviour
 
 
     //NarratorManager Events=============================================
-    public static event Action<string, string, bool, bool> OnTriggerNarratorAudio;
-    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer, bool _stay) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer, _stay);
+    public static event Action<string, string, bool, int, bool> OnTriggerNarratorAudio;
+    public static void TriggerNarratorAudio(string _sectionName, string _audioName, bool _isVRPlayer, int _lookAt, bool _stay) => OnTriggerNarratorAudio?.Invoke(_sectionName, _audioName, _isVRPlayer, _lookAt, _stay);
     public static event Action OnNarratorStopped;
     public static void NarratorStopped() => OnNarratorStopped?.Invoke();
     public static event Action<bool> OnTogglePauseManagerAudio;
@@ -339,10 +406,10 @@ public class EventsManager : MonoBehaviour
     public static event Action OnUseFrenchNarrator;
     public static void UseFrenchNarrator() => OnUseFrenchNarrator?.Invoke();
 
-    public static event Action<int, bool> OnLookAtPlayer;
-    public static void LookAtPlayer(int _playerNum, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _stay);
-    public static event Action<AudioClip> OnNarratorSays;
-    public static void NarratorSays(AudioClip _clip) => OnNarratorSays?.Invoke(_clip);
+    public static event Action<int, int, bool> OnLookAtPlayer;
+    public static void LookAtPlayer(int _playerNum, int _lookAt, bool _stay) => OnLookAtPlayer?.Invoke(_playerNum, _lookAt, _stay);
+    public static event Action<AudioClip, AudioHapticSource> OnNarratorSays;
+    public static void NarratorSays(AudioClip _audioClip, AudioHapticSource _hapticSource) => OnNarratorSays?.Invoke(_audioClip, _hapticSource);
 
 
 
@@ -366,6 +433,57 @@ public class EventsManager : MonoBehaviour
 
 
     //Ending Events=============================================
-    public static event Action<bool> OnEnteredTemple;
-    public static void EnteredTemple(bool _toggle) => OnEnteredTemple?.Invoke(_toggle);
+
+
+
+
+
+    //StoryBoard Events=============================================
+    public static event Action OnStartStoryBoard;
+    public static void StartStoryBoard() => OnStartStoryBoard?.Invoke();
+
+
+
+
+
+    //Haptic Events=============================================
+    public static event Action<int> OnPingVRController;
+    public static void PingVRController(int _controllerNum) => OnPingVRController?.Invoke(_controllerNum);
+    public static event Action<bool> OnUseEnemyHaptic;
+    public static void UseEnemyHaptic(bool _useHaptic) => OnUseEnemyHaptic?.Invoke(_useHaptic);
+    public static event Action<float> OnUseBridgeHaptic;
+    public static void UseBridgeHaptic(float _bridgeMovementAmount) => OnUseBridgeHaptic?.Invoke(_bridgeMovementAmount);
+    public static event Action<int, float> OnUseRopeHaptic;
+    public static void UseRopeHaptic(int _controllerNum, float _ropeDistance) => OnUseRopeHaptic?.Invoke(_controllerNum, _ropeDistance);
+
+    public static event Action<float> OnUseTeleportBarHaptic;
+    public static void UseTeleportBarHaptic(float _intensity) => OnUseTeleportBarHaptic?.Invoke(_intensity);
+    public static event Action<int> OnUseButtonHaptic;
+    public static void UseButtonHaptic(int _buttonNum) => OnUseButtonHaptic?.Invoke(_buttonNum);
+    public static event Action OnUseAllButtonHaptic;
+    public static void UseAllButtonHaptic() => OnUseAllButtonHaptic?.Invoke();
+
+    public static event Action<bool> OnIsNarratorSpeaking;
+    public static void IsNarratorSpeaking(bool _isNarratorSpeaking) => OnIsNarratorSpeaking?.Invoke(_isNarratorSpeaking);
+
+    public static event Action OnActivateTeleporterTimerHaptic;
+    public static void ActivateTeleporterTimerHaptic() => OnActivateTeleporterTimerHaptic?.Invoke();
+    public static event Action<float> OnTeleporterTransitionHaptic;
+    public static void TeleporterTransitionHaptic(float _newIntensity) => OnTeleporterTransitionHaptic?.Invoke(_newIntensity);
+
+    public static event Action<float> OnChangeHealthHaptic;
+    public static void ChangeHealthHaptic(float _newHealth) => OnChangeHealthHaptic?.Invoke(_newHealth);
+
+    public static event Action<AudioHapticSource> OnChangeNarratorHaptic;
+    public static void ChangeNarratorHaptic(AudioHapticSource _newHapticSource) => OnChangeNarratorHaptic?.Invoke(_newHapticSource);
+    public static event Action OnPlayNarratorHaptic;
+    public static void PlayNarratorHaptic() => OnPlayNarratorHaptic?.Invoke();
+    public static event Action OnStopNarratorHaptic;
+    public static void StopNarratorHaptic() => OnStopNarratorHaptic?.Invoke();
+
+    public static event Action<AudioHapticSource> OnPlayStoneButtonHaptic;
+    public static void PlayStoneButtonHaptic(AudioHapticSource _haptic) => OnPlayStoneButtonHaptic?.Invoke(_haptic);
+
+    public static event Action<EventsManager.ButtonType> OnPressedButtonHaptic;
+    public static void PressedButtonHaptic(EventsManager.ButtonType _button) => OnPressedButtonHaptic?.Invoke(_button);
 }

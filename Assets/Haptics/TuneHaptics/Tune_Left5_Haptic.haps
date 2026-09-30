@@ -1,0 +1,296 @@
+{
+    "description": "",
+    "gain": 1.0,
+    "version": "6",
+    "vibration": {
+        "frequency_range": {
+            "max": 1000.0,
+            "min": 0.0
+        },
+        "gain": 1.0,
+        "loop": false,
+        "melodies": [
+            {
+                "gain": 1.0,
+                "mute": false,
+                "notes": [
+                    {
+                        "amplitude": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": -0.0114296613139297,
+                                    "value": 0.004009857566517727
+                                },
+                                {
+                                    "position": 5.611963705139482,
+                                    "value": 0.004009857566517727
+                                }
+                            ]
+                        },
+                        "length": 5.623393366453412,
+                        "m_gain": 1.0,
+                        "pitch": {
+                            "gain": 1,
+                            "interpolation_function": "Linear",
+                            "keyframes": [
+                                {
+                                    "position": 0.0,
+                                    "value": 0.15
+                                },
+                                {
+                                    "position": 5.623393366453412,
+                                    "value": 0.15
+                                }
+                            ]
+                        },
+                        "position": 0.0
+                    }
+                ]
+            }
+        ],
+        "transients": [
+            {
+                "amplitude": 0.6917825771451975,
+                "pitch": 0.09090909090909093,
+                "position": 0.0978231292517007,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5725101752199411,
+                "pitch": 0.09090909090909093,
+                "position": 0.279297052154195,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6372002915183885,
+                "pitch": 0.09090909090909093,
+                "position": 0.30145124716553284,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.631778818703601,
+                "pitch": 0.09090909090909093,
+                "position": 0.32321995464852604,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6198332006371268,
+                "pitch": 0.09090909090909093,
+                "position": 0.3450113378684807,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5857422444628044,
+                "pitch": 0.09090909090909093,
+                "position": 0.36680272108843537,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5786667629926627,
+                "pitch": 0.09090909090909093,
+                "position": 0.3885714285714286,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.41188755691073886,
+                "pitch": 0.09090909090909093,
+                "position": 0.4568253968253968,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.8342111002454643,
+                "pitch": 0.09090909090909093,
+                "position": 0.478798185941043,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5591862166073376,
+                "pitch": 0.09090909090909093,
+                "position": 0.5012244897959184,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6453784454254331,
+                "pitch": 0.09090909090909093,
+                "position": 1.9442403628117912,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5447595855578256,
+                "pitch": 0.09090909090909093,
+                "position": 1.9665079365079365,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5923582790842385,
+                "pitch": 0.09090909090909093,
+                "position": 1.9893197278911565,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5118631911901517,
+                "pitch": 0.09090909090909093,
+                "position": 3.197052154195011,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.7199007242862825,
+                "pitch": 0.09090909090909093,
+                "position": 3.22421768707483,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6965608243717873,
+                "pitch": 0.09090909090909093,
+                "position": 3.2461224489795923,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6036606715625175,
+                "pitch": 0.09090909090909093,
+                "position": 3.2680272108843536,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6428055430726562,
+                "pitch": 0.09090909090909093,
+                "position": 3.5398866213151927,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6355462828630281,
+                "pitch": 0.09090909090909093,
+                "position": 3.561972789115646,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6077038038311693,
+                "pitch": 0.09090909090909093,
+                "position": 3.5837414965986394,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.580412661017764,
+                "pitch": 0.09090909090909093,
+                "position": 3.605532879818594,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.8445027096565803,
+                "pitch": 0.09090909090909093,
+                "position": 4.307913832199547,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.7210033967231879,
+                "pitch": 0.09090909090909093,
+                "position": 4.330045351473923,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.688750227943707,
+                "pitch": 0.09090909090909093,
+                "position": 4.3521768707483,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6497891351730544,
+                "pitch": 0.09090909090909093,
+                "position": 4.374308390022676,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6067849101337484,
+                "pitch": 0.09090909090909093,
+                "position": 4.396439909297052,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6356381722327704,
+                "pitch": 0.09090909090909093,
+                "position": 4.418571428571428,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6314112612246332,
+                "pitch": 0.09090909090909093,
+                "position": 4.440702947845805,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6224979923596483,
+                "pitch": 0.09090909090909093,
+                "position": 4.462834467120182,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5760019712701427,
+                "pitch": 0.09090909090909093,
+                "position": 4.484965986394558,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.7864286279795671,
+                "pitch": 0.09090909090909093,
+                "position": 4.619319727891156,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.8917338457040224,
+                "pitch": 0.09090909090909093,
+                "position": 4.641496598639455,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.850475518689817,
+                "pitch": 0.09090909090909093,
+                "position": 4.6636961451247165,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.8620535792773224,
+                "pitch": 0.09090909090909093,
+                "position": 4.685873015873017,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.8060929531043783,
+                "pitch": 0.09090909090909093,
+                "position": 4.708049886621315,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.7872556323072463,
+                "pitch": 0.09090909090909093,
+                "position": 4.730249433106575,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.7658454091573348,
+                "pitch": 0.09090909090909093,
+                "position": 4.752448979591836,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.6643995449620492,
+                "pitch": 0.09090909090909093,
+                "position": 5.26922902494331,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.595114960176501,
+                "pitch": 0.09090909090909093,
+                "position": 5.291473922902496,
+                "type": "Simple"
+            },
+            {
+                "amplitude": 0.5808721078664731,
+                "pitch": 0.09090909090909093,
+                "position": 5.314875283446712,
+                "type": "Simple"
+            }
+        ]
+    }
+}

@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class DebugManager : MonoBehaviour
+public class DebugManager : NetworkBehaviour
 {
 
     [Header("Network Debugging")]
@@ -12,6 +13,9 @@ public class DebugManager : MonoBehaviour
     [Header("Tutorial Debugging")]
     [SerializeField] private bool skipTutorial;
 
+    [Header("Player Icon Debugging")]
+    [SerializeField] private bool startWithPlayerIcon;
+
     [Header("Maze Debugging")]
     [SerializeField] private bool startWithActivatedSpinWheel;
     [SerializeField] private bool startWithActivatedHealthBall;
@@ -21,11 +25,22 @@ public class DebugManager : MonoBehaviour
     [SerializeField] private bool disableEnemies;
 
     [Header("Teleport Debugging")]
+    [SerializeField] private bool startWithInstantTeleport;
     [SerializeField] private bool disableTeleportChange;
+
+    [Header("Collectable Debugging")]
+    [SerializeField] private bool requireOnlyOneCollectable;
 
     private void OnEnable()
     {
         StartCoroutine(DelayDebugging());
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
+        if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();
+        if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
     }
 
     IEnumerator DelayDebugging()
@@ -38,12 +53,17 @@ public class DebugManager : MonoBehaviour
 
         if(skipTutorial) EventsManager.SkipTutorial();
 
-        if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
-        if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();
-        if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
+        if(startWithPlayerIcon) EventsManager.StartWithPlayerIcon();
+
+        // if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
+        // if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();
+        // if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
 
         if(disableEnemies) EventsManager.DisableEnemies();
-
+        
+        if(startWithInstantTeleport) EventsManager.StartWithInstantTeleport();
         if(disableTeleportChange) EventsManager.DisableTeleportChange();
+
+        if(requireOnlyOneCollectable) EventsManager.RequireOnlyOneCollectable();
     }
 }

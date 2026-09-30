@@ -63,6 +63,8 @@ public class RevealUnderLightManager : NetworkBehaviour
         EventsManager.OnChangedEnemyOxidization += ChangeEnemyOxidization;
 
         EventsManager.OnEntityChangedFlashlightRange += RecieveFlashlightRange;
+
+        EventsManager.OnUpdateVRFlashlight += UpdateVRFlashlight;
     }
 
     private void OnDisable()
@@ -78,6 +80,8 @@ public class RevealUnderLightManager : NetworkBehaviour
         EventsManager.OnChangedEnemyOxidization -= ChangeEnemyOxidization;
 
         EventsManager.OnEntityChangedFlashlightRange -= RecieveFlashlightRange;
+
+        EventsManager.OnUpdateVRFlashlight -= UpdateVRFlashlight;
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -137,16 +141,21 @@ public class RevealUnderLightManager : NetworkBehaviour
         _renderer.material.SetFloat("_MapBlend", 1 - oxidization);
     }
 
+    private void UpdateVRFlashlight()
+    {
+        _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+    }
+
     private void Update()
     {
         // if(_vrFlashLight == null && GameObject.FindGameObjectWithTag("VRRig") != null)   _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
-        if(_vrFlashLight == null && GameObject.FindGameObjectWithTag("VRRig") != null)
-        {
-            if(GameObject.FindGameObjectWithTag("VRFlashLight") != null)
-            {
-                _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
-            }
-        }
+        // if(_vrFlashLight == null && GameObject.FindGameObjectWithTag("VRRig") != null)
+        // {
+        //     if(GameObject.FindGameObjectWithTag("VRFlashLight") != null)
+        //     {
+        //         _vrFlashLight = GameObject.FindGameObjectWithTag("VRFlashLight").transform;
+        //     }
+        // }
 
         for(int i = 0; i < hiddenObjects.Count; i++)
         {

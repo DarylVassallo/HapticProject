@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System;
+
+using Unity.Netcode;
+
 //This script controls all input
-public class PCPlayerInputManager : MonoBehaviour
+public class PCPlayerInputManager : NetworkBehaviour
 {
     private PlayerInput playerInput;
 
@@ -24,16 +27,14 @@ public class PCPlayerInputManager : MonoBehaviour
     [SerializeField] private static bool canCancel = true;
     private InputAction cancelAction;
 
+    private bool _isInNetwork;
+
     private void Awake()
     {
         if (playerInput == null)
         {
             playerInput = FindAnyObjectByType<PlayerInput>();
-            if (playerInput == null)
-            {
-                Debug.LogError("No PlayerInput component found in the scene!");
-                return;
-            }
+            if (playerInput == null) return;
         }
 
         canMove = true;
@@ -59,10 +60,12 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnFreezePCPlayer += FreezePlayer;
+        EventsManager.OnEnteredTemple += FreezePlayerRpc;
+        EventsManager.OnTogglePCPlayerMovement += ToggleAllRpc;
+        // EventsManager.OnFreezePCPlayer += FreezePlayer;
 
-        EventsManager.OnToggleAll += ToggleAll;
-        EventsManager.OnToggleRestriction += ToggleRestriction;
+        EventsManager.OnToggleAll += ToggleAllRpc;
+        EventsManager.OnToggleRestriction += ToggleRestrictionRpc;
 
         moveAction.Enable();
         moveAction.performed += HandleMove;
@@ -87,10 +90,12 @@ public class PCPlayerInputManager : MonoBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnFreezePCPlayer -= FreezePlayer;
+        EventsManager.OnEnteredTemple -= FreezePlayerRpc;
+        EventsManager.OnTogglePCPlayerMovement -= ToggleAllRpc;
+        // EventsManager.OnFreezePCPlayer -= FreezePlayer;
 
-        EventsManager.OnToggleAll -= ToggleAll;
-        EventsManager.OnToggleRestriction -= ToggleRestriction;
+        EventsManager.OnToggleAll -= ToggleAllRpc;
+        EventsManager.OnToggleRestriction -= ToggleRestrictionRpc;
 
         moveAction.performed -= HandleMove;
         moveAction.canceled -= HandleMove;
@@ -113,18 +118,28 @@ public class PCPlayerInputManager : MonoBehaviour
         cancelAction.Disable();
     }
 
-    private void FreezePlayer(bool _toggle)
+    public override void OnNetworkSpawn()
     {
-        ToggleRestriction("All", !_toggle);
-        Debug.Log("ToggleRestriction: " + !_toggle);
+        _isInNetwork = true;
     }
-    private void ToggleAll(bool _toggle)
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void FreezePlayerRpc(bool _toggle)
     {
-        ToggleRestriction("All", _toggle);
+        Debug.Log("FreezePlayer: " + _toggle);
+        if(IsOwner) ToggleAllRpc(!_toggle);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleAllRpc(bool _toggle)
+    {
+        Debug.Log("ToggleAll: " + _toggle);
+        if(IsOwner) ToggleRestrictionRpc("All", _toggle);
     }
 
     //Toggles the restriction of various input controls
-    private void ToggleRestriction(string _restriction, bool _toggle)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleRestrictionRpc(string _restriction, bool _toggle)
     {
         if(_restriction == "Move" || _restriction == "All")
         {
@@ -184,13 +199,13 @@ public class PCPlayerInputManager : MonoBehaviour
     //Controls the cancel controls (toggles the pause menu) of the PC Player
     private void HandleCancel(InputAction.CallbackContext ctx)
     {
-        if (canCancel) EventsManager.Cancel(true);
+        if (canCancel && _isInNetwork) EventsManager.Cancel(true);
 
         // if (canFire2) EventsManager.Fire2();
     }
 
     public void HandleCancelUsingUIButtons()
     {
-        if (canCancel) EventsManager.Cancel(true);
+        if (canCancel && _isInNetwork) EventsManager.Cancel(true);
     }
 }

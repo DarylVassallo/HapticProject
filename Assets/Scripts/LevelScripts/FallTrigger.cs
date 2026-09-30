@@ -10,6 +10,11 @@ public class FallTrigger : MonoBehaviour
     
     private bool _canPCTrigger;
 
+    private void Awake()
+    {
+        TogglePCTrigger(true);
+    }
+
     private void OnEnable()
     {
         EventsManager.OnTogglePCTrigger += TogglePCTrigger;

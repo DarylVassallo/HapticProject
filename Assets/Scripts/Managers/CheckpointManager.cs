@@ -9,6 +9,8 @@ using System.IO;
 
 public class CheckpointManager : NetworkBehaviour
 {
+    private bool _isInNetwork;
+
     [Header("Checkpoints")]
     [SerializeField] private Transform tutorialCheckpoint;
     [SerializeField] private Transform firstCheckpoint;
@@ -32,13 +34,16 @@ public class CheckpointManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Checkpoint Tutorial");
         currentCheckpoint = tutorialCheckpoint;
 
         EventsManager.OnTutorialTeleport += CompleteTutorialRpc;
         EventsManager.OnIncreaseChanceOfSpawningEnemy += UsedTeleporter;
         EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnCrossedCrookedBridges += CrossedCrookedBridges;
+
+        EventsManager.OnPlayMainMenuLevel += PlayMainMenuLevel;
+        EventsManager.OnPlayGameLevel += PlayGameLevel;
+        EventsManager.OnRespawn += RespawnPCPlayerRpc;
 
         nextScene.OnValueChanged += OnNextSceneChanged;
     }
@@ -50,7 +55,16 @@ public class CheckpointManager : NetworkBehaviour
         EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnCrossedCrookedBridges -= CrossedCrookedBridges;
 
+        EventsManager.OnPlayMainMenuLevel -= PlayMainMenuLevel;
+        EventsManager.OnPlayGameLevel -= PlayGameLevel;
+        EventsManager.OnRespawn -= RespawnPCPlayerRpc;
+
         nextScene.OnValueChanged -= OnNextSceneChanged;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        _isInNetwork = true;
     }
 
     private void GetPCPlayerData()
@@ -77,6 +91,7 @@ public class CheckpointManager : NetworkBehaviour
     {
         if(!_hasUsedTeleporter)
         {
+            EventsManager.ReachedFirstTeleporter();
             ActivateSecondCheckpointRpc();
         }
     }
@@ -102,7 +117,7 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateFirstCheckpointRpc()
     {
-        Debug.Log("First Checkpoint");
+        EventsManager.PlayFirstSectionMusic();
         currentCheckpoint = firstCheckpoint;
     }
     
@@ -110,10 +125,12 @@ public class CheckpointManager : NetworkBehaviour
     // all the collectable and hidden arrows are activated
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateSecondCheckpointRpc()
-    {
+    {        
+        _hasCompleteTutorial = true;
         _hasUsedTeleporter = true;
+        EventsManager.ActivateTeleporterTimerHaptic();
 
-        Debug.Log("Second Checkpoint");
+        EventsManager.PlaySecondSectionMusic();
         currentCheckpoint = secondCheckpoint;
 
         for (int i = 0; i < hiddenButtons.childCount; i++)
@@ -134,9 +151,11 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateThirdCheckpointRpc()
     {
+        _hasCompleteTutorial = true;
+        _hasUsedTeleporter = true;
         _hasCollectedEverything = true;
 
-        Debug.Log("Third Checkpoint");
+        EventsManager.PlayThirdSectionMusic();
         currentCheckpoint = thirdCheckpoint;
 
         EventsManager.DestroyAllEnemies();
@@ -149,9 +168,12 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateFourthCheckpointRpc()
     {
+        _hasCompleteTutorial = true;
+        _hasUsedTeleporter = true;
+        _hasCollectedEverything = true;
         _hasCrossedCrookedBridges = true;
 
-        Debug.Log("Fourth Checkpoint");
+        EventsManager.PlayFourthSectionMusic();
         currentCheckpoint = fourthCheckpoint;
     }
 
@@ -178,9 +200,9 @@ public class CheckpointManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RespawnPCPlayerRpc()
     {
-        if(!_canPCFunction) GetPCPlayerData();
+        // if(!_canPCFunction) GetPCPlayerData();
 
-        if(_canPCFunction) 
+        if(_isInNetwork) 
         {
             EventsManager.DestroyAllEnemies();
 
@@ -201,12 +223,34 @@ public class CheckpointManager : NetworkBehaviour
             {
                 EventsManager.ResetHiddenButtons();
                 EventsManager.ResetTeleportPads();
+                EventsManager.SetChanceOfSpawningEnemy(0f);
             }
+
+            if(_pcPlayer == null) _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
 
             //The PC Player's health and position are reset
             EventsManager.ResetHealth(_pcPlayer);
             _pcPlayer.transform.position = currentCheckpoint.position;
+
+            StartCoroutine(ResumeGameplay(0.1f));
         }
+    }
+
+    IEnumerator ResumeGameplay(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+
+        EventsManager.GameOver(false);       
+    }
+
+    private void PlayMainMenuLevel()
+    {
+        PlayLevelClient("MainMenuScene");
+    }
+
+    private void PlayGameLevel()
+    {
+        PlayLevelClient("PlayLevelScene");
     }
 
     //Used by UI Button to change the scene

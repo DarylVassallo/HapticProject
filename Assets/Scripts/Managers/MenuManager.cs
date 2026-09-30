@@ -19,15 +19,19 @@ using System.IO;
 public class MenuManager : NetworkBehaviour
 {
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject vrPauseMenu;
     private bool _showPauseMenu;
 
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject vrSettingsMenu;
     private bool _showSettingsMenu;
 
     [SerializeField] private GameObject gameOverMenu;
+    [SerializeField] private GameObject vrGameOverMenu;
     private bool _showGameOverMenu;
 
     [SerializeField] private GameObject winMenu;
+    [SerializeField] private GameObject vrWinMenu;
     private bool _showWinMenu;
 
     [SerializeField] private GameObject pcPlayerUI;
@@ -79,9 +83,11 @@ public class MenuManager : NetworkBehaviour
     private void OnEnable()
     {
         EventsManager.OnCancel += TogglePauseMenuRpc;
+        EventsManager.OnSettingsMenu += ToggleSettingsMenuRpc;
         
         EventsManager.OnGameOver += ToggleGameOverMenuRpc;
-        EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
+        EventsManager.OnWinGame += ToggleWinMenuRpc;
+        // EventsManager.OnEnteredTemple += ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar += ChangeHealthBarRpc;
         EventsManager.OnChangeChargeBar += ChangeChargeBarRpc;
     }
@@ -89,9 +95,11 @@ public class MenuManager : NetworkBehaviour
     private void OnDisable()
     {
         EventsManager.OnCancel -= TogglePauseMenuRpc;
+        EventsManager.OnSettingsMenu -= ToggleSettingsMenuRpc;
 
         EventsManager.OnGameOver -= ToggleGameOverMenuRpc;
-        EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
+        EventsManager.OnWinGame -= ToggleWinMenuRpc;
+        // EventsManager.OnEnteredTemple -= ToggleWinMenuRpc;
         EventsManager.OnChangeHealthBar -= ChangeHealthBarRpc;
         EventsManager.OnChangeChargeBar -= ChangeChargeBarRpc;
     }
@@ -105,11 +113,7 @@ public class MenuManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeHealthBarRpc(float _currentHealth)
     {
-        Debug.Log("ChangeHealthBarRpc: " + _currentHealth);
         if(IsOwner) return;
-
-        Debug.Log("IsOwner: " + IsOwner);
-        Debug.Log("Start ChangeBar: " + _currentHealth);
         StartCoroutine(ChangeBar(pcHealthBarTransform, pcHealthBarImage, pcHealthBarOriginalColour, _maxHealthBarLength, _currentHealth / 100f, 1f));
     }
 
@@ -131,8 +135,6 @@ public class MenuManager : NetworkBehaviour
 
     IEnumerator ChangeBar(Transform _barTransform, Image _barImage, Color originalColour, float _maxBarLength, float _newValue, float _delay)
     {
-        Debug.Log("ChangeBar");
-
         float elapsed = 0f;
         Material chargingMaterial;
 
@@ -151,7 +153,7 @@ public class MenuManager : NetworkBehaviour
         {
             elapsed += Time.deltaTime;
             _barTransform.localScale = new Vector3(_maxBarLength * (previousHealth + ((_newValue - previousHealth)  * (elapsed / _delay))), _barTransform.localScale.y, _barTransform.localScale.z);
-            Debug.Log("size: " + (previousHealth + ((_newValue - previousHealth)  * (elapsed / _delay))));
+
             if(elapsed <= _delay/4)
             {
                 _barImage.color =   Color.Lerp(
@@ -169,16 +171,12 @@ public class MenuManager : NetworkBehaviour
                                         ((elapsed - (_delay * 0.75f)) / _delay) * 4
                                     );
             }
-
-            Debug.Log("_barImage.color: " + _barImage.color);
-
             yield return null;
         }
 
         previousHealth = _newValue;
 
         _barTransform.localScale = new Vector3(_maxBarLength * _newValue, _barTransform.localScale.y, _barTransform.localScale.z);
-        Debug.Log("size 2: " + (_maxBarLength * _newValue));
         _barImage.color = originalColour;
 
         // ConstantChangeBar(_barTransform, _barImage, originalColour, _maxBarLength, _newValue);
@@ -197,20 +195,36 @@ public class MenuManager : NetworkBehaviour
         {
             if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
         }
+        for (int i = 0; i < vrPauseMenu.transform.childCount; i++)
+        {
+            if (vrPauseMenu.transform.GetChild(i).gameObject != null)  vrPauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
+        }
 
         for (int i = 0; i < settingsMenu.transform.childCount; i++)
         {
             if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
+        }
+        for (int i = 0; i < vrSettingsMenu.transform.childCount; i++)
+        {
+            if (vrSettingsMenu.transform.GetChild(i).gameObject != null)  vrSettingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
         }
 
         for (int i = 0; i < gameOverMenu.transform.childCount; i++)
         {
             if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
         }
+        for (int i = 0; i < vrGameOverMenu.transform.childCount; i++)
+        {
+            if (vrGameOverMenu.transform.GetChild(i).gameObject != null)  vrGameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
+        }
 
         for (int i = 0; i < winMenu.transform.childCount; i++)
         {
             if (winMenu.transform.GetChild(i).gameObject != null)  winMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
+        }
+        for (int i = 0; i < vrWinMenu.transform.childCount; i++)
+        {
+            if (vrWinMenu.transform.GetChild(i).gameObject != null)  vrWinMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
         }
 
         CheckCursorTimeScale();
@@ -227,6 +241,10 @@ public class MenuManager : NetworkBehaviour
         {
             if (pauseMenu.transform.GetChild(i).gameObject != null)  pauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
         }
+        for (int i = 0; i < vrPauseMenu.transform.childCount; i++)
+        {
+            if (vrPauseMenu.transform.GetChild(i).gameObject != null)  vrPauseMenu.transform.GetChild(i).gameObject.SetActive(_showPauseMenu);
+        }
 
         CheckCursorTimeScale();
         CheckTimeScale();
@@ -242,6 +260,10 @@ public class MenuManager : NetworkBehaviour
         {
             if (settingsMenu.transform.GetChild(i).gameObject != null)  settingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
         }
+        for (int i = 0; i < vrSettingsMenu.transform.childCount; i++)
+        {
+            if (vrSettingsMenu.transform.GetChild(i).gameObject != null)  vrSettingsMenu.transform.GetChild(i).gameObject.SetActive(_showSettingsMenu);
+        }
 
         CheckCursorTimeScale();
         CheckTimeScale();
@@ -251,12 +273,15 @@ public class MenuManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ToggleGameOverMenuRpc(bool _toggle)
     {
-        Debug.Log("ToggleGameOverMenuRpc: " + _toggle);
         _showGameOverMenu = _toggle;
 
         for (int i = 0; i < gameOverMenu.transform.childCount; i++)
         {
             if (gameOverMenu.transform.GetChild(i).gameObject != null)  gameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
+        }
+        for (int i = 0; i < vrGameOverMenu.transform.childCount; i++)
+        {
+            if (vrGameOverMenu.transform.GetChild(i).gameObject != null)  vrGameOverMenu.transform.GetChild(i).gameObject.SetActive(_showGameOverMenu);
         }
 
         CheckCursorTimeScale();
@@ -272,6 +297,10 @@ public class MenuManager : NetworkBehaviour
         for (int i = 0; i < winMenu.transform.childCount; i++)
         {
             if (winMenu.transform.GetChild(i).gameObject != null)  winMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
+        }
+        for (int i = 0; i < vrWinMenu.transform.childCount; i++)
+        {
+            if (vrWinMenu.transform.GetChild(i).gameObject != null)  vrWinMenu.transform.GetChild(i).gameObject.SetActive(_showWinMenu);
         }
 
         CheckCursorTimeScale();
@@ -312,7 +341,7 @@ public class MenuManager : NetworkBehaviour
         EventsManager.TogglePauseManagerAudio(true);
         EventsManager.ToggleAll(false);
         AudioListener.volume = 0;
-        Time.timeScale = 0;
+        // Time.timeScale = 0;
 
         _audioSource.pitch = 1f;
         _audioSource.Stop();
@@ -325,6 +354,6 @@ public class MenuManager : NetworkBehaviour
         EventsManager.TogglePauseManagerAudio(false);
         EventsManager.ToggleAll(true);
         AudioListener.volume = 1;
-        Time.timeScale = 1;
+        // Time.timeScale = 1;
     }
 }

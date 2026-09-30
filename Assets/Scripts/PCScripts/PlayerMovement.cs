@@ -29,6 +29,7 @@ public class PlayerMovement : NetworkBehaviour
     private CharacterController _characterController;
     private Vector2 _moveInput;
     private bool _isGrounded;
+    private bool _prevIsGrounded;
     private float _verticalVelocity;
 
     [SerializeField] private float bobSpeed = 7f;
@@ -40,6 +41,7 @@ public class PlayerMovement : NetworkBehaviour
     private Transform pcFlashlight;
 
     private NetworkVariable<bool> isWalking = new(false);
+    private NetworkVariable<bool> isJumping = new(false);
     private NetworkVariable<float> bodyYRotation = new(0f);
     private NetworkVariable<float> bodyXRotation = new(0f);
 
@@ -102,7 +104,9 @@ public class PlayerMovement : NetworkBehaviour
     
     private void OnEnable()
     {
-        EventsManager.OnFreezePCPlayer += FreezePlayer;
+        EventsManager.OnEnteredTemple += FreezePlayerCompletely;
+        EventsManager.OnToggleAll += TogglePlayerCompletely;
+        EventsManager.OnTogglePCPlayerGravity += TogglePlayerGravity;
 
         EventsManager.OnMove += ChangeMotion;
         EventsManager.OnJump += Jump;
@@ -110,13 +114,16 @@ public class PlayerMovement : NetworkBehaviour
         EventsManager.OnChangeHealthCamera += ChangeHealthCamera;
 
         isWalking.OnValueChanged += ChangeWalkingAnimation;
+        isJumping.OnValueChanged += ChangeJumpingAnimation;
         bodyYRotation.OnValueChanged += SetBodyYRotation;
         bodyXRotation.OnValueChanged += SetBodyXRotation;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnFreezePCPlayer -= FreezePlayer;
+        EventsManager.OnEnteredTemple -= FreezePlayerCompletely;
+        EventsManager.OnToggleAll -= TogglePlayerCompletely;
+        EventsManager.OnTogglePCPlayerGravity -= TogglePlayerGravity;
 
         EventsManager.OnMove -= ChangeMotion;
         EventsManager.OnJump -= Jump;
@@ -124,12 +131,27 @@ public class PlayerMovement : NetworkBehaviour
         EventsManager.OnChangeHealthCamera -= ChangeHealthCamera;
 
         isWalking.OnValueChanged -= ChangeWalkingAnimation;
+        isJumping.OnValueChanged -= ChangeJumpingAnimation;
         bodyXRotation.OnValueChanged -= SetBodyXRotation;
     }
 
-    private void FreezePlayer(bool _toggle)
+    private void FreezePlayerCompletely(bool _freeze)
     {
-        _isGravityEnabled = !_toggle;
+        TogglePlayerCompletely(!_freeze);
+    }
+
+    private void TogglePlayerCompletely(bool _toggle)
+    {
+        ToggleAllPlayerCameraMotion(_toggle);
+        TogglePlayerGravity(_toggle);
+    }
+    private void ToggleAllPlayerCameraMotion(bool _toggle)
+    {
+        _inputAxisController.enabled = _toggle;
+    }
+    private void TogglePlayerGravity(bool _toggle)
+    {        
+        _isGravityEnabled = _toggle;
 
         if(!_isGravityEnabled)
         {
@@ -141,6 +163,12 @@ public class PlayerMovement : NetworkBehaviour
     private void SetIsWalkingServerRpc(bool _walk)
     {
         isWalking.Value = _walk;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void SetIsJumpingServerRpc(bool _jump)
+    {
+        isJumping.Value = _jump;
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
@@ -160,9 +188,14 @@ public class PlayerMovement : NetworkBehaviour
         _animator.SetBool("IsWalking", current);
     }
 
+    private void ChangeJumpingAnimation(bool previous, bool current)
+    {
+        _animator.SetBool("IsJumping", current);
+    }
+
     private void SetBodyYRotation(float previous, float current)
     {
-        bodyTransform.rotation = Quaternion.Euler(0, current, 0);
+        bodyTransform.rotation = Quaternion.Euler(0, current + 90f, 0);
     }
 
     private void SetBodyXRotation(float previous, float current)
@@ -184,8 +217,19 @@ public class PlayerMovement : NetworkBehaviour
         if (!IsOwner)   return;
 
         _isGrounded = _characterController.isGrounded;
+
+        if(!_isGrounded && _prevIsGrounded)
+        {
+            SetIsJumpingServerRpc(true);
+        }else if(_isGrounded && !_prevIsGrounded)
+        {
+            SetIsJumpingServerRpc(false);
+        }
+
         HandleGravity();
         HandleMovement();
+
+        _prevIsGrounded = _isGrounded;
     }
 
     //Applies the jump force if on the ground
@@ -235,7 +279,6 @@ public class PlayerMovement : NetworkBehaviour
         {
             SetIsWalkingServerRpc(true);
 
-            //Used ChatGPT to generate initial bobbing logic
             totalBobTimer += Time.deltaTime * bobSpeed;
             cameraTransform.parent.transform.localPosition = new Vector3(   cameraTransform.parent.transform.localPosition.x, 
                                                                             Mathf.Sin(totalBobTimer) * (bobAmount * (1f - healthBobAmount)), 

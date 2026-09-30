@@ -5,6 +5,8 @@ using Unity.Cinemachine;
 
 public class MapPlayerTracker : NetworkBehaviour
 {
+    private bool _setupPlayerIcon;
+
     [SerializeField] private Transform mapPlayer;
     private Transform pcPlayer;
     private Transform pcCamera;
@@ -23,21 +25,45 @@ public class MapPlayerTracker : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
+        EventsManager.OnReachedSwitches += ReachedSwitchesRpc;
+        EventsManager.OnReachedFirstTeleporter += ReachedSwitchesRpc;
+        EventsManager.OnStartWithPlayerIcon += StartWithPlayerIcon;
     }
 
     private void OnDisable()
     {
-        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
+        EventsManager.OnReachedSwitches -= ReachedSwitchesRpc;
+        EventsManager.OnReachedFirstTeleporter -= ReachedSwitchesRpc;
+        EventsManager.OnStartWithPlayerIcon -= StartWithPlayerIcon;
         _canPCFunction = false;
     }
-    
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void GetPCPlayerBodyDataRpc()
+
+    private void StartWithPlayerIcon()
     {
         if(GameObject.FindGameObjectWithTag("PCPlayer") != null)
         {
+            ReachedSwitchesRpc();
+        }
+        else
+        {
+            EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
+        }
+    }
+
+    private void GetPCPlayerBodyData()
+    {
+        ReachedSwitchesRpc();
+        EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
+    }
+    
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void ReachedSwitchesRpc()
+    {
+        if(GameObject.FindGameObjectWithTag("PCPlayer") != null && !_setupPlayerIcon)
+        {
             _canPCFunction = true;
+            _setupPlayerIcon = true;
+
             mapPlayer.gameObject.SetActive(true);
 
             pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer").transform;
@@ -52,7 +78,7 @@ public class MapPlayerTracker : NetworkBehaviour
         if(!_canPCFunction) return;
 
         mapPlayer.position = new Vector3   ((pcPlayer.position.x * multiplier) + posOffset.x, 
-                                            (pcPlayer.position.y * multiplier) + posOffset.y, 
+                                            mapPlayer.position.y, 
                                             (pcPlayer.position.z * multiplier) + posOffset.z);
 
         mapPlayer.rotation = Quaternion.Euler(0, pcCamera.eulerAngles.y, 0);

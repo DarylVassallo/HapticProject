@@ -4,6 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 
+using Interhaptics;
+using Interhaptics.Utils;
+
 public class NarratorMovement : NetworkBehaviour
 {
     private AudioSource _audioSource;
@@ -18,12 +21,16 @@ public class NarratorMovement : NetworkBehaviour
     [SerializeField] private Renderer eyeRingRenderer;
 
     private bool _canFlicker;
+
+    [Header("Materials")]
     [SerializeField] private Material irisMaterial;
     [SerializeField] private Material irisOffMaterial;
     [SerializeField] private Material silentMaterial;
     [SerializeField] private Material loudMaterial;
+    [SerializeField] private Material visionMaterial;
 
-    [SerializeField] private Transform _eyeTarget;
+    [SerializeField] private Transform _moveTarget;
+    [SerializeField] private Transform _angleTarget;
     [SerializeField] private LayerMask obstacleLayer;
 
     [SerializeField] private Transform narratorViewPoint;
@@ -43,13 +50,41 @@ public class NarratorMovement : NetworkBehaviour
 
     private bool _speakToPlayer;
 
+    [Header("Specific View Points")]
+    [SerializeField] private Transform _roofViewPoint;
+    [SerializeField] private Transform _tutorialExitViewPoint;
+
+    private float _prevDistance;
+    private float _distance;
+    private bool _canCollide;
+
+    private ParticleSystem _particle;
+
+    private bool _isPaused;
+    private bool _canCheckVelocity;
+
+    private bool _isInNetwork;
+
     private void Awake()
     {
+        _canCheckVelocity = true;
+        _isPaused = false;
+
+        _particle = this.GetComponent<ParticleSystem>();
+
+        Color colour = visionMaterial.color;
+        colour.a = 0;
+        visionMaterial.color = colour;  
+
+        _canCollide = true;
+        this.GetComponent<Collider>().enabled = true;
+        _particle.Stop();
+
         _canFlicker = true;
 
         _speakToPlayer = false;
         _lookAround = false;
-
+        
         _audioSource = this.gameObject.GetComponent<AudioSource>();
         _rb = GetComponent<Rigidbody>();
 
@@ -64,24 +99,51 @@ public class NarratorMovement : NetworkBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnToggleAll += TogglePause;
+
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData; 
 
-        EventsManager.OnLookAtPlayer += LookAtPlayerRpc;
+        EventsManager.OnLookAtPlayer += LookAtPlayerServerRpc;
 
         EventsManager.OnNarratorSays += NarratorSays;
-        EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
     }
 
     private void OnDisable()
     {
+        EventsManager.OnToggleAll -= TogglePause;
+
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyDataRpc;
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData;
 
-        EventsManager.OnLookAtPlayer -= LookAtPlayerRpc; 
+        EventsManager.OnLookAtPlayer -= LookAtPlayerServerRpc; 
 
         EventsManager.OnNarratorSays -= NarratorSays;
-        EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+        
+        if(!_isInNetwork) EventsManager.OnTogglePauseManagerAudio -= TogglePauseManagerAudioRpc;
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        _isInNetwork = true;
+        EventsManager.OnTogglePauseManagerAudio += TogglePauseManagerAudioRpc;
+    }
+
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
+
+        if(_toggle)
+        { 
+            _rb.constraints = RigidbodyConstraints.None;
+            StartCoroutine(CheckVelocityDelay(1f));
+        }
+        else
+        {
+            _rb.constraints = RigidbodyConstraints.FreezeAll;
+            _particle.Stop();
+            _canCheckVelocity = false;
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -104,9 +166,11 @@ public class NarratorMovement : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    private void LookAtPlayerRpc(int _playerNum, bool _stay)
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void LookAtPlayerServerRpc(int _playerNum, int _specificViewPoint, bool _stay)
     {
+        bool _showVision = false;
+
         switch(_playerNum)
         {
             case -1:
@@ -114,35 +178,132 @@ public class NarratorMovement : NetworkBehaviour
                 StartCoroutine(ChangeFocus(UnityEngine.Random.Range(minFocusTime, maxFocusTime)));
                 break;
             case 0:
-                this.GetComponent<Collider>().enabled = false;
-                _eyeTarget = _vrViewPoint;
+                if(_vrViewPoint != null)
+                {
+                    _moveTarget = _vrViewPoint;
+                    _angleTarget = _vrViewPoint;
+                }
+
                 _lookAround = false;
+                _showVision = false;
+
+                if(_moveTarget != null)
+                {
+                    _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                }
                 break;
             case 1:
-                this.GetComponent<Collider>().enabled = false;
-                _eyeTarget = _pcViewPoint;
+                if(_pcViewPoint != null)
+                {
+                    _moveTarget = _pcViewPoint;
+                    _angleTarget = _pcViewPoint;
+                }
+
                 _lookAround = false;
+                _showVision = false;
+
+                if(_moveTarget != null)
+                {
+                    _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                }
                 break;
         }
 
+        if(_moveTarget != null && IsOwner)
+        {
+            _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+            if(_distance >= 50f)
+            {
+                DisableCollisionServerRpc();
+            }
+        }
+        
+        switch(_specificViewPoint)
+        {
+            case 0:
+                _angleTarget = _roofViewPoint;
+                _showVision = true;
+                break;
+            case 1:
+                _angleTarget = _tutorialExitViewPoint;
+                _showVision = true;
+                break;
+        }
+
+        if(_showVision)
+        {
+            StartCoroutine(ChangeVision(1f, 1f));
+        }
+        else
+        {
+            StartCoroutine(ChangeVision(1f, 0f));
+        }
+
         _stayWithPlayer = _stay;
+
+        StartCoroutine(CheckVelocityDelay(1f));
     }
 
-    IEnumerator ChangeFocus(float delay)
+    IEnumerator ChangeVision(float _delay, float _requiredAlpha)
     {
-        this.GetComponent<Collider>().enabled = true;
-        bool _foundTarget = false;
-        do
+        if(visionMaterial.color.a != _requiredAlpha)
         {
-            _eyeTarget = _narratorViewPoints[UnityEngine.Random.Range(0, _narratorViewPoints.Count - 1)];
-
-            if(!Physics.Linecast(this.transform.position, _eyeTarget.position, out RaycastHit hit, obstacleLayer))
+            float elapsed = 0f;
+            while(elapsed < _delay)
             {
-                _foundTarget = true;
-            }
-        }while(!_foundTarget);
+                elapsed += Time.deltaTime;
+                
+                Color colour = visionMaterial.color;
+                colour.a = _requiredAlpha * (elapsed / _delay);
+                visionMaterial.color = colour;           
 
-        yield return new WaitForSeconds(delay);
+                yield return null;
+            }
+        }
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleCollisionRpc(bool _toggle)
+    {
+        if(_toggle)
+        {
+            this.GetComponent<Collider>().enabled = true;
+            _particle.Stop();
+        }
+        else
+        {
+            this.GetComponent<Collider>().enabled = false;
+            _particle.Play();
+        }
+    }
+
+    IEnumerator ChangeFocus(float _delay)
+    {
+        ToggleCollisionRpc(true);
+
+        bool _foundTarget = false;
+        for(int i = 0; i < 50; i++)
+        {
+            _moveTarget = _narratorViewPoints[UnityEngine.Random.Range(0, _narratorViewPoints.Count - 1)];
+
+            if(!Physics.Linecast(this.transform.position, _moveTarget.position, out RaycastHit hit, obstacleLayer))
+            {
+                _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                _foundTarget = true;
+                break;
+            }
+        }
+
+        if(!_foundTarget)
+        {
+            _moveTarget = _narratorViewPoints[UnityEngine.Random.Range(0, _narratorViewPoints.Count - 1)];
+            _prevDistance = Vector3.Distance(_moveTarget.position, this.transform.position);
+            _foundTarget = true;
+        }
+
+        StartCoroutine(CheckVelocityDelay(1f));
+
+        yield return new WaitForSeconds(_delay);
 
         if(_lookAround) StartCoroutine(ChangeFocus(UnityEngine.Random.Range(minFocusTime, maxFocusTime)));
     }
@@ -150,57 +311,84 @@ public class NarratorMovement : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void TogglePauseManagerAudioRpc(bool _toggle)
     {
-        if(_toggle)
+        if(!_toggle)
         {
-            _audioSource.Pause();
-        }
-        else
-        {
-            _audioSource.UnPause();
+            _speakToPlayer = true;
         }
     }
 
-    private void NarratorSays(AudioClip _clip)
+    private void NarratorSays(AudioClip _audioClip, AudioHapticSource _newHapticSource)
     {
+        _isPlaying = false;
+
         _audioSource.Stop();
-        _audioSource.clip = _clip;
+        _audioSource.clip = _audioClip;
         _audioSource.pitch = 1f;
+
+        EventsManager.ChangeNarratorHaptic(_newHapticSource);
 
         _speakToPlayer = true;
     }
 
-    private void PlayerNarratorAudio()
-    {
-        _audioSource.Play();
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void PlayerNarratorAudioRpc()
+    {        
+        // _audioSource.Play();
+
+        EventsManager.PlayNarratorHaptic();
+        EventsManager.IsNarratorSpeaking(true);
+
         _isPlaying = true;
         _audioSource.enabled = true; 
-
         _speakToPlayer = false;
     }
 
     private void FixedUpdate()
     {        
-        if(_canFlicker) IrisFlickerServerRpc();
+        if(_isPaused) return;
 
-        if(_eyeTarget != null) Movement();
+        if(_canFlicker && _isInNetwork) IrisFlickerServerRpc();
+
+        if(_moveTarget != null && IsOwner) MovementServerRpc();
         RotateRings();
-        AudioEyeRing();
+        if(_isInNetwork) AudioEyeRingServerRpc();
 
-        if(!_isPlaying) return;
+        if(!_isPlaying)
+        {
+            if(_moveTarget != null)
+            {
+                _angleTarget = _moveTarget;
+                StartCoroutine(ChangeVision(1f, 0f));
+            }
+            return;
+        }
 
-        if(!_audioSource.isPlaying)
+        if(_isPlaying && !_audioSource.isPlaying && !_isPaused)
         {
             _isPlaying = false;
+
+            EventsManager.StopNarratorHaptic();
+            EventsManager.IsNarratorSpeaking(false);
+
             EventsManager.NarratorStopped();
 
-            if(!_stayWithPlayer) LookAtPlayerRpc(-1, false);
+            if(!_stayWithPlayer && IsOwner)
+            {
+                LookAtPlayerServerRpc(-1, -1, false);
+            }
         }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void IrisFlickerServerRpc()
     {
-        StartCoroutine(IrisFlicker(UnityEngine.Random.Range(0.01f, 0.5f), UnityEngine.Random.Range(0f, 1f)));
+        IrisFlickerRpc(UnityEngine.Random.Range(0.01f, 0.5f), UnityEngine.Random.Range(0f, 1f));
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void IrisFlickerRpc(float _delay, float _flicker)
+    {
+        StartCoroutine(IrisFlicker(_delay, _flicker));
     }
 
     IEnumerator IrisFlicker(float _delay, float _flicker)
@@ -224,7 +412,9 @@ public class NarratorMovement : NetworkBehaviour
 
     private void RotationControl()
     {
-        Vector3 direction = _eyeTarget.position - transform.position;
+        if(_angleTarget == null) return;
+        
+        Vector3 direction = _angleTarget.position - transform.position;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         Quaternion deltaRotation = targetRotation * Quaternion.Inverse(transform.rotation);
@@ -236,34 +426,101 @@ public class NarratorMovement : NetworkBehaviour
         _rb.AddTorque(torque + dampingTorque, ForceMode.Acceleration);
     }
 
-    private void Movement()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void MovementServerRpc()
     {
         RotationControl();
 
         _elapsed += Time.deltaTime;
         _rb.AddForce(Vector3.up * Mathf.Sin(_elapsed) / 2f, ForceMode.Force);
 
-        float _distance = Vector3.Distance(_eyeTarget.position, this.transform.position);
+        _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
         float _force = 1f;
 
-        if(_distance >= 10f)
+        if(!_canCollide)
         {
-            Vector3 direction = _eyeTarget.position - transform.position;
-            _rb.AddForce(direction * _force, ForceMode.Force);
-            _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+            Vector3 direction = _moveTarget.position - transform.position;
+            _rb.AddForce(direction * _force * 10, ForceMode.Force);
+            _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f * 10f);
+        }else{
+            if(_distance >= 10f)
+            {
+                Vector3 direction = _moveTarget.position - transform.position;
+
+                if(_canCollide)
+                {
+                    _rb.AddForce(direction * _force, ForceMode.Force);
+                    _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+                }
+
+                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity && IsOwner)
+                {
+                    DisableCollisionServerRpc();
+                }
+            }
+            else if(_distance < 6f)
+            {
+                Vector3 direction = transform.position - _moveTarget.position;
+                _rb.AddForce(direction * _force, ForceMode.Force);
+                _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+
+                if((_rb.linearVelocity.sqrMagnitude < 0.001f) && _canCollide && _canCheckVelocity && IsOwner)
+                {
+                    DisableCollisionServerRpc();
+                }
+            }
+            else
+            {
+                if(!this.GetComponent<Collider>().enabled)
+                {
+                    ToggleCollisionRpc(true);
+                }
+                
+                if(_speakToPlayer)
+                { 
+                    PlayerNarratorAudioRpc();
+                }
+            }
         }
-        else if(_distance < 6f)
+
+        _prevDistance = _distance;
+    }
+
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void DisableCollisionServerRpc()
+    {
+        StartCoroutine(DisableCollision());
+    }
+    
+    private IEnumerator DisableCollision()
+    {
+        if(_moveTarget != null)
         {
-            Vector3 direction = transform.position - _eyeTarget.position;
-            _rb.AddForce(direction * _force, ForceMode.Force);
-            _rb.linearVelocity = Vector3.ClampMagnitude(_rb.linearVelocity, 20f);
+            _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+            float _originalDistance = _distance;
+
+            _canCollide = false;
+            ToggleCollisionRpc(false);
+
+            // yield return new WaitForSeconds(_delay);
+            while(_distance > _originalDistance * 0.5f)
+            {      
+                _distance = Vector3.Distance(_moveTarget.position, this.transform.position);
+                yield return null;
+            }
         }
-        else
-        {
-            if(!this.GetComponent<Collider>().enabled) this.GetComponent<Collider>().enabled = true;
-            
-            if(_speakToPlayer) PlayerNarratorAudio();
-        }
+
+        _canCollide = true;
+        ToggleCollisionRpc(true);
+    }
+
+    private IEnumerator CheckVelocityDelay(float _delay)
+    {
+        _canCheckVelocity = false;
+
+        yield return new WaitForSeconds(_delay);
+
+        _canCheckVelocity = true;
     }
 
     private void RotateRings()
@@ -285,20 +542,27 @@ public class NarratorMovement : NetworkBehaviour
         return Mathf.Max(maxValue / length, minDb);
     }
 
-    private void AudioEyeRing()
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    private void AudioEyeRingServerRpc()
     {
         float[] spectrum = new float[256];
         _audioSource.GetSpectrumData(spectrum, 0, FFTWindow.Rectangular);
 
         float decibel = GetDecibel(spectrum, 16f);
 
+        if(_isInNetwork) ChangeEyeRingColourRpc(decibel);
+    }
+
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ChangeEyeRingColourRpc(float decibel)
+    {
         eyeRingRenderer.material.SetColor(
-                "_BaseColor",
-                Color.Lerp(
-                    silentMaterial.GetColor("_BaseColor"),
-                    loudMaterial.GetColor("_BaseColor"),
-                    decibel / 60f
-                )
-            );
+            "_BaseColor",
+            Color.Lerp(
+                silentMaterial.GetColor("_BaseColor"),
+                loudMaterial.GetColor("_BaseColor"),
+                decibel / 60f
+            )
+        );
     }
 }

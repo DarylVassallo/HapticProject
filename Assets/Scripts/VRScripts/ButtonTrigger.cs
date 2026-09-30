@@ -6,6 +6,7 @@ public class ButtonTrigger : MonoBehaviour
     [SerializeField] private bool removeSymbol;
     [SerializeField] private bool inputSymbols;
     [SerializeField] private int defenseButtonCount;
+    [SerializeField] private bool openMenu;
     private bool _canBePressed;
     private Collider _enteredCollider;
 
@@ -18,6 +19,14 @@ public class ButtonTrigger : MonoBehaviour
     {
         if(_canBePressed && (_other.gameObject.layer == LayerMask.NameToLayer("LeftHandPhysics") || _other.gameObject.layer == LayerMask.NameToLayer("RightHandPhysics")))
         {
+            if(_other.gameObject.layer == LayerMask.NameToLayer("LeftHandPhysics"))
+            {
+                EventsManager.PingVRController(0);
+            }else if(_other.gameObject.layer == LayerMask.NameToLayer("RightHandPhysics"))
+            {
+                EventsManager.PingVRController(1);
+            }
+
             _enteredCollider = _other;
             _canBePressed = false;
 
@@ -33,6 +42,9 @@ public class ButtonTrigger : MonoBehaviour
             }else if(defenseButtonCount > 0)
             {
                 EventsManager.PressedDefenseButton(defenseButtonCount);
+            }else if(openMenu)
+            {
+                EventsManager.Cancel(true);
             }
         }
     }

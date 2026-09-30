@@ -2,6 +2,9 @@ using UnityEngine;
 
 using Unity.Netcode;
 
+using Interhaptics;
+using Interhaptics.Utils;
+
 public class NarratorManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
@@ -24,7 +27,9 @@ public class NarratorManager : NetworkBehaviour
     {
         public string audioName;
         public AudioClip englishAudioClip;
+        public AudioHapticSource englishHapticSource;
         public AudioClip frenchAudioClip;
+        public AudioHapticSource frenchHapticSource;
     }
     [SerializeField] private NarratorSection[] narratorLines;
 
@@ -36,6 +41,15 @@ public class NarratorManager : NetworkBehaviour
 
         _pcPlayerID = unchecked((ulong)-1);
         _vrPlayerID = unchecked((ulong)-1);
+
+        for(int i = 0; i < narratorLines.Length; i++)
+        {
+            for(int j = 0; j < narratorLines[i].narratorAudio.Length; j++)
+            {
+                if(narratorLines[i].narratorAudio[j].englishHapticSource != null)   narratorLines[i].narratorAudio[j].englishHapticSource.enabled = false;
+                if(narratorLines[i].narratorAudio[j].frenchHapticSource != null)   narratorLines[i].narratorAudio[j].frenchHapticSource.enabled = false;
+            }
+        }
     }
 
     private void OnEnable()
@@ -100,8 +114,9 @@ public class NarratorManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
-    public void TriggerNarratorAudioRpc(string _currentSection, string _currentAudio, bool _isVRPlayer, bool _stay)
+    public void TriggerNarratorAudioRpc(string _currentSection, string _currentAudio, bool _isVRPlayer, int _lookAt, bool _stay)
     {
+        Debug.Log("NarratorManager TriggerNarratorAudioRpc");
         // if( _vrPlayerID == unchecked((ulong)-1) && _isVRPlayer || 
         //     _pcPlayerID == unchecked((ulong)-1) && !_isVRPlayer ||
         //     !_isVRPlayer && NetworkManager.Singleton.LocalClientId == _vrPlayerID ||
@@ -109,11 +124,13 @@ public class NarratorManager : NetworkBehaviour
 
         if(_isVRPlayer)
         {
-            EventsManager.LookAtPlayer(0, _stay);
+            Debug.Log("TriggerNarratorAudioRpc LookAtPlayer 1");
+            EventsManager.LookAtPlayer(0, _lookAt, _stay);
         }
         else
         {
-            EventsManager.LookAtPlayer(1, _stay);
+            Debug.Log("TriggerNarratorAudioRpc LookAtPlayer 2");
+            EventsManager.LookAtPlayer(1, _lookAt, _stay);
         }
 
         for(int i = 0; i < narratorLines.Length; i++)
@@ -124,8 +141,8 @@ public class NarratorManager : NetworkBehaviour
                 {
                     if(narratorLines[i].narratorAudio[j].audioName == _currentAudio)
                     {                        
-                        if(_isEnglish) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].englishAudioClip);
-                        if(_isFrench) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].frenchAudioClip);
+                        if(_isEnglish) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].englishAudioClip, narratorLines[i].narratorAudio[j].englishHapticSource);
+                        if(_isFrench) EventsManager.NarratorSays(narratorLines[i].narratorAudio[j].frenchAudioClip, narratorLines[i].narratorAudio[j].frenchHapticSource);
 
                         return;
                     }

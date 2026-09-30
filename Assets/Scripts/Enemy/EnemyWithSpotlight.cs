@@ -66,12 +66,21 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     private bool _playingDeath;
 
+    private bool _isPaused;
+
     void Awake()
     {
+        _isPaused = false;
+
         _agent = this.gameObject.GetComponent<NavMeshAgent>();
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _animator = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+        _animator.speed = 1;
+
+        int walk = UnityEngine.Random.Range(1, 3);
+        Debug.Log("Walk Animation: " + walk);
+        _animator.SetInteger("Walking", walk);
 
         GetPCPlayerData();
 
@@ -101,6 +110,8 @@ public class EnemyWithSpotlight : NetworkBehaviour
         EventsManager.OnEntityChangedFlashlightRange += RecieveFlashlightRange;
 
         EventsManager.OnSendAppropriateEnemyAudio += PlayAudio;
+
+        EventsManager.OnToggleAll += TogglePause;
     }
 
     private void OnDisable()
@@ -113,6 +124,23 @@ public class EnemyWithSpotlight : NetworkBehaviour
         EventsManager.OnEntityChangedFlashlightRange -= RecieveFlashlightRange;
 
         EventsManager.OnSendAppropriateEnemyAudio -= PlayAudio;
+
+        EventsManager.OnToggleAll -= TogglePause;
+    }
+
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
+
+        if(_isPaused)
+        {
+            _agent.speed = 0;
+            FreezeAnimationClientRpc();
+        }
+        else
+        {
+            MoveAnimationClientRpc();
+        }
     }
 
     public override void OnNetworkDespawn()
@@ -162,7 +190,9 @@ public class EnemyWithSpotlight : NetworkBehaviour
         if(_audioNum == 2)
         {
             _animator.speed = 1;
-            _animator.SetBool("IsDead", true);
+            int death = UnityEngine.Random.Range(1, 4);
+            Debug.Log("Death Animation: " + death);
+            _animator.SetInteger("Death", death);
         }
     }
 
@@ -219,7 +249,7 @@ public class EnemyWithSpotlight : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if(!IsOwner) return;
+        if(!IsOwner || _isPaused) return;
 
         if(_attackCount > 0) _attackCount--;
 
@@ -377,7 +407,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
     }
     
     //This checks if the enemy is within the PC Player's flashlights range and angle (which depends on its strength)
-    //Used ChatGPT here
     bool IsInsideSpotLight(Transform _playerSpotLight)
     {
         if (_playerSpotLight == null) return false;

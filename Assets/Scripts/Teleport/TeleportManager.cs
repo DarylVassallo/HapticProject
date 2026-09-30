@@ -4,13 +4,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Unity.Netcode;
+
 public class TeleportManager : NetworkBehaviour
 {
-    private bool isInNetwork;
+    private bool _isInNetwork;
+
+    private bool _requiresOnlyOneCollectable;
+
+    private bool _hasUsedTeleporter;
+    private bool _useTeleportTimerHaptic;
+
+    [SerializeField] private Transform bubble;
+    private Material _bubbleMaterial;
 
     [SerializeField] private Renderer[] collectableIndicators;
     private int _collectablePoints = 0;
     private bool _isEverythingCollected;
+    // private bool _hasUsedCrookedBridgeTeleporter;
 
     [SerializeField] private Material activeMaterial;
     [SerializeField] private Material deactiveMaterial;
@@ -52,14 +62,21 @@ public class TeleportManager : NetworkBehaviour
     private AudioSource _audioSource;
     [SerializeField] private AudioClip _teleportAudio;
 
+    private bool _isPaused;
+
     private void Awake()
     {
         _audioSource = this.gameObject.GetComponent<AudioSource>();
+        _bubbleMaterial = bubble.GetComponent<Renderer>().material;
     }
     
     private void OnEnable()
     {
         _barList = new List<Transform>();
+
+        EventsManager.OnReachedFirstTeleporter += ReachedFirstTeleporter;
+
+        EventsManager.OnResetTeleportPads += ResetTeleportPads;
 
         EventsManager.OnTriggerHiddenButton += GainCollectable;
         EventsManager.OnResetHiddenButtons += RemoveCollectable;
@@ -72,11 +89,21 @@ public class TeleportManager : NetworkBehaviour
 
         EventsManager.OnDisableTeleportChange += DisableTeleportChange;
 
-        EventsManager.TogglePCTrigger(true);
+        EventsManager.OnToggleAll += TogglePause;
+
+        // EventsManager.OnUsedCrookedBridgeTeleporter += UsedCrookedBridgeTeleporter;
+
+        EventsManager.OnIncreaseChanceOfSpawningEnemy += ReachedTeleporter;
+
+        EventsManager.OnRequireOnlyOneCollectable += RequireOnlyOneCollectable;
     }
 
     private void OnDisable()
     {
+        EventsManager.OnReachedFirstTeleporter -= ReachedFirstTeleporter;
+
+        EventsManager.OnResetTeleportPads -= ResetTeleportPads;
+
         EventsManager.OnTriggerHiddenButton -= GainCollectable;
         EventsManager.OnResetHiddenButtons -= RemoveCollectable;
 
@@ -87,17 +114,62 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnTutorialTeleport -= TutorialTeleportRpc;
 
         EventsManager.OnDisableTeleportChange -= DisableTeleportChange;
+
+        EventsManager.OnToggleAll -= TogglePause;
+
+        // EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
+
+        EventsManager.OnIncreaseChanceOfSpawningEnemy -= ReachedTeleporter;
+
+        EventsManager.OnRequireOnlyOneCollectable -= RequireOnlyOneCollectable;
     }
 
     public override void OnNetworkSpawn()
     {
-        isInNetwork = true;
+        _isInNetwork = true;
+    }
+
+    private void ResetTeleportPads()
+    {
+        ChooseRandomMap();
+    }
+
+    private void RequireOnlyOneCollectable()
+    {
+        _requiresOnlyOneCollectable = true;
+    }
+
+    private void ReachedTeleporter(float _chances)
+    {
+        if(!_hasUsedTeleporter)
+        {
+            _hasUsedTeleporter = true;
+            _useTeleportTimerHaptic = true;
+        }
+    }
+
+    // private void UsedCrookedBridgeTeleporter()
+    // {
+    //     if(!_hasUsedCrookedBridgeTeleporter)
+    //     {
+    //         EventsManager.UsedCrookedBridgeTeleporter();
+    //     }
+    // }
+
+    private void TogglePause(bool _toggle)
+    {
+        _isPaused = !_toggle;
     }
 
     private void DisableTeleportChange()
     {
         minDelay *= 1000;
         maxDelay *= 1000;
+    }
+
+    private void ReachedFirstTeleporter()
+    {
+        CurrentMapServerRpc(false, true);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -107,8 +179,6 @@ public class TeleportManager : NetworkBehaviour
         {
             // CurrentMapServerRpc(false, true);
             _pcPlayerTransform = GameObject.FindGameObjectWithTag("PCPlayer").transform;
-
-            CurrentMapServerRpc(false, true);
         }
     }
 
@@ -117,17 +187,21 @@ public class TeleportManager : NetworkBehaviour
     {        
         EventsManager.TogglePCTrigger(false);
 
-        if(tutorialTeleportCount == 1) EventsManager.LookAtPlayer(-1, false);
+        if(tutorialTeleportCount == 1)
+        {
+            EventsManager.LookAtPlayer(-1, -1, false);
+        }
 
         if(tutorialTeleportCount < tutorialTeleportPads.Length)
         {        
-            EventsManager.FreezePCPlayer(true);
+            EventsManager.TogglePCPlayerMovement(false);
+            EventsManager.TogglePCPlayerGravity(false);
 
-            // if(!IsOwner)
-            // {
             _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
             _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
-            // }
+
+            bubble.position = tutorialTeleportPads[tutorialTeleportCount].position;
+            bubble.rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
 
             tutorialTeleportCount++;
 
@@ -135,7 +209,8 @@ public class TeleportManager : NetworkBehaviour
             {
                 _audioSource.Stop();
                 _audioSource.clip = _teleportAudio;
-                _audioSource.pitch = 3.5f;
+                // _audioSource.pitch = 3.5f;
+                _audioSource.pitch = 1f;
                 _audioSource.Play();
                 _audioSource.enabled = true; 
 
@@ -145,27 +220,39 @@ public class TeleportManager : NetworkBehaviour
             {
                 _audioSource.Stop();
                 _audioSource.clip = _teleportAudio;
-                _audioSource.pitch = 5f;
+                // _audioSource.pitch = 5f;
+                _audioSource.pitch = 2f;
                 _audioSource.Play();
                 _audioSource.enabled = true; 
 
                 StartCoroutine(TutorialTeleportDelay(2f));
             }
         }
-        
-        if(tutorialTeleportCount == tutorialTeleportPads.Length)
+
+        if(tutorialTeleportCount >= tutorialTeleportPads.Length)
         {
             tutorialTeleportCount++;
             _audioSource.Stop();
 
-            EventsManager.TogglePCTrigger(true);
-            EventsManager.FreezePCPlayer(false);
+            StartCoroutine(ActivatePCTriggers(0.25f));
+
+            // EventsManager.FreezePCPlayer(false);
+
+            EventsManager.TogglePCPlayerMovement(true);
+            EventsManager.TogglePCPlayerGravity(true);
+
             // EventsManager.ToggleRestriction("Move", true);
 
             EventsManager.FixTeleportEffect(0, true);
 
             if(IsOwner) EventsManager.ReachedSwitches();
         }
+    }
+    
+    private IEnumerator ActivatePCTriggers(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        EventsManager.TogglePCTrigger(true);
     }
 
     IEnumerator TutorialTeleportDelay(float _delay)
@@ -174,19 +261,43 @@ public class TeleportManager : NetworkBehaviour
 
         while(elapsed < _delay)
         {
-            elapsed += Time.deltaTime;
-            
-            if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
+            if(!_isPaused)
             {
-                EventsManager.FixTeleportEffect(0, true);
-            } else {
-                EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
+                elapsed += Time.deltaTime;
+
+                // _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
+                
+                if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
+                {
+                    EventsManager.FixTeleportEffect(0, true);
+                } else {
+                    float _newScale = Mathf.Lerp(
+                        40f,
+                        4f,
+                        1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+                    );
+                    bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+                    float _newAlpha = Mathf.Lerp(
+                        0f,
+                        1f,
+                        1 - Mathf.Sin(elapsed / _delay * Mathf.PI)
+                    );
+                    Color colour = _bubbleMaterial.color;
+                    colour.g = 1 - _newAlpha;
+                    colour.a = _newAlpha;
+                    _bubbleMaterial.color = colour;
+
+                    EventsManager.TeleporterTransitionHaptic(_newAlpha);
+                    
+                    EventsManager.FixTeleportEffect(1 - Mathf.Sin(elapsed / _delay * Mathf.PI), false);
+                }
             }
 
             yield return null;
         }
 
-        if(IsOwner) TutorialTeleportRpc();
+        if(!IsOwner) TutorialTeleportRpc();
     }
 
     //This adds the bar of a teleport pad to a list
@@ -202,18 +313,23 @@ public class TeleportManager : NetworkBehaviour
         if(_foundAllCollectables)
         {
             _currentMap = 999;
-        }
-
+            ChangeMapRpc(_currentMap);
+        
         //If not all collectables have been found, then a random map is chosen to replace the current one
-        if(_canChange)
+        }else if(_canChange)
         {
             if(!_foundAllCollectables)
             {
-                _currentMap = UnityEngine.Random.Range(0, maps.Length);
-                mapRenderer.material = maps[_currentMap];
-                ChangeMapRpc(_currentMap);
+                ChooseRandomMap();
             }
         }
+    }
+
+    private void ChooseRandomMap()
+    {
+        _currentMap = UnityEngine.Random.Range(0, maps.Length);
+        mapRenderer.material = maps[_currentMap];
+        ChangeMapRpc(_currentMap);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -233,6 +349,8 @@ public class TeleportManager : NetworkBehaviour
                 EventsManager.SetExitPadTransform(  finalTeleportConnections.teleportPairs[i].entrancePad.gameObject, 
                                                     finalTeleportConnections.teleportPairs[i].exitPad);
             }
+
+            _useTeleportTimerHaptic = false;
 
         //This sets up the correct map for the VR Player, and set up the correct teleport connections.
         // It also sets up a random time limit before the next time the map changes again
@@ -266,44 +384,69 @@ public class TeleportManager : NetworkBehaviour
         //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / delay;
-
-            if(!_isEverythingCollected)
+            if(!_isPaused)
             {
-                if(isInNetwork) ChangeBarSizeRpc(t); 
+                elapsed += Time.deltaTime;
+                float t = elapsed / delay;
+
+                if(!_isEverythingCollected && _isInNetwork) ChangeBarSizeRpc(t);
             }
+            // else
+            // {
+            //     elapsed = delay;
+            // }
 
             yield return null;
         }
 
-        //This changes the current map
-        CurrentMapServerRpc(false, true);
+        if(!_isPaused)
+        {
+            //This changes the current map
+            CurrentMapServerRpc(false, true);
 
-        //The teleport bars are reset to their full size
-        if(isInNetwork) ChangeBarSizeRpc(0.95f); 
+            //The teleport bars are reset to their full size
+            if(_isInNetwork)
+            {
+                ChangeBarSizeRpc(0.95f); 
+            }
+        }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
-        for(int i = 0; i < _barList.Count; i++)
+        if(_useTeleportTimerHaptic)
         {
-            _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
-                                                _barList[i].localScale.y, 
-                                                Mathf.Lerp(0.95f, 0f, _newSize));
+            EventsManager.UseTeleportBarHaptic(_newSize / 5f);
+
+            for(int i = 0; i < _barList.Count; i++)
+            {
+                _barList[i].localScale = new Vector3(   _barList[i].localScale.x, 
+                                                    _barList[i].localScale.y, 
+                                                    Mathf.Lerp(0.95f, 0f, _newSize));
+            }
         }
     }
 
     private void GainCollectable()
     {
+        if(_collectablePoints == 0) EventsManager.FirstCollectable();
+
         //Once a collectable is collected, this hids it, and gives the PCPlayer a point
-        collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+        if(_collectablePoints < collectableIndicators.Length)
+        {
+            collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+        }
+        else
+        {
+            collectableIndicators[collectableIndicators.Length - 1].material.SetColor("_BaseColor", activeMaterial.GetColor("_BaseColor"));
+        }
+
         _collectablePoints++;
 
         //If all collectables are collected, then the teleport pad's bars are removed, and an event is called to inform other scripts about the PCPlayer's progress
-        if(collectableIndicators.Length <= _collectablePoints)
-        {
+        if(collectableIndicators.Length <= _collectablePoints || _requiresOnlyOneCollectable)
+        {        
             _barList = null;
             _isEverythingCollected = true;
             EventsManager.EverythingCollected();
@@ -314,10 +457,11 @@ public class TeleportManager : NetworkBehaviour
     //This resets the latest collectable (to be used when all collectables need to be reset)
     private void RemoveCollectable()
     {
-        if(_collectablePoints > 0)
+        _collectablePoints = 0;
+
+        for(int i = 0; i < collectableIndicators.Length; i++)
         {
-            _collectablePoints--;
-            collectableIndicators[_collectablePoints].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));
+            collectableIndicators[i].material.SetColor("_BaseColor", deactiveMaterial.GetColor("_BaseColor"));    
         }
     }
 }

@@ -34,6 +34,7 @@ public class ConnectUIScript : NetworkBehaviour
 
 
     [Header("PC Player")]
+    [SerializeField] private GameObject pcPlayerCameraCover;
     [SerializeField] private GameObject pcPlayerStatue;
     [SerializeField] private GameObject pcPlayerWithBody;
     [SerializeField] private GameObject pcPlayerWithoutBody;
@@ -103,6 +104,8 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("ConnectUIScript Start Add SceneLoaded");
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
                 } 
+
+                Debug.Log("Client Can Connect 1");
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
         }
@@ -139,6 +142,8 @@ public class ConnectUIScript : NetworkBehaviour
                     Debug.Log("ConnectUIScript OnEnable Add SceneLoaded");
                     NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += SceneLoaded;
                 }
+
+                Debug.Log("Client Can Connect 2");
                 NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
             }
         }
@@ -271,6 +276,7 @@ public class ConnectUIScript : NetworkBehaviour
             Debug.Log("Create PCPlayer 1");
             SetPCPlayerID(0);
             EventsManager.CreatedPCPlayer();
+
             CreatePCPlayerBody();
             // if(_skipTutorial) CreatePCPlayerBody();
         }
@@ -321,9 +327,11 @@ public class ConnectUIScript : NetworkBehaviour
     //Creates a VR/PC Player when someone logs in as host/client
     private void HandleClientConnected(ulong clientId)
     {
+        Debug.Log("ConnectUIScript HandleClientConnected 0: " + clientId);
+
         if (!NetworkManager.Singleton.IsServer) return;
 
-        Debug.Log("ConnectUIScript HandleClientConnected 1");
+        Debug.Log("ConnectUIScript HandleClientConnected 1: " + clientId);
        
         //Creates a PC Player for the host player, playing alone
         if (_isTestingPCPlayer)
@@ -378,6 +386,8 @@ public class ConnectUIScript : NetworkBehaviour
 
     private void CreatePCPlayerBody()
     {
+        Debug.Log("CreatePCPlayerBody");
+
         DestroyPCPlayerStatueRpc();
 
         GameObject _newPCPlayer;
@@ -401,6 +411,7 @@ public class ConnectUIScript : NetworkBehaviour
     public void DestroyPCPlayerStatueRpc()
     {
         if(pcPlayerStatue != null) Destroy(pcPlayerStatue);
+        if(pcPlayerCameraCover != null) Destroy(pcPlayerCameraCover);
     }
 
     //Immediately creates a VR Player for the host (used in debugging only)

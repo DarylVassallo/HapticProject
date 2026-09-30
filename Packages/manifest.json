@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "com.interhaptics.core_sdk": "https://github.com/Interhaptics/Unity_CoreSDK.git",
     "com.unity.ai.navigation": "2.0.12",
+    "com.unity.animation.rigging": "1.4.1",
     "com.unity.cinemachine": "3.1.6",
     "com.unity.feature.development": "1.0.2",
     "com.unity.ide.rider": "3.0.39",

@@ -14,6 +14,7 @@ public class EnemyManager : NetworkBehaviour
     [SerializeField] private int enemyNumLimit;
     // private int enemyCount;
     private List<GameObject> enemyList;
+    [SerializeField] private Transform enemyHaptic;
 
     private NetworkVariable<float> chancesOfEnemy = new(0f);
 
@@ -72,6 +73,7 @@ public class EnemyManager : NetworkBehaviour
         EventsManager.OnRemoveEnemy += RemoveEnemy;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
+        EventsManager.OnSetChanceOfSpawningEnemy -= SetChanceOfEnemysServerRpc;
         EventsManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
 
         EventsManager.OnGetAppropriateEnemyAudio += GetAppropriateAudio;
@@ -87,6 +89,7 @@ public class EnemyManager : NetworkBehaviour
         EventsManager.OnRemoveEnemy -= RemoveEnemy;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
+        EventsManager.OnSetChanceOfSpawningEnemy -= SetChanceOfEnemysServerRpc;
         EventsManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
 
         EventsManager.OnGetAppropriateEnemyAudio -= GetAppropriateAudio;
@@ -127,14 +130,48 @@ public class EnemyManager : NetworkBehaviour
     //If need, this constantly checks if an enemy should be randomly spawned
     void FixedUpdate()
     {       
+        FindClosestEnemy();
+
         if(chancesOfEnemy.Value <= 0 || !IsOwner) return;
         PotentialEnemyCreation();
+    }
+
+    private void FindClosestEnemy()
+    {
+        if(_pcPlayer == null) return;
+        if(enemyList.Count <= 0)
+        {
+            if(enemyHaptic.position.y != 100) enemyHaptic.position = new Vector3(0, 0, 100);
+            return;
+        }
+
+        float minDistance = 999999f;
+        float currDistance;
+        int closestEnemyNum = -1;
+
+        for(int i = 0; i < enemyList.Count; i++)
+        {
+            currDistance = Vector3.Distance(enemyList[i].transform.position, _pcPlayer.position);
+            if(currDistance < minDistance)
+            {
+                minDistance = currDistance;
+                closestEnemyNum = i;
+            }
+        }
+
+        if(closestEnemyNum != -1)
+        {
+            enemyHaptic.position = enemyList[closestEnemyNum].transform.position;
+            enemyHaptic.rotation = enemyList[closestEnemyNum].transform.rotation;
+        }
     }
 
     //This properly removes a specific enemy from the scene, and any hidden meshes from the hidden object list
     private void RemoveEnemy(GameObject removedEnemy)
     {
         enemyList.Remove(removedEnemy);
+        if(enemyList.Count <= 0) EventsManager.UseEnemyHaptic(false);
+
         RevealUnderLight[] revealUnderLightObjects = removedEnemy.GetComponentsInChildren<RevealUnderLight>(true);
         foreach (RevealUnderLight revealUnderLight in revealUnderLightObjects)
         {
@@ -225,7 +262,9 @@ public class EnemyManager : NetworkBehaviour
             int enemyNum = UnityEngine.Random.Range(1, _closeSpawnPoints.Count) - 1;
             var newEnemy = Instantiate(enemy, _closeSpawnPoints[enemyNum].position, Quaternion.identity);
             newEnemy.GetComponent<NetworkObject>().Spawn();
+            
             enemyList.Add(newEnemy);
+            if(enemyList.Count > 0) EventsManager.UseEnemyHaptic(true);
         }
     }
 }

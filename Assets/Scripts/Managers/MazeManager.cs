@@ -9,14 +9,19 @@ using Unity.AI.Navigation;
 
 using Unity.Netcode;
 
+using Interhaptics.Utils;
+
 //This controls the various things that could occur due to the hidden switches
 public class MazeManager : NetworkBehaviour
 {
     private AudioSource _audioSource;
+    [SerializeField] private AudioClip buttonAudio;
+
     private bool _activatedInteractiveObject;
 
     [Header("Switches")]
     [SerializeField] private HiddenSwitches[] hiddenSwitches;
+    [SerializeField] private StoneButtonHaptics[] stoneButtonHaptics;
 
     //This is the Switch wall, recording the specific type of switch, 
     // and the button order required to activate it
@@ -26,6 +31,13 @@ public class MazeManager : NetworkBehaviour
         public EventsManager.ShapeType shape;
         public EventsManager.ButtonType[] buttonOrder;
         public UnityEvent activateMethod;
+    }
+
+    [System.Serializable]
+    private struct StoneButtonHaptics
+    {
+        public EventsManager.ButtonType button;
+        public AudioHapticSource haptic;
     }
 
     private enum InteractiveObject { SpinWheel, HealthBall, DefenseButton }
@@ -43,6 +55,7 @@ public class MazeManager : NetworkBehaviour
 
 
     [Header("Spin Bridges")]
+    // private bool _grabbedSpinWheel;
     [SerializeField] private Transform spinWheelObject;
     [SerializeField] private AudioClip wheelAudio;
     [SerializeField] private int maxWheelCheckCount;
@@ -73,6 +86,8 @@ public class MazeManager : NetworkBehaviour
 
     void Awake()
     {        
+        // _grabbedSpinWheel = false;
+
         _audioSource = this.gameObject.GetComponent<AudioSource>();
 
         _isNewNavMeshAvailable = false;
@@ -86,6 +101,8 @@ public class MazeManager : NetworkBehaviour
 
     private void OnEnable()
     {
+        EventsManager.OnPressedButtonHaptic += PressedButtonHaptic;
+
         EventsManager.OnTriggerButton += PressedButton;
         EventsManager.OnActivateReset += ResetButtons;
 
@@ -104,6 +121,8 @@ public class MazeManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnPressedButtonHaptic -= PressedButtonHaptic;
+
         EventsManager.OnTriggerButton -= PressedButton;
         EventsManager.OnActivateReset -= ResetButtons;
 
@@ -180,20 +199,57 @@ public class MazeManager : NetworkBehaviour
         
         //Rotates the bridges if the VR Player rotates the wheel, 
         // and the wheel is active
+        // if(isSpinWheelActive.Value)
+        // {
+        //     CheckSpinWheel();
+
+        //     if(spinWheelKnobValueDiff != 0) EventsManager.UseBridgeHaptic(spinWheelKnobValueDiff);
+
+        //     for(int i = 0; i < rotateBridges.Length; i++)
+        //     {
+        //         rotateBridges[i].Rotate(0.0f, spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+        //     }
+
+        //     for(int i = 0; i < reverseRotateBridges.Length; i++)
+        //     {
+        //         reverseRotateBridges[i].Rotate(0.0f, -spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+        //     }
+        // }
+    }
+    public void SpinWheelChanged(float _value)
+    {
         if(isSpinWheelActive.Value)
         {
-            CheckSpinWheel();
+            spinWheelKnobValueDiff = spinWheelKnob.value - prevSpinWheelKnobValue;
+            
+            if(spinWheelKnobValueDiff != 0)
+            {
+                EventsManager.UseBridgeHaptic(_value);
+                SetAudioNumServerRpc(2);
+            }
 
             for(int i = 0; i < rotateBridges.Length; i++)
             {
-                rotateBridges[i].Rotate(0.0f, spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+                rotateBridges[i].localRotation = Quaternion.Euler(0.0f, _value * bridgeRotateSpeed, 0.0f);
             }
 
             for(int i = 0; i < reverseRotateBridges.Length; i++)
             {
-                reverseRotateBridges[i].Rotate(0.0f, -spinWheelKnobValueDiff * bridgeRotateSpeed, 0.0f, Space.Self);
+                reverseRotateBridges[i].localRotation = Quaternion.Euler(0.0f, -_value * bridgeRotateSpeed, 0.0f);
             }
+
+            prevSpinWheelKnobValue = spinWheelKnob.value;
         }
+    }
+
+    public void GrabbedSpinWheel()
+    {
+        // _grabbedSpinWheel = true;
+    }
+    
+    public void ReleasedSpinWheel()
+    {
+        // _grabbedSpinWheel = false;   
     }
 
     //Players / Stops the audio if requested (-1 means to stop audio, while other numbers refer to specific audio clips)
@@ -206,19 +262,19 @@ public class MazeManager : NetworkBehaviour
         }
         
         AudioClip _currentAudio = incorrectAudio;
-        float _volume = 0f;
+        // float _volume = 0f;
         switch (current)
         {
             case 0:
-                _volume = 0.8f;
+                // _volume = 0.8f;
                 _currentAudio = incorrectAudio;
                 break;
             case 1:
-                _volume = 0.8f;
+                // _volume = 0.8f;
                 _currentAudio = correctAudio;
                 break;
             case 2:
-                _volume = 0.5f;
+                // _volume = 0.5f;
                 _currentAudio = wheelAudio;
                 break;
         }
@@ -324,13 +380,13 @@ public class MazeManager : NetworkBehaviour
     private void DeactivateAllServerRpc()
     {
         isSpinWheelActive.Value = false;
-        DeactivateObjectLight(spinWheelObject);
+        hasSpinWheelBeenUsed.Value = false;
 
         isHealthBallActive.Value = false;
-        DeactivateObjectLight(healthBallObject);
+        hasHealthBallBeenUsed.Value = false;
 
         isDefenseButtonActive.Value = false;
-        DeactivateObjectLight(defenseButtonObject);
+        hasDefenseButtonBeenUsed.Value = false;
 
         TrueResetButtons();
     }
@@ -341,19 +397,39 @@ public class MazeManager : NetworkBehaviour
     {
         if (!current) return;
 
-        switch(interactiveObject)
+        if(current)
         {
-            case InteractiveObject.SpinWheel:
-                ActivateObjectLight(spinWheelObject);
-                break;
+            switch(interactiveObject)
+            {
+                case InteractiveObject.SpinWheel:
+                    ActivateObjectLight(spinWheelObject);
+                    break;
 
-            case InteractiveObject.HealthBall:
-                ActivateObjectLight(healthBallObject);
-                break;
+                case InteractiveObject.HealthBall:
+                    ActivateObjectLight(healthBallObject);
+                    break;
 
-            case InteractiveObject.DefenseButton:
-                ActivateObjectLight(defenseButtonObject);
-                break;
+                case InteractiveObject.DefenseButton:
+                    ActivateObjectLight(defenseButtonObject);
+                    break;
+            }
+        }
+        else
+        {
+            switch(interactiveObject)
+            {
+                case InteractiveObject.SpinWheel:
+                    DeactivateObjectLight(spinWheelObject);
+                    break;
+
+                case InteractiveObject.HealthBall:
+                    DeactivateObjectLight(healthBallObject);
+                    break;
+
+                case InteractiveObject.DefenseButton:
+                    DeactivateObjectLight(defenseButtonObject);
+                    break;
+            }
         }
     }
 
@@ -393,36 +469,45 @@ public class MazeManager : NetworkBehaviour
     private IEnumerator ObjectLightFlicker(bool isOn, Material objectLight, Transform interactiveObject)
     {
         bool hasBeenUsed = false;
+        bool isActive = false;
 
         yield return new WaitForSeconds(1f);
 
         if(interactiveObject == spinWheelObject)
         {
             hasBeenUsed = hasSpinWheelBeenUsed.Value;
+            isActive = isSpinWheelActive.Value;
         }else if(interactiveObject == healthBallObject)
         {
             hasBeenUsed = hasHealthBallBeenUsed.Value;
+            isActive = isHealthBallActive.Value;
         }else if(interactiveObject == defenseButtonObject)
         {
             hasBeenUsed = hasDefenseButtonBeenUsed.Value;
+            isActive = isDefenseButtonActive.Value;
         }
 
-        if(!hasBeenUsed)
+        if(isActive)
         {
-            if(isOn)
+            if(!hasBeenUsed)
             {
-                objectLight.SetColor("_BaseColor", Color.red);
-                StartCoroutine(ObjectLightFlicker(false, objectLight, interactiveObject));
-            }
-            else
-            {
+                if(isOn)
+                {
+                    objectLight.SetColor("_BaseColor", Color.red);
+                    StartCoroutine(ObjectLightFlicker(false, objectLight, interactiveObject));
+                }
+                else
+                {
+                    objectLight.SetColor("_BaseColor", Color.green);
+                    StartCoroutine(ObjectLightFlicker(true, objectLight, interactiveObject));
+                }
+            }else{
                 objectLight.SetColor("_BaseColor", Color.green);
-                StartCoroutine(ObjectLightFlicker(true, objectLight, interactiveObject));
             }
         }
         else
         {
-            objectLight.SetColor("_BaseColor", Color.green);
+            objectLight.SetColor("_BaseColor", Color.red);
         }
     }
 
@@ -440,13 +525,32 @@ public class MazeManager : NetworkBehaviour
         }
     }
 
+    private IEnumerator WaitBeforeCorrectButtons(EventsManager.ShapeType _shape, int _index)
+    {
+        yield return new WaitForSeconds(1f);
+        
+        //The current order is complete and correct
+        FreezeCorrectButtons(_shape);
+        hiddenSwitches[_index].activateMethod.Invoke();
+        SetAudioNumServerRpc(1);
+    }
+
+    private IEnumerator WaitBeforeReset()
+    {
+        yield return new WaitForSeconds(1f);
+        ResetButtons();
+        SetAudioNumServerRpc(0);
+    }
+
+
     //Resets the recorded inputted buttons of the switch
     private void ResetButtons()
-    {
+    {        
         currentShapeOrder = new EventsManager.ShapeType[5];
         currentButtonOrder = new EventsManager.ButtonType[5];
         entryNum = 0;
 
+        // EventsManager.UseAllButtonHaptic();
         EventsManager.ResetButtons();
 
         //Wrong
@@ -483,8 +587,23 @@ public class MazeManager : NetworkBehaviour
     // Checks if the button matches the switches order, 
     // Checks if the button belongs to the current switch,
     // Spawns one enemy nearby
+
+    private void PressedButtonHaptic(EventsManager.ButtonType _button)
+    {
+        for (int i = 0; i < stoneButtonHaptics.Length; i++)
+        {
+            if (stoneButtonHaptics[i].button == _button)
+            {
+                EventsManager.PlayStoneButtonHaptic(stoneButtonHaptics[i].haptic);
+                break;
+            }
+        }
+    }
+
     private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
+        PressedButtonHaptic(_button);
+
         //Spawns one enemy nearby 
         EventsManager.CreateRandomEnemy(1);
 
@@ -497,7 +616,7 @@ public class MazeManager : NetworkBehaviour
 
             if(currentShapeOrder[i] != _shape)
             {
-                ResetButtons();
+                StartCoroutine(WaitBeforeReset());
                 break;
             }
         }
@@ -505,6 +624,7 @@ public class MazeManager : NetworkBehaviour
         //Adds the new input to the current order
         currentShapeOrder[entryNum] = _shape;
         currentButtonOrder[entryNum] = _button;
+
         entryNum++;
 
         //Checks if the current order is correct. 
@@ -514,6 +634,14 @@ public class MazeManager : NetworkBehaviour
         {
             if(hiddenSwitches[i].shape == _shape)
             {
+                for (int j = 0; j < hiddenSwitches[i].buttonOrder.Length; j++)
+                {
+                    if (hiddenSwitches[i].buttonOrder[j] == _button)
+                    {
+                        // EventsManager.UseButtonHaptic(j);
+                    }
+                }
+
                 //The checked switch is the one being used
 
                 //Checks if the current order is complete
@@ -525,17 +653,12 @@ public class MazeManager : NetworkBehaviour
                     {
                         //Current order does not match the switch's order
 
-                        ResetButtons();
-                        SetAudioNumServerRpc(0);
+                        StartCoroutine(WaitBeforeReset());
                         return;
                     }
                 }
 
-                //The current order is complete and correct
-                FreezeCorrectButtons(_shape);
-                hiddenSwitches[i].activateMethod.Invoke();
-                SetAudioNumServerRpc(1);
-
+                StartCoroutine(WaitBeforeCorrectButtons(_shape, i));
                 return;
             }
         }

@@ -81,6 +81,7 @@ public class Health : NetworkBehaviour
             {
                 EventsManager.ChangeHealthBar(newValue);
                 EventsManager.ChangeHealthCamera(newValue);
+                EventsManager.ChangeHealthHaptic(newValue);
             }else if (this.CompareTag("Enemy"))
             {
                 foreach (Renderer renderer in this.gameObject.GetComponentsInChildren<Renderer>())

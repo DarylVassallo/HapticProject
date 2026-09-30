@@ -23,9 +23,13 @@ public class TeleportPad : NetworkBehaviour
     private bool _hasBeenUsed = false;
 
     [SerializeField] private bool _instantTeleport;
+    private bool _collectedEverythingAndNotUsedTeleporter;
     [SerializeField] private bool _effectsEnemies;
 
     private bool rotateRings = false;
+
+    [SerializeField] private Transform bubble;
+    private Material _bubbleMaterial;
 
     [SerializeField] private Transform ring;
     [SerializeField] private Transform reverseRing;
@@ -90,13 +94,24 @@ public class TeleportPad : NetworkBehaviour
 
     void Start()
     {
+        _collectedEverythingAndNotUsedTeleporter = false;
+
+        _bubbleMaterial = bubble.GetComponent<Renderer>().material;
+
+        bubble.localScale = new Vector3(8, 8, 8);
+        Color colour = _bubbleMaterial.color;
+        colour.a = 0;
+        _bubbleMaterial.color = colour;
+
         if(bar != null) EventsManager.AddNewBar(bar);
     }
 
     private void OnEnable()
     {
+        EventsManager.OnStartWithInstantTeleport += ActivateInstantTeleport;
+
         EventsManager.OnSendCodeToTeleportPads += CheckInputtedCode;
-        EventsManager.OnEverythingCollected += ActivateInstantTeleport;
+        EventsManager.OnEverythingCollected += EverythingCollected;
         EventsManager.OnResetTeleportPads += ResetTeleportPad;
 
         EventsManager.OnChangePadsReady += ChangePadsReady;
@@ -116,12 +131,16 @@ public class TeleportPad : NetworkBehaviour
             EventsManager.OnChangeHidingBarPosition += ChangeHidingBarPositionRpc;
             EventsManager.OnTriggerRopeButton += TriggerRopeButton;
         }
+
+        EventsManager.OnUsedCrookedBridgeTeleporter += UsedCrookedBridgeTeleporter;
     }
 
     private void OnDisable()
     {
+        EventsManager.OnStartWithInstantTeleport -= ActivateInstantTeleport;
+
         EventsManager.OnSendCodeToTeleportPads -= CheckInputtedCode;
-        EventsManager.OnEverythingCollected -= ActivateInstantTeleport;
+        EventsManager.OnEverythingCollected -= EverythingCollected;
         EventsManager.OnResetTeleportPads -= ResetTeleportPad;
 
         EventsManager.OnChangePadsReady -= ChangePadsReady;
@@ -141,6 +160,8 @@ public class TeleportPad : NetworkBehaviour
             EventsManager.OnChangeHidingBarPosition -= ChangeHidingBarPositionRpc;
             EventsManager.OnTriggerRopeButton -= TriggerRopeButton;
         }
+
+        EventsManager.OnUsedCrookedBridgeTeleporter -= UsedCrookedBridgeTeleporter;
     }
 
     public override void OnNetworkSpawn()
@@ -220,6 +241,11 @@ public class TeleportPad : NetworkBehaviour
         _audioSource = this.gameObject.GetComponent<AudioSource>();
     }
 
+    private void UsedCrookedBridgeTeleporter()
+    {
+        _collectedEverythingAndNotUsedTeleporter = false;
+    }
+
 
     //Resets the teleport pad, so the PC Player can use it 'for the first time' again
     private void ResetTeleportPad()
@@ -230,8 +256,14 @@ public class TeleportPad : NetworkBehaviour
     //This triggers the teleportation sequence immediately without requiring the code
     private void ActivateInstantTeleport()
     {
-        bar.parent.gameObject.SetActive(false);
+        if(bar != null) bar.parent.gameObject.SetActive(false);
         _instantTeleport = true;
+    }
+    
+    private void EverythingCollected()
+    {
+        ActivateInstantTeleport();
+        _collectedEverythingAndNotUsedTeleporter = true;
     }
 
     //This allows the TeleportManager to change the current teleport pad's exit pad
@@ -520,25 +552,19 @@ public class TeleportPad : NetworkBehaviour
 
     private void OnTriggerEnter(Collider _other)
     {
-        //If the PC Player has entered this teleport pad for the first time, the chances for an enemy to randomly spawn increases slightly
-        if (!_hasBeenUsed)
-        {
-            _hasBeenUsed = true;
-            if(_effectsEnemies)
-            {
-                EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
-            }
-
-            //If the PCPlayer has reached the final teleport pad, their progress is saved
-            if(_isFinalPad)
-            {
-                EventsManager.CrossedCrookedBridges();
-            }
-        }
-
         //This saves if the PC Player has entered this teleport pad, and can also begin the teleport sequence immediately if required
         if (_other.CompareTag("PCPlayer"))
         {
+            //If the PC Player has entered this teleport pad for the first time, the chances for an enemy to randomly spawn increases slightly
+            if (!_hasBeenUsed)
+            {
+                _hasBeenUsed = true;
+                if(_effectsEnemies) EventsManager.IncreaseChanceOfSpawningEnemy(0.0001f);
+
+                //If the PCPlayer has reached the final teleport pad, their progress is saved
+                if(_isFinalPad) EventsManager.CrossedCrookedBridges();
+            }
+
             ChangeIsPlayerOnPadServerRpc(true);
 
             if(_instantTeleport)
@@ -554,8 +580,9 @@ public class TeleportPad : NetworkBehaviour
     {
         if(!arePadsReady) return;
 
-        exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
+        if(exitTeleportPad != null) exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
         rotateRings = true;
+        EventsManager.TogglePCTrigger(false);
 
         _audioSource.Stop();
         _audioSource.clip = _teleportAudio;
@@ -588,6 +615,11 @@ public class TeleportPad : NetworkBehaviour
 
         _pcPlayerTransform.position = exitTeleportPad.TransformPoint(localPos);
         _pcPlayerTransform.GetChild(0).rotation = exitTeleportPad.rotation * localRot;
+
+        if(_collectedEverythingAndNotUsedTeleporter)
+        {
+            EventsManager.UsedCrookedBridgeTeleporter();
+        }
     }
 
     private void FixedUpdate()
@@ -609,12 +641,40 @@ public class TeleportPad : NetworkBehaviour
     }
 
     private void ChangeTeleportEffect()
-    {
+    {        
         //This increases/decreases the rotation speed and teleportation visual effect (visuals only applied to the PC Player)
         if(rotateIncrement > 0 || rotateSpeed > minRotateSpeed)
         {
+            float _newScale = Mathf.Lerp(
+                15f,
+                4f,
+                (rotateSpeed - minRotateSpeed) / (maxRotateSpeed - minRotateSpeed)
+            );
+            bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+            float _newAlpha = Mathf.Lerp(
+                0f,
+                1f,
+                (rotateSpeed - minRotateSpeed) / (maxRotateSpeed - minRotateSpeed)
+            );
+            Color colour = _bubbleMaterial.color;
+            colour.g = 1 - _newAlpha;
+            colour.a = _newAlpha;
+            _bubbleMaterial.color = colour;
+
+            EventsManager.TeleporterTransitionHaptic(_newAlpha);
+
             rotateSpeed += rotateIncrement;
             EventsManager.ChangeTeleportRotateSpeed(rotateSpeed - minRotateSpeed, maxRotateSpeed - minRotateSpeed);
+        }
+        else
+        {
+            float _newScale = 80;
+            bubble.localScale = new Vector3(_newScale, _newScale, _newScale);
+
+            Color colour = _bubbleMaterial.color;
+            colour.a = 0f;
+            _bubbleMaterial.color = colour;
         }
     }
 
@@ -629,7 +689,7 @@ public class TeleportPad : NetworkBehaviour
                 EventsManager.TutorialTeleport();
             }else if(_isPlayerOnPad.Value)
             {
-                 TeleportRpc();   
+                TeleportRpc();   
             }  
         }
 
@@ -641,6 +701,7 @@ public class TeleportPad : NetworkBehaviour
         {
             rotateIncrement *= -1f;  
             rotateRings = false;
+            StartCoroutine(ActivatePCTriggers(0.25f));
 
             ring.rotation = restRotation;
             reverseRing.rotation = restRotation;
@@ -649,6 +710,12 @@ public class TeleportPad : NetworkBehaviour
             
             StopAudioRpc();
         }
+    }
+
+    private IEnumerator ActivatePCTriggers(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        EventsManager.TogglePCTrigger(true);
     }
 
     //Records if the PC Player has left the teleport pad
