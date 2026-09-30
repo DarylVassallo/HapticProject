@@ -26,14 +26,14 @@ public class MapPlayerTracker : NetworkBehaviour
     private void OnEnable()
     {
         EventsManager.OnReachedSwitches += ReachedSwitchesRpc;
-        EventsManager.ReachedFirstTeleporter += ReachedSwitchesRpc;
+        EventsManager.OnReachedFirstTeleporter += ReachedSwitchesRpc;
         EventsManager.OnStartWithPlayerIcon += StartWithPlayerIcon;
     }
 
     private void OnDisable()
     {
         EventsManager.OnReachedSwitches -= ReachedSwitchesRpc;
-        EventsManager.ReachedFirstTeleporter -= ReachedSwitchesRpc;
+        EventsManager.OnReachedFirstTeleporter -= ReachedSwitchesRpc;
         EventsManager.OnStartWithPlayerIcon -= StartWithPlayerIcon;
         _canPCFunction = false;
     }
