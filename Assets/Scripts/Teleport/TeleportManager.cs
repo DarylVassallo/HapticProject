@@ -161,7 +161,6 @@ public class TeleportManager : NetworkBehaviour
     private void TogglePause(bool _toggle)
     {
         _isPaused = !_toggle;
-        Debug.Log("TogglePause: _isPaused: " + _isPaused);
     }
 
     private void DisableTeleportChange()
@@ -379,30 +378,15 @@ public class TeleportManager : NetworkBehaviour
     {
         float elapsed = 0f;
 
-        Debug.Log("ChangeMapDelay Testing 1");
-
         //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
-            Debug.Log("ChangeMapDelay Testing 2");
-
             if(!_isPaused)
             {
-                Debug.Log("ChangeMapDelay Testing 3");
-
                 elapsed += Time.deltaTime;
                 float t = elapsed / delay;
 
-                if(!_isEverythingCollected)
-                {
-                    Debug.Log("ChangeMapDelay Testing 4");
-                    if(_isInNetwork)
-                    {
-                        Debug.Log("ChangeMapDelay Testing 5");
-                        Debug.Log("t: " + t);
-                        ChangeBarSizeRpc(t); 
-                    }
-                }
+                if(!_isEverythingCollected && _isInNetwork) ChangeBarSizeRpc(t);
             }
             // else
             // {
@@ -428,10 +412,8 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
-        Debug.Log("ChangeBarSizeRpc: " + _newSize);
         if(_useTeleportTimerHaptic)
         {
-            Debug.Log("UseTeleportBarHaptic: " + (_newSize / 5f));
             EventsManager.UseTeleportBarHaptic(_newSize / 5f);
 
             for(int i = 0; i < _barList.Count; i++)

@@ -77,7 +77,6 @@ public class HapticManager : NetworkBehaviour
         _playingHealthHaptic = false;
 
         _useTeleporterTimerHaptic = false;
-        Debug.Log("B1 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
 
         _isNarrator = false;
 
@@ -322,13 +321,8 @@ public class HapticManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseTeleporterTimerHapticRpc(float _newIntensity)
     {
-        Debug.Log("UseTeleporterTimerHapticRpc: " + _newIntensity);
-        Debug.Log("_isNarrator: " + _isNarrator);
-        Debug.Log("_useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
-        Debug.Log("_isPaused: " + _isPaused);
         if(_isNarrator || !_useTeleporterTimerHaptic || _isPaused) return;
         _teleportIntensity = _newIntensity;
-        Debug.Log("_teleportIntensity: " + _teleportIntensity);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
@@ -336,22 +330,18 @@ public class HapticManager : NetworkBehaviour
     {
         // if(_isPaused) return;
         _useTeleporterTimerHaptic = true;
-        Debug.Log("B2 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
         if(IsOwner) PlayTeleporterTimerHapticRpc(2f);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayTeleporterTimerHapticRpc(float _delay)
     {
-        Debug.Log("PlayTeleporterTimerHapticRpc: " + _delay);
         // if(_isPaused) return;
         StartCoroutine(PlayTeleporterTimerHaptic(_delay));
     }
 
     private IEnumerator PlayTeleporterTimerHaptic(float _delay)
     {
-        Debug.Log("PlayTeleporterTimerHaptic: " + _delay);
-
         if(!_isPaused)
         {
             teleporterTimerHapticSource.enabled = true;
@@ -369,7 +359,6 @@ public class HapticManager : NetworkBehaviour
     private void DeactivateTeleporterTimerHapticRpc()
     {
         _useTeleporterTimerHaptic = false;
-        Debug.Log("B3 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
         teleporterTimerHapticSource.Stop();
         teleporterTimerHapticSource.enabled = false;
     }
