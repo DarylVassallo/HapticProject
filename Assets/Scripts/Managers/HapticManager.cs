@@ -250,6 +250,7 @@ public class HapticManager : NetworkBehaviour
         if(IsOwner && !_playingHealthHaptic)
         { 
             Debug.Log("ChangeHealthHapticRpc: " + _newHealth);
+            Debug.Log("1 PlayHealthHapticRpc: " + _healthDelay);
             PlayHealthHapticRpc(_healthDelay);
         }
     }
@@ -382,6 +383,7 @@ public class HapticManager : NetworkBehaviour
 
     private void PlayStoneButtonHaptic(AudioHapticSource _haptic)
     {
+        Debug.Log("PlayStoneButtonHaptic: " + _haptic);
         _haptic.Stop();
         _haptic.enabled = true;
         _haptic.SourceIntensity = 1f;
@@ -474,7 +476,7 @@ public class HapticManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayHealthHapticRpc(float _delay)
     {
-        Debug.Log("PlayHealthHapticRpc: " + _delay);
+        Debug.Log("Function PlayHealthHapticRpc: " + _delay);
         StartCoroutine(PlayHealthHaptic(_delay));
     }
 
@@ -504,6 +506,7 @@ public class HapticManager : NetworkBehaviour
         {
             _hapticHealth = _hapticHealth + 0.05f;
             float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
+            Debug.Log("2 PlayHealthHapticRpc: " + _healthDelay);
             PlayHealthHapticRpc(_healthDelay);
         }
         else
