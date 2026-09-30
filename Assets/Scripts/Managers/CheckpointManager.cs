@@ -125,9 +125,7 @@ public class CheckpointManager : NetworkBehaviour
     // all the collectable and hidden arrows are activated
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateSecondCheckpointRpc()
-    {
-        Debug.Log("ActivateSecondCheckpointRpc");
-        
+    {        
         _hasCompleteTutorial = true;
         _hasUsedTeleporter = true;
         EventsManager.ActivateTeleporterTimerHaptic();
@@ -223,9 +221,9 @@ public class CheckpointManager : NetworkBehaviour
             //If the PC Player has not collected all the collectables, then all collectables and teleport pads are reset
             if(!_hasCollectedEverything)
             {
-                Debug.Log("_hasCollectedEverything: " + _hasCollectedEverything);
                 EventsManager.ResetHiddenButtons();
                 EventsManager.ResetTeleportPads();
+                EventsManager.SetChanceOfEnemysServerRpc(0f);
             }
 
             if(_pcPlayer == null) _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");
@@ -233,7 +231,6 @@ public class CheckpointManager : NetworkBehaviour
             //The PC Player's health and position are reset
             EventsManager.ResetHealth(_pcPlayer);
             _pcPlayer.transform.position = currentCheckpoint.position;
-            Debug.Log("currentCheckpoint: " + currentCheckpoint);
 
             StartCoroutine(ResumeGameplay(0.1f));
         }

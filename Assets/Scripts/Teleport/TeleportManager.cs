@@ -415,6 +415,8 @@ public class TeleportManager : NetworkBehaviour
     {
         if(_useTeleportTimerHaptic)
         {
+            Debug.Log("Teleport Bar Size: " + _newSize);
+            Debug.Log("Teleport Haptic: " + (_newSize / 5f));
             EventsManager.UseTeleportBarHaptic(_newSize / 5f);
 
             for(int i = 0; i < _barList.Count; i++)
