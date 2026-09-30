@@ -162,6 +162,7 @@ public class TeleportManager : NetworkBehaviour
     private void TogglePause(bool _toggle)
     {
         _isPaused = !_toggle;
+        Debug.Log("TogglePause: _isPaused: " + _isPaused);
     }
 
     private void DisableTeleportChange()
@@ -402,25 +403,27 @@ public class TeleportManager : NetworkBehaviour
             yield return null;
         }
 
+        Debug.Log("_isPaused: " + _isPaused);
         if(!_isPaused)
         {
+            Debug.Log("Testing 1");
             //This changes the current map
             CurrentMapServerRpc(false, true);
 
             //The teleport bars are reset to their full size
-            if(_isInNetwork) ChangeBarSizeRpc(0.95f); 
+            if(_isInNetwork)
+            {
+                Debug.Log("Testing 2");
+                ChangeBarSizeRpc(0.95f); 
+            }
         }
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
-        Debug.Log("==========================================");
-        Debug.Log("ChangeBarSizeRpc _useTeleportTimerHaptic: " + _useTeleportTimerHaptic);
         if(_useTeleportTimerHaptic)
         {
-            Debug.Log("Teleport Bar Size: " + _newSize);
-            Debug.Log("Teleport Haptic: " + (_newSize / 5f));
             EventsManager.UseTeleportBarHaptic(_newSize / 5f);
 
             for(int i = 0; i < _barList.Count; i++)
