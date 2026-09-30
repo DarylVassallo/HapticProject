@@ -549,19 +549,13 @@ public class NarratorMovement : NetworkBehaviour
         _audioSource.GetSpectrumData(spectrum, 0, FFTWindow.Rectangular);
 
         float decibel = GetDecibel(spectrum, 16f);
-        if(decibel > 0f) Debug.Log("1 decibel: " + decibel);
 
-        if(_isInNetwork)
-        {
-            if(decibel > 0f) Debug.Log("2 decibel: " + decibel);
-            ChangeEyeRingColourRpc(decibel);
-        }
+        if(_isInNetwork) ChangeEyeRingColourRpc(decibel);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeEyeRingColourRpc(float decibel)
     {
-        if(decibel > 0f) Debug.Log("3 decibel: " + decibel);
         eyeRingRenderer.material.SetColor(
             "_BaseColor",
             Color.Lerp(

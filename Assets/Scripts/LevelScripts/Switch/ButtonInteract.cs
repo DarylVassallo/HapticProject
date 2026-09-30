@@ -64,7 +64,6 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         originalPosition = this.transform.position;
 
-        //This line formed with ChatGPT
         pushedPosition =    this.transform.position - 
                             (   transform.forward * 
                                 pressedDistance * 

@@ -279,7 +279,6 @@ public class PlayerMovement : NetworkBehaviour
         {
             SetIsWalkingServerRpc(true);
 
-            //Used ChatGPT to generate initial bobbing logic
             totalBobTimer += Time.deltaTime * bobSpeed;
             cameraTransform.parent.transform.localPosition = new Vector3(   cameraTransform.parent.transform.localPosition.x, 
                                                                             Mathf.Sin(totalBobTimer) * (bobAmount * (1f - healthBobAmount)), 

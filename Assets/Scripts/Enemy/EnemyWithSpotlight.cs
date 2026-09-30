@@ -407,7 +407,6 @@ public class EnemyWithSpotlight : NetworkBehaviour
     }
     
     //This checks if the enemy is within the PC Player's flashlights range and angle (which depends on its strength)
-    //Used ChatGPT here
     bool IsInsideSpotLight(Transform _playerSpotLight)
     {
         if (_playerSpotLight == null) return false;
