@@ -242,12 +242,13 @@ public class HapticManager : NetworkBehaviour
         }
     }
 
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeHealthHapticRpc(float _newHealth)
     {
         _hapticHealth = _newHealth / 100f;
         float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
 
-        if(IsOwner && !_playingHealthHaptic)
+        if(!IsOwner && !_playingHealthHaptic)
         { 
             Debug.Log("ChangeHealthHapticRpc: " + _newHealth);
             Debug.Log("1 PlayHealthHapticRpc: " + _healthDelay);
@@ -477,7 +478,7 @@ public class HapticManager : NetworkBehaviour
     private void PlayHealthHapticRpc(float _delay)
     {
         Debug.Log("Function PlayHealthHapticRpc: " + _delay);
-        StartCoroutine(PlayHealthHaptic(_delay));
+        if(!_playingHealthHaptic && !IsOwner) StartCoroutine(PlayHealthHaptic(_delay));
     }
 
     private IEnumerator PlayHealthHaptic(float _delay)

@@ -105,7 +105,7 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
 
         _activeButton = true;
 
-        if(!isResetButton && IsOwner)
+        if(!isResetButton)
         {
             Debug.Log("ButtonInteract TriggerButton");
             EventsManager.TriggerButton(shape, button);
