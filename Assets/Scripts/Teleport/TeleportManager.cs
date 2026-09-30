@@ -365,6 +365,7 @@ public class TeleportManager : NetworkBehaviour
             
             if(IsOwner)
             {
+                Debug.Log("Testing");
                 _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
                 StartCoroutine(ChangeMapDelay(_timeLimit));
             }
@@ -395,10 +396,10 @@ public class TeleportManager : NetworkBehaviour
                     if(_isInNetwork) ChangeBarSizeRpc(t); 
                 }
             }
-            else
-            {
-                elapsed = delay;
-            }
+            // else
+            // {
+            //     elapsed = delay;
+            // }
 
             yield return null;
         }
