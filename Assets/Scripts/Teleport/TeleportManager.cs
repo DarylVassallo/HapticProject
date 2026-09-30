@@ -147,6 +147,7 @@ public class TeleportManager : NetworkBehaviour
         {
             _hasUsedTeleporter = true;
             _useTeleportTimerHaptic = true;
+            Debug.Log("A1 _useTeleportTimerHaptic: " + true);
         }
     }
 
@@ -349,6 +350,7 @@ public class TeleportManager : NetworkBehaviour
             }
 
             _useTeleportTimerHaptic = false;
+            Debug.Log("A2 _useTeleportTimerHaptic: " + true);
 
         //This sets up the correct map for the VR Player, and set up the correct teleport connections.
         // It also sets up a random time limit before the next time the map changes again

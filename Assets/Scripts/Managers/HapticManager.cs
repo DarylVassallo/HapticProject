@@ -77,6 +77,7 @@ public class HapticManager : NetworkBehaviour
         _playingHealthHaptic = false;
 
         _useTeleporterTimerHaptic = false;
+        Debug.Log("B1 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
 
         _isNarrator = false;
 
@@ -330,6 +331,7 @@ public class HapticManager : NetworkBehaviour
     {
         if(_isPaused) return;
         _useTeleporterTimerHaptic = true;
+        Debug.Log("B2 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
         if(IsOwner) PlayTeleporterTimerHapticRpc(2f);
     }
 
@@ -356,6 +358,7 @@ public class HapticManager : NetworkBehaviour
     private void DeactivateTeleporterTimerHapticRpc()
     {
         _useTeleporterTimerHaptic = false;
+        Debug.Log("B3 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
         teleporterTimerHapticSource.Stop();
         teleporterTimerHapticSource.enabled = false;
     }
