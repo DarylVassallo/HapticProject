@@ -582,6 +582,7 @@ public class TeleportPad : NetworkBehaviour
 
         if(exitTeleportPad != null) exitTeleportPad.GetComponent<TeleportPad>().rotateRings = true;
         rotateRings = true;
+        EventsManager.TogglePCTrigger(false);
 
         _audioSource.Stop();
         _audioSource.clip = _teleportAudio;
@@ -700,6 +701,7 @@ public class TeleportPad : NetworkBehaviour
         {
             rotateIncrement *= -1f;  
             rotateRings = false;
+            EventsManager.TogglePCTrigger(true);
 
             ring.rotation = restRotation;
             reverseRing.rotation = restRotation;

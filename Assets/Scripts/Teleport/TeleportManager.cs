@@ -199,14 +199,14 @@ public class TeleportManager : NetworkBehaviour
             EventsManager.TogglePCPlayerMovement(false);
             EventsManager.TogglePCPlayerGravity(false);
 
-            // if(!IsOwner)
-            // {
-            _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
-            _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+            if(!IsOwner)
+            {
+                _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
+                _pcPlayerTransform.GetChild(0).rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
+            }
 
             bubble.position = tutorialTeleportPads[tutorialTeleportCount].position;
             bubble.rotation = tutorialTeleportPads[tutorialTeleportCount].rotation;
-            // }
 
             tutorialTeleportCount++;
 
@@ -294,7 +294,7 @@ public class TeleportManager : NetworkBehaviour
             yield return null;
         }
 
-        if(IsOwner) TutorialTeleportRpc();
+        if(!IsOwner) TutorialTeleportRpc();
     }
 
     //This adds the bar of a teleport pad to a list
