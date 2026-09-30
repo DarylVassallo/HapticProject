@@ -125,11 +125,13 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void FreezePlayer(bool _toggle)
     {
+        Debug.Log("FreezePlayer: " + _toggle);
         ToggleAll(!_toggle);
     }
 
     private void ToggleAll(bool _toggle)
     {
+        Debug.Log("ToggleAll: " + _toggle);
         ToggleRestriction("All", _toggle);
     }
 
