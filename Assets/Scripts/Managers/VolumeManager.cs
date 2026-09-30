@@ -27,6 +27,7 @@ public class VolumeManager : MonoBehaviour
     private void OnEnable()
     {
         EventsManager.OnChangeHealthCamera += ChangeHealthDamageVolume;
+        EventsManager.OnResetHealth += ResetHealthDamageVolume;
         EventsManager.OnChangeTeleportRotateSpeed += ChangeTeleportVolume;
         EventsManager.OnFixTeleportEffect += FixTeleportEffect;
     }
@@ -34,6 +35,7 @@ public class VolumeManager : MonoBehaviour
     private void OnDisable()
     {
         EventsManager.OnChangeHealthCamera -= ChangeHealthDamageVolume;
+        EventsManager.OnResetHealth -= ResetHealthDamageVolume;
         EventsManager.OnChangeTeleportRotateSpeed -= ChangeTeleportVolume;
         EventsManager.OnFixTeleportEffect -= FixTeleportEffect;
     }
@@ -42,6 +44,11 @@ public class VolumeManager : MonoBehaviour
     private void ChangeHealthDamageVolume(float _currentHealth)
     {
         if(!UnityEngine.XR.XRSettings.isDeviceActive) healthDamageVolume.weight = Mathf.Lerp(0f, 1f, 1f - _currentHealth / 100f);
+    }
+
+    private void ResetHealthDamageVolume(GameObject _player)
+    {
+        if(!UnityEngine.XR.XRSettings.isDeviceActive) healthDamageVolume.weight = 0f;
     }
 
     //This applies a teleport visual effect to the PC Player, depending on the current rotational speed of the teleport rings (the greater the speed, the greater the visual intensity)

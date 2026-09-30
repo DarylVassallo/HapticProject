@@ -199,7 +199,7 @@ public class TeleportManager : NetworkBehaviour
             EventsManager.TogglePCPlayerMovement(false);
             EventsManager.TogglePCPlayerGravity(false);
 
-            if(!IsOwner)
+            if(IsOwner)
             {
                 Debug.Log("tutorialTeleportPads[" + tutorialTeleportCount + "]: " + tutorialTeleportPads[tutorialTeleportCount]);
                 _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
