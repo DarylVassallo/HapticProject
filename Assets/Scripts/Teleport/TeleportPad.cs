@@ -701,7 +701,7 @@ public class TeleportPad : NetworkBehaviour
         {
             rotateIncrement *= -1f;  
             rotateRings = false;
-            EventsManager.TogglePCTrigger(true);
+            StartCoroutine(ActivatePCTriggers(0.25f));
 
             ring.rotation = restRotation;
             reverseRing.rotation = restRotation;
@@ -710,6 +710,12 @@ public class TeleportPad : NetworkBehaviour
             
             StopAudioRpc();
         }
+    }
+
+    private IEnumerator ActivatePCTriggers(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        EventsManager.TogglePCTrigger(true);
     }
 
     //Records if the PC Player has left the teleport pad

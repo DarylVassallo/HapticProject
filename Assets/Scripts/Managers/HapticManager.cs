@@ -478,7 +478,7 @@ public class HapticManager : NetworkBehaviour
     private void PlayHealthHapticRpc(float _delay)
     {
         Debug.Log("Function PlayHealthHapticRpc: " + _delay);
-        if(!_playingHealthHaptic && !IsOwner) StartCoroutine(PlayHealthHaptic(_delay));
+        if(!IsOwner) StartCoroutine(PlayHealthHaptic(_delay));
     }
 
     private IEnumerator PlayHealthHaptic(float _delay)

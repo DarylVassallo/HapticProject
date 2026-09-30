@@ -96,8 +96,6 @@ public class TeleportManager : NetworkBehaviour
         EventsManager.OnIncreaseChanceOfSpawningEnemy += ReachedTeleporter;
 
         EventsManager.OnRequireOnlyOneCollectable += RequireOnlyOneCollectable;
-
-        // EventsManager.TogglePCTrigger(true);
     }
 
     private void OnDisable()
@@ -240,7 +238,7 @@ public class TeleportManager : NetworkBehaviour
             tutorialTeleportCount++;
             _audioSource.Stop();
 
-            EventsManager.TogglePCTrigger(true);
+            StartCoroutine(ActivatePCTriggers(0.25f));
 
             // EventsManager.FreezePCPlayer(false);
 
@@ -254,6 +252,12 @@ public class TeleportManager : NetworkBehaviour
             if(IsOwner) EventsManager.ReachedSwitches();
         }
     }
+    
+    private IEnumerator ActivatePCTriggers(float _delay)
+    {
+        yield return new WaitForSeconds(_delay);
+        EventsManager.TogglePCTrigger(true);
+    }
 
     IEnumerator TutorialTeleportDelay(float _delay)
     {
@@ -264,6 +268,8 @@ public class TeleportManager : NetworkBehaviour
             if(!_isPaused)
             {
                 elapsed += Time.deltaTime;
+
+                _pcPlayerTransform.position = tutorialTeleportPads[tutorialTeleportCount].position;
                 
                 if(tutorialTeleportCount >= tutorialTeleportPads.Length && elapsed >= _delay/2)
                 {
