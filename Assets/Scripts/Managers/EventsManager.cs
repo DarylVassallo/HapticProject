@@ -153,6 +153,8 @@ public class EventsManager : MonoBehaviour
     public static void DestroyAllEnemies() => OnDestroyAllEnemies?.Invoke();
     public static event Action<float> OnIncreaseChanceOfSpawningEnemy;
     public static void IncreaseChanceOfSpawningEnemy(float _chance) => OnIncreaseChanceOfSpawningEnemy?.Invoke(_chance);
+    public static event Action<float> OnSetChanceOfSpawningEnemy;
+    public static void SetChanceOfSpawningEnemy(float _chance) => OnSetChanceOfSpawningEnemy?.Invoke(_chance);
     public static event Action<int> OnCreateRandomEnemy;
     public static void CreateRandomEnemy(int _enemyNum) => OnCreateRandomEnemy?.Invoke(_enemyNum);
     public static event Action<GameObject> OnRemoveEnemy;

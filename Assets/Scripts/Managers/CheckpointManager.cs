@@ -223,7 +223,7 @@ public class CheckpointManager : NetworkBehaviour
             {
                 EventsManager.ResetHiddenButtons();
                 EventsManager.ResetTeleportPads();
-                EventsManager.SetChanceOfEnemysServerRpc(0f);
+                EventsManager.SetChanceOfSpawningEnemy(0f);
             }
 
             if(_pcPlayer == null) _pcPlayer = GameObject.FindGameObjectWithTag("PCPlayer");

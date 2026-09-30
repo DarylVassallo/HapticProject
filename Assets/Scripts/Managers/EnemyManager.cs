@@ -73,6 +73,7 @@ public class EnemyManager : NetworkBehaviour
         EventsManager.OnRemoveEnemy += RemoveEnemy;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy += AddChanceOfEnemysServerRpc;
+        EventsManager.OnSetChanceOfSpawningEnemy -= SetChanceOfEnemysServerRpc;
         EventsManager.OnDisableEnemySpawning += DisableEnemySpawningServerRpc;
 
         EventsManager.OnGetAppropriateEnemyAudio += GetAppropriateAudio;
@@ -88,6 +89,7 @@ public class EnemyManager : NetworkBehaviour
         EventsManager.OnRemoveEnemy -= RemoveEnemy;
 
         EventsManager.OnIncreaseChanceOfSpawningEnemy -= AddChanceOfEnemysServerRpc;
+        EventsManager.OnSetChanceOfSpawningEnemy -= SetChanceOfEnemysServerRpc;
         EventsManager.OnDisableEnemySpawning -= DisableEnemySpawningServerRpc;
 
         EventsManager.OnGetAppropriateEnemyAudio -= GetAppropriateAudio;
