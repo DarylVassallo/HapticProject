@@ -99,11 +99,17 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateButtonRpc()
     {        
+        Debug.Log("ActivateButtonRpc");
+
         _audioSource.Stop();
 
         _activeButton = true;
 
-        if(!isResetButton && IsOwner) EventsManager.TriggerButton(shape, button);
+        if(!isResetButton && IsOwner)
+        {
+            Debug.Log("ButtonInteract TriggerButton");
+            EventsManager.TriggerButton(shape, button);
+        }
 
         targetPosition = pushedPosition;
         targetMaterial = inProgressMaterial;

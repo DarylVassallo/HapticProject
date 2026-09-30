@@ -588,10 +588,13 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButtonHaptic(EventsManager.ButtonType _button)
     {
+        Debug.Log("PressedButtonHaptic: " + _button);
+
         for (int i = 0; i < stoneButtonHaptics.Length; i++)
         {
             if (stoneButtonHaptics[i].button == _button)
             {
+                Debug.Log("PlayStoneButtonHaptic: " + stoneButtonHaptics[i].haptic);
                 EventsManager.PlayStoneButtonHaptic(stoneButtonHaptics[i].haptic);
                 break;
             }
@@ -600,6 +603,7 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
+        Debug.Log("PressedButton");
         PressedButtonHaptic(_button);
 
         //Spawns one enemy nearby 
