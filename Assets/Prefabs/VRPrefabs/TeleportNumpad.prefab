@@ -35869,6 +35869,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   ShowTopMostFoldoutHeaderGroup: 1
+  audioSource: {fileID: 0}
+  addSymbolAudio: {fileID: 0}
   potentialSymbols:
   - {fileID: 2100000, guid: 465dd8eda88abda48ab1aad8b20be904, type: 2}
   - {fileID: 2100000, guid: 0493f54608801ae43bfb9b27149292bf, type: 2}

@@ -99,15 +99,12 @@ public class ButtonInteract : NetworkBehaviour, IInteractable
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivateButtonRpc()
     {        
-        Debug.Log("ActivateButtonRpc");
-
         _audioSource.Stop();
 
         _activeButton = true;
 
         if(!isResetButton)
         {
-            Debug.Log("ButtonInteract TriggerButton");
             EventsManager.TriggerButton(shape, button);
         }
 

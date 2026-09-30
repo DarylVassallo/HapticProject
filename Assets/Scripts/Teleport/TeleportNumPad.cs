@@ -14,6 +14,10 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 public class TeleportNumPad : NetworkBehaviour
 {
     private bool isInNetwork;
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip addSymbolAudio;
+
 
     [Header("Symbols")]
     [SerializeField] private Material[] potentialSymbols;
@@ -104,6 +108,9 @@ public class TeleportNumPad : NetworkBehaviour
         if((currentSymbolIndex >= inputtedSymbols.Length) || !_canAddNumber) return;
 
         _canAddNumber = false;
+
+        audioSource.clip = addSymbolAudio;
+        audioSource.Play();
 
         inputtedSymbols[currentSymbolIndex].material = potentialSymbols[_newNumber];
         inputtedCode = inputtedCode + "" + (_newNumber + 1);

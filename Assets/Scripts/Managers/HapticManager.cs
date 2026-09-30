@@ -248,12 +248,7 @@ public class HapticManager : NetworkBehaviour
         _hapticHealth = _newHealth / 100f;
         float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
 
-        if(!IsOwner && !_playingHealthHaptic)
-        { 
-            Debug.Log("ChangeHealthHapticRpc: " + _newHealth);
-            Debug.Log("1 PlayHealthHapticRpc: " + _healthDelay);
-            PlayHealthHapticRpc(_healthDelay);
-        }
+        if(!IsOwner && !_playingHealthHaptic) PlayHealthHapticRpc(_healthDelay);
     }
 
     private void IsNarratorSpeaking(bool _isNewNarrator)
@@ -384,7 +379,6 @@ public class HapticManager : NetworkBehaviour
 
     private void PlayStoneButtonHaptic(AudioHapticSource _haptic)
     {
-        Debug.Log("PlayStoneButtonHaptic: " + _haptic);
         _haptic.Stop();
         _haptic.enabled = true;
         _haptic.SourceIntensity = 1f;
@@ -477,14 +471,11 @@ public class HapticManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayHealthHapticRpc(float _delay)
     {
-        Debug.Log("Function PlayHealthHapticRpc: " + _delay);
         if(!IsOwner) StartCoroutine(PlayHealthHaptic(_delay));
     }
 
     private IEnumerator PlayHealthHaptic(float _delay)
     {
-        Debug.Log("PlayHealthHaptic: " + _delay);
-
         _playingHealthHaptic = true;
 
         pcLeftDamageHapticSource.enabled = true;
@@ -507,7 +498,6 @@ public class HapticManager : NetworkBehaviour
         {
             _hapticHealth = _hapticHealth + 0.05f;
             float _healthDelay = Mathf.Lerp(2.5f, 5f, _hapticHealth);
-            Debug.Log("2 PlayHealthHapticRpc: " + _healthDelay);
             PlayHealthHapticRpc(_healthDelay);
         }
         else

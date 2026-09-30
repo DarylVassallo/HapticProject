@@ -549,6 +549,7 @@ public class NarratorMovement : NetworkBehaviour
         _audioSource.GetSpectrumData(spectrum, 0, FFTWindow.Rectangular);
 
         float decibel = GetDecibel(spectrum, 16f);
+        if(decibel > 0f) Debug.Log("decibel: " + decibel);
 
         if(_isInNetwork)
         {

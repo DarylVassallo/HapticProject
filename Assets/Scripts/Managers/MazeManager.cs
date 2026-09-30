@@ -165,7 +165,6 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the spin wheel
     public void ActivateSpinWheel()
     {
-        Debug.Log("ActivateSpinWheel");
         CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.SpinWheel);
     }
@@ -173,7 +172,6 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the health ball
     public void ActivateHealthBall()
     {
-        Debug.Log("ActivateHealthBall");
         CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.HealthBall);
     }
@@ -181,17 +179,14 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the defense button
     public void ActivateDefenseButton()
     {
-        Debug.Log("ActivateDefenseButton");
         CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.DefenseButton);
     }
 
     private void CheckInteractiveObject()
     {
-        Debug.Log("CheckInteractiveObject");
         if(!_activatedInteractiveObject)
         {
-            Debug.Log("_activatedInteractiveObject: " + _activatedInteractiveObject);
             _activatedInteractiveObject = true;
             EventsManager.FirstActiveInteractiveObject();
         }
@@ -225,7 +220,13 @@ public class MazeManager : NetworkBehaviour
     {
         if(isSpinWheelActive.Value)
         {
-            if(spinWheelKnobValueDiff != 0) EventsManager.UseBridgeHaptic(_value);
+            spinWheelKnobValueDiff = spinWheelKnob.value - prevSpinWheelKnobValue;
+            
+            if(spinWheelKnobValueDiff != 0)
+            {
+                EventsManager.UseBridgeHaptic(_value);
+                SetAudioNumServerRpc(2);
+            }
 
             for(int i = 0; i < rotateBridges.Length; i++)
             {
@@ -236,6 +237,8 @@ public class MazeManager : NetworkBehaviour
             {
                 reverseRotateBridges[i].localRotation = Quaternion.Euler(0.0f, -_value * bridgeRotateSpeed, 0.0f);
             }
+
+            prevSpinWheelKnobValue = spinWheelKnob.value;
         }
     }
 
@@ -355,7 +358,6 @@ public class MazeManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
-        Debug.Log("ActivateServerRpc: " + interactiveObject);
         switch(interactiveObject)
         {
             case InteractiveObject.SpinWheel:
@@ -588,13 +590,10 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButtonHaptic(EventsManager.ButtonType _button)
     {
-        Debug.Log("PressedButtonHaptic: " + _button);
-
         for (int i = 0; i < stoneButtonHaptics.Length; i++)
         {
             if (stoneButtonHaptics[i].button == _button)
             {
-                Debug.Log("PlayStoneButtonHaptic: " + stoneButtonHaptics[i].haptic);
                 EventsManager.PlayStoneButtonHaptic(stoneButtonHaptics[i].haptic);
                 break;
             }
@@ -603,7 +602,6 @@ public class MazeManager : NetworkBehaviour
 
     private void PressedButton(EventsManager.ShapeType _shape, EventsManager.ButtonType _button)
     {
-        Debug.Log("PressedButton");
         PressedButtonHaptic(_button);
 
         //Spawns one enemy nearby 
