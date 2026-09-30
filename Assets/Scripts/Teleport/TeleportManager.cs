@@ -147,7 +147,6 @@ public class TeleportManager : NetworkBehaviour
         {
             _hasUsedTeleporter = true;
             _useTeleportTimerHaptic = true;
-            Debug.Log("A1 _useTeleportTimerHaptic: " + true);
         }
     }
 
@@ -193,7 +192,6 @@ public class TeleportManager : NetworkBehaviour
 
         if(tutorialTeleportCount == 1)
         {
-            Debug.Log("TutorialTeleportRpc LookAtPlayer");
             EventsManager.LookAtPlayer(-1, -1, false);
         }
 
@@ -351,7 +349,6 @@ public class TeleportManager : NetworkBehaviour
             }
 
             _useTeleportTimerHaptic = false;
-            Debug.Log("A2 _useTeleportTimerHaptic: " + true);
 
         //This sets up the correct map for the VR Player, and set up the correct teleport connections.
         // It also sets up a random time limit before the next time the map changes again
@@ -365,7 +362,6 @@ public class TeleportManager : NetworkBehaviour
             
             if(IsOwner)
             {
-                Debug.Log("Testing");
                 _timeLimit = UnityEngine.Random.Range(minDelay, maxDelay);
                 StartCoroutine(ChangeMapDelay(_timeLimit));
             }
@@ -383,17 +379,29 @@ public class TeleportManager : NetworkBehaviour
     {
         float elapsed = 0f;
 
+        Debug.Log("ChangeMapDelay Testing 1");
+
         //The bar of every teleport pad is slowly reduced, to represent the amount of time left before the map is changed 
         while (elapsed < delay)
         {
+            Debug.Log("ChangeMapDelay Testing 2");
+
             if(!_isPaused)
             {
+                Debug.Log("ChangeMapDelay Testing 3");
+
                 elapsed += Time.deltaTime;
                 float t = elapsed / delay;
 
                 if(!_isEverythingCollected)
                 {
-                    if(_isInNetwork) ChangeBarSizeRpc(t); 
+                    Debug.Log("ChangeMapDelay Testing 4");
+                    if(_isInNetwork)
+                    {
+                        Debug.Log("ChangeMapDelay Testing 5");
+                        Debug.Log("t: " + t);
+                        ChangeBarSizeRpc(t); 
+                    }
                 }
             }
             // else
@@ -404,17 +412,14 @@ public class TeleportManager : NetworkBehaviour
             yield return null;
         }
 
-        Debug.Log("_isPaused: " + _isPaused);
         if(!_isPaused)
         {
-            Debug.Log("Testing 1");
             //This changes the current map
             CurrentMapServerRpc(false, true);
 
             //The teleport bars are reset to their full size
             if(_isInNetwork)
             {
-                Debug.Log("Testing 2");
                 ChangeBarSizeRpc(0.95f); 
             }
         }
@@ -423,6 +428,7 @@ public class TeleportManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ChangeBarSizeRpc(float _newSize)
     {
+        Debug.Log("ChangeBarSizeRpc: " + _newSize);
         if(_useTeleportTimerHaptic)
         {
             EventsManager.UseTeleportBarHaptic(_newSize / 5f);
