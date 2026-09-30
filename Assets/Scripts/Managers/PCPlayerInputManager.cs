@@ -60,12 +60,12 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void OnEnable()
     {
-        EventsManager.OnEnteredTemple += FreezePlayer;
-        EventsManager.OnTogglePCPlayerMovement += ToggleAll;
+        EventsManager.OnEnteredTemple += FreezePlayerRpc;
+        EventsManager.OnTogglePCPlayerMovement += ToggleAllRpc;
         // EventsManager.OnFreezePCPlayer += FreezePlayer;
 
-        EventsManager.OnToggleAll += ToggleAll;
-        EventsManager.OnToggleRestriction += ToggleRestriction;
+        EventsManager.OnToggleAll += ToggleAllRpc;
+        EventsManager.OnToggleRestriction += ToggleRestrictionRpc;
 
         moveAction.Enable();
         moveAction.performed += HandleMove;
@@ -90,12 +90,12 @@ public class PCPlayerInputManager : NetworkBehaviour
 
     private void OnDisable()
     {
-        EventsManager.OnEnteredTemple -= FreezePlayer;
-        EventsManager.OnTogglePCPlayerMovement -= ToggleAll;
+        EventsManager.OnEnteredTemple -= FreezePlayerRpc;
+        EventsManager.OnTogglePCPlayerMovement -= ToggleAllRpc;
         // EventsManager.OnFreezePCPlayer -= FreezePlayer;
 
-        EventsManager.OnToggleAll -= ToggleAll;
-        EventsManager.OnToggleRestriction -= ToggleRestriction;
+        EventsManager.OnToggleAll -= ToggleAllRpc;
+        EventsManager.OnToggleRestriction -= ToggleRestrictionRpc;
 
         moveAction.performed -= HandleMove;
         moveAction.canceled -= HandleMove;
@@ -123,20 +123,23 @@ public class PCPlayerInputManager : NetworkBehaviour
         _isInNetwork = true;
     }
 
-    private void FreezePlayer(bool _toggle)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void FreezePlayerRpc(bool _toggle)
     {
         Debug.Log("FreezePlayer: " + _toggle);
-        ToggleAll(!_toggle);
+        if(IsOwner) ToggleAllRpc(!_toggle);
     }
 
-    private void ToggleAll(bool _toggle)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleAllRpc(bool _toggle)
     {
         Debug.Log("ToggleAll: " + _toggle);
-        ToggleRestriction("All", _toggle);
+        if(IsOwner) ToggleRestrictionRpc("All", _toggle);
     }
 
     //Toggles the restriction of various input controls
-    private void ToggleRestriction(string _restriction, bool _toggle)
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    private void ToggleRestrictionRpc(string _restriction, bool _toggle)
     {
         if(_restriction == "Move" || _restriction == "All")
         {
