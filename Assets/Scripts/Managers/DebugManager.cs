@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using Unity.Netcode;
 
-public class DebugManager : MonoBehaviour
+public class DebugManager : NetworkBehaviour
 {
 
     [Header("Network Debugging")]
@@ -35,6 +36,13 @@ public class DebugManager : MonoBehaviour
         StartCoroutine(DelayDebugging());
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
+        if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();
+        if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
+    }
+
     IEnumerator DelayDebugging()
     {
         yield return new WaitForSeconds(0.01f);
@@ -47,9 +55,9 @@ public class DebugManager : MonoBehaviour
 
         if(startWithPlayerIcon) EventsManager.StartWithPlayerIcon();
 
-        if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
-        if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();
-        if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
+        // if(startWithActivatedSpinWheel) EventsManager.ActivateSpinWheel();
+        // if(startWithActivatedHealthBall) EventsManager.ActivateHealthBall();
+        // if(startWithActivatedDefenseButton) EventsManager.ActivateDefenseButton();
 
         if(disableEnemies) EventsManager.DisableEnemies();
         

@@ -165,6 +165,7 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the spin wheel
     public void ActivateSpinWheel()
     {
+        Debug.Log("ActivateSpinWheel");
         CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.SpinWheel);
     }
@@ -172,6 +173,7 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the health ball
     public void ActivateHealthBall()
     {
+        Debug.Log("ActivateHealthBall");
         CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.HealthBall);
     }
@@ -179,14 +181,17 @@ public class MazeManager : NetworkBehaviour
     //Triggered by inputting correct sequence to activate the defense button
     public void ActivateDefenseButton()
     {
+        Debug.Log("ActivateDefenseButton");
         CheckInteractiveObject();
         ActivateServerRpc(InteractiveObject.DefenseButton);
     }
 
     private void CheckInteractiveObject()
     {
+        Debug.Log("CheckInteractiveObject");
         if(!_activatedInteractiveObject)
         {
+            Debug.Log("_activatedInteractiveObject: " + _activatedInteractiveObject);
             _activatedInteractiveObject = true;
             EventsManager.FirstActiveInteractiveObject();
         }
@@ -350,6 +355,7 @@ public class MazeManager : NetworkBehaviour
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateServerRpc(InteractiveObject interactiveObject)
     {
+        Debug.Log("ActivateServerRpc: " + interactiveObject);
         switch(interactiveObject)
         {
             case InteractiveObject.SpinWheel:
