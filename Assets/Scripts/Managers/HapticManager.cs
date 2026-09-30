@@ -322,14 +322,19 @@ public class HapticManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void UseTeleporterTimerHapticRpc(float _newIntensity)
     {
+        Debug.Log("UseTeleporterTimerHapticRpc: " + _newIntensity);
+        Debug.Log("_isNarrator: " + _isNarrator);
+        Debug.Log("_useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
+        Debug.Log("_isPaused: " + _isPaused);
         if(_isNarrator || !_useTeleporterTimerHaptic || _isPaused) return;
         _teleportIntensity = _newIntensity;
+        Debug.Log("_teleportIntensity: " + _teleportIntensity);
     }
 
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateTeleporterTimerHapticRpc()
     {
-        if(_isPaused) return;
+        // if(_isPaused) return;
         _useTeleporterTimerHaptic = true;
         Debug.Log("B2 _useTeleporterTimerHaptic: " + _useTeleporterTimerHaptic);
         if(IsOwner) PlayTeleporterTimerHapticRpc(2f);
@@ -338,16 +343,22 @@ public class HapticManager : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     private void PlayTeleporterTimerHapticRpc(float _delay)
     {
-        if(_isPaused) return;
+        Debug.Log("PlayTeleporterTimerHapticRpc: " + _delay);
+        // if(_isPaused) return;
         StartCoroutine(PlayTeleporterTimerHaptic(_delay));
     }
 
     private IEnumerator PlayTeleporterTimerHaptic(float _delay)
     {
-        teleporterTimerHapticSource.enabled = true;
-        teleporterTimerHapticSource.Stop();
-        teleporterTimerHapticSource.SourceIntensity = _teleportIntensity;
-        teleporterTimerHapticSource.PlayEventVibration();
+        Debug.Log("PlayTeleporterTimerHaptic: " + _delay);
+
+        if(!_isPaused)
+        {
+            teleporterTimerHapticSource.enabled = true;
+            teleporterTimerHapticSource.Stop();
+            teleporterTimerHapticSource.SourceIntensity = _teleportIntensity;
+            teleporterTimerHapticSource.PlayEventVibration();
+        }
 
         yield return new WaitForSeconds(_delay);
 
