@@ -33,7 +33,8 @@ public class MainMenu : NetworkBehaviour
     [SerializeField] private Transform pcCreditsPage;
     [SerializeField] private Transform vrCreditsPage;
 
-    [SerializeField] private string creditsPath = "Assets/Credits.txt";
+    // [SerializeField] private string creditsPath = "Assets/Credits.txt";
+    [SerializeField] private TextAsset creditsFile;
 
     private bool isCreditsScrolling;
 
@@ -156,6 +157,7 @@ public class MainMenu : NetworkBehaviour
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RevealTempleServerRpc()
     {
+        SetMenuNumberValueServerRpc(1);
         StartCoroutine(ShiftRevealTemple(4f));
     }
 
@@ -371,7 +373,8 @@ public class MainMenu : NetworkBehaviour
     {
         currentCreditsPage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
-        StreamReader reader = new StreamReader(creditsPath); 
+        StringReader reader = new StringReader(creditsFile.text);
+        // StreamReader reader = new StreamReader(creditsPath); 
         int rowNum = 0;
 
         string line;
@@ -382,9 +385,10 @@ public class MainMenu : NetworkBehaviour
 
         int fontSize;
         Color entryColor;
-        while(!reader.EndOfStream)
+
+        while((line = reader.ReadLine()) != null)
         {
-            line = reader.ReadLine();
+            // line = reader.ReadLine();
 
             if(line[0] == '!')
             {
@@ -431,7 +435,8 @@ public class MainMenu : NetworkBehaviour
     {
         currentCreditsPage.position = currentCreditsPage.parent.position;
 
-        StreamReader reader = new StreamReader(creditsPath); 
+        StringReader reader = new StringReader(creditsFile.text);
+        // StreamReader reader = new StreamReader(creditsPath); 
         int rowNum = 0;
 
         string line;
@@ -442,9 +447,9 @@ public class MainMenu : NetworkBehaviour
 
         int fontSize;
         Color entryColor;
-        while(!reader.EndOfStream)
+        while((line = reader.ReadLine()) != null)
         {
-            line = reader.ReadLine();
+            // line = reader.ReadLine();
 
             if(line[0] == '!')
             {

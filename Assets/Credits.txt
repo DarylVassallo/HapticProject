@@ -1,5 +1,15 @@
 !Game Developer
 Daryl Luke Vassallo
+!Assets Used
+RPG Tutorial Assets by Sebastian Lague -- http://devassets.com/assets/rpg-tutorial-assets/ -- via DevAssets
+MayanTemple by BitGem -- http://devassets.com/assets/mayan-temple/ -- via DevAssets
+Medieval Arena by Brackeys -- http://devassets.com/assets/medieval-arena/ -- via DevAssets
+Ultimate Low Poly Dungeon by Broken Vector -- https://assetstore.unity.com/packages/3d/environments/dungeons/ultimate-low-poly-dungeon-143535 -- License: Standard Unity Asset Store EULA
+UltimateXR - Virtual Reality Framework and Toolkit by VRMADA -- https://assetstore.unity.com/packages/tools/integration/ultimatexr-virtual-reality-framework-and-toolkit-236782 -- License: Standard Unity Asset Store EULA
+Pipe constructor by James Lowart -- https://assetstore.unity.com/packages/3d/environments/industrial/pipe-constructor-186974 -- License: Standard Unity Asset Store EULA
+Giant Monster Model - Golem by Kevin Iglesias -- License: Standard Unity Asset Store EULA
+Stylized flashlight - M_o_R_o_Z_k_O -- License: Standard Unity Asset Store EULA
+Yughues Free Wooden Floor Materials - Nobiax / Yughues -- License: Standard Unity Asset Store EULA
 !Audio Used
 Typewriter Button SLIDE 1A.wav by mincedbeats -- https://freesound.org/s/433600/ -- License: Creative Commons 0
 Mysterious Magical Bell Flourish by SkySpeira -- https://freesound.org/s/848847/ -- License: Creative Commons 0

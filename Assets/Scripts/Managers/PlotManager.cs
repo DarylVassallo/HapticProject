@@ -36,6 +36,7 @@ public class PlotManager : NetworkBehaviour
     [Header("VRWalls")]
     [SerializeField] private Animator _vrWallsAnimator;
 
+    private bool _usingOnlyVRPlayer;
     private bool _createdVRPlayer;
     private bool _createdPCPlayer;
     
@@ -57,6 +58,8 @@ public class PlotManager : NetworkBehaviour
     
     private void OnEnable()
     {
+        EventsManager.OnUsingOnlyVRPlayer += UsingOnlyVRPlayer;
+
         EventsManager.OnCreatedVRPlayer += GetVRPlayerData;
         EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
         EventsManager.OnCreatedPCPlayerBody += GetPCPlayerBodyData;
@@ -87,6 +90,8 @@ public class PlotManager : NetworkBehaviour
 
     private void OnDisable()
     {
+        EventsManager.OnUsingOnlyVRPlayer -= UsingOnlyVRPlayer;
+
         EventsManager.OnCreatedVRPlayer -= GetVRPlayerData; 
         EventsManager.OnCreatedPCPlayer += GetPCPlayerData;
         EventsManager.OnCreatedPCPlayerBody -= GetPCPlayerBodyData;
@@ -369,6 +374,11 @@ public class PlotManager : NetworkBehaviour
         StartCoroutine(FadeVRPlayerAway(5f));
     }
     
+    private void UsingOnlyVRPlayer()
+    {
+        _usingOnlyVRPlayer = true;
+        if(_usingOnlyVRPlayer && _createdVRPlayer) VRIntroEvent();
+    }
 
     private void GetVRPlayerData()
     {
@@ -392,6 +402,8 @@ public class PlotManager : NetworkBehaviour
 
             UncoverVRPlayer();
         }
+
+        if(_usingOnlyVRPlayer && _createdVRPlayer) VRIntroEvent();
     }
 
     private void GetPCPlayerData()

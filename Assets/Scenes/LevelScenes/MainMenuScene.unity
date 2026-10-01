@@ -21364,6 +21364,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 564f881293fcd68488456827eb491d2c, type: 2}
     - target: {fileID: 4145133373348246028, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
+      propertyPath: creditsFile
+      value: 
+      objectReference: {fileID: 4900000, guid: 95727e863c597314b81fa8b1e804a8a2, type: 3}
+    - target: {fileID: 4145133373348246028, guid: 985bd9e5a2722394a891f4a4e6b20a9e, type: 3}
       propertyPath: frenchLocale
       value: 
       objectReference: {fileID: 11400000, guid: 5921fb2dfc1d524469b40b5be4fa1253, type: 2}
