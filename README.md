@@ -2,6 +2,10 @@
 
 _**Connecting  Players During Gameplay**_
 
+**Proper Connection**
+
+To ensure both players have a proper connection, they must both be on the same private network, to ensure data can be shared between players during gameplay.
+
 **MainMenu**
 
 In the main menu both players will be shown two buttons 'Play Together', and 'Play Alone'. 'Play Together' Allows the client to connect to the host, while “Play Alone” Allows only one player to play, without needing another player _(for testing only)_
